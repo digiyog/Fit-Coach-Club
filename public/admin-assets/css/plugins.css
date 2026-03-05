@@ -1,0 +1,10 @@
+@import url("main.css");
+@import url("plugins/perfect-scrollbar/perfect-scrollbar.css");
+@import url("structure.css");
+
+/* Auth Pages */
+.auth-page {
+    background-image: url("../images/login.png");
+    background-size: cover;
+}
+/* ---------- */
