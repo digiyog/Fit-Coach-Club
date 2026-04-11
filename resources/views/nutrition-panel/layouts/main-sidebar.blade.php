@@ -109,7 +109,7 @@
                 $activeOfflineSystemList = '';
                 $activeCounsellingList = '';
 
-                if(request()->is(Request::segment(1).'/attendence-register*')){
+                if(request()->is(Request::segment(1).'/attendance-register*')){
                     $showOfflineSystemManagement = 'true';
                     $activeOfflineSystemManagement = 'show';
                     $activeOfflineSystemList = 'active';
@@ -136,7 +136,7 @@
                 </a>
                 <ul class="submenu list-unstyled collapse {{ $activeOfflineSystemManagement }}" id="offlineSystemManagement" data-parent="#offlineSystemManagement" style="">
                     <li class="{{ $activeOfflineSystemList }}">
-                        <a href="{{ route('nutritionPanel.attendence-register.index') }}">Attendance Register</a>
+                        <a href="{{ route('nutritionPanel.attendance-register.index') }}">Attendance Register</a>
                     </li>
 
                     <li class="{{ $activeCounsellingList }}">

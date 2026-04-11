@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use DataTables;
-use App\Models\DishType;
 use App\Models\Attendance;
+use App\Models\User;
+use App\Models\AttendanceLogs;
 use App\Http\Traits\UploadImage;
 use Storage;
 use Cviebrock\EloquentSluggable\Services\SlugService;
@@ -63,9 +64,38 @@ class CounsellingController extends Controller
             'attributes' => []
         ];
 
+
+        $todayAttendences = Attendance::where('franchise_id', $authUser->id)
+        ->leftJoin('users', function($join){
+            $join->on('attendances.user_id', '=', 'users.id');
+        })
+        ->where('type', 2)->where('date', date('Y-m-d'))->count();
+
+        $todayAttendencesRegularUser = Attendance::where('franchise_id', $authUser->id)
+        ->leftJoin('users', function($join){
+            $join->on('attendances.user_id', '=', 'users.id');
+        })
+        ->where('user_type', 'Regular User')->where('type', 2)->where('date', date('Y-m-d'))->count();
+
+        $todayAttendencesTrail = Attendance::where('franchise_id', $authUser->id)
+        ->leftJoin('users', function($join){
+            $join->on('attendances.user_id', '=', 'users.id');
+        })
+        ->where('user_type', '3 Days Trial')->where('type', 2)->where('date', date('Y-m-d'))->count();
+
+        $todayAttendencesDemo = Attendance::where('franchise_id', $authUser->id)
+        ->leftJoin('users', function($join){
+            $join->on('attendances.user_id', '=', 'users.id');
+        })
+        ->where('user_type', 'Demo User')->where('type', 2)->where('date', date('Y-m-d'))->count();
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
+        $this->viewData['todayAttendences'] = $todayAttendences;
+        $this->viewData['todayAttendencesRegularUser'] = $todayAttendencesRegularUser;
+        $this->viewData['todayAttendencesTrail'] = $todayAttendencesTrail;
+        $this->viewData['todayAttendencesDemo'] = $todayAttendencesDemo;
         $this->viewData['authUser'] = $authUser;
         
         return view('nutrition-panel.counsellings.index')->with($this->viewData);
@@ -141,8 +171,8 @@ class CounsellingController extends Controller
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
                         <a class="dropdown-item" href="'.route('nutritionPanel.users.viewWeights', ['id' => ev($value->id)]).'">View Weight</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.users.viewAttendence', ['id' => ev($value->id)]).'">View Attendance</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.manual-attendences.manual-attendence', ['id' => ev($value->id)]).'">Manual Attendance</a>
+                        <a class="dropdown-item" href="'.route('nutritionPanel.users.viewAttendance', ['id' => ev($value->id)]).'">View Attendance</a>
+                        <a class="dropdown-item" href="'.route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($value->id)]).'">Manual Attendance</a>
                         <a class="dropdown-item" href="'.route('nutritionPanel.track-shake.index', ['id' => ev($value->id)]).'">Track Shake</a>
                         <a class="dropdown-item" href="'.route('nutritionPanel.orders.index', ['id' => ev($value->id)]).'">Purchase Products</a>
                         <a class="dropdown-item" href="'.route('nutritionPanel.users.details', ['id' => ev($value->id)]).'">View Details</a>

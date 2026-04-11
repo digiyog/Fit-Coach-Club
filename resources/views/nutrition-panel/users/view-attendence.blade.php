@@ -92,12 +92,12 @@
                     View Weight
                 </a>
             
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendence', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     View Attendance
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendences.manual-attendence', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Manual Attendance
                 </a>

@@ -120,7 +120,7 @@ class ManualAttendenceController extends Controller
                     $weight = $value->weight;
                 }
 
-                $action = '<a herf="#" data-url="' . route('nutritionPanel.manual-attendences.destroy', ['id' => ev($value->id)]) . '" class="delete-attendence cursor-pointer" title="Delete Attendance"><div class="badge badge-danger"><i class="fa fa-trash"></i> Delete Attendance</div></a>';
+                $action = '<a herf="#" data-url="' . route('nutritionPanel.manual-attendances.destroy', ['id' => ev($value->id)]) . '" class="delete-attendence cursor-pointer" title="Delete Attendance"><div class="badge badge-danger"><i class="fa fa-trash"></i> Delete Attendance</div></a>';
 
                 // Array Data
                 $arr_data[] = array(
@@ -154,7 +154,7 @@ class ManualAttendenceController extends Controller
      * @author Sandeep
      * @created 24 Jan 2023
      */
-    public function addManualAttendance(Request $request)
+    public function addManualAttendence(Request $request)
     {
         // Get user
         $authUser = auth()->user();

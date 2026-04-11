@@ -70,12 +70,12 @@
                     View Weight
                 </a>
             
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendence', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     View Attendance
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendences.manual-attendence', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Manual Attendance
                 </a>
@@ -109,7 +109,7 @@
                             <!-- Tab Content Profile -->
                             <div class="tab-pane fade show active pt-0" id="animated-underline-profile" role="tabpanel" aria-labelledby="animated-underline-profile-tab">
                                 <div class="form p-3">
-                                    {!! Form::open(['class' => 'add-manual-attendance-form', 'method' => 'post', 'enctype' => 'multipart/form-data', 'url' => route('nutritionPanel.manual-attendences.addManualAttendance') ]) !!}
+                                    {!! Form::open(['class' => 'add-manual-attendance-form', 'method' => 'post', 'enctype' => 'multipart/form-data', 'url' => route('nutritionPanel.manual-attendances.addManualAttendance') ]) !!}
 
                                         <div class="row mb-3">
                                             <div class="col-md-12">
@@ -156,7 +156,7 @@
                             <!-- Tab Content Profile -->
                             <div class="tab-pane fade show active pt-0" id="animated-underline-profile" role="tabpanel" aria-labelledby="animated-underline-profile-tab">
                                 <div class="form p-3">
-                                    {!! Form::open(['class' => 'add-today-weight-form', 'method' => 'post', 'enctype' => 'multipart/form-data', 'url' => route('nutritionPanel.manual-attendences.addTodayWeight') ]) !!}
+                                    {!! Form::open(['class' => 'add-today-weight-form', 'method' => 'post', 'enctype' => 'multipart/form-data', 'url' => route('nutritionPanel.manual-attendances.addTodayWeight') ]) !!}
 
                                         <div class="row mb-3">
                                             <div class="col-md-12">
@@ -203,7 +203,7 @@
 
                     <div class="table-responsive data-table-container mb-4 mt-2">
                         <div class="table-responsive _mb-4">
-                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.manual-attendences.getManualAttendence') }}" data-track-shake-url="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
+                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.manual-attendances.getManualAttendance') }}" data-track-shake-url="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
                                 <thead>
                                     <tr>
                                         <th>S.No</th>

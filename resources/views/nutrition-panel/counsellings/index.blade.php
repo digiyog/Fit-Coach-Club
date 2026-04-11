@@ -7,6 +7,7 @@
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/datatables.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/css/widgets/modules-widgets.css') }}">
 @endpush
 
 @section('content')
@@ -74,6 +75,65 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row layout-top-spacing mt-3 pl-3 pr-3 align-items-stretch">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 layout-spacing text-center">
+                <a href="javascript:;">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info w-100">
+                                    <h4 class="text-dark font-weight-bold s-counter1">{{ $todayAttendences ?? 0 }}</h4>
+                                    <h6 class="value">Today Total Shakes</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+                <a href="javascript:;">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info w-100">
+                                    <h4 class="text-dark font-weight-bold s-counter2">{{ $todayAttendencesRegularUser ?? 0 }}</h4>
+                                    <h6 class="value">Regular Users</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+                <a href="javascript:;">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info w-100">
+                                    <h4 class="text-dark font-weight-bold s-counter3">{{ $todayAttendencesTrail ?? 0 }}</h4>
+                                    <h6 class="value">Trial Users</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+                <a href="javascript:;">
+                    <div class="widget widget-card-four">
+                        <div class="widget-content">
+                            <div class="w-content">
+                                <div class="w-info w-100">
+                                    <h4 class="text-dark font-weight-bold s-counter4">{{ $todayAttendencesDemo ?? 0 }}</h4>
+                                    <h6 class="value">Demo Users</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
 

@@ -82,7 +82,7 @@
 
                     <div class="table-responsive data-table-container mb-4 mt-2">
                         <div class="table-responsive _mb-4">
-                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.attendence-register.getAttendenceRegister') }}">
+                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.attendance-register.getAttendanceRegister') }}">
                                 <thead>
                                     <tr>
                                         <th>S.No</th>

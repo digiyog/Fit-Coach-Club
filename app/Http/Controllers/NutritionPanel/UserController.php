@@ -189,8 +189,8 @@ class UserController extends Controller
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
                         <a class="dropdown-item" href="'.route('nutritionPanel.users.edit', ['id' => ev($value->id)]).'">Edit</a>
                         <a class="dropdown-item" href="'.route('nutritionPanel.users.viewWeights', ['id' => ev($value->id)]).'">View Weight</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.users.viewAttendence', ['id' => ev($value->id)]).'">View Attendance</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.manual-attendences.manual-attendence', ['id' => ev($value->id)]).'">Manual Attendance</a>
+                        <a class="dropdown-item" href="'.route('nutritionPanel.users.viewAttendance', ['id' => ev($value->id)]).'">View Attendance</a>
+                        <a class="dropdown-item" href="'.route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($value->id)]).'">Manual Attendance</a>
                         <a class="dropdown-item" href="'.route('nutritionPanel.track-shake.index', ['id' => ev($value->id)]).'">Track Shake</a>
                         <a class="dropdown-item edit-user-quick cursor-pointer" data-url="' . route('nutritionPanel.users.editUserQuick', ['id' => ev($value->id)]) . '">Edit User Quick</a>
                         <a class="dropdown-item add-user-days cursor-pointer" data-url="' . route('nutritionPanel.users.addUserDays', ['id' => ev($value->id)]) . '">Add User Days</a>
@@ -1132,9 +1132,11 @@ class UserController extends Controller
             ->where('user_id', $user['id'])
             ->where('type', 2)
             ->where('weight', '!=', '')
-            ->orderBy('date', 'ASC')
+            ->orderBy('date', 'DESC')   // latest first
             ->limit(30)
-            ->get();
+            ->get()
+            ->sortBy('date')            // convert to ASC
+            ->values();
 
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;

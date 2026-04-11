@@ -125,7 +125,7 @@ class AttendenceRegisterController extends Controller
 
                 $total_absent = $totalDays - $value->total_present;
 
-                $action = '<a herf="#" data-url="' . route('nutritionPanel.attendence-register.viewAttendence', ['id' => ev($value->id), 'month' => $request->month, 'year' => $request->year ]) . '" class="view-attendence cursor-pointer" title="View Attendance"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Attendance</div></a>';
+                $action = '<a herf="#" data-url="' . route('nutritionPanel.attendance-register.viewAttendance', ['id' => ev($value->id), 'month' => $request->month, 'year' => $request->year ]) . '" class="view-attendence cursor-pointer" title="View Attendance"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Attendance</div></a>';
 
                 // Array Data
                 $arr_data[] = array(

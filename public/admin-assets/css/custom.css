@@ -170,6 +170,11 @@
   font-weight: 700;
 }
 
+#dataTable_wrapper > .row > .col-md-12:nth-child(2){
+    /*max-height: 400px;*/
+    /*overflow: auto;*/
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -1017,8 +1022,14 @@ span.multiselect-native-select select {
 }
 .table-responsive{
 /*  overflow: hidden !important;*/
-overflow: visible !important;
+/*overflow: visible !important;*/
 }
+
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 .pagination>.active{
   padding-top: 1px;
 }

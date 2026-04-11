@@ -364,13 +364,13 @@
                                         </a>
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.users.viewAttendence', ['id' => ev($user->id)]) }}">
+                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
                                             <i class="fa fa-eye"></i> 
                                             View Attendance
                                         </a>
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.manual-attendences.manual-attendence', ['id' => ev($user->id)]) }}">
+                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
                                             <i class="fa fa-eye"></i> 
                                             Manual Attendance
                                         </a>

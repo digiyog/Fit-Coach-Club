@@ -150,8 +150,14 @@ class TransactionController extends Controller
                     $received_amount = $value->received_amount;
                 }
 
-                if(!empty($value->payment_type)){
-                    $payment_type = $value->payment_type;
+                // if(!empty($value->payment_type)){
+                //     $payment_type = $value->payment_type;
+                // }
+
+                if($value->payment_type == 'Order Placed'){
+                    $payment_type = 'Product';
+                } else {
+                    $payment_type = 'Subscription';
                 }
 
                 if(!empty($value->remark)){
