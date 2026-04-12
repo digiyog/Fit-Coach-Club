@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Notification;
 use App\Models\Transaction;
+use App\Models\Product;
 use Carbon\Carbon;
 
 class OrderController extends Controller
@@ -51,6 +52,14 @@ class OrderController extends Controller
             'btn_text' => __('language.filter'),
             'attributes' => []
         ];
+
+        // $breadcrumbButton[] = [
+        //     'btn_class' => 'btn btn-primary mt-2 rounded-circle create-order',
+        //     'btn_link' => 'javascript:;',
+        //     'btn_icon' => 'plus',
+        //     'btn_text' => __('language.add_button'),
+        //     'attributes' => ['data-url' => route('nutritionPanel.orders.addOrder')]
+        // ];
 
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
@@ -450,5 +459,203 @@ class OrderController extends Controller
         ];
         
         return response()->json($response, 200);
+    }
+
+    /**
+     * Edit Order.
+     *
+     * @return response
+     *
+     * @author Rajesh
+     * @created_at 23 Dec 2021
+     */
+    public function addOrder()
+    {
+        $auth_user = auth()->user();
+
+        // Edit Users.
+        $users = User::where("users.role_type", 'user')->where("users.created_by", $auth_user->id)->get();
+
+        $this->viewData['products'] = Product::where('status', 1)->get();
+
+        // Send view data
+        $this->viewData['users'] = $users;
+
+        return view('nutrition-panel.orders.add-order')->with($this->viewData);
+    }
+
+    /**
+     * Update Order.
+     *
+     * @return mixed
+     *
+     * @author Divyansh
+     * @created 24 Jan 2023
+     */
+    public function storeOrder(Request $request)
+    {
+        // Get Order
+        $authUser = auth()->user();
+        //----------
+        
+        $orderUpdate  = false;
+        $errorMessage = null;
+        
+        // Update Order
+        DB::beginTransaction();
+
+        try {
+            if($request['amount'] - $request['received_amount'] > 0){
+                $request['payment_type'] = 'Pending';
+            } else {
+                $request['payment_type'] = 'Received';
+            }
+
+            $transaction = [
+                'user_id'           => $request['user'],
+                'title'             => 'Admin Manual Add',
+                'total_amount'      => $request['amount'],
+                'received_amount'   => $request['received_amount'],
+                'due_amount'        => $request['amount'] - $request['received_amount'],
+                'payment_type'      => $request['payment_type'],
+                'remark'            => $request['remark'],
+                'created_by'        => $authUser->id
+            ];
+            
+            Transaction::create($transaction);
+
+            User::where('id', $request['user'])->increment('due_amount', $transaction['due_amount']);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            $transactionUpdate = null;
+            $errorMessage = $e->getMessage();
+            DB::rollback();
+        }
+        //------------
+
+        // Set response
+        if (!is_null($transactionUpdate)){
+            $response = [
+                '_status' => true,
+                '_message' => __('messages.record_created', ['record' => 'Transaction']),
+                '_type' => 'success',
+            ];
+        } 
+        else 
+        {
+            $response = [
+                '_status' => false,
+                '_message' => __('messages.record_creation_failed', ['record' => 'Transaction']),
+                '_type' => 'error',
+            ];
+        }
+        //-------------
+        
+        return response()->json($response, 200);
+    }
+
+    /**
+     * Add Transaction.
+     *
+     * @return response
+     *
+     * @author Rajesh
+     * @created_at 23 Dec 2021
+     */
+    public function editTransaction($id)
+    {
+        $auth_user = auth()->user();
+
+        // Edit Transaction
+        $transaction = Transaction::where('id', dv($id))->first();
+
+        // Send view data
+        $this->viewData['transaction'] = $transaction;
+
+        return view('nutrition-panel.transactions.edit-transaction')->with($this->viewData);
+    }
+
+    /**
+     * Update Transaction.
+     *
+     * @return mixed
+     *
+     * @author Divyansh
+     * @created 24 Jan 2023
+     */
+    public function updateTransaction(Request $request, $id)
+    {
+        // Get Transaction
+        $authUser = auth()->user();
+        //----------
+        
+        $transactionUpdate  = false;
+        $errorMessage       = null;
+        
+        // Update Transaction
+        DB::beginTransaction();
+
+        try {
+            $transaction = Transaction::where('id', dv($id))->first();
+            $userId = $transaction->user_id;
+            
+            User::where('id', $transaction->user_id)->decrement('due_amount', $transaction['due_amount']);
+
+            if($request['amount'] - $request['received_amount'] > 0){
+                $request['payment_type'] = 'Pending';
+            } else {
+                $request['payment_type'] = 'Received';
+            }
+
+            $transaction = [
+                'total_amount'      => $request['amount'],
+                'received_amount'   => $request['received_amount'],
+                'due_amount'        => $request['amount'] - $request['received_amount'],
+                'payment_type'      => $request['payment_type'],
+                'remark'            => $request['remark'],
+            ];
+            
+            Transaction::where('id', dv($id))->update($transaction);
+
+            User::where('id', $userId)->increment('due_amount', $transaction['due_amount']);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            $transactionUpdate = null;
+            DB::rollback();
+        }
+        // ------------
+
+        // Set response
+        if (!is_null($transactionUpdate)){
+            $response = [
+                '_status' => true,
+                '_message' => __('messages.records_updated', ['record' => 'Transaction']),
+                '_type' => 'success',
+            ];
+        } 
+        else 
+        {
+            $response = [
+                '_status' => false,
+                '_message' => __('messages.records_updation_failed', ['record' => 'Transaction']),
+                '_type' => 'error',
+            ];
+        }
+        //-------------
+        
+        return response()->json($response, 200);
+    }
+
+    public function viewRemark($id)
+    {
+        $auth_user = auth()->user();
+        $remark      = Transaction::where('id', dv($id))->first();
+
+        // Send view data
+        $this->viewData['remark'] = $remark;
+
+        return view('nutrition-panel.transactions.view-remark')->with($this->viewData);
     }
 }

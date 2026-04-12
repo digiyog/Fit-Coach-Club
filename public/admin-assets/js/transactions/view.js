@@ -406,6 +406,9 @@ var Transaction = (function() {
                     title: {
                         required: true,
                     },
+                    type: {
+                        required: true,
+                    },
                 },
                 //------------------
                 //------------------

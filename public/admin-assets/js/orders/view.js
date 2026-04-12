@@ -12,6 +12,12 @@ var Order = (function() {
             Order.dataTableCustomFilter();
             Order.changeStatus();
             Order.paymentStatusChange();
+            Order.customValidationMethods();
+            Order.addOrder();
+            Order.validateAddOrderForm();
+            Order.updateOrder();
+            Order.validateUpdateOrderForm();
+            Order.viewRemark();
         },
 
         /**
@@ -389,7 +395,339 @@ var Order = (function() {
                     }
                 });
             });
-        }
+        },
+
+        /**
+         * Custom validation methods.
+         */
+        customValidationMethods: function() {
+            jQuery.validator.addMethod(
+                "lettersOnly",
+                function(value, element) {
+                    return (
+                        this.optional(element) ||
+                        /^[a-zA-Z&][a-zA-Z& ]+$/i.test(value)
+                    );
+                },
+                "Please enter only alphabets."
+            );
+
+            jQuery.validator.addMethod(
+                "numericOnly",
+                function(value, element) {
+                    return (
+                        this.optional(element) ||
+                        /^[0-9]\d{0,1}(\.\d{1,2})?%?$/i.test(value)
+                    );
+                },
+                "Please enter valid order number."
+            );
+
+            jQuery.validator.addMethod(
+                "numeric",
+                function(value, element) {
+                    return (
+                        this.optional(element) ||
+                        /^[0-9]\d{0,9}(\.\d{1,9})?%?$/i.test(value)
+                    );
+                },
+                "Please enter only numeric value."
+            );
+
+            jQuery.validator.addMethod(
+                "uppercaseOnly",
+                function(value, element) {
+                    return (
+                        this.optional(element) ||
+                        /^[A-Z]+$/g.test(value)
+                    );
+                },
+                "Please enter only capital letters."
+            );
+
+            jQuery.validator.addMethod(
+                "password",
+                function(value, element) {
+                    return (
+                        $('#new_pass').val() === $('#confirm_pass').val()
+                    );
+                },
+                "New password and confirm password must be same"
+            );
+        },
+
+        /**
+         * Add Order
+         */
+        addOrder: function () {
+            var $source = $(".data-table-container");
+            $('.create-order').on("click", function () {
+
+                var $this = $(this);
+                var $configuration_modal = $("#pageModalMedium");
+
+                $configuration_modal.modal("show");
+                $configuration_modal
+                    .find(".modal-content")
+                    .load($this.data("url"), "", function () {
+                        Order.initializeComponents();
+                        Order.validateAddOrderForm();
+
+                        var $filter_form = $(".add-order-form");
+
+                        // Bootstrap Select on filter form dropdowns
+                        Components.bootstrapSelect($filter_form);
+                        //------------
+                    });
+
+                $configuration_modal.on("hidden.bs.modal", function () {
+                    App.resetModal($configuration_modal);
+                });
+            });
+        },
+
+        /**
+         * Validate Add Order Form
+         */
+        validateAddOrderForm: function() {
+            var $form = $(".add-order-form");
+
+            $form.validate({
+                ignore: "input[type='text']:hidden, .note-editor *",
+                // @validation states + elements
+                errorClass: "invalid-feedback",
+                errorElement: "span",
+                //------------------------------
+
+                // @validation rules
+                rules: {
+                    user: {
+                        required: true,
+                    },
+                    amount: {
+                        required: true,
+                    },
+                    received_amount: {
+                        required: true,
+                    },
+                    title: {
+                        required: true,
+                    },
+                },
+                //------------------
+                //------------------
+                errorPlacement: function (error, element) {
+                    if (element.attr("name") == "check_section") {
+                        error.appendTo(".check-section-error");
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                //------------------
+                // @validation error messages
+                messages: {
+                    
+                },
+                //---------------------------
+
+                highlight: function(element, errorClass, validClass) {
+                    $(element)
+                        .closest(".form-group")
+                        .addClass("has-danger")
+                        .removeClass("has-success");
+                    $(element)
+                        .addClass("is-invalid")
+                        .removeClass("is-valid");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element)
+                        .closest(".form-group")
+                        .addClass("has-success")
+                        .removeClass("has-danger");
+                    $(element)
+                        .addClass("is-valid")
+                        .removeClass("is-invalid");
+                },
+                errorPlacement: function(error, element) {
+                    if($(element).hasClass('custom-file-input'))
+                    {
+                        error.appendTo($(element).parents('.input-group').parent());
+                    }
+                    else if($(element).hasClass('image-preview'))
+                    {
+                        error.appendTo($(element).parents('.dropify-wrapper').parent());
+                    }
+                    else
+                    {
+                        error.insertAfter(element);
+                    }
+                },
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    var $dataTable = $("#dataTable");
+                    var $form = $(".add-order-form");
+
+                    $.ajax({
+                        type: "POST",
+                        url: form.action,
+                        data: $form.serialize(),
+                        beforeSend: function() {
+                            App.formLoading($form);
+                        },
+                        success: function(response) {
+                            App.showNotification(response);
+                            data_table.ajax.reload(null, false);
+                            rows_selected = [];
+
+                            var $configuration_modal = $("#pageModalMedium");
+                            $configuration_modal.modal("hide");
+                        },
+                        error: function() {},
+                        complete: function() {
+                        }
+                    });
+                }
+            });
+        },
+
+        /**
+         * Update Order Form
+         */
+        updateOrder: function () {
+            var $source = $(".data-table-container");
+            $source.on("click", ".update-order", function () {
+
+                var $this = $(this);
+                var $configuration_modal = $("#pageModalMedium");
+
+                $configuration_modal.modal("show");
+                $configuration_modal
+                    .find(".modal-content")
+                    .load($this.data("url"), "", function () {
+                        Order.initializeComponents();
+                        Order.validateUpdateOrderForm();
+                    });
+                $configuration_modal.on("hidden.bs.modal", function () {
+                    App.resetModal($configuration_modal);
+                });
+            });
+        },
+
+        /**
+         * Validate Update Order Form
+         */
+        validateUpdateOrderForm: function() {
+            var $form = $(".update-order-form");
+
+            $form.validate({
+                ignore: "input[type='text']:hidden, .note-editor *",
+                // @validation states + elements
+                errorClass: "invalid-feedback",
+                errorElement: "span",
+                //------------------------------
+
+                // @validation rules
+                rules: {
+                    received_amount: {
+                        required: true,
+                    },
+                },
+                //------------------
+                //------------------
+                errorPlacement: function (error, element) {
+                    if (element.attr("name") == "check_section") {
+                        error.appendTo(".check-section-error");
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                //------------------
+                // @validation error messages
+                messages: {},
+                //---------------------------
+
+                highlight: function(element, errorClass, validClass) {
+                    $(element)
+                        .closest(".form-group")
+                        .addClass("has-danger")
+                        .removeClass("has-success");
+                    $(element)
+                        .addClass("is-invalid")
+                        .removeClass("is-valid");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element)
+                        .closest(".form-group")
+                        .addClass("has-success")
+                        .removeClass("has-danger");
+                    $(element)
+                        .addClass("is-valid")
+                        .removeClass("is-invalid");
+                },
+                errorPlacement: function(error, element) {
+                    if($(element).hasClass('custom-file-input'))
+                    {
+                        error.appendTo($(element).parents('.input-group').parent());
+                    }
+                    else if($(element).hasClass('image-preview'))
+                    {
+                        error.appendTo($(element).parents('.dropify-wrapper').parent());
+                    }
+                    else
+                    {
+                        error.insertAfter(element);
+                    }
+                },
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    var $dataTable = $("#dataTable");
+                    var $form = $(".update-order-form");
+
+                    $.ajax({
+                        type: "POST",
+                        url: form.action,
+                        data: $form.serialize(),
+                        beforeSend: function() {
+                            App.formLoading($form);
+                        },
+                        success: function(response) {
+                            App.showNotification(response);
+                            data_table.ajax.reload(null, false);
+                            rows_selected = [];
+
+                            var $configuration_modal = $("#pageModalMedium");
+                            $configuration_modal.modal("hide");
+                        },
+                        error: function() {},
+                        complete: function() {
+                        }
+                    });
+                }
+            });
+        },
+
+        /**
+         * View Remark.
+         */
+        viewRemark: function () {
+            var $source = $(".data-table-container");
+            $source.on("click", ".view-remark", function () {
+
+                var $this = $(this);
+                var $configuration_modal = $("#pageModal");
+
+                $configuration_modal.modal("show");
+                $configuration_modal
+                    .find(".modal-content")
+                    .load($this.data("url"), "", function () {
+
+
+                    });
+                $configuration_modal.on("hidden.bs.modal", function () {
+                    App.resetModal($configuration_modal);
+                });
+            });
+        },
 
     };
 })();

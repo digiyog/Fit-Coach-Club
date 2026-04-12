@@ -99,6 +99,7 @@ class OrderController extends Controller
                 'total_amount'      => $total_price,
                 'received_amount'   => 0,
                 'due_amount'        => $total_price,
+                'type'              => 1,
                 'payment_type'      => 'Pending',
                 'created_by'        => $user->created_by,
             ]);

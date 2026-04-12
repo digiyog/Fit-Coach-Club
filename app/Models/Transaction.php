@@ -35,7 +35,7 @@ class Transaction extends Model
         $authUser = auth()->user();
         //----------
 
-        $transactions = Transaction::select('transactions.id', 'users.name', 'user_id', 'order_id', 'title', 'total_amount' ,'transactions.due_amount', 'received_amount', 'payment_type','remark', 'transactions.created_at')
+        $transactions = Transaction::select('transactions.id', 'users.name', 'user_id', 'order_id', 'title', 'total_amount' ,'transactions.due_amount', 'received_amount', 'payment_type','remark', 'transactions.created_at', 'type')
         ->where("transactions.created_by", $authUser->id);
 
         $transactions->Join("users", function ($join) {
