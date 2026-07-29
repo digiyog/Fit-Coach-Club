@@ -1,0 +1,6 @@
+.env
+/storage
+/vendor
+/node_modules
+code/app.zip
+app/*.json
