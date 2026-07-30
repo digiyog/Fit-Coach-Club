@@ -74,6 +74,7 @@ class CronjobController extends Controller
             }
 
         } catch(\Exception $e) {
+            \Log::error('Cronjob Error: ' . $e->getMessage());
             $countries = [];
         }
         //--------------
@@ -160,6 +161,7 @@ class CronjobController extends Controller
             }
 
         } catch(\Exception $e) {
+            \Log::error('Cronjob Error: ' . $e->getMessage());
             $countries = [];
         }
         //--------------
@@ -246,6 +248,7 @@ class CronjobController extends Controller
             }
 
         } catch(\Exception $e) {
+            \Log::error('Cronjob Error: ' . $e->getMessage());
             $countries = [];
         }
         //--------------
@@ -382,6 +385,7 @@ class CronjobController extends Controller
             }
     
         } catch (\Exception $e) {
+            \Log::error('Meal cron Error: ' . $e->getMessage());
         }
     
         return response()->json([
@@ -510,6 +514,7 @@ class CronjobController extends Controller
             }
 
         } catch(\Exception $e) {
+            \Log::error('Cronjob Error: ' . $e->getMessage());
             $countries = [];
         }
         //--------------
@@ -593,6 +598,7 @@ class CronjobController extends Controller
             }
 
         } catch(\Exception $e) {
+            \Log::error('Cronjob Error: ' . $e->getMessage());
             $countries = [];
         }
         //--------------

@@ -298,6 +298,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             $product       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Product create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -459,6 +460,7 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             $productUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Product update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

@@ -291,6 +291,7 @@ class FranchiseMembershipPlanController extends Controller
         } catch (\Exception $e) {
             $franchiseMembershipPlan = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('FranchiseMembershipPlan create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -400,6 +401,7 @@ class FranchiseMembershipPlanController extends Controller
         } catch (\Exception $e) {
             $franchiseMembershipPlanUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('FranchiseMembershipPlan update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

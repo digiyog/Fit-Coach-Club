@@ -267,6 +267,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $userUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('User update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

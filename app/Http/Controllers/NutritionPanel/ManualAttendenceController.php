@@ -242,6 +242,7 @@ class ManualAttendenceController extends Controller
         } catch (\Exception $e) {
             $manualAttendence   = null;
             $errorMessage       = $e->getMessage();
+            \Log::error('ManualAttendence Error: ' . $e->getMessage());
             DB::rollback();
 
             // Set notification
@@ -294,6 +295,7 @@ class ManualAttendenceController extends Controller
         } catch (\Exception $e) {
             $status = 3;
             $errorMessage = $e->getMessage();
+            \Log::error('ManualAttendence update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

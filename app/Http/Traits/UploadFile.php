@@ -34,7 +34,7 @@ trait UploadFile
                 $fileUploaded = true;
             }
         } catch (\Exception $e) {
-            //
+            \Log::error('UploadFile Error: ' . $e->getMessage());
         }
         //------------
 

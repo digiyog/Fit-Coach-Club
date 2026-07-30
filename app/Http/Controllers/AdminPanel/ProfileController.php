@@ -126,6 +126,7 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             $profileUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Profile update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -198,6 +199,7 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             $profileUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Profile update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

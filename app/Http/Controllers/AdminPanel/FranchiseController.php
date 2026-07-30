@@ -293,6 +293,7 @@ class FranchiseController extends Controller
         } catch (\Exception $e) {
             $franchise      = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Franchise create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -406,6 +407,7 @@ class FranchiseController extends Controller
         } catch (\Exception $e) {
             $franchiseUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Franchise update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

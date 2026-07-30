@@ -239,6 +239,7 @@ class MealTypeController extends Controller
         } catch (\Exception $e) {
             $mealType       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('MealType create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -367,6 +368,7 @@ class MealTypeController extends Controller
         } catch (\Exception $e) {
             $mealTypeUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('MealType update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

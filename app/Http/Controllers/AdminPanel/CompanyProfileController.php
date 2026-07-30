@@ -123,6 +123,7 @@ class CompanyProfileController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             $companyProfile = null;
+            \Log::error('CompanyProfile Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

@@ -209,6 +209,7 @@ class AttendenceController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
+            \Log::error('Attendence updateWeight Error: ' . $e->getMessage());
             $updateWeight = null;
         }
         //-----------------------
@@ -246,6 +247,7 @@ class AttendenceController extends Controller
                 'weight_goal' => $request['weight_goal'],
             ]);
         } catch (\Exception $e) {
+            \Log::error('Attendence updateGoal Error: ' . $e->getMessage());
             $updateGoal = null;
         }
         //-----------------------
@@ -288,6 +290,7 @@ class AttendenceController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
+            \Log::error('Attendence updateWeightImage Error: ' . $e->getMessage());
             $updateWeightImage = null;
         }
         //-----------------------
@@ -369,6 +372,7 @@ class AttendenceController extends Controller
             $absentDates = array_values(array_diff($allDates, $presentDates));
 
         } catch (\Exception $e) {
+            \Log::error('Attendence absent Error: ' . $e->getMessage());
             $attendances = null;
         }
         //-----------------------

@@ -449,6 +449,7 @@ if (!function_exists('update_configurations_by_name')) {
         } catch (\Exception $e) {
             $configurationUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Helpers configuration Error: ' . $e->getMessage());
             DB::rollback();
         }
 
@@ -614,7 +615,7 @@ if (!function_exists('push_notification')) {
                             $sendReport = $messaging->send($message);
                         }
                     } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-                        // echo 'Error sending message: ' . $e->getMessage();
+                        \Log::error('Firebase message Error: ' . $e->getMessage());
                     }
                 }
             }

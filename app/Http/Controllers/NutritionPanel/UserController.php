@@ -343,6 +343,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $user           = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Nutrition User create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -473,6 +474,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $userUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Nutrition User update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -727,6 +729,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $userUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Nutrition User update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -900,6 +903,7 @@ class UserController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             $userUpdate = null;
+            \Log::error('Nutrition User push Error: ' . $e->getMessage());
             DB::rollback();
         }
         // ------------
@@ -1047,6 +1051,7 @@ class UserController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             $userUpdate = null;
+            \Log::error('Nutrition User push2 Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

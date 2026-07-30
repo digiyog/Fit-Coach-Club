@@ -239,6 +239,7 @@ class TestimonialController extends Controller
         } catch (\Exception $e) {
             $testimonial       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Testimonial create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -349,6 +350,7 @@ class TestimonialController extends Controller
         } catch (\Exception $e) {
             $testimonialUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Testimonial update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

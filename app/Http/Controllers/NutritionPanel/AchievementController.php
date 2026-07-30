@@ -290,6 +290,7 @@ class AchievementController extends Controller
         } catch (\Exception $e) {
             $achievement       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Achievement create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -402,6 +403,7 @@ class AchievementController extends Controller
         } catch (\Exception $e) {
             $achievementUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Achievement update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

@@ -273,6 +273,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             $transactionUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Transaction update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -366,6 +367,7 @@ class TransactionController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             $transactionUpdate = null;
+            \Log::error('Transaction update2 Error: ' . $e->getMessage());
             DB::rollback();
         }
         // ------------

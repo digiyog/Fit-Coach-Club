@@ -226,6 +226,7 @@ class MembershipPlanController extends Controller
         } catch (\Exception $e) {
             $membershipPlan = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('MembershipPlan create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -319,6 +320,7 @@ class MembershipPlanController extends Controller
         } catch (\Exception $e) {
             $membershipPlanUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('MembershipPlan update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

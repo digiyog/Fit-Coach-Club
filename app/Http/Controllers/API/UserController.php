@@ -86,6 +86,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $userProfile = null;
             $errorMessage = $e->getMessage();
+            \Log::error('User profile Error: ' . $e->getMessage());
             DB::rollBack();
         }
 
@@ -194,6 +195,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $userProfile = null;
             $errorMessage = $e->getMessage();
+            \Log::error('User profile update Error: ' . $e->getMessage());
             DB::rollBack();
         }
 
@@ -267,6 +269,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
             $passwordSaved = false;
+            \Log::error('Password change Error: ' . $e->getMessage());
             DB::rollback();
         }
         //---------------------
@@ -343,6 +346,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $user = null;
             $errorMessage = $e->getMessage();
+            \Log::error('User device update Error: ' . $e->getMessage());
             DB::rollBack();
         }
 
@@ -427,6 +431,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $userUpdated = null;
             $errorMessage = $e->getMessage();
+            \Log::error('User account delete Error: ' . $e->getMessage());
             DB::rollBack();
         }
 
@@ -559,6 +564,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $notifications = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Notifications fetch Error: ' . $e->getMessage());
             DB::rollBack();
         }
 
@@ -605,6 +611,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $notification = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Notification read Error: ' . $e->getMessage());
             DB::rollBack();
         }
 
@@ -708,7 +715,7 @@ class UserController extends Controller
                 try {
                     $sendReport = $messaging->send($message);
                 } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-                    echo 'Error sending message: ' . $e->getMessage();
+                    \Log::error('Firebase message Error: ' . $e->getMessage());
                 }
             }
         }

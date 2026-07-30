@@ -74,7 +74,7 @@ trait UploadImage
 				}
 			}
 		} catch (\Exception $e) {
-			//
+			\Log::error('UploadImage Error: ' . $e->getMessage());
 		}
 		//-------------
 

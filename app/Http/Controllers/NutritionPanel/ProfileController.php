@@ -136,6 +136,7 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             $profileUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Nutrition Profile Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -208,6 +209,7 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             $profileUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Nutrition Profile Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

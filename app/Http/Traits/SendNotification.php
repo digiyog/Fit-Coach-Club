@@ -37,7 +37,7 @@ trait SendNotification
             }
 
 		} catch (\Exception $e) {
-			//
+			\Log::error('SendNotification Error: ' . $e->getMessage());
 		}
 
 		return $notificationResponse;

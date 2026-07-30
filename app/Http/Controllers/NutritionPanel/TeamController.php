@@ -240,9 +240,11 @@ class TeamController extends Controller
         } catch (\Exception $e) {
             $team        = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Team create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
+
         if (!is_null($team)) 
         {
             // Set notification
@@ -351,6 +353,7 @@ class TeamController extends Controller
         } catch (\Exception $e) {
             $teamUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Team update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

@@ -246,6 +246,7 @@ class CustomDishController extends Controller
         } catch (\Exception $e) {
             $customDish       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('CustomDish create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -364,6 +365,7 @@ class CustomDishController extends Controller
         } catch (\Exception $e) {
             $customDishUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('CustomDish update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

@@ -218,6 +218,7 @@ class CmsController extends Controller
         } catch (\Exception $e) {
             $cmsUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('CMS update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

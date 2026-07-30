@@ -241,6 +241,7 @@ class ActivityController extends Controller
         } catch (\Exception $e) {
             $activity       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Activity create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -352,6 +353,7 @@ class ActivityController extends Controller
         } catch (\Exception $e) {
             $activityUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Activity update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

@@ -310,6 +310,7 @@ class BmiCalculatorController extends Controller
         } catch (\Exception $e) {
             $bmiCalculator       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('BMI Calculator Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

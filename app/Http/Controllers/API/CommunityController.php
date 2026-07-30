@@ -69,6 +69,7 @@ class CommunityController extends Controller
             //----------------------------
             
         } catch (\Exception $e) {
+            \Log::error('Community add Error: ' . $e->getMessage());
             $community = null;
         }
         //-----------------------

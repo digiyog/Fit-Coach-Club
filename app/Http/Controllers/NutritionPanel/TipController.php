@@ -238,6 +238,7 @@ class TipController extends Controller
         } catch (\Exception $e) {
             $tip       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('Tip create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -349,6 +350,7 @@ class TipController extends Controller
         } catch (\Exception $e) {
             $tipUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Tip update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------

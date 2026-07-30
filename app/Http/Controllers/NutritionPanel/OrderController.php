@@ -369,6 +369,7 @@ class OrderController extends Controller
             }
             //------------
         } catch (Exception $e) {
+            \Log::error('Order refund Error: ' . $e->getMessage());
         }
 
         $response = [
@@ -450,6 +451,7 @@ class OrderController extends Controller
             
             //------------
         } catch (Exception $e) {
+            \Log::error('Order refund Error: ' . $e->getMessage());
         }
 
         $response = [
@@ -530,6 +532,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             $transactionUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('Order transaction Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -623,6 +626,7 @@ class OrderController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             $transactionUpdate = null;
+            \Log::error('Order transaction2 Error: ' . $e->getMessage());
             DB::rollback();
         }
         // ------------

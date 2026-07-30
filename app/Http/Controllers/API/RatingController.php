@@ -59,6 +59,7 @@ class RatingController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('Rating submit Error: ' . $e->getMessage());
 
             return response()->json([
                 '_status'  => false,

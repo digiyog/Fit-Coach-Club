@@ -107,6 +107,7 @@ class OrderController extends Controller
             User::where('id', $user->id)->increment('due_amount', $total_price);
 
         } catch (\Exception $e) {
+            \Log::error('Order place Error: ' . $e->getMessage());
             $orderPlaced = null;
         }
 

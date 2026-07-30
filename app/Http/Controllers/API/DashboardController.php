@@ -82,6 +82,7 @@ class DashboardController extends Controller
                 ->get();
 
         } catch (\Exception $e) {
+            \Log::error('Dashboard attendances Error: ' . $e->getMessage());
             $attendances = null;
         }
         //-----------------------

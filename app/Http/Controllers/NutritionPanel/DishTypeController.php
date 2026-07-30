@@ -227,6 +227,7 @@ class DishTypeController extends Controller
         } catch (\Exception $e) {
             $dishType       = null;
             $errorMessage   = $e->getMessage();
+            \Log::error('DishType create Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
@@ -339,6 +340,7 @@ class DishTypeController extends Controller
         } catch (\Exception $e) {
             $dishTypeUpdate = null;
             $errorMessage = $e->getMessage();
+            \Log::error('DishType update Error: ' . $e->getMessage());
             DB::rollback();
         }
         //------------
