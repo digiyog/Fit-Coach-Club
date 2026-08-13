@@ -1,5 +1,4 @@
 <?php
-error_reporting(0);
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers;
@@ -18,20 +17,6 @@ use App\Http\Controllers;
 if (config('app.env') == 'production') {
     \URL::forceScheme('https');
 }
-
-Route::get('/clear-cache', function () {
-    $exitCode = Artisan::call('cache:clear');
-    $exitCode = Artisan::call('view:clear');
-    $exitCode = Artisan::call('route:clear');
-    $exitCode = Artisan::call('storage:link');
-    $exitCode = Artisan::call('permission:cache-reset');
-    return "All cache is cleared";
-});
-
-Route::get('/call-migrate', function () {
-    $exitCode = Artisan::call('migrate');
-    return "All migrations run";
-});
 
 Route::get('/', function () {
     return "";

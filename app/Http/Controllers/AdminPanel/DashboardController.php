@@ -8,8 +8,8 @@ use App\Models\User;
 use Storage;
 use Carbon\Carbon;
 use App\Http\Traits\SendPushNotification;
-use App\Models\CompanyProfile;
 use App\Models\FranchiseMembershipPlan;
+use App\Models\MembershipPlan;
 use Illuminate\Support\Facades\DB;
 use Nexmo\Laravel\Facade\Nexmo;
 
@@ -46,7 +46,6 @@ class DashboardController extends Controller
         $authUser = auth()->user();
         //----------
 
-        $companyProfile = CompanyProfile::where('id',1)->get();
         $totalFranchise = User::where('role_type','franchise')->count();
         $totalAmount    = FranchiseMembershipPlan::sum('total_amount');
         $receivedAmount = FranchiseMembershipPlan::sum('received_amount');
@@ -54,6 +53,35 @@ class DashboardController extends Controller
 
         $franchises = User::select('users.id', 'users.name', 'users.email' ,'users.mobile_number', 'users.status', 'users.end_date', 'users.start_date', 'users.created_at')->where("role_type", 'franchise')
         ->orderBy('users.id', 'DESC')->get();
+
+        // Pre-compute per-franchise aggregates to avoid N+1 queries in the dashboard view
+        $franchiseIds = $franchises->pluck('id');
+
+        $lastMembershipByFranchise = FranchiseMembershipPlan::whereIn('franchise_id', $franchiseIds)
+            ->orderBy('id', 'DESC')
+            ->get()
+            ->unique('franchise_id');
+
+        $membershipPlanNames = MembershipPlan::whereIn('id', $lastMembershipByFranchise->pluck('membership_id')->filter()->unique())
+            ->pluck('name', 'id');
+
+        $pendingAmountByFranchise = FranchiseMembershipPlan::whereIn('franchise_id', $franchiseIds)
+            ->where('payment_status', 1)
+            ->groupBy('franchise_id')
+            ->selectRaw('franchise_id, SUM(pending_amount) as total')
+            ->pluck('total', 'franchise_id');
+
+        $newUsersByFranchise = User::whereIn('created_by', $franchiseIds)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->groupBy('created_by')
+            ->selectRaw('created_by, COUNT(*) as total')
+            ->pluck('total', 'created_by');
+
+        $totalUsersByFranchise = User::whereIn('created_by', $franchiseIds)
+            ->groupBy('created_by')
+            ->selectRaw('created_by, COUNT(*) as total')
+            ->pluck('total', 'created_by');
 
         $franchiseMembershipPlans = FranchiseMembershipPlan::select('franchise_memberships.id', 'franchise_memberships.franchise_id', 'franchise_memberships.membership_id', 'franchise_memberships.total_amount', 'franchise_memberships.payment_status', 'franchise_memberships.start_date', 'franchise_memberships.end_date', 'franchise_memberships.remark', 'users.name as user_name', 'membership_plans.name as membership_plan_name')
         ->Join("users", function ($join) {
@@ -141,26 +169,13 @@ class DashboardController extends Controller
         ->orderByDesc('users.id')
         ->get();
 
-        $franchiseLifeCycle = User::select(
-            'users.id',
-            'users.name',
-            'users.email',
-            'users.mobile_number',
-            'users.status',
-            'users.end_date',
-            'users.start_date',
-            'users.created_at'
-        )
-        ->where('role_type', 'franchise')
-        ->orderByDesc('users.id')
-        ->get();
+        $franchiseLifeCycle = $franchises;
 
         $breadcrumb = [
             __('language.dashboard_menu') => ''
         ];
 
         $this->viewData['breadcrumb'] = $breadcrumb;
-        $this->viewData['companyProfile'] = $companyProfile;
         $this->viewData['totalFranchise'] = $totalFranchise;
         $this->viewData['totalAmount'] = $totalAmount;
         $this->viewData['receivedAmount'] = $receivedAmount;
@@ -173,6 +188,11 @@ class DashboardController extends Controller
         $this->viewData['franchiseThisMonths'] = $franchiseThisMonth;
         $this->viewData['platformUsageThisMonths'] = $platformUsageThisMonth;
         $this->viewData['franchiseLifeCycles'] = $franchiseLifeCycle;
+        $this->viewData['lastMembershipByFranchise'] = $lastMembershipByFranchise;
+        $this->viewData['membershipPlanNames'] = $membershipPlanNames;
+        $this->viewData['pendingAmountByFranchise'] = $pendingAmountByFranchise;
+        $this->viewData['newUsersByFranchise'] = $newUsersByFranchise;
+        $this->viewData['totalUsersByFranchise'] = $totalUsersByFranchise;
 
         return view('admin-panel.dashboard.index')->with($this->viewData);
     }

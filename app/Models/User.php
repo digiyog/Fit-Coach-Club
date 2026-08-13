@@ -18,7 +18,7 @@ use Carbon\Carbon;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, HasRoles, Statusable, StatusToggleable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, Statusable, StatusToggleable, SoftDeletes;
 
     protected $guard_name = 'web';
 

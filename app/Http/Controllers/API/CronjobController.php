@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Notification;
-use App\Models\MealType;
 use Carbon\Carbon;
 use DB;
 
@@ -22,6 +21,8 @@ class CronjobController extends Controller
             // 10 Days
             $users = User::where('days', '=', 10)->where('role_type', 'user')->where('status', 1)->get();
 
+            $senderData = User::find(0);
+
             foreach ($users as $user) {
                 $alreadyNotified = Notification::where('user_id', $user->id)
                     ->where('notification_type', 2)
@@ -33,8 +34,7 @@ class CronjobController extends Controller
                 }
 
                 // Send Notification
-                $senderData   = User::find(0);
-                $receiverData = User::find($user['id']);
+                $receiverData = $user;
 
                 // Set usernames
                 $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
@@ -109,6 +109,8 @@ class CronjobController extends Controller
             // 5 Days
             $users = User::where('days', '=', 5)->where('role_type', 'user')->where('status', 1)->get();
 
+            $senderData = User::find(0);
+
             foreach ($users as $user) {
                 $alreadyNotified = Notification::where('user_id', $user->id)
                     ->where('notification_type', 3)
@@ -120,8 +122,7 @@ class CronjobController extends Controller
                 }
 
                 // Send Notification
-                $senderData   = User::find(0);
-                $receiverData = User::find($user['id']);
+                $receiverData = $user;
 
                 // Set usernames
                 $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
@@ -196,6 +197,8 @@ class CronjobController extends Controller
             // 1 Days
             $users = User::where('days', '=', 1)->where('role_type', 'user')->where('status', 1)->get();
 
+            $senderData = User::find(0);
+
             foreach ($users as $user) {
                 $alreadyNotified = Notification::where('user_id', $user->id)
                     ->where('notification_type', 4)
@@ -207,8 +210,7 @@ class CronjobController extends Controller
                 }
 
                 // Send Notification
-                $senderData   = User::find(0);
-                $receiverData = User::find($user['id']);
+                $receiverData = $user;
 
                 // Set usernames
                 $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
@@ -280,7 +282,8 @@ class CronjobController extends Controller
             $timezone = 'Asia/Kolkata';
             $now = Carbon::now($timezone);
     
-            $users = User::where('status', 1)
+            $users = User::with('meal_type')
+                ->where('status', 1)
                 ->where('role_type', 'user')
                 ->get();
     
@@ -290,7 +293,7 @@ class CronjobController extends Controller
                     continue;
                 }
     
-                $mealType = MealType::find($user->meal_type_id);
+                $mealType = $user->meal_type;
     
                 if (!$mealType || empty($mealType->description)) {
                     continue;
@@ -483,12 +486,13 @@ class CronjobController extends Controller
 
     public function pendingNotifications(){
         try {
-            $notifications = Notification::where('sent_status', '=', 0)->get();
+            $notifications = Notification::with('user')->where('sent_status', '=', 0)->get();
+
+            $senderData = User::find(0);
 
             foreach ($notifications as $notification) {
                 // Send Notification
-                $senderData   = User::find(0);
-                $receiverData = User::find($notification['user_id']);
+                $receiverData = $notification->user;
 
                 // Set usernames
                 $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
@@ -543,6 +547,8 @@ class CronjobController extends Controller
         try {
             $users = User::where('due_amount', '>', 0)->where('role_type', 'user')->where('status', 1)->get();
 
+            $senderData = User::find(0);
+
             foreach ($users as $user) {
                 $lastNotification = Notification::where('user_id', $user->id)
                     ->where('notification_type', 10)
@@ -558,8 +564,7 @@ class CronjobController extends Controller
                 }
 
                 // Send Notification
-                $senderData   = User::find(0);
-                $receiverData = User::find($user['id']);
+                $receiverData = $user;
 
                 // Set usernames
                 $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];

@@ -6,6 +6,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use App\Models\CompanyProfile;
 use App\Models\Configuration;
 use App\Models\Role;
@@ -336,9 +337,9 @@ if (!(function_exists('get_file_url'))) {
         //------------
         $url = $file_system . '/' . str_replace(' ', '%20', $filepath);
 
-        if (file_get_contents($url)) {
-            return $url;
-        } else {
+        try {
+            return Http::timeout(5)->head($url)->successful() ? $url : null;
+        } catch (\Throwable $e) {
             return null;
         }
     }

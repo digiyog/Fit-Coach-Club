@@ -25,8 +25,8 @@ return [
     ],
 
     'recaptcha' => [
-        'site_key' => '6LdzSkcsAAAAAOGrUSNIkxcT33tgxC9q76n3xaku',
-        'secret_key' => '6LdzSkcsAAAAAIJ2YAmj1D9QvtHCc_zFPi3pkEXS',
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
     ],
 
     'ses' => [

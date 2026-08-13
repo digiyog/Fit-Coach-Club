@@ -272,15 +272,15 @@
                                                             $pending_days = $today->diffInDays($endDate, false);
                                                         }
 
-                                                        $last_membership  = \App\Models\FranchiseMembershipPlan::where('franchise_id', $franchise->id)->orderBy('id', 'DESC')->first();
-                                                        $membership_plan  = \App\Models\MembershipPlan::where('id', $last_membership->membership_id)->first();
-                                                        $pending_amount     = \App\Models\FranchiseMembershipPlan::where('franchise_id', $franchise->id)->where('payment_status', 1)->sum('pending_amount');
+                                                        $last_membership  = $lastMembershipByFranchise->get($franchise->id);
+                                                        $membership_plan_name = isset($last_membership) ? ($membershipPlanNames->get($last_membership->membership_id) ?? null) : null;
+                                                        $pending_amount     = $pendingAmountByFranchise->get($franchise->id, 0);
                                                     @endphp
 
                                                     @if($pending_days <= 10)
                                                         <tr>
                                                             <td>{{ $franchise['name'] }}</td>
-                                                            <td>{{ $membership_plan['name'] ?? 'N/A' }}</td>
+                                                            <td>{{ $membership_plan_name ?? 'N/A' }}</td>
                                                             <!-- <td>{{ $franchise['email'] }}</td>
                                                             <td>{{ $franchise['mobile_number'] }}</td>
 
@@ -462,9 +462,9 @@
                                     @foreach($platformUsageThisMonths as $key => $platformUsageThisMonth)
 
                                         @php
-                                            $newUsers = \App\Models\User::where('created_by', $platformUsageThisMonth->id)->whereMonth('created_at', '=', now()->month)->whereYear('created_at', '=', now()->year)->count();
+                                            $newUsers = $newUsersByFranchise->get($platformUsageThisMonth->id, 0);
 
-                                            $totalUsers = \App\Models\User::where('created_by', $platformUsageThisMonth->id)->count();
+                                            $totalUsers = $totalUsersByFranchise->get($platformUsageThisMonth->id, 0);
                                         @endphp
 
                                         <tr>
@@ -506,7 +506,7 @@
                                     @foreach($franchiseLifeCycles as $key => $franchiseLifeCycle)
 
                                         @php
-                                            $totalUsers = \App\Models\User::where('created_by', $franchiseLifeCycle->id)->count();
+                                            $totalUsers = $totalUsersByFranchise->get($franchiseLifeCycle->id, 0);
                                         @endphp
 
                                         <tr>
