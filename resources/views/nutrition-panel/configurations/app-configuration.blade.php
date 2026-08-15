@@ -23,7 +23,7 @@
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
                                     @php
-                                    $AndroidMaintenanceMode = get_configurations(['android-app-maintenance-mode'])[0]->config_value;
+                                    $AndroidMaintenanceMode = optional(get_configurations(['android-app-maintenance-mode'])->first())->config_value;
                                     @endphp
 
                                     <label for="name"> {{ __('language.android_app_maintenance') }} </label>
@@ -32,7 +32,7 @@
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
                                     @php
-                                    $AndroidVersion = get_configurations(['android-app-version'])[0]->config_value;
+                                    $AndroidVersion = optional(get_configurations(['android-app-version'])->first())->config_value;
                                     @endphp
 
                                     <label for="name"> {{ __('language.android_app_version') }} </label>
@@ -41,7 +41,7 @@
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
                                     @php
-                                    $AndroidMandatoryUpdate = get_configurations(['android-app-mandatory-update'])[0]->config_value;
+                                    $AndroidMandatoryUpdate = optional(get_configurations(['android-app-mandatory-update'])->first())->config_value;
                                     @endphp
 
                                     <label for="name"> {{ __('language.android_app_mandatory_update') }} </label>
@@ -53,7 +53,7 @@
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
                                     
                                     @php
-                                    $IosMaintenanceMode = get_configurations(['ios-app-maintenance-mode'])[0]->config_value;
+                                    $IosMaintenanceMode = optional(get_configurations(['ios-app-maintenance-mode'])->first())->config_value;
                                     @endphp
 
                                     <label for="name"> {{ __('language.ios_app_maintenance') }} </label>
@@ -62,7 +62,7 @@
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
                                     @php
-                                    $IosVersion = get_configurations(['ios-app-version'])[0]->config_value;
+                                    $IosVersion = optional(get_configurations(['ios-app-version'])->first())->config_value;
                                     @endphp
 
                                     <label for="name"> {{ __('language.ios_app_version') }} </label>
@@ -71,7 +71,7 @@
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
                                     @php
-                                    $IosMandatoryUpdate = get_configurations(['ios-app-mandatory-update'])[0]->config_value;
+                                    $IosMandatoryUpdate = optional(get_configurations(['ios-app-mandatory-update'])->first())->config_value;
                                     @endphp
 
                                     <label for="name"> {{ __('language.ios_app_mandatory_update') }} </label>

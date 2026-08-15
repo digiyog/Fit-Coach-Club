@@ -1,5 +1,6 @@
 @php
 $company = get_company_profile();
+$headerLogo = (isset($company[0]) && isset($company[0]['header_logo_image'])) ? $company[0]['header_logo_image'] : '';
 @endphp
 
 <!--  BEGIN NAVBAR  -->
@@ -12,7 +13,7 @@ $company = get_company_profile();
         <ul class="navbar-item flex-row  text-center">
             <li class="nav-item">
                 <a href="{{ route('adminPanel.dashboard') }}" class="nav-link">
-                    <img src="{{get_image_url(config('constants.company_profile.image_path'), $company[0]['header_logo_image'])}}" class="img-fluid" alt="" style="height: 44px;padding-left: 18px;" />
+                    <img src="{{get_image_url(config('constants.company_profile.image_path'), $headerLogo)}}" class="img-fluid" alt="" style="height: 44px;padding-left: 18px;" />
                 </a>
             </li>
             <li class="nav-item theme-text">

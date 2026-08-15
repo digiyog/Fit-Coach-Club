@@ -345,7 +345,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($thisMonthBirthdayUsers[0])
+                                @if(count($thisMonthBirthdayUsers) > 0)
                                     @foreach($thisMonthBirthdayUsers as $thisMonthBirthdayUser)
                                         <tr>
                                             <td>{{ ucfirst($thisMonthBirthdayUser->name) }}</td>
@@ -392,7 +392,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($today2Attendences[0])
+                                @if(count($today2Attendences) > 0)
                                     @foreach($today2Attendences as $today2Attendence)
                                         @php
                                             $type = \App\Models\AttendanceLogs::where('user_id', $today2Attendence->user_id)
@@ -436,7 +436,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($todayAttendences[0])
+                                @if(count($todayAttendences) > 0)
                                     @foreach($todayAttendences as $todayAttendence)
                                         
                                         <tr>
@@ -476,7 +476,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($top20Attendance[0])
+                                @if(count($top20Attendance) > 0)
                                     @foreach($top20Attendance as $top20Attend)
                                         <tr>
                                             <td>{{ ucfirst($top20Attend->name) }}</td>
@@ -512,7 +512,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($least20Attendance[0])
+                                @if(count($least20Attendance) > 0)
                                     @foreach($least20Attendance as $least20Attend)
                                         <tr>
                                             <td>{{ ucfirst($least20Attend->name) }}</td>
@@ -676,7 +676,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($paymentPendings[0])
+                                @if(count($paymentPendings) > 0)
                                     @foreach($paymentPendings as $key => $paymentPending)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
@@ -730,7 +730,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($membershipExpires[0])
+                                @if(count($membershipExpires) > 0)
                                     @foreach($membershipExpires as $key => $membershipExpire)
                                         <tr>
                                             <td>{{ $key+1 }}</td>

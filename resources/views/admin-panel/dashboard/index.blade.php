@@ -358,7 +358,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($top10ActiveThisMonths[0])
+                                @if(count($top10ActiveThisMonths) > 0)
                                     @foreach($top10ActiveThisMonths as $key => $top10ActiveThisMonth)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
@@ -390,7 +390,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($top10InActiveThisMonths[0])
+                                @if(count($top10InActiveThisMonths) > 0)
                                     @foreach($top10InActiveThisMonths as $key => $top10InActiveThisMonth)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
@@ -424,7 +424,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($franchiseThisMonths[0])
+                                @if(count($franchiseThisMonths) > 0)
                                     @foreach($franchiseThisMonths as $key => $franchiseThisMonth)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
@@ -458,7 +458,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($platformUsageThisMonths[0])
+                                @if(count($platformUsageThisMonths) > 0)
                                     @foreach($platformUsageThisMonths as $key => $platformUsageThisMonth)
 
                                         @php
@@ -502,7 +502,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($franchiseLifeCycles[0])
+                                @if(count($franchiseLifeCycles) > 0)
                                     @foreach($franchiseLifeCycles as $key => $franchiseLifeCycle)
 
                                         @php
