@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePurchasePointsTable extends Migration
+class CreateConfigurationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreatePurchasePointsTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_points', function (Blueprint $table) {
+        Schema::create('configurations', function (Blueprint $table) {
             $table->id();
-            $table->integer('language_id')->default(1);
-            $table->string('title')->nullable();
-            $table->string('points')->nullable();
-            $table->string('price')->nullable();
-            $table->string('image')->nullable();
+            $table->string('key')->nullable();
+            $table->text('value')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +31,6 @@ class CreatePurchasePointsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_points');
+        Schema::dropIfExists('configurations');
     }
 }
