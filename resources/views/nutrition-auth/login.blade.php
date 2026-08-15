@@ -57,7 +57,9 @@
                             </div>
 
                             <input type="hidden" name="role_type" id="" value="users">
-                            <div class="g-recaptcha mb-5" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                            @if(!app()->environment('local') && !in_array(request()->getHost(), ['localhost', '127.0.0.1']))
+                                <div class="g-recaptcha mb-5" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                            @endif
 
                             <div class="d-sm-flex justify-content-between mb-30 mt-5">
                                 <div class="field-wrapper mt-5">
@@ -75,7 +77,9 @@
 @endsection
 
 @push('scripts')
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    @if(!app()->environment('local') && !in_array(request()->getHost(), ['localhost', '127.0.0.1']))
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    @endif
     <script src="{{ asset('admin-assets/js/authentication/form-2.js') }}"></script>
     <script src="{{ asset('admin-assets/js/auth/login.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
