@@ -52,14 +52,14 @@
                                     </div>
 
                                     <div class="col-md-9">
-                                        <div class="row pr-3">
+                                        <div class="row pe-3">
                                             <div class="col-md-12">
                                                 <label for="title">Title <span class="text-danger">*</span></label>
                                                 {!! Form::text('title', $achievement->title, ['class' => 'form-control', 'id' => 'title', 'placeholder' => 'Title', ]) !!}
                                             </div>
 
                                             <div class="row p-3 align-items-end">
-                                                <div class="col-md-6 pr-0">
+                                                <div class="col-md-6 pe-0">
                                                     <label for="in_app_show">Do You Want To show This Achievement/Announcement on Customer App home page</label>
                                                     {!! Form::select('in_app_show', create_select_options(config('constants.in_app_show'), 'display', 'value', 'Select In App Show'), $achievement->in_app_show, ['class' => 'form-control select-picker', 'id' => 'in_app_show' ]) !!}
                                                 </div>
@@ -70,7 +70,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 pr-0">
+                                            <div class="col-md-6 pe-0">
                                                 <label for="type">Achievement Type</label>
                                                 {!! Form::select('type', create_select_options(config('constants.achievement_types'), 'display', 'value', 'Select Achievement Type'), $achievement->type, ['class' => 'form-control select-picker', 'id' => 'type' ]) !!}
                                             </div>

@@ -66,35 +66,35 @@
                                 <h4> Track Shake - {{ ucfirst($user['name']) }} </h4>
                             </div>
 
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 text-right">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 text-end">
                                 <h6>Information: | <span class="text-success">+</span> Add Shakes | <span class="text-danger">-</span> Subtract Shakes | <span class="text-success">Attendance Add</span> | <span class="text-danger">Attendance Delete</span></h6>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row align-strech mt-4 ml-1">
+                    <div class="row align-strech mt-4 ms-1">
                         <div class="col-md-12 col-sm-12 col-xs-12 mb-2">
-                            <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
+                            <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
                                 <i class="fa fa-eye"></i> 
                                 View Weight
                             </a>
                         
-                            <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
+                            <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
                                 <i class="fa fa-eye"></i> 
                                 View Attendance
                             </a>
 
-                            <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
+                            <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
                                 <i class="fa fa-eye"></i> 
                                 Manual Attendance
                             </a>
 
-                            <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
+                            <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
                                 <i class="fa fa-eye"></i> 
                                 Track Shake
                             </a>
 
-                            <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
+                            <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
                                 <i class="fa fa-eye"></i> 
                                 Purchase Products
                             </a>

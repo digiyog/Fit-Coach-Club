@@ -33,7 +33,7 @@
 
                         <div class="form p-3">
                             {!! Form::open(['class' => 'edit-user-form', 'method' => 'post', 'url' => route('adminPanel.users.update', ['id' => ev($user->id)]), 'enctype' => 'multipart/form-data' ]) !!}
-                                <div class="form-row mb-4">
+                                <div class="row g-3 mb-4">
                                     @php
                                     $imagePath = (get_image_url('', $user->profile_image) ?? '');
                                     @endphp
@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-9">
-                                        <div class="row pl-3">
+                                        <div class="row ps-3">
                                             <div class="col-md-12 mt-3">
                                                 <label for="name"> Name </label>
                                                 {!! Form::text('name', $user->name, ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}

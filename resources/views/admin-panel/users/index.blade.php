@@ -37,14 +37,14 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Email </label>
                                         {!! Form::text('email', '', ['class' => 'form-control filter-field', 'id' => 'email', 'placeholder' => 'Email', ]) !!}
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Mobile Number </label>
                                         {!! Form::text('m_no', '', ['class' => 'form-control filter-field', 'id' => 'm_no', 'placeholder' => 'Mobile Number', ]) !!}
@@ -57,7 +57,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Date </label>
                                         {!! Form::text('date_range', ($request['date_range'] ?? $request['date_range']), ['class' => 'form-control date_range filter-field date-picker', 'id' => 'date_range', 'autocomplete' => 'off', 'placeholder' => 'Date Range', ]) !!}    

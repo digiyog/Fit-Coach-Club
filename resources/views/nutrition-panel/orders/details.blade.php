@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-xl-8 col-lg-8 col-md-8 col-8 page-heading">
                                 <div class="media">
-                                    <div class="media-body profile-info ml-1">
+                                    <div class="media-body profile-info ms-1">
                                         <h6 class="mb-2"> Order Number - {{$orderDetails->order_number}} </h6>
 
                                         <h6 class="mb-2"> Order Date - {{ Carbon\Carbon::parse($orderDetails->created_at)->format('d M, Y h:i A') }}</h6>

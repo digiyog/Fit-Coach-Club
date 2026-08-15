@@ -54,7 +54,7 @@
                                         <th class="checkbox-column"> # </th>
                                         <th>Name</th>
                                         <th> {{ __('language.table_status') }} </th>
-                                        <th class="text-right"> {{ __('language.table_action') }} </th>
+                                        <th class="text-end"> {{ __('language.table_action') }} </th>
                                     </tr>
                                 </thead>
                             </table>

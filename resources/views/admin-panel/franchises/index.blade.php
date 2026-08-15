@@ -36,14 +36,14 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Email </label>
                                         {!! Form::text('email', '', ['class' => 'form-control filter-field', 'id' => 'email', 'placeholder' => 'Email' ]) !!}
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Mobile Number </label>
                                         {!! Form::text('mobile_number', '', ['class' => 'form-control filter-field', 'id' => 'mobile_number', 'placeholder' => 'Mobile Number' ]) !!}

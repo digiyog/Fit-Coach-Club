@@ -42,7 +42,7 @@
                     <div class="col-md-3">
                         <h5 class="page-title py-20">Welcome! {{Auth::user()->name}}</h5>
                     </div>
-                    <!-- <div class="col-md-9 text-right">
+                    <!-- <div class="col-md-9 text-end">
                         <button type="button" class="btn btn-dark rounded-circle filter-button" title="Filter">
                             <i data-feather="filter" class="feather-16"></i>
                         </button>
@@ -77,7 +77,7 @@
                                 <div class="col-lg-12 col-xl-4 col-md-12 col-12">
                                     <div id="reportrange" class="mt-1" style="background: #fff; cursor: pointer; padding: 8px 5px; border: 1px solid #ccc; width: 100%; border-radius: 5px;">
                                        <div class=""> <i class="fa fa-calendar d-inline-block"></i>&nbsp;
-                                        <span class="calender-text d-inline-block"></span> <i class="fa fa-caret-down pull-right d-inline-block pr-2"></i>
+                                        <span class="calender-text d-inline-block"></span> <i class="fa fa-caret-down pull-right d-inline-block pe-2"></i>
                                     </div>
                                     </div>
                                 </div>
@@ -89,8 +89,8 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-12">
-                                    {{ Form::button( __('language.filter_apply'), ['class' => 'btn btn-primary apply-filter ml-1 mt-1', 'type' => 'submit', 'title' => __('language.filter_apply'), 'name' => 'filter'] )}}
-                                    <a href="{{route('adminPanel.dashboard')}}" class="btn btn-dark ml-1 mt-1 clear-filter">Clear</a>
+                                    {{ Form::button( __('language.filter_apply'), ['class' => 'btn btn-primary apply-filter ms-1 mt-1', 'type' => 'submit', 'title' => __('language.filter_apply'), 'name' => 'filter'] )}}
+                                    <a href="{{route('adminPanel.dashboard')}}" class="btn btn-dark ms-1 mt-1 clear-filter">Clear</a>
                                 </div>
                             </div>
                             {!! Form::close() !!}
@@ -101,7 +101,7 @@
         </div>
         <!-- Filters -->
 
-        <div class="row mt-3 pl-3 align-items-stretch">
+        <div class="row mt-3 ps-3 align-items-stretch">
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
@@ -130,7 +130,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 pl-0 pr-0 layout-spacing text-center">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 ps-0 pe-0 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -169,8 +169,8 @@
                         </div>
                     </div>
 
-                    <div class="data-table-container mb-0 pl-3 pr-3">
-                        <div id="dataTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="data-table-container mb-0 ps-3 pe-3">
+                        <div id="dataTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap5">
                             <div class="row">
                                 <div class="col-md-12">
                                     <table id="dataTable" class="table table-hover dataTable" role="grid" aria-describedby="dataTable_info">
@@ -240,8 +240,8 @@
                         </div>
                     </div>
 
-                    <div class="data-table-container mb-4 pl-3 pr-3 mt-2">
-                        <div id="dataTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="data-table-container mb-4 ps-3 pe-3 mt-2">
+                        <div id="dataTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap5">
                             <div class="row">
                                 <div class="col-md-12">
                                     <table id="dataTable" class="table table-hover dataTable" role="grid" aria-describedby="dataTable_info">
@@ -343,8 +343,8 @@
             </div>
         </div>
 
-        <div class="row mt-0 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing pl-0">
+        <div class="row mt-0 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Top 10 Active Coach this Month</h5>
@@ -409,8 +409,8 @@
             </div>
         </div>
 
-        <div class="row mt-0 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing pl-0">
+        <div class="row mt-0 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Total New Franchise this Month</h5>
@@ -486,8 +486,8 @@
             </div>
         </div>
 
-        <div class="row mt-0 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing pl-0">
+        <div class="row mt-0 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Coach LifeCycle</h5>

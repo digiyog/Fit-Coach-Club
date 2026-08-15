@@ -36,14 +36,14 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Email </label>
                                         {!! Form::text('email', '', ['class' => 'form-control filter-field', 'id' => 'email', 'placeholder' => 'Email' ]) !!}
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 pl-0">
+                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Mobile Number </label>
                                         {!! Form::text('mobile_number', '', ['class' => 'form-control filter-field', 'id' => 'mobile_number', 'placeholder' => 'Mobile Number' ]) !!}
@@ -99,7 +99,7 @@
                                         <th>Days Pending</th>
                                         <th>Due Amount</th>
                                         <th> {{ __('language.table_status') }} </th>
-                                        <th class="text-right"> {{ __('language.table_action') }} </th>
+                                        <th class="text-end"> {{ __('language.table_action') }} </th>
                                     </tr>
                                 </thead>
                             </table>

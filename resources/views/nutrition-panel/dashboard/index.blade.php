@@ -96,7 +96,7 @@
                     <div class="col-md-3">
                         <h5 class="page-title py-20">Welcome! <b style="color : #3246d3;"> {{Auth::user()->name}} </b></h5>
                     </div>
-                    <div class="col-md-9 text-right">
+                    <div class="col-md-9 text-end">
                         @php
                             use Carbon\Carbon;
 
@@ -124,7 +124,7 @@
             </div>
         </div>
         
-        <div class="row mt-3 pl-3 pr-3 align-items-stretch">
+        <div class="row mt-3 ps-3 pe-3 align-items-stretch">
             <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
@@ -139,7 +139,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -153,7 +153,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -167,7 +167,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -181,7 +181,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -195,7 +195,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -211,8 +211,8 @@
             </div>
         </div>
 
-        <div class="row mt-3 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 pl-0 pr-0 col-12 layout-spacing">
+        <div class="row mt-3 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 ps-0 pe-0 col-12 layout-spacing">
                 <div class="widget widget-card-two">
                     <div class="widget-content">
 
@@ -229,10 +229,10 @@
 
                             <div class="flex justify-center">
                                 <div>
-                                    <a href="javascript:void(0);" onclick="window.print()" class="btn mr-2">Print QR Code</a>
+                                    <a href="javascript:void(0);" onclick="window.print()" class="btn me-2">Print QR Code</a>
                                 </div>
                                 <div>
-                                    <a href="javascript:void(0);" id="downloadBtn" class="btn ml-2">Download PNG</a>
+                                    <a href="javascript:void(0);" id="downloadBtn" class="btn ms-2">Download PNG</a>
                                 </div>
                             </div>
                         </div>
@@ -240,7 +240,7 @@
                 </div>
             </div>
 
-            <!-- <div class="col-xl-4 col-lg-12 col-md-6 col-sm-12 col-12 pl-0 layout-spacing">
+            <!-- <div class="col-xl-4 col-lg-12 col-md-6 col-sm-12 col-12 ps-0 layout-spacing">
                 <div class="widget widget-table-one bg-white p-3">
                     <div class="widget-heading">
                         <h5 class="" style="color : #3246d3;">Today Revenue</h5>
@@ -325,10 +325,10 @@
                 </div>
             </div> -->
 
-            <div class="col-xl-4 col-lg-12 col-md-6 col-sm-12 layout-spacing p-0 pl-3">
+            <div class="col-xl-4 col-lg-12 col-md-6 col-sm-12 layout-spacing p-0 ps-3">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center">
-                        <div class="mr-3">
+                        <div class="me-3">
                             <h5 class="m-0" style="color : #3246d3;">Today Birthday </h5>
                         </div>
                         <div style="width: 30px;">
@@ -375,8 +375,8 @@
             </div>
         </div>
 
-        <div class="row mt-0 mb-4 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing pl-0">
+        <div class="row mt-0 mb-4 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0  font-weight-bold" style="color : #3246d3;">More Than One Attendance on {{ date('Y-m-d', strtotime($today)) }}</h5>
@@ -459,8 +459,8 @@
             </div>
         </div>
 
-        <div class="row mt-0 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing pl-0">
+        <div class="row mt-0 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Top 20 Attendance in {{ date('F') }}</h5>
@@ -568,7 +568,7 @@
                                     </div>
                                 </div>
                             
-                                <div class="col-md-2 pl-0">
+                                <div class="col-md-2 ps-0">
                                     {{ Form::button( __('language.filter_apply'), ['class' => 'btn btn-primary apply-filter', 'type' => 'submit', 'title' => __('language.filter_apply'), 'name' => 'filter'] )}}
                                 </div>
                             </div>
@@ -579,10 +579,10 @@
             </div>
         </div>
 
-        <div class="row sales mt-4 pl-3 pr-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing pl-0">
+        <div class="row sales mt-4 ps-3 pe-3 align-items-stretch">
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing ps-0">
                 <div class="widget widget-chart-one">
-                    <div class="widget-heading pl-3">
+                    <div class="widget-heading ps-3">
                         <h5 class="" style="color : #3246d3;">Bar Graph Representation of Shake Count {{ date('Y') }}</h5>
                     </div>
 
@@ -639,10 +639,10 @@
             </div>
         </div>
 
-        <div class="row sales mt-4 pl-3 pr-3 align-items-stretch">
+        <div class="row sales mt-4 ps-3 pe-3 align-items-stretch">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing p-0">
                 <div class="widget widget-chart-one">
-                    <div class="widget-heading pl-3">
+                    <div class="widget-heading ps-3">
                         <h5 class="" style="color : #3246d3;">Income and Expenses Graph (Purchase & Deposit Graph {{ date('Y') }})</h5>
                     </div>
 
@@ -656,8 +656,8 @@
             </div>
         </div>
 
-        <div class="row mt-0 pl-3 pr-3 align-items-stretch my-4">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing p-0 pr-2">
+        <div class="row mt-0 ps-3 pe-3 align-items-stretch my-4">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing p-0 pe-2">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0  font-weight-bold" style="color : #3246d3;">Pending Payment of Users</h5>
@@ -710,7 +710,7 @@
                 </div>
             </div>
         
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing p-0 pl-2">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing p-0 ps-2">
                 <div class="widget-content widget-content-area br-6">
                     <div class="widget-heading pt-2 d-flex align-items-center justify-center">
                         <h5 class="m-0  font-weight-bold" style="color : #3246d3;">Customer whose Membership Expire Soon</h5>

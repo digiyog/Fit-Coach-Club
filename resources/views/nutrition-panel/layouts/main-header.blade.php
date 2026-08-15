@@ -21,17 +21,17 @@ $company = get_company_profile();
                 </a>
             </li>
         </ul>
-        <ul class="navbar-item flex-row ml-1">
-            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+        <ul class="navbar-item flex-row ms-1">
+            <a href="javascript:void(0);" class="sidebarCollapse" data-bs-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
         </ul>
 
-        <ul class="navbar-item flex-row ml-md-auto">
+        <ul class="navbar-item flex-row ms-md-auto">
             <li class="nav-item user-name">
                 {{$authUser->name}}
             </li>
 
             <li class="nav-item dropdown user-profile-dropdown">
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     {{-- {{ Html::image(asset('admin-assets/images/90x90.jpg'), 'avatar', array('class' => '')) }} --}}
                     <i data-feather="user" class="feather-24"></i>
                 </a>

@@ -26,7 +26,7 @@
 
                         <div class="form p-3">
                             {!! Form::open(['class' => 'add-cms-form', 'method' => 'post', 'url' => route('adminPanel.cms.store'), 'enctype' => 'multipart/form-data' ]) !!}
-                                <div class="form-row mb-4">
+                                <div class="row g-3 mb-4">
 
                                     <div class="col-md-3">
                                         <div class="form-group">

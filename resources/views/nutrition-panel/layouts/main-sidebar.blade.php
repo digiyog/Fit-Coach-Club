@@ -63,7 +63,7 @@
             @endphp
 
             <li class="menu">
-                <a href="#userManagement" data-toggle="collapse" aria-expanded="{{ $showUserManagement }}" data-active="{{ $showUserManagement }}" class="dropdown-toggle collapsed">
+                <a href="#userManagement" data-bs-toggle="collapse" aria-expanded="{{ $showUserManagement }}" data-active="{{ $showUserManagement }}" class="dropdown-toggle collapsed">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" 
                              width="24" height="24" viewBox="0 0 24 24" 
@@ -82,7 +82,7 @@
                         <i data-feather="chevron-right"></i>
                     </div>
                 </a>
-                <ul class="submenu list-unstyled collapse {{ $activeUserManagement }}" id="userManagement" data-parent="#userManagement" style="">
+                <ul class="submenu list-unstyled collapse {{ $activeUserManagement }}" id="userManagement" data-bs-parent="#userManagement" style="">
                     <li class="{{ $activeAllUserList }}">
                         <a href="{{ route('nutritionPanel.users.index') }}">All Users</a>
                     </li>
@@ -124,7 +124,7 @@
             @endphp
 
             <li class="menu">
-                <a href="#offlineSystemManagement" data-toggle="collapse" aria-expanded="{{ $showOfflineSystemManagement }}" data-active="{{ $showOfflineSystemManagement }}" class="dropdown-toggle collapsed">
+                <a href="#offlineSystemManagement" data-bs-toggle="collapse" aria-expanded="{{ $showOfflineSystemManagement }}" data-active="{{ $showOfflineSystemManagement }}" class="dropdown-toggle collapsed">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
 
@@ -134,7 +134,7 @@
                         <i data-feather="chevron-right"></i>
                     </div>
                 </a>
-                <ul class="submenu list-unstyled collapse {{ $activeOfflineSystemManagement }}" id="offlineSystemManagement" data-parent="#offlineSystemManagement" style="">
+                <ul class="submenu list-unstyled collapse {{ $activeOfflineSystemManagement }}" id="offlineSystemManagement" data-bs-parent="#offlineSystemManagement" style="">
                     <li class="{{ $activeOfflineSystemList }}">
                         <a href="{{ route('nutritionPanel.attendance-register.index') }}">Attendance Register</a>
                     </li>
@@ -189,7 +189,7 @@
             @endphp
 
             <li class="menu">
-                <a href="#achievementManagement" data-toggle="collapse" aria-expanded="{{ $showAchievementManagement }}" data-active="{{ $showAchievementManagement }}" class="dropdown-toggle collapsed">
+                <a href="#achievementManagement" data-bs-toggle="collapse" aria-expanded="{{ $showAchievementManagement }}" data-active="{{ $showAchievementManagement }}" class="dropdown-toggle collapsed">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" 
                              width="24" height="24" viewBox="0 0 24 24" 
@@ -207,7 +207,7 @@
                         <i data-feather="chevron-right"></i>
                     </div>
                 </a>
-                <ul class="submenu list-unstyled collapse {{ $activeAchievementManagement }}" id="achievementManagement" data-parent="#achievementManagement" style="">
+                <ul class="submenu list-unstyled collapse {{ $activeAchievementManagement }}" id="achievementManagement" data-bs-parent="#achievementManagement" style="">
                     <li class="{{ $activeAchievementList }}">
                         <a href="{{ route('nutritionPanel.achievements.index') }}">Achievements</a>
                     </li>
@@ -314,7 +314,7 @@
             @endphp
 
             <li class="menu">
-                <a href="#miscellaneousManagement" data-toggle="collapse" aria-expanded="{{ $showMiscellaneousManagement }}" data-active="{{ $showMiscellaneousManagement }}" class="dropdown-toggle collapsed">
+                <a href="#miscellaneousManagement" data-bs-toggle="collapse" aria-expanded="{{ $showMiscellaneousManagement }}" data-active="{{ $showMiscellaneousManagement }}" class="dropdown-toggle collapsed">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder-plus"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
                         <span>Miscellaneous</span>
@@ -323,7 +323,7 @@
                         <i data-feather="chevron-right"></i>
                     </div>
                 </a>
-                <ul class="submenu list-unstyled collapse {{ $activeMiscellaneousManagement }}" id="miscellaneousManagement" data-parent="#miscellaneousManagement" style="">
+                <ul class="submenu list-unstyled collapse {{ $activeMiscellaneousManagement }}" id="miscellaneousManagement" data-bs-parent="#miscellaneousManagement" style="">
                     <li class="{{ $activeProfileList }}">
                         <a href="{{ route('nutritionPanel.profile') }}">Your Info</a>
                     </li>

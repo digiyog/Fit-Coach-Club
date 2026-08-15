@@ -79,7 +79,7 @@
                                                 {!! Form::select('user', create_select_options($users, 'name', 'id', 'Select User'), '', ['class' => 'form-control select-picker', 'id' => 'user' ]) !!}
                                             </div>
 
-                                            <div class="col-md-6 pl-0">
+                                            <div class="col-md-6 ps-0">
                                                 <label for="name"> Enter Name <span class="text-danger">*</span></label>
                                                 {!! Form::text('name', '', ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Enter Name', 'autocomplete' => 'off' ]) !!}
                                             </div>
@@ -88,7 +88,7 @@
                                                 {!! Form::text('mobile_number', '', ['class' => 'form-control', 'id' => 'mobile_number', 'placeholder' => 'Enter Mobile Number', 'autocomplete' => 'off' ]) !!}
                                             </div>
 
-                                            <div class="col-md-6 mt-3 pl-0">
+                                            <div class="col-md-6 mt-3 ps-0">
                                                 <label for="age"> Enter Age <span class="text-danger">*</span></label>
                                                 {!! Form::number('age', '', ['class' => 'form-control', 'id' => 'age', 'placeholder' => 'Enter Age', 'autocomplete' => 'off', 'min' => '5', 'max' => '120' ]) !!}
                                             </div>
@@ -98,7 +98,7 @@
                                                 {!! Form::number('weight', '', ['class' => 'form-control', 'id' => 'weight', 'placeholder' => 'Enter Weight(In Kg)', 'autocomplete' => 'off' ]) !!}
                                             </div>
 
-                                            <div class="col-md-6 mt-3 pl-0">
+                                            <div class="col-md-6 mt-3 ps-0">
                                                 <label for="height"> Enter Height(In cm) <span class="text-danger">*</span></label>
                                                 {!! Form::number('height', '', ['class' => 'form-control', 'id' => 'height', 'placeholder' => 'Enter Height(In cm)', 'autocomplete' => 'off' ]) !!}
                                             </div>
@@ -212,7 +212,7 @@
                                         <th>Metabolic Rate</th>
                                         <th>Biologic Age</th>
                                         <th>Body Age</th>
-                                        <!-- <th class="text-right"> {{ __('language.table_action') }} </th> -->
+                                        <!-- <th class="text-end"> {{ __('language.table_action') }} </th> -->
                                     </tr>
                                 </thead>
                             </table>

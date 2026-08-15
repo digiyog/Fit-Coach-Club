@@ -30,7 +30,7 @@
             </li>
         </ul>
     </header>
-    <div class="_pull-right text-right" style="width: 100%;">
+    <div class="_pull-right text-end" style="width: 100%;">
         @if(isset($breadcrumbButton))
             @foreach($breadcrumbButton as $key => $value)
                 @php

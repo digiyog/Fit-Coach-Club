@@ -32,8 +32,8 @@
     <!-- Scripts -->
     <script src="{{ asset('admin-assets/js/libs/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('admin-assets/js/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('admin-assets/js/bootstrap/js/bootstrap-compat.js') }}"></script>
     <script src="{{ asset('admin-assets/js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/additional-methods.min.js') }}"></script>
 

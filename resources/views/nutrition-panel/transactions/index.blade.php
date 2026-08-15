@@ -82,7 +82,7 @@
                                         <th>Payment Type</th>
                                         <th>Remark</th>
                                         <th>Date</th>
-                                        <th class="text-right"> {{ __('language.table_action') }} </th>
+                                        <th class="text-end"> {{ __('language.table_action') }} </th>
                                     </tr>
                                 </thead>
                                 <tfoot>

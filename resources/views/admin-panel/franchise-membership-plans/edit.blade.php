@@ -48,7 +48,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 pl-0">
+                                    <div class="col-md-6 ps-0">
                                         <div class="form-group">
                                             <label>Select Membership Plan</label>
                                             <select name="membership_plan_id" id="membership_plan_id" class="form-control filter-field select-picker" disabled>

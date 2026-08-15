@@ -71,7 +71,7 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="container-fluid mt2">
                         <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 page-heading pl-3">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 page-heading ps-3">
                                 <h4> View Orders </h4>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                                         <th>Net Amount</th>
                                         <th>Payment Status</th>
                                         <th>Order Status</th>
-                                        <th class="text-right">{{ __('language.action') }}</th>
+                                        <th class="text-end">{{ __('language.action') }}</th>
                                     </tr>
                                 </thead>
                                 <tfoot>

@@ -29,7 +29,7 @@
 
                     <h1 class="">{{ env('APP_NAME') }}</h1>
                     <p class=""> {{ __('language.login_instructions') }}</p>
-                    {!! Form::open(['class' => 'text-left login-form', 'url' => route('adminPanel.login'), ]) !!}
+                    {!! Form::open(['class' => 'text-start login-form', 'url' => route('adminPanel.login'), ]) !!}
                     {!! Form::hidden('timezone', '', ['id' => 'timezone']) !!}
 
                         <!-- Validation error -->

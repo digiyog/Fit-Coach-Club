@@ -19,7 +19,7 @@
                             </div>
                         </div>
                         <div class="form p-3">
-                            <div class="form-row mb-4">
+                            <div class="row g-3 mb-4">
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
                                     @php
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-row mb-4">
+                            <div class="row g-3 mb-4">
                                 <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
                                     
                                     @php

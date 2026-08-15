@@ -65,27 +65,27 @@
 
         <div class="row align-strech mt-4">
             <div class="col-md-12 col-sm-12 col-xs-12 mb-2">
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     View Weight
                 </a>
             
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     View Attendance
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Manual Attendance
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Track Shake
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Purchase Products
                 </a>
@@ -194,7 +194,7 @@
                                 <h4>{{ ucfirst($user['name']) }} Manual Attendance </h4>
                             </div>
 
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-right">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6 text-end">
                                 <h4>Remaining Days : {{ $user['days'] }}</h4>
                                 <!-- <h4>Total Shake and Validity : {{ $attendanceLogs['total_days'] }} - {{ $attendanceLogs['total_days'] - $user['days'] }} = {{ $user['days'] }}</h4> -->
                             </div>
@@ -210,7 +210,7 @@
                                         <th>Date</th>
                                         <th>Weight</th>
                                         <th>Attendance Count</th>
-                                        <th class="text-right"> {{ __('language.table_action') }} </th>
+                                        <th class="text-end"> {{ __('language.table_action') }} </th>
                                     </tr>
                                 </thead>
                             </table>

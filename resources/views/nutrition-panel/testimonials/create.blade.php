@@ -47,7 +47,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-9">
-                                        <div class="row pr-3">
+                                        <div class="row pe-3">
                                             <div class="col-md-12">
                                                 <label for="name">Name <span class="text-danger">*</span></label>
                                                 {!! Form::text('name', '', ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}

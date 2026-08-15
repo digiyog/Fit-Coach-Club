@@ -60,7 +60,7 @@
                     <div class="container-fluid mt2">
                         <div class="form p-3">
                             {!! Form::open(['class' => 'change-password-form', 'method' => 'post', 'url' => route('adminPanel.profile.updatePassword'), 'enctype' => 'multipart/form-data' ]) !!}
-                                <div class="form-row mb-4">
+                                <div class="row g-3 mb-4">
                                     <div class="col-md-12">
                                         <div class="row mb-2">
                                             <div class="col-md-12">

@@ -116,10 +116,10 @@
                                 <!-- Tab Start -->
                                 <ul class="nav nav-tabs mb-3" id="animateLine" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link {{ $activeProfile }}" id="animated-underline-home-tab" data-toggle="tab" href="#animated-underline-profile" role="tab" aria-controls="animated-underline-home" aria-selected="true"> {{__('language.profile')}}</a>
+                                        <a class="nav-link {{ $activeProfile }}" id="animated-underline-home-tab" data-bs-toggle="tab" href="#animated-underline-profile" role="tab" aria-controls="animated-underline-home" aria-selected="true"> {{__('language.profile')}}</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link {{ $activePassword }}" id="animated-underline-change-password-tab" data-toggle="tab" href="#animated-underline-change-password" role="tab" aria-controls="animated-underline-change-password" aria-selected="false"> {{__('language.change_password')}}</a>
+                                        <a class="nav-link {{ $activePassword }}" id="animated-underline-change-password-tab" data-bs-toggle="tab" href="#animated-underline-change-password" role="tab" aria-controls="animated-underline-change-password" aria-selected="false"> {{__('language.change_password')}}</a>
                                     </li>
                                 </ul>
                                 <!-- Tab End -->
@@ -141,7 +141,7 @@
                                                     }
                                                 @endphp
 
-                                                <div class="form-row mb-4">
+                                                <div class="row g-3 mb-4">
                                                     <div class="col-md-3 col-sm-12 col-xs-12">
                                                         <div class="custom-dropify">
                                                             <label for="profile_image"> {{ __('language.profile_image') }} </label>
@@ -191,7 +191,7 @@
                                     <div class="tab-pane fade pt-0 {{ $showPassword }}" id="animated-underline-change-password" role="tabpanel" aria-labelledby="animated-underline-change-password-tab">
                                         <div class="form p-3">
                                             {!! Form::open(['class' => 'change-password-form', 'method' => 'post', 'url' => route('nutritionPanel.profile.updatePassword'), 'enctype' => 'multipart/form-data' ]) !!}
-                                                <div class="form-row mb-4">
+                                                <div class="row g-3 mb-4">
                                                     <div class="col-md-12">
                                                         <div class="row mb-2">
                                                             <div class="col-md-12">

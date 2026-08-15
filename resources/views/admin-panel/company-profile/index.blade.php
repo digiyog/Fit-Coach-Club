@@ -31,7 +31,7 @@
                         </div>
                         <div class="form p-3">
                             {!! Form::open(['class' => 'company-profile-form', 'method' => 'post', 'url' => route('adminPanel.company-profile.update'),'files' => true ,  'enctype' => 'multipart/form-data' ]) !!}
-                                <div class="form-row mb-4">
+                                <div class="row g-3 mb-4">
                                     <div class="col-md-4">
                                         <div class="custom-dropify">
                                             <label class="form-control-label" for="header_company_logo">@lang('language.header_logo')</label>

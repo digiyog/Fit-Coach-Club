@@ -66,7 +66,7 @@
                         </div>
                     </div>
                     <div class="form">
-                        <div class="form-row mb-4">
+                        <div class="row g-3 mb-4">
                             <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <label for="our_initiatives_title"> Title</label>
                                 {!! Form::text('title', $cms->title, ['class' => 'form-control', 'id' => 'title', 'placeholder' => 'Special Initiatives Title', readonly ]) !!}
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="form">
-                        <div class="form-row mb-4">
+                        <div class="row g-3 mb-4">
                             <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <label for="meta_title"> Meta Title </label>
                                 {!! Form::text('meta_title', $cms->meta_title, ['class' => 'form-control', 'id' => 'meta_title', 'placeholder' => 'Meta Title', ]) !!}

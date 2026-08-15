@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <div class="row layout-top-spacing mt-3 pl-3 pr-3 align-items-stretch">
+        <div class="row layout-top-spacing mt-3 ps-3 pe-3 align-items-stretch">
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
@@ -93,7 +93,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -107,7 +107,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -121,7 +121,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 pl-3 layout-spacing text-center">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
                 <a href="javascript:;">
                     <div class="widget widget-card-four">
                         <div class="widget-content">
@@ -160,7 +160,7 @@
                                         <th>Pending Days</th>
                                         <th>Current Meal</th>
                                         <th>Date of Attendance</th>
-                                        <th class="text-right"> {{ __('language.table_action') }} </th>
+                                        <th class="text-end"> {{ __('language.table_action') }} </th>
                                     </tr>
                                 </thead>
                             </table>

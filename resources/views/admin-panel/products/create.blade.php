@@ -55,7 +55,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-9">
-                                        <div class="row pr-3">
+                                        <div class="row pe-3">
                                             <div class="col-md-12">
                                                 <label for="name">Name <span class="text-danger">*</span></label>
                                                 {!! Form::text('name', '', ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}
@@ -97,7 +97,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row col-md-12 layout-top-spacing pr-0">
+                                    <div class="row col-md-12 layout-top-spacing pe-0">
                                         <div id="fuMultipleFile" class="col-lg-12">
                                             <div class="statbox widget box box-shadow">
                                                 <div class="widget-header">

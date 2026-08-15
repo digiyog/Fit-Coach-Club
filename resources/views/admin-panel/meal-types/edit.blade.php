@@ -53,7 +53,7 @@
                                     </div>
 
                                     <div class="col-md-9">
-                                        <div class="row pr-3">
+                                        <div class="row pe-3">
                                             <div class="col-md-12">
                                                 <label for="name">Name <span class="text-danger">*</span></label>
                                                 {!! Form::text('name', $mealType->name, ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}
@@ -74,8 +74,8 @@
                                                     <div class="card-header" id="heading{{$dayKey}}">
                                                         <h5 class="mb-0">
                                                             <button type="button" class="btn btn-link"
-                                                                data-toggle="collapse"
-                                                                data-target="#collapse{{$dayKey}}">
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#collapse{{$dayKey}}">
                                                                 {{ $dayName }}
                                                             </button>
                                                         </h5>
@@ -83,7 +83,7 @@
 
                                                     <div id="collapse{{$dayKey}}"
                                                         class="collapse {{ $dayKey == 1 ? 'show' : '' }}"
-                                                        data-parent="#mealAccordion">
+                                                        data-bs-parent="#mealAccordion">
 
                                                         <div class="card-body">
                                                             @foreach($scheduleTypes as $typeKey => $type)
@@ -111,7 +111,7 @@
                                                                                 placeholder="hh:mm AM/PM">
                                                                         </div>
 
-                                                                        <div class="col-md-8 mb-2 pl-0">
+                                                                        <div class="col-md-8 mb-2 ps-0">
                                                                             <label class="fs-13">Description</label>
                                                                             <input type="text"
                                                                                 name="meals[{{$dayKey}}][{{$type['value']}}][description]"

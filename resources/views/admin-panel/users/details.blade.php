@@ -71,7 +71,7 @@
                                     $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
                                 }
                             @endphp
-                            <img class="mr-3 rounded-circle" src="{{ $profileImage }}" alt="{{$user->profile_image}}" width="80" height="80" style="width: 80px !important; height: 80px !important">
+                            <img class="me-3 rounded-circle" src="{{ $profileImage }}" alt="{{$user->profile_image}}" width="80" height="80" style="width: 80px !important; height: 80px !important">
                             <p class="">{{ ucwords($user->name) }}</p>
                         </div>
                         <div class="user-info-list">

@@ -28,7 +28,7 @@
                         </div>
                     @endif
 
-                    {!! Form::open(['class' => 'text-left login-form', 'url' => route('adminPanel.passwordEmail'), ]) !!}
+                    {!! Form::open(['class' => 'text-start login-form', 'url' => route('adminPanel.passwordEmail'), ]) !!}
 
                         <!-- Validation error -->
                         @component('admin-panel.validation.errors') @endcomponent
@@ -36,7 +36,7 @@
 
                         @if (session('status'))
                             <div class="alert alert-success mb-4" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <i data-feather="x" class="feather-16"></i> </button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 <strong>Success!</strong>
                                 <div>{{ session('status') }}</div>
                             </div>

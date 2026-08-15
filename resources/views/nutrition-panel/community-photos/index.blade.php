@@ -60,7 +60,7 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="container-fluid mt2">
                         <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 page-heading pl-3">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 page-heading ps-3">
                                 <h4>Community Photos</h4>
                             </div>
                         </div>

@@ -87,27 +87,27 @@
 
         <div class="row align-strech mt-4">
             <div class="col-md-12 col-sm-12 col-xs-12 mb-2">
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     View Weight
                 </a>
             
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     View Attendance
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Manual Attendance
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Track Shake
                 </a>
 
-                <a class="btn btn-primary mr-2" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
+                <a class="btn btn-primary me-2" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
                     <i class="fa fa-eye"></i> 
                     Purchase Products
                 </a>
