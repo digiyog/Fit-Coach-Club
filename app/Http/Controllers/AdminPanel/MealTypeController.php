@@ -66,7 +66,6 @@ class MealTypeController extends Controller
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
-        $this->viewData['id'] = $id;
         
         return view('admin-panel.meal-types.index')->with($this->viewData);
     }

@@ -66,7 +66,6 @@ class MembershipPlanController extends Controller
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
-        $this->viewData['id'] = $id;
         
         return view('admin-panel.membership-plans.index')->with($this->viewData);
     }

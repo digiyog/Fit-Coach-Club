@@ -48,15 +48,15 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <label for="name"> Name </label>
-                                                {!! Form::text('name', $user->name, ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}
+                                                {!! Form::text('name', '', ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}
                                             </div>
                                             <div class="col-md-6 mt-3">
                                                 <label for="email">Email </label>
-                                                {!! Form::email('email', '', ['class' => 'form-control', 'id' => 'email', 'placeholder' => 'Email', 'autocomplete' => 'off', 'data-url' => route('adminPanel.franchises.checkEmail', ['id' => $user->id]) ]) !!}
+                                                {!! Form::email('email', '', ['class' => 'form-control', 'id' => 'email', 'placeholder' => 'Email', 'autocomplete' => 'off', 'data-url' => route('adminPanel.franchises.checkEmail') ]) !!}
                                             </div>
                                             <div class="col-md-6 mt-3">
                                                 <label for="mobile_number">Mobile Number </label>
-                                                {!! Form::text('mobile_number', $user->mobile_number, ['class' => 'form-control numeric', 'id' => 'mobile_number', 'placeholder' => 'Mobile Number', 'data-url' => route('adminPanel.franchises.checkMobile', ['id' => $user->id]) ]) !!}
+                                                {!! Form::text('mobile_number', '', ['class' => 'form-control numeric', 'id' => 'mobile_number', 'placeholder' => 'Mobile Number', 'data-url' => route('adminPanel.franchises.checkMobile') ]) !!}
                                             </div>
 
                                             <div class="col-md-12 mt-3">

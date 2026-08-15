@@ -60,7 +60,7 @@
                                 <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
                                     <div class="form-group">
                                         <label> Date </label>
-                                        {!! Form::text('date_range', ($request['date_range'] ?? $request['date_range']), ['class' => 'form-control date_range filter-field date-picker', 'id' => 'date_range', 'autocomplete' => 'off', 'placeholder' => 'Date Range', ]) !!}    
+                                        {!! Form::text('date_range', request('date_range', ''), ['class' => 'form-control date_range filter-field date-picker', 'id' => 'date_range', 'autocomplete' => 'off', 'placeholder' => 'Date Range', ]) !!}    
                                     </div>
                                 </div>
                             </div>

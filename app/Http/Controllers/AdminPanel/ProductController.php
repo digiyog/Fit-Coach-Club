@@ -70,7 +70,6 @@ class ProductController extends Controller
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
-        $this->viewData['id'] = $id;
         
         return view('admin-panel.products.index')->with($this->viewData);
     }
