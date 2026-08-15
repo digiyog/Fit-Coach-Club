@@ -102,8 +102,8 @@ class OrderController extends Controller
         );
         
         // Get Orders list
-        $records_count = Order::GetOrders(null, null, $search, $request,  $filter, $sort, $userId, $userType);
-        $records = Order::GetOrders($limit, $start, $search, $request, $filter, $sort, $userId, $userType);
+        $records_count = Order::GetOrders(null, null, $search, $filter, $sort);
+        $records = Order::GetOrders($limit, $start, $search, $filter, $sort);
 
         $arr_data = array();
 

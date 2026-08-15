@@ -52,6 +52,9 @@ class MembershipPlanController extends Controller
             'Membership Plans' => '',
         ];
 
+        // Breadcrumb Button
+        $breadcrumbButton = [];
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
