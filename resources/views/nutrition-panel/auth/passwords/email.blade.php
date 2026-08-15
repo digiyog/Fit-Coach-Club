@@ -1,64 +1,110 @@
-@extends('admin-panel.layouts.auth')
+@extends('nutrition-panel.layouts.auth')
 
 @section('page-title', ' '.__('language.password_recovery_page_title').' | '.__('language.page_main_title').'')
 
 @push('styles')
-    <link href="{{ asset('admin-assets/css/forms/form-2.css') }}" rel="stylesheet">
+    <!-- Additional page styles if needed -->
 @endpush
 
 @section('content')
-<div class="form-container outer auth-page">
-    <div class="form-form">
-        <div class="form-form-wrap">
-            <div class="form-container">
-                <div class="form-content">
+<!-- Ambient Animated Background -->
+<div class="auth-ambient-bg">
+    <div class="auth-ambient-grid"></div>
+    <div class="auth-glow-orb-1"></div>
+    <div class="auth-glow-orb-2"></div>
+</div>
 
-                    <h1 class="">Password Recovery</h1>
-                    <p class="signup-link recovery"> {{ __('language.password_recovery_instructions') }} </p>
+<div class="modern-auth-wrapper nutrition-theme">
+    <div class="modern-auth-card">
+        <!-- Brand / Header Section -->
+        <div class="auth-header">
+            <div class="auth-logo-badge nutrition">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            
+            <h1 class="auth-brand-name">Password Recovery</h1>
+            
+            <div>
+                <span class="auth-role-pill nutrition">
+                    <span class="pill-dot"></span>
+                    Coach & Member Recovery
+                </span>
+            </div>
+            
+            <p class="auth-subtext">{{ __('language.password_recovery_instructions') }}</p>
+        </div>
 
-                    @if (session('success'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
 
-                    @if (session('error'))
-                        <div class="dark alert-danger" role="alert">
-                            {{ session('error') }}
-                        </div>
-                    @endif
+        @if (session('error'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
 
-                    {!! Form::open(['class' => 'text-start login-form', 'url' => route('adminPanel.passwordEmail'), ]) !!}
+        @if (session('status'))
+            <div class="alert alert-success mb-4" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <strong>Success!</strong>
+                <div>{{ session('status') }}</div>
+            </div>
+        @endif
 
-                        <!-- Validation error -->
-                        @component('admin-panel.validation.errors') @endcomponent
-                        <!-- / Validation error -->
+        {!! Form::open(['class' => 'text-start login-form', 'url' => route('adminPanel.passwordEmail'), ]) !!}
+            <!-- Validation error -->
+            @component('nutrition-panel.validation.errors') @endcomponent
 
-                        @if (session('status'))
-                            <div class="alert alert-success mb-4" role="alert">
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                <strong>Success!</strong>
-                                <div>{{ session('status') }}</div>
-                            </div>
-                        @endif
-
-                        <div class="form">
-                            <div id="email-field" class="field-wrapper input">
-                                <div class="d-flex justify-content-between">
-                                    <label for="email">EMAIL</label>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-at-sign"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
-                                {!! Form::text('email', '', ['class' => 'form-control', 'id' => 'email', 'autocomplete' => 'off', 'placeholder' => __('language.email')]) !!}
-                            </div>
-
-                            <div class="d-sm-flex justify-content-between mb-50">
-                                <div class="field-wrapper">
-                                    {{ Form::button(__('language.reset'), ['class' => 'btn btn-primary', 'type' => 'submit'] )}}
-                                </div>
-                            </div>
-                        </div>
-                    {!! Form::close() !!}
+            <div class="modern-form-group">
+                <label for="email" class="modern-form-label">
+                    {{ __('language.email') }} <span class="required-star">*</span>
+                </label>
+                <div class="modern-input-wrapper">
+                    <span class="input-icon-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </span>
+                    {!! Form::text('email', '', [
+                        'class' => 'form-control',
+                        'id' => 'email',
+                        'autocomplete' => 'off',
+                        'placeholder' => __('language.email'),
+                        'autofocus' => 'autofocus'
+                    ]) !!}
                 </div>
+            </div>
+
+            <button class="btn-modern-submit" type="submit">
+                <span>{{ __('language.reset') }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+
+            <div style="text-align: center; margin-top: 18px;">
+                <a href="{{ route('nutritionPanel.login') }}" style="color: #059669; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Back to Login
+                </a>
+            </div>
+        {!! Form::close() !!}
+
+        <!-- Security Footer -->
+        <div class="auth-footer">
+            <div class="auth-security-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>Protected by 256-Bit SSL Encryption</span>
             </div>
         </div>
     </div>

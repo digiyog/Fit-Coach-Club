@@ -12,10 +12,11 @@
     <title>@yield('page-title')</title>
 
     <!-- Styles -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="{{ asset('admin-assets/css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/bootstrap-extend.min.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/plugins.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin-assets/css/auth-modern.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/custom.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/elements/alert.css') }}" rel="stylesheet">
     @stack('styles')
@@ -23,7 +24,7 @@
 
 </head>
 
-<body class="">
+<body class="auth-body">
 
     <!-- Include Content  -->
     @yield('content')

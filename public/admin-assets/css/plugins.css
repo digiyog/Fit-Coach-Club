@@ -4,7 +4,6 @@
 
 /* Auth Pages */
 .auth-page {
-    background-image: url("../images/login.png");
-    background-size: cover;
+    /* Background handled by modern auth styles */
 }
 /* ---------- */
