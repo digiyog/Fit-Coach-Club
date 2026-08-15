@@ -15,22 +15,23 @@ class CreateBmiCalculatorTable extends Migration
     {
         Schema::create('bmi_calculator', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id')->nullable();
             $table->string('name')->nullable();
-            $table->string('slug')->nullable();
-            $table->string('mobile_number', 50)->nullable();
-            $table->integer('age')->nullable();
-            $table->decimal('weight', 8, 2)->nullable();
-            $table->decimal('height', 8, 2)->nullable();
-            $table->string('gender', 20)->nullable();
-            $table->decimal('bmi', 8, 2)->nullable();
-            $table->decimal('body_fat', 8, 2)->nullable();
-            $table->decimal('visceral_fat', 8, 2)->nullable();
-            $table->decimal('muscle_mass', 8, 2)->nullable();
-            $table->decimal('metabolic_rate', 8, 2)->nullable();
-            $table->integer('biologic_age')->nullable();
-            $table->integer('body_age')->nullable();
+            $table->string('mobile_number')->nullable();
+            $table->string('age')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('height')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('bmi')->nullable();
+            $table->string('body_fat')->nullable();
+            $table->string('visceral_fat')->nullable();
+            $table->string('muscle_mass')->nullable();
+            $table->string('metabolic_rate')->nullable();
+            $table->string('biologic_age')->nullable();
+            $table->string('body_age')->nullable();
+            $table->integer('order')->default(0)->comment('0 for no order.');
             $table->tinyInteger('status')->default(1);
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

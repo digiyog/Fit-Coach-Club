@@ -14,16 +14,17 @@ class CreateFranchiseMembershipsTable extends Migration
     public function up()
     {
         Schema::create('franchise_memberships', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('franchise_id')->nullable();
-            $table->unsignedBigInteger('membership_id')->nullable();
-            $table->decimal('total_amount', 10, 2)->nullable();
-            $table->decimal('received_amount', 10, 2)->default(0)->nullable();
-            $table->decimal('pending_amount', 10, 2)->default(0)->nullable();
-            $table->tinyInteger('payment_status')->default(1);
+            $table->increments('id');
+            $table->integer('franchise_id')->nullable();
+            $table->integer('membership_id')->nullable();
+            $table->integer('payment_status')->default(1)->comment('1 - Pending 2 - Completed');
+            $table->integer('total_amount')->default(0);
+            $table->integer('received_amount')->default(0);
+            $table->integer('pending_amount')->default(0);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->text('remark')->nullable();
+            $table->integer('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

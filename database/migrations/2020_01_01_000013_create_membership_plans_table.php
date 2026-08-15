@@ -16,10 +16,11 @@ class CreateMembershipPlansTable extends Migration
         Schema::create('membership_plans', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('days')->nullable();
+            $table->string('slug')->nullable();
             $table->string('price')->nullable();
-            $table->integer('order')->default(0);
-            $table->integer('status')->default(1);
+            $table->integer('days')->default(0);
+            $table->integer('order')->default(0)->comment('0 for no order.');
+            $table->tinyInteger('status')->default(1);
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();

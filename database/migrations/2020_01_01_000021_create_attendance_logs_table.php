@@ -15,14 +15,15 @@ class CreateAttendanceLogsTable extends Migration
     {
         Schema::create('attendance_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->integer('user_id')->nullable();
             $table->date('date')->nullable();
             $table->string('remark')->nullable();
+            $table->text('message')->nullable();
             $table->integer('days')->default(0);
             $table->integer('total_days')->default(0);
-            $table->text('message')->nullable();
+            $table->integer('order')->default(0)->comment('0 for no order.');
             $table->tinyInteger('status')->default(1);
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

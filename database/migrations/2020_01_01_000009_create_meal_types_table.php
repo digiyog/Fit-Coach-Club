@@ -14,8 +14,10 @@ class CreateMealTypesTable extends Migration
     public function up()
     {
         Schema::create('meal_types', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name')->nullable();
+            $table->string('image')->nullable();
+            $table->longText('description')->nullable();
             $table->integer('order')->default(0);
             $table->integer('status')->default(1);
             $table->integer('created_by')->nullable();

@@ -14,11 +14,11 @@ class CreateFranchiseProductsTable extends Migration
     public function up()
     {
         Schema::create('franchise_products', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('franchise_id')->nullable();
-            $table->unsignedBigInteger('product_id')->nullable();
+            $table->increments('id');
+            $table->integer('product_id')->nullable();
+            $table->integer('franchise_id')->nullable();
+            $table->integer('status')->default(1);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

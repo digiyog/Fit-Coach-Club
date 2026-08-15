@@ -15,14 +15,14 @@ class CreateCustomDishesTable extends Migration
     {
         Schema::create('custom_dishes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('dish_type')->nullable();
-            $table->string('title')->nullable();
+            $table->integer('dish_type_id')->nullable();
+            $table->string('name')->nullable();
+            $table->string('slug')->nullable();
             $table->string('image')->nullable();
-            $table->text('description')->nullable();
-            $table->integer('order')->default(0);
+            $table->longText('description')->nullable();
+            $table->integer('order')->default(0)->comment('0 for no order.');
             $table->tinyInteger('status')->default(1);
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

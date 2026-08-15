@@ -15,12 +15,17 @@ class CreateApiLogsTable extends Migration
     {
         Schema::create('api_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id')->nullable()->index();
-            $table->text('url')->nullable();
-            $table->string('method', 50)->nullable();
-            $table->text('request')->nullable();
-            $table->longText('response')->nullable();
-            $table->string('ip_address', 100)->nullable();
+            $table->unsignedInteger('user_id')->nullable();
+            $table->string('url')->nullable();
+            $table->string('method')->nullable();
+            $table->text('request_header')->nullable();
+            $table->text('request_body')->nullable();
+            $table->text('response_body')->nullable();
+            $table->string('device_type')->nullable();
+            $table->string('device_name')->nullable();
+            $table->string('device_version')->nullable();
+            $table->string('status_code')->nullable();
+            $table->string('request_ip')->nullable();
             $table->timestamps();
         });
     }
