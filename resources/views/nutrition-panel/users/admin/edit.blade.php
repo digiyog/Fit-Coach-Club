@@ -132,6 +132,9 @@
                                             {!! Form::open(['class' => 'update-profile-form', 'method' => 'post', 'url' => route('nutritionPanel.profile.update'), 'enctype' => 'multipart/form-data' ]) !!}
 
                                                 @php
+                                                    $imagePath = '';
+                                                    $qrCode = '';
+
                                                     if($authUser->profile_image){
                                                         $imagePath = (get_image_url(config('constants.users.image_path'), $authUser->profile_image) ?? '');
                                                     }

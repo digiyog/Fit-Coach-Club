@@ -35,7 +35,7 @@ class Community extends Model
     public function scopeGetCommunityPhotos($model, $limit = null, $offset = null, $search = null, $filter = array(), $sort = array())
     {
         $communities = Community::select('id','user_id', 'message', 'created_at')
-        ->with(['user' => function ($query) use ($request,$filter) {
+        ->with(['user' => function ($query) use ($filter) {
             $query->select('id','name','email','mobile_number')->active();
         }])
         ->whereHas('user', function ($query) use ($filter) {
@@ -44,7 +44,7 @@ class Community extends Model
                 $query->where("id", $filter['name']);
             }
         })
-        ->withCount(['community_images' => function ($query) use ($request) {
+        ->withCount(['community_images' => function ($query) {
         }]);
          
          // Table list Search conditions

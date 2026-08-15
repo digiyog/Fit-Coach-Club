@@ -66,7 +66,6 @@ class TipController extends Controller
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
-        $this->viewData['id'] = $id;
         
         return view('nutrition-panel.tips.index')->with($this->viewData);
     }

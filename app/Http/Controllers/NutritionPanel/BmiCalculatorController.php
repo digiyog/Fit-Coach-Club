@@ -70,7 +70,6 @@ class BmiCalculatorController extends Controller
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
         $this->viewData['users'] = $users;
-        $this->viewData['id'] = $id;
         
         return view('nutrition-panel.bmi-calculator.index')->with($this->viewData);
     }

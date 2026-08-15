@@ -65,7 +65,7 @@ class TrackShakeController extends Controller
         $this->viewData['authUser'] = $authUser;
         $this->viewData['user'] = $user;
         $this->viewData['attendanceLogs'] = $attendanceLogs;
-        $this->viewData['id'] = $id;
+        $this->viewData['id'] = $request->id;
         
         return view('nutrition-panel.track-shake.index')->with($this->viewData);
     }

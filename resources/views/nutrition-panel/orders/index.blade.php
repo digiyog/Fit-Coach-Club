@@ -79,7 +79,7 @@
 
                     <div class="table-responsive data-table-container mb2">
                         <div class="table-responsive _mb-4">
-                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.orders.getOrders', ['user_id' => $userId, 'user_type' => $userType]) }}">
+                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.orders.getOrders', ['user_id' => ($user_id ?? ''), 'user_type' => request('user_type', '')]) }}">
                                 <thead>
                                     <tr>
                                         <th>Order Info</th>

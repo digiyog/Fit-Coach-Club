@@ -66,7 +66,6 @@ class TestimonialController extends Controller
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
-        $this->viewData['id'] = $id;
         
         return view('nutrition-panel.testimonials.index')->with($this->viewData);
     }

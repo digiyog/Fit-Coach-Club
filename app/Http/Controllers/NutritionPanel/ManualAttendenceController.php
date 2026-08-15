@@ -65,7 +65,6 @@ class ManualAttendenceController extends Controller
         $this->viewData['authUser'] = $authUser;
         $this->viewData['user'] = $user;
         $this->viewData['attendanceLogs'] = $attendanceLogs;
-        $this->viewData['id'] = $id;
         
         return view('nutrition-panel.manual-attendences.index')->with($this->viewData);
     }

@@ -28,7 +28,7 @@
                                     <div class="col-md-4 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label> Date </label>
-                                            {!! Form::text('date', ($request['date'] ?? $request['date']), ['class' => 'form-control filter-field date-picker', 'id' => 'date', 'autocomplete' => 'off', 'placeholder' => 'Date Range', ]) !!}    
+                                            {!! Form::text('date', request('date', ''), ['class' => 'form-control filter-field date-picker', 'id' => 'date', 'autocomplete' => 'off', 'placeholder' => 'Date Range', ]) !!}    
                                         </div>
                                     </div>
 
@@ -78,62 +78,46 @@
             </div>
         </div>
 
-        <div class="row layout-top-spacing mt-3 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter1">{{ $todayAttendences ?? 0 }}</h4>
-                                    <h6 class="value">Today Total Shakes</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+        <!-- 4 Modern Stat Cards -->
+        <div class="stats-4-grid">
+            <div class="stat-modern-card stat-blue">
+                <div class="stat-icon-wrapper">
+                    <i class="fa fa-coffee"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Today Total Shakes</span>
+                    <h3 class="stat-value s-counter1">{{ $todayAttendences ?? 0 }}</h3>
+                </div>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter2">{{ $todayAttendencesRegularUser ?? 0 }}</h4>
-                                    <h6 class="value">Regular Users</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+
+            <div class="stat-modern-card stat-emerald">
+                <div class="stat-icon-wrapper">
+                    <i class="fa fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Regular Users</span>
+                    <h3 class="stat-value s-counter2">{{ $todayAttendencesRegularUser ?? 0 }}</h3>
+                </div>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter3">{{ $todayAttendencesTrail ?? 0 }}</h4>
-                                    <h6 class="value">Trial Users</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+
+            <div class="stat-modern-card stat-amber">
+                <div class="stat-icon-wrapper">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Trial Users</span>
+                    <h3 class="stat-value s-counter3">{{ $todayAttendencesTrail ?? 0 }}</h3>
+                </div>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter4">{{ $todayAttendencesDemo ?? 0 }}</h4>
-                                    <h6 class="value">Demo Users</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+
+            <div class="stat-modern-card stat-purple">
+                <div class="stat-icon-wrapper">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Demo Users</span>
+                    <h3 class="stat-value s-counter4">{{ $todayAttendencesDemo ?? 0 }}</h3>
+                </div>
             </div>
         </div>
 
