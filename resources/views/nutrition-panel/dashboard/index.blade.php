@@ -9,37 +9,177 @@
 <link href="{{ asset('admin-assets/plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin-assets/css/components/tabs-accordian/custom-tabs.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('admin-assets/js/daterangepicker/daterangepicker.css') }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset('admin-assets/plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/css/widgets/modules-widgets.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-assets/css/forms/switches.css') }}">
 
 <style>
-    @media screen and (max-width:1360px){
-        .widget-card-four .w-info h6{
-            font-size: 18px !important;
-        }
-    }
-    @media screen and (max-width:1024px){
-        .calender-text{
-            font-size: 0.7rem !important;
-        }
-    }
-
-    #reportrange{
-        color: #3b3f5c !important;
-    }
-
-    #reportrange i.fa-caret-down{
-        margin-top: 3px;
-    }
-    .widget-card-four .w-info h6{
-        font-size: 16px;
-    }
-    .widget-card-four {
+    /* Modern Dashboard Hero & Cards */
+    .dashboard-hero-banner {
+        background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid var(--npc-primary, #3246d3);
+        border-radius: 12px;
+        padding: 16px 22px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        margin-bottom: 20px;
         display: flex;
-        justify-content: center;
         align-items: center;
-        height: 110px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .dashboard-hero-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 2px;
+        letter-spacing: -0.02em;
+    }
+
+    .dashboard-hero-subtitle {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    .plan-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 12.5px;
+    }
+
+    .plan-status-valid {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .plan-status-expired {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    /* 6 Quick Stat Metric Cards Grid */
+    .stats-grid-container {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    @media (max-width: 1280px) {
+        .stats-grid-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 767px) {
+        .stats-grid-container {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .metric-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease-in-out;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px -3px rgba(50, 70, 211, 0.12);
+        border-color: #3246d3;
+    }
+
+    .metric-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .metric-icon-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        color: #ffffff;
+    }
+
+    .metric-icon-blue { background: linear-gradient(135deg, #3246d3, #4361ee); box-shadow: 0 3px 8px rgba(50, 70, 211, 0.3); }
+    .metric-icon-purple { background: linear-gradient(135deg, #7c3aed, #9333ea); box-shadow: 0 3px 8px rgba(124, 58, 237, 0.3); }
+    .metric-icon-green { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3); }
+    .metric-icon-orange { background: linear-gradient(135deg, #d97706, #f59e0b); box-shadow: 0 3px 8px rgba(245, 158, 11, 0.3); }
+    .metric-icon-cyan { background: linear-gradient(135deg, #0891b2, #06b6d4); box-shadow: 0 3px 8px rgba(6, 182, 212, 0.3); }
+    .metric-icon-rose { background: linear-gradient(135deg, #dc2626, #ef4444); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3); }
+
+    .metric-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 2px;
+        line-height: 1.1;
+    }
+
+    .metric-label {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* QR Code Card */
+    .qr-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        text-align: center;
+    }
+
+    #qr-container {
+        background: #ffffff;
+        padding: 12px;
+        border-radius: 12px;
+        border: 2px dashed #cbd5e1;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        margin-bottom: 16px;
+        display: inline-block;
+    }
+
+    #qr-container canvas, #qr-container img {
+        margin: 0 auto;
+        border-radius: 6px;
     }
 
     @media print {
@@ -48,40 +188,36 @@
       #print-area { position: absolute; left: 0; top: 0; width: 100%; }
     }
 
+    /* Chart Headers & Legends */
     .chart-heading-wrapper {
         display: flex;
-        gap: 20px;
+        gap: 14px;
         align-items: center;
         margin-bottom: 10px;
-        font-family: 'Nunito', sans-serif;
-        font-size: 14px;
+        font-size: 12.5px;
         font-weight: 600;
     }
 
     .chart-label {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        color: #0e1726;
+        color: #475569;
     }
 
     .chart-label .dot {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         display: inline-block;
         margin-right: 6px;
     }
 
-    .chart-label .blue {
-        background: #1b55e2;
-    }
+    .chart-label .blue { background: #3246d3; }
+    .chart-label .red { background: #ef4444; }
+    .chart-label .green { background: #10b981; }
 
-    .chart-label .red {
-        background: #e7515a;
-    }
-
-    .chart-label .green {
-        background: #00ab55;
+    .table th {
+        font-size: 11.5px !important;
     }
 </style>
 @endpush
@@ -90,326 +226,248 @@
 <div class="layout-px-spacing">
 
     <div class="layout-top-spacing">
-        <div class="row mb-2">
-            <div class="col-xl-12">
-                <div class="row">
-                    <div class="col-md-3">
-                        <h5 class="page-title py-20">Welcome! <b style="color : #3246d3;"> {{Auth::user()->name}} </b></h5>
-                    </div>
-                    <div class="col-md-9 text-end">
-                        @php
-                            use Carbon\Carbon;
-
-                            $endDate = Carbon::parse($authUser['end_date']);
-                            $today   = Carbon::today();
-                        @endphp
-
-                        <h5 class="page-title py-20">
-                            @if($endDate->greaterThan($today))
-                                Plan Valid Upto 
-                                <b style="color:#3246d3;">
-                                    {{ $endDate->format('d F Y') }}
-                                </b>
-                                <i class="feather feather-eye ms-2" style="color:#28a745;"></i>
-                            @else
-                                <b style="color:#dc3545;">
-                                    Your Plan Expired on {{ $endDate->format('d F Y') }},
-                                    Contact Super Admin for Renew the Plan
-                                </b>
-                            @endif
-                        </h5>
-
-                    </div>
-                </div>
-            </div>
-        </div>
         
-        <div class="row mt-3 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter1">{{ $totalUsers ?? 0 }}</h4>
-                                    <h6 class="value">Total Users</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+        <!-- Welcome Hero Banner -->
+        <div class="dashboard-hero-banner">
+            <div>
+                <div class="dashboard-hero-title">
+                    Welcome back, <span class="text-primary">{{ Auth::user()->name }}</span>! 👋
+                </div>
+                <p class="dashboard-hero-subtitle">
+                    Here's an overview of your nutrition club's performance, attendance, and member activity.
+                </p>
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter2">{{ $thisMonthShake ?? 0 }}</h4>
-                                    <h6 class="value">This Month Shake Count</h6>
-                                </div>
-                            </div>
-                        </div>
+            <div>
+                @php
+                    use Carbon\Carbon;
+                    $endDate = Carbon::parse($authUser['end_date']);
+                    $today   = Carbon::today();
+                @endphp
+
+                @if($endDate->greaterThan($today))
+                    <div class="plan-status-badge plan-status-valid">
+                        <i data-feather="check-circle" style="width: 15px; height: 15px;"></i>
+                        <span>Plan Valid Upto: <strong>{{ $endDate->format('d M, Y') }}</strong></span>
                     </div>
-                </a>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter3">{{ $offlineUsers ?? 0 }}</h4>
-                                    <h6 class="value">Offline Users</h6>
-                                </div>
-                            </div>
-                        </div>
+                @else
+                    <div class="plan-status-badge plan-status-expired">
+                        <i data-feather="alert-circle" style="width: 15px; height: 15px;"></i>
+                        <span>Plan Expired on {{ $endDate->format('d M, Y') }} (Contact Super Admin)</span>
                     </div>
-                </a>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter4">{{ $onlineUsers ?? 0 }}</h4>
-                                    <h6 class="value">Online Users</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter5">{{ $coachCount ?? 0 }}</h4>
-                                    <h6 class="value">Coach Count</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-12 p-0 ps-3 layout-spacing text-center">
-                <a href="javascript:;">
-                    <div class="widget widget-card-four">
-                        <div class="widget-content">
-                            <div class="w-content">
-                                <div class="w-info w-100">
-                                    <h4 class="text-dark font-weight-bold s-counter6">{{ $thisMonthUsers ?? 0 }}</h4>
-                                    <h6 class="value">New Membership this Month</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+                @endif
             </div>
         </div>
 
-        <div class="row mt-3 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 ps-0 pe-0 col-12 layout-spacing">
-                <div class="widget widget-card-two">
-                    <div class="widget-content">
-
-                        <div class="media text-center">
-                            <div class="media-body">
-                                <h4 class="mb-0" style="color : #3246d3;">You can scan your Attendance by following QR code.</h4>
-                            </div>
+        <!-- 6 Stat Metric Cards Grid -->
+        <div class="stats-grid-container">
+            <!-- 1. Total Users -->
+            <a href="{{ route('nutritionPanel.users.index') }}" class="text-decoration-none">
+                <div class="metric-card">
+                    <div class="metric-card-top">
+                        <span class="badge badge-primary">Total</span>
+                        <div class="metric-icon-circle metric-icon-blue">
+                            <i class="fa fa-users"></i>
                         </div>
+                    </div>
+                    <div>
+                        <div class="metric-value s-counter1">{{ $totalUsers ?? 0 }}</div>
+                        <div class="metric-label">Total Users</div>
+                    </div>
+                </div>
+            </a>
 
-                        <div class="card-bottom-section">
-                            <div id="print-area">
-                                <div id="qr-container" class="flex justify-center"></div>
-                            </div>
-
-                            <div class="flex justify-center">
-                                <div>
-                                    <a href="javascript:void(0);" onclick="window.print()" class="btn me-2">Print QR Code</a>
-                                </div>
-                                <div>
-                                    <a href="javascript:void(0);" id="downloadBtn" class="btn ms-2">Download PNG</a>
-                                </div>
-                            </div>
+            <!-- 2. This Month Shake Count -->
+            <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="text-decoration-none">
+                <div class="metric-card">
+                    <div class="metric-card-top">
+                        <span class="badge badge-purple">Monthly</span>
+                        <div class="metric-icon-circle metric-icon-purple">
+                            <i class="fa fa-coffee"></i>
                         </div>
+                    </div>
+                    <div>
+                        <div class="metric-value s-counter2">{{ $thisMonthShake ?? 0 }}</div>
+                        <div class="metric-label">Monthly Shakes</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 3. Offline Users -->
+            <a href="{{ route('nutritionPanel.users.index') }}/offline" class="text-decoration-none">
+                <div class="metric-card">
+                    <div class="metric-card-top">
+                        <span class="badge badge-warning">Club</span>
+                        <div class="metric-icon-circle metric-icon-orange">
+                            <i class="fa fa-building-o"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="metric-value s-counter3">{{ $offlineUsers ?? 0 }}</div>
+                        <div class="metric-label">Offline Users</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 4. Online Users -->
+            <a href="{{ route('nutritionPanel.users.index') }}/online" class="text-decoration-none">
+                <div class="metric-card">
+                    <div class="metric-card-top">
+                        <span class="badge badge-success">Digital</span>
+                        <div class="metric-icon-circle metric-icon-green">
+                            <i class="fa fa-globe"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="metric-value s-counter4">{{ $onlineUsers ?? 0 }}</div>
+                        <div class="metric-label">Online Users</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 5. Coach Count -->
+            <a href="javascript:;" class="text-decoration-none">
+                <div class="metric-card">
+                    <div class="metric-card-top">
+                        <span class="badge badge-info">Coaches</span>
+                        <div class="metric-icon-circle metric-icon-cyan">
+                            <i class="fa fa-user-md"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="metric-value s-counter5">{{ $coachCount ?? 0 }}</div>
+                        <div class="metric-label">Coach Count</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 6. New Memberships -->
+            <a href="{{ route('nutritionPanel.users.index') }}" class="text-decoration-none">
+                <div class="metric-card">
+                    <div class="metric-card-top">
+                        <span class="badge badge-danger">New</span>
+                        <div class="metric-icon-circle metric-icon-rose">
+                            <i class="fa fa-star"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="metric-value s-counter6">{{ $thisMonthUsers ?? 0 }}</div>
+                        <div class="metric-label">New Members</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- QR Code & Today's Birthday Section -->
+        <div class="row g-3 mb-4">
+            <!-- QR Attendance Card -->
+            <div class="col-xl-5 col-lg-6 col-md-12 col-12">
+                <div class="widget-content widget-content-area h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="mb-2">QR Code Attendance</h4>
+                        <p class="text-muted fs-6 mb-4">Members can scan this QR code directly at your club to mark attendance.</p>
+                    </div>
+                    <div class="qr-card-content py-2">
+                        <div id="print-area">
+                            <div id="qr-container"></div>
+                        </div>
+                        <div class="d-flex gap-2 mt-2">
+                            <button type="button" onclick="window.print()" class="btn btn-primary">
+                                <i class="fa fa-print me-1"></i> Print QR
+                            </button>
+                            <button type="button" id="downloadBtn" class="btn btn-dark">
+                                <i class="fa fa-download me-1"></i> Download PNG
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <small class="text-muted"><i class="fa fa-shield text-success me-1"></i> Secure Encrypted Daily Club Pass</small>
                     </div>
                 </div>
             </div>
 
-            <!-- <div class="col-xl-4 col-lg-12 col-md-6 col-sm-12 col-12 ps-0 layout-spacing">
-                <div class="widget widget-table-one bg-white p-3">
-                    <div class="widget-heading">
-                        <h5 class="" style="color : #3246d3;">Today Revenue</h5>
+            <!-- Today's Birthday Card -->
+            <div class="col-xl-7 col-lg-6 col-md-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Today's Birthdays 🎂</h4>
+                        <span class="badge badge-purple">{{ count($thisMonthBirthdayUsers ?? []) }} Today</span>
                     </div>
 
-                    <div class="widget-content">
-                        <div class="transactions-list">
-                            <div class="t-item">
-                                <div class="t-company-name">
-                                    <div class="t-icon">
-                                        <div class="icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                        </div>
-                                    </div>
-                                    <div class="t-name">
-                                        <h4>Today Cash Collection</h4>
-                                    </div>
-                                </div>
-                                <div class="t-rate rate-inc">
-                                    <p><span>₹0</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="transactions-list">
-                            <div class="t-item">
-                                <div class="t-company-name">
-                                    <div class="t-icon">
-                                        <div class="icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                        </div>
-                                    </div>
-                                    <div class="t-name">
-                                        <h4>Today Online Collection</h4>
-                                    </div>
-                                </div>
-                                <div class="t-rate rate-inc">
-                                    <p><span>₹0</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="transactions-list">
-                            <div class="t-item">
-                                <div class="t-company-name">
-                                    <div class="t-icon">
-                                        <div class="icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                        </div>
-                                    </div>
-                                    <div class="t-name">
-                                        <h4>Today Total Collection</h4>
-                                    </div>
-                                </div>
-                                <div class="t-rate rate-inc">
-                                    <p><span>₹0</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="transactions-list">
-                            <div class="t-item">
-                                <div class="t-company-name">
-                                    <div class="t-icon">
-                                        <div class="icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                        </div>
-                                    </div>
-                                    <div class="t-name">
-                                        <h4>Product/Service Sale Today</h4>
-                                    </div>
-                                </div>
-                                <div class="t-rate rate-inc">
-                                    <p><span>₹0</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="widget-card-two p-0">
-                    <div class="card-bottom-section">
-                        <a href="javascript:void(0);" class="btn mx-0">Track Your Product And Payment</a>
-                    </div>
-                </div>
-            </div> -->
-
-            <div class="col-xl-4 col-lg-12 col-md-6 col-sm-12 layout-spacing p-0 ps-3">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center">
-                        <div class="me-3">
-                            <h5 class="m-0" style="color : #3246d3;">Today Birthday </h5>
-                        </div>
-                        <div style="width: 30px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M182.4 53.5L157.8 95.6C154 102.1 152 109.6 152 117.2L152 120C152 142.1 169.9 160 192 160C214.1 160 232 142.1 232 120L232 117.2C232 109.6 230 102.2 226.2 95.6L201.6 53.5C199.6 50.1 195.9 48 192 48C188.1 48 184.4 50.1 182.4 53.5zM310.4 53.5L285.8 95.6C282 102.1 280 109.6 280 117.2L280 120C280 142.1 297.9 160 320 160C342.1 160 360 142.1 360 120L360 117.2C360 109.6 358 102.2 354.2 95.6L329.6 53.5C327.6 50.1 323.9 48 320 48C316.1 48 312.4 50.1 310.4 53.5zM413.8 95.6C410 102.1 408 109.6 408 117.2L408 120C408 142.1 425.9 160 448 160C470.1 160 488 142.1 488 120L488 117.2C488 109.6 486 102.2 482.2 95.6L457.6 53.5C455.6 50.1 451.9 48 448 48C444.1 48 440.4 50.1 438.4 53.5L413.8 95.6zM224 224C224 206.3 209.7 192 192 192C174.3 192 160 206.3 160 224L160 277.5C122.7 290.6 96 326.2 96 368L96 388.8C116.9 390.1 137.6 396.1 156.3 406.8L163.4 410.9C189.7 425.9 222.3 424.3 247 406.7C290.7 375.5 349.3 375.5 393 406.7C417.6 424.3 450.3 426 476.6 410.9L483.7 406.8C502.4 396.1 523 390.1 544 388.8L544 368C544 326.2 517.3 290.6 480 277.5L480 224C480 206.3 465.7 192 448 192C430.3 192 416 206.3 416 224L416 272L352 272L352 224C352 206.3 337.7 192 320 192C302.3 192 288 206.3 288 224L288 272L224 272L224 224zM544 437C531.3 438.2 518.9 442 507.5 448.5L500.4 452.6C457.8 476.9 405 474.3 365.1 445.8C338.1 426.5 301.9 426.5 274.9 445.8C235 474.3 182.2 477 139.6 452.6L132.5 448.5C121.1 442 108.7 438.1 96 437L96 512C96 547.3 124.7 576 160 576L480 576C515.3 576 544 547.3 544 512L544 437z"/></svg>
-                        </div>
-                    </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Customer Name</th>
-                                    <th>Birthday Year</th>
+                                    <th>Birth Year</th>
                                     <th>User Type</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($thisMonthBirthdayUsers) > 0)
+                                @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
                                     @foreach($thisMonthBirthdayUsers as $thisMonthBirthdayUser)
                                         <tr>
-                                            <td>{{ ucfirst($thisMonthBirthdayUser->name) }}</td>
+                                            <td class="fw-bold text-dark">
+                                                <i class="fa fa-birthday-cake text-warning me-2"></i>
+                                                {{ ucfirst($thisMonthBirthdayUser->name) }}
+                                            </td>
                                             <td>{{ date('Y', strtotime($thisMonthBirthdayUser->date_of_birth)) }}</td>
-
-                                            @if($thisMonthBirthdayUser->user_type == 'Regular User')
-                                                <td>{{ $thisMonthBirthdayUser->user_type }} ({{ $thisMonthBirthdayUser->user_state }})</td>
-                                            @else
-                                                <td>{{ $thisMonthBirthdayUser->user_type }}</td>
-                                            @endif
+                                            <td>
+                                                @if($thisMonthBirthdayUser->user_type == 'Regular User')
+                                                    <span class="badge badge-success">{{ $thisMonthBirthdayUser->user_type }} ({{ $thisMonthBirthdayUser->user_state }})</span>
+                                                @else
+                                                    <span class="badge badge-primary">{{ $thisMonthBirthdayUser->user_type }}</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="3" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="3" class="text-center py-4 text-muted">
+                                            <i class="fa fa-gift fa-2x mb-2 d-block text-muted opacity-50"></i>
+                                            No birthdays today. Check back tomorrow!
+                                        </td>
                                     </tr>
                                 @endif
+                            </tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- <div class="widget-card-two p-0">
-                    <div class="card-bottom-section">
-                        <a href="javascript:void(0);" class="btn mx-0">View All December Birthday</a>
-                    </div>
-                </div> -->
             </div>
         </div>
 
-        <div class="row mt-0 mb-4 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center justify-center">
-                        <h5 class="m-0  font-weight-bold" style="color : #3246d3;">More Than One Attendance on {{ date('Y-m-d', strtotime($today)) }}</h5>
+        <!-- Today's Attendance Logs & Multiple Attendance -->
+        <div class="row g-3 mb-4">
+            <!-- Multiple Attendance Today -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Multiple Attendance Today</h4>
+                        <span class="badge badge-warning">{{ date('d M, Y') }}</span>
                     </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Member Name</th>
                                     <th>Date</th>
-                                    <th>Attendance Count</th>
+                                    <th>Shakes / Visits</th>
                                     <th>Coach</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($today2Attendences) > 0)
+                                @if(isset($today2Attendences) && count($today2Attendences) > 0)
                                     @foreach($today2Attendences as $today2Attendence)
-                                        @php
-                                            $type = \App\Models\AttendanceLogs::where('user_id', $today2Attendence->user_id)
-                                                ->where('date', $today2Attendence->date)
-                                                ->first();
-                                        @endphp
-
                                         <tr>
-                                            <td>{{ ucfirst($today2Attendence->name) }}</td>
+                                            <td class="fw-bold text-dark">{{ ucfirst($today2Attendence->name) }}</td>
                                             <td>{{ $today2Attendence->date }}</td>
-                                            <td>{{ $today2Attendence->total_attendance }}</td>
-                                            <td>{{ $today2Attendence->coach_name }}</td>
+                                            <td><span class="badge badge-purple">{{ $today2Attendence->total_attendance }} visits</span></td>
+                                            <td>{{ $today2Attendence->coach_name ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="4" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="4" class="text-center py-3 text-muted">No multiple attendance records today.</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -418,76 +476,86 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing p-0">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center justify-center">
-                        <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Updation on {{ date('Y-m-d', strtotime($today)) }}</h5>
+            <!-- Attendance Updates Today -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Today's Attendance Logs</h4>
+                        <span class="badge badge-info">{{ count($todayAttendences ?? []) }} Logs</span>
                     </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <!-- <th>Delete / Add Date</th> -->
-                                    <th>Type</th>
-                                    <th>Attendance Count</th>
-                                    <th>Date of Attendance</th>
-                                    <th>Coach Name</th>
+                                    <th>Member Name</th>
+                                    <th>Log Type / Remark</th>
+                                    <th>Count</th>
+                                    <th>Coach</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($todayAttendences) > 0)
+                                @if(isset($todayAttendences) && count($todayAttendences) > 0)
                                     @foreach($todayAttendences as $todayAttendence)
-                                        
                                         <tr>
-                                            <td>{{ ucfirst($todayAttendence->name) }}</td>
-                                            <!-- <td>{{ $todayAttendence->date }}</td> -->
-                                            <td>{{ $todayAttendence->remark }}</td>
+                                            <td class="fw-bold text-dark">{{ ucfirst($todayAttendence->name) }}</td>
+                                            <td><span class="badge badge-primary">{{ $todayAttendence->remark }}</span></td>
                                             <td>1</td>
-                                            <td>{{ $todayAttendence->date }}</td>
-                                            <td>{{ $todayAttendence->coach_name }}</td>
+                                            <td>{{ $todayAttendence->coach_name ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="5" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="4" class="text-center py-3 text-muted">No updates recorded yet today.</td>
                                     </tr>
                                 @endif
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row mt-0 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing ps-0">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center justify-center">
-                        <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Top 20 Attendance in {{ date('F') }}</h5>
+        <!-- Top 20 & Least 20 Attendance Ranking -->
+        <div class="row g-3 mb-4">
+            <!-- Top 20 Attendance -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Top 20 Attendance ({{ date('F Y') }}) 🏆</h4>
+                        <span class="badge badge-success">Goal: {{ $totalDaysInMonth }} Days</span>
                     </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Present Out of {{ $totalDaysInMonth }} Days</th>
+                                    <th>Member</th>
+                                    <th>Present Days</th>
                                     <th>Percentage</th>
-                                    <th>Coach Name</th>
+                                    <th>Coach</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($top20Attendance) > 0)
+                                @if(isset($top20Attendance) && count($top20Attendance) > 0)
                                     @foreach($top20Attendance as $top20Attend)
                                         <tr>
-                                            <td>{{ ucfirst($top20Attend->name) }}</td>
-                                            <td>{{ $top20Attend->total_attendance }}</td>
-                                            <td>{{ $top20Attend->attendance_percentage }}</td>
-                                            <td>{{ $top20Attend->coach_name }}</td>
+                                            <td class="fw-bold text-dark">{{ ucfirst($top20Attend->name) }}</td>
+                                            <td><span class="badge badge-purple">{{ $top20Attend->total_attendance }} / {{ $totalDaysInMonth }}</span></td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ min(100, $top20Attend->attendance_percentage) }}%"></div>
+                                                    </div>
+                                                    <span class="fw-bold fs-7">{{ $top20Attend->attendance_percentage }}%</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ $top20Attend->coach_name ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="4" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="4" class="text-center py-3 text-muted">No records found.</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -496,34 +564,44 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-lg-12 col-md-6 col-sm-12 layout-spacing p-0">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center justify-center">
-                        <h5 class="m-0 font-weight-bold" style="color : #3246d3;">Least 20 Attendance in {{ date('F') }}</h5>
+            <!-- Least 20 Attendance -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Least 20 Attendance ({{ date('F Y') }}) ⚠️</h4>
+                        <span class="badge badge-danger">Needs Follow-Up</span>
                     </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Present Out of {{ $totalDaysInMonth }} Days</th>
+                                    <th>Member</th>
+                                    <th>Present Days</th>
                                     <th>Percentage</th>
-                                    <th>Coach Name</th>
+                                    <th>Coach</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($least20Attendance) > 0)
+                                @if(isset($least20Attendance) && count($least20Attendance) > 0)
                                     @foreach($least20Attendance as $least20Attend)
                                         <tr>
-                                            <td>{{ ucfirst($least20Attend->name) }}</td>
-                                            <td>{{ $least20Attend->total_attendance }}</td>
-                                            <td>{{ $least20Attend->attendance_percentage }}</td>
-                                            <td>{{ $least20Attend->coach_name }}</td>
+                                            <td class="fw-bold text-dark">{{ ucfirst($least20Attend->name) }}</td>
+                                            <td><span class="badge badge-warning">{{ $least20Attend->total_attendance }} / {{ $totalDaysInMonth }}</span></td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px;">
+                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ min(100, $least20Attend->attendance_percentage) }}%"></div>
+                                                    </div>
+                                                    <span class="fw-bold fs-7">{{ $least20Attend->attendance_percentage }}%</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ $least20Attend->coach_name ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="4" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="4" class="text-center py-3 text-muted">No records found.</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -533,175 +611,112 @@
             </div>
         </div>
 
-        <div class="row mt-0 layout-top-spacing">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-12 _layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="container-fluid mt2">
-                        <div class="custom-datatable-filter _hide">
-                            {!! Form::open(['class' => 'custom-datatable-filter-form']) !!}
-                            <div class="row">
-                                <div class="col-xl-3"></div>
-                                <div class="col-md-5 text-center">
-                                    <h6 class="text-primary font-weight-bold"> Shake Count Income & Expense and User Graph {{ date('Y') }} </h6>
-                                </div>
-                                <div class="col-xl-3"></div>
-                            </div>
-                            <div class="row mb-3 align-items-end">
-                                <div class="col-xl-3"></div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">
-                                    @php
-                                        $years = [];
-                                        $currentYear = date('Y');
-                                        for ($i = 0; $i < 5; $i++) {
-                                            $years[$currentYear - $i] = $currentYear - $i;
-                                        }
-                                    @endphp
+        <!-- Year Filter for Charts -->
+        <div class="widget-content widget-content-area mb-4">
+            {!! Form::open(['class' => 'custom-datatable-filter-form d-flex align-items-center justify-content-between flex-wrap gap-3', 'method' => 'GET']) !!}
+                <div>
+                    <h4 class="mb-1">Annual Analytics Overview</h4>
+                    <p class="text-muted mb-0 fs-6">Interactive graphical representation of shake intake, membership trends, and revenue.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    @php
+                        $years = [];
+                        $currentYear = date('Y');
+                        for ($i = 0; $i < 5; $i++) {
+                            $years[$currentYear - $i] = $currentYear - $i;
+                        }
+                    @endphp
+                    {!! Form::select(
+                        'year_filter',
+                        $years,
+                        request('year_filter', $currentYear),
+                        ['class' => 'form-control select-picker', 'id' => 'year_filter', 'style' => 'width: 120px;']
+                    ) !!}
+                    {{ Form::button( '<i class="fa fa-filter"></i> Apply', ['class' => 'btn btn-primary', 'type' => 'submit'] )}}
+                </div>
+            {!! Form::close() !!}
+        </div>
 
-                                    <div class="form-group mb-0">
-                                        <label>Year</label>
-                                        {!! Form::select(
-                                            'year_filter',
-                                            $years,
-                                            null,
-                                            ['class' => 'form-control filter-field select-picker', 'id' => 'year_filter']
-                                        ) !!}
-                                    </div>
-                                </div>
-                            
-                                <div class="col-md-2 ps-0">
-                                    {{ Form::button( __('language.filter_apply'), ['class' => 'btn btn-primary apply-filter', 'type' => 'submit', 'title' => __('language.filter_apply'), 'name' => 'filter'] )}}
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
+        <!-- Apex Charts Section -->
+        <div class="row g-3 mb-4">
+            <!-- Shake Count Monthly Graph -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Monthly Shake Count Graph</h4>
+                        <span class="badge badge-purple">{{ request('year_filter', date('Y')) }}</span>
+                    </div>
+                    <div id="shakeCountGraph"></div>
+                </div>
+            </div>
+
+            <!-- Users Category Line Graph -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">User Growth Breakdown</h4>
+                        <div class="chart-heading-wrapper mb-0">
+                            <span class="chart-label"><i class="dot blue"></i> Demo</span>
+                            <span class="chart-label"><i class="dot red"></i> 3-Day Trial</span>
+                            <span class="chart-label"><i class="dot green"></i> Regular</span>
                         </div>
                     </div>
+                    <div id="revenueMonthly"></div>
+                </div>
+            </div>
+
+            <!-- Income & Expenses (Deposit vs Purchase) -->
+            <div class="col-12">
+                <div class="widget-content widget-content-area">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Revenue & Product Transactions Graph</h4>
+                        <div class="d-flex gap-3">
+                            <span class="badge badge-primary"><i class="fa fa-square me-1 text-primary"></i> Income (Orders Placed)</span>
+                            <span class="badge badge-danger"><i class="fa fa-square me-1 text-danger"></i> Revenue (Add User Days)</span>
+                        </div>
+                    </div>
+                    <div id="incomeExpenseGraph"></div>
                 </div>
             </div>
         </div>
 
-        <div class="row sales mt-4 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing ps-0">
-                <div class="widget widget-chart-one">
-                    <div class="widget-heading ps-3">
-                        <h5 class="" style="color : #3246d3;">Bar Graph Representation of Shake Count {{ date('Y') }}</h5>
+        <!-- Pending Payments & Expiring Memberships -->
+        <div class="row g-3 mb-4">
+            <!-- Pending Payments -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Pending User Payments</h4>
+                        <span class="badge badge-danger">{{ count($paymentPendings ?? []) }} Pending</span>
                     </div>
 
-                    <div class="widget-content" style="height:68px;">
-                        <div class="tabs tab-content">
-                            <div id="content_1" class="tabcontent"> 
-                                <div class="chart-heading-wrapper">
-                                    <!-- <span class="chart-label">
-                                        <i class="dot blue"></i> Demo
-                                    </span>
-                                    <span class="chart-label">
-                                        <i class="dot red"></i> 3 Days
-                                    </span>
-                                    <span class="chart-label">
-                                        <i class="dot green"></i> Regular Users
-                                    </span> -->
-                                </div>
-                                <!-- <div id="revenueMonthly"></div> -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="widget-content">
-                        <div id="shakeCountGraph"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing p-0">
-                <div class="widget widget-chart-one">
-                    <div class="widget-heading">
-                        <h5 class="" style="color : #3246d3;">Lines Graph Representation of Demo, 3 Days & Regular User Count {{ date('Y') }}</h5>
-                    </div>
-
-                    <div class="widget-content">
-                        <div class="tabs tab-content">
-                            <div id="content_1" class="tabcontent"> 
-                                <div class="chart-heading-wrapper">
-                                    <span class="chart-label">
-                                        <i class="dot blue"></i> Demo
-                                    </span>
-                                    <span class="chart-label">
-                                        <i class="dot red"></i> 3 Days
-                                    </span>
-                                    <span class="chart-label">
-                                        <i class="dot green"></i> Regular Users
-                                    </span>
-                                </div>
-                                <div id="revenueMonthly"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row sales mt-4 ps-3 pe-3 align-items-stretch">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing p-0">
-                <div class="widget widget-chart-one">
-                    <div class="widget-heading ps-3">
-                        <h5 class="" style="color : #3246d3;">Income and Expenses Graph (Purchase & Deposit Graph {{ date('Y') }})</h5>
-                    </div>
-
-                    <div class="widget-content">
-                        <div id="incomeExpenseGraph"></div>
-                    </div>
-
-                    <p style="background-color: #1b55e2; color:white;">This Color Represent The Purchase(You are Giving Product)</p>
-                    <p style="background-color: #e7515a; color:white;">This Color Represent The Deposit(Your Revenue)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-0 ps-3 pe-3 align-items-stretch my-4">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing p-0 pe-2">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center justify-center">
-                        <h5 class="m-0  font-weight-bold" style="color : #3246d3;">Pending Payment of Users</h5>
-                    </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>S.No</th>
-                                    <th>Name</th>
-                                    <th>Pending Payment</th>
-                                    <!-- <th>Coach Name</th>
-                                    <th>Mobile Number</th>
-                                    <th>Type</th>
-                                    <th>Status</th> -->
+                                    <th>#</th>
+                                    <th>Member Name</th>
+                                    <th>Due Amount</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($paymentPendings) > 0)
+                                @if(isset($paymentPendings) && count($paymentPendings) > 0)
                                     @foreach($paymentPendings as $key => $paymentPending)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
-                                            <td>{{ ucfirst($paymentPending->name) }}</td>
-                                            <td>{{ $paymentPending->due_amount }}</td>
-                                            <!-- <td>{{ $paymentPending->coach_name }}</td>
-                                            <td>{{ $paymentPending->mobile_number }}</td>
-
-                                            @if($paymentPending->user_type == 'Regular User')
-                                                <td>{{ $paymentPending->user_type }} ({{ $paymentPending->user_state }})</td>
-                                            @else
-                                                <td>{{ $paymentPending->user_type }}</td>
-                                            @endif
-
-                                            <td class="">
-                                                <label class="switch s-success p-0 m-0 mt-2">
-                                                    <input type="checkbox" class="status-toggle" data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" value="{{ $paymentPending->id }}" @if($paymentPending->status == 1) checked @endif>
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td> -->
+                                            <td class="fw-bold text-dark">{{ ucfirst($paymentPending->name) }}</td>
+                                            <td><span class="badge badge-danger font-weight-bold">₹{{ number_format($paymentPending->due_amount, 2) }}</span></td>
+                                            <td>
+                                                <a href="{{ route('nutritionPanel.users.details', ['id' => ev($paymentPending->id)]) }}" class="btn btn-sm btn-light text-primary" title="View Member">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="7" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="4" class="text-center py-3 text-muted">No pending payments found!</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -709,55 +724,45 @@
                     </div>
                 </div>
             </div>
-        
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing p-0 ps-2">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="widget-heading pt-2 d-flex align-items-center justify-center">
-                        <h5 class="m-0  font-weight-bold" style="color : #3246d3;">Customer whose Membership Expire Soon</h5>
+
+            <!-- Customer Expiring Memberships -->
+            <div class="col-xl-6 col-lg-12 col-12">
+                <div class="widget-content widget-content-area h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0">Expiring Memberships (≤ 10 Days)</h4>
+                        <span class="badge badge-warning">{{ count($membershipExpires ?? []) }} Expiring</span>
                     </div>
-                    <div class="table-responsive mb-4 mt-4" style="min-height: 10px;">
-                        <table id="zero-config" class="table table-hover" style="width:100%">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>S.No</th>
-                                    <th>Name</th>
-                                    <th>Pending Days</th>
+                                    <th>#</th>
+                                    <th>Member Name</th>
+                                    <th>Remaining Days</th>
                                     <th>Status</th>
-                                    <!-- <th>Coach Name</th>
-                                    <th>Mobile Number</th>
-                                    <th>Type</th>
-                                     -->
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($membershipExpires) > 0)
+                                @if(isset($membershipExpires) && count($membershipExpires) > 0)
                                     @foreach($membershipExpires as $key => $membershipExpire)
                                         <tr>
                                             <td>{{ $key+1 }}</td>
-                                            <td>{{ ucfirst($membershipExpire->name) }}</td>
-                                            <td>{{ $membershipExpire->days }}</td>
-                                            <td class="">
-                                                <label class="switch s-success p-0 m-0 mt-2">
+                                            <td class="fw-bold text-dark">{{ ucfirst($membershipExpire->name) }}</td>
+                                            <td>
+                                                <span class="badge badge-warning">{{ $membershipExpire->days }} Days</span>
+                                            </td>
+                                            <td>
+                                                <label class="switch s-success p-0 m-0">
                                                     <input type="checkbox" class="status-toggle" data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" value="{{ $membershipExpire->id }}" @if($membershipExpire->status == 1) checked @endif>
                                                     <span class="slider round"></span>
                                                 </label>
                                             </td>
-                                            
-                                            <!-- <td>{{ $membershipExpire->coach_name }}</td>
-                                            <td>{{ $membershipExpire->mobile_number }}</td>
-
-                                            @if($membershipExpire->user_type == 'Regular User')
-                                                <td>{{ $membershipExpire->user_type }} ({{ $membershipExpire->user_state }})</td>
-                                            @else
-                                                <td>{{ $membershipExpire->user_type }}</td>
-                                            @endif
-
-                                             -->
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="7" class="font-weight-bold text-center">No Record Found !!</td>
+                                        <td colspan="4" class="text-center py-3 text-muted">No memberships expiring soon.</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -766,8 +771,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 @endsection
 
@@ -777,27 +782,23 @@
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/button-ext/jszip.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<!-- <script src="{{ asset('admin-assets/js/dashboard/view.js') }}"></script> -->
 <script src="{{ asset('admin-assets/plugins/apex/apexcharts.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/daterangepicker/moment.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/daterangepicker/daterangepicker.js') }}"></script>
 <script src="{{ asset('admin-assets/js/plugins/counter/jquery.countTo.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components/custom-counter.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- <script src="{{ asset('admin-assets/js/widgets/modules-widgets.js') }}"></script> -->
 
 <script>
     $(document).on('change', '.status-toggle', function () {
-
         let ids = [];
-
         ids.push($(this).val());
 
         $.ajax({
             url: $(this).data("change-status-url"),
             type: "POST",
             data: {
-                ids: ids,      // 🔥 array
+                ids: ids,
             },
             success: function (response) {
                 App.showNotification(response);
@@ -807,101 +808,83 @@
             }
         });
     });
-</script>
 
-<script>
     // Generate QR
     const qrValue = "{{ $qr_code }}";
 
-    // Check empty or invalid value
-    if(!qrValue || qrValue.trim() === ""){
-        console.error("Invalid QR value");
+    if(qrValue && qrValue.trim() !== ""){
+        new QRCode(document.getElementById("qr-container"), {
+            text: qrValue,
+            width: 140,
+            height: 140,
+            colorDark: "#3246d3",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
     }
-
-    // Generate QR
-    new QRCode(document.getElementById("qr-container"), {
-        text: qrValue,
-        // width: 100,
-        // height: 100%,
-        correctLevel: QRCode.CorrectLevel.H
-    });
 
     // Download QR as PNG
-    document.getElementById('downloadBtn').onclick = function(){
-        const canvas = document.querySelector('#qr-container canvas');
-        const link = document.createElement('a');
-        link.download = 'qr-' + qrValue + '.png';
-        link.href = canvas.toDataURL();
-        link.click();
+    const downloadBtn = document.getElementById('downloadBtn');
+    if(downloadBtn) {
+        downloadBtn.onclick = function(){
+            const canvas = document.querySelector('#qr-container canvas');
+            if(canvas) {
+                const link = document.createElement('a');
+                link.download = 'qr-' + qrValue + '.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        };
     }
 
+    // ApexCharts - Shake Count Single Bar
     var shakeCount = @json($totalShakeChartData);
-
-    // Shake Count - Single Bar
     var d_1options1 = {
       chart: {
-          height: 350,
+          height: 330,
           type: 'bar',
-          toolbar: {
-            show: false,
-          },
+          fontFamily: 'Plus Jakarta Sans, Nunito, sans-serif',
+          toolbar: { show: false },
           dropShadow: {
-              enabled: true,
-              top: 1,
-              left: 1,
-              blur: 2,
-              color: '#acb0c3',
-              opacity: 0.7,
+              enabled: false
           }
       },
-      colors: ['#5c1ac3'], // single color
+      colors: ['#3246d3'],
       plotOptions: {
           bar: {
               horizontal: false,
-              columnWidth: '55%',
-              endingShape: 'rounded'
+              columnWidth: '45%',
+              borderRadius: 6
           },
       },
-      dataLabels: {
-          enabled: false
-      },
-      legend: {
-            show: false // single bar me legend hide
-      },
-      stroke: {
-          show: true,
-          width: 2,
-          colors: ['transparent']
-      },
+      dataLabels: { enabled: false },
+      legend: { show: false },
+      stroke: { show: true, width: 2, colors: ['transparent'] },
       series: [{
           name: 'Shake Count',
           data: shakeCount
       }],
       xaxis: {
           categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          axisBorder: { show: false },
+          axisTicks: { show: false }
       },
       fill: {
         type: 'gradient',
         gradient: {
           shade: 'light',
           type: 'vertical',
-          shadeIntensity: 0.3,
-          inverseColors: false,
+          shadeIntensity: 0.2,
           opacityFrom: 1,
-          opacityTo: 0.8,
+          opacityTo: 0.75,
           stops: [0, 100]
         }
       },
       tooltip: {
-        enabled: true,
-         marker: {
-            show: false   // ❌ point/dot hide
-        },
-          y: {
-              formatter: function (val) {
-                  return val;
-              }
-          }
+        theme: 'dark',
+        y: {
+            formatter: function (val) { return val + ' Shakes'; }
+        }
       }
     };
 
@@ -911,117 +894,52 @@
     );
     d_1C_3.render();
 
-
+    // ApexCharts - Users Breakdown Line Area
     var userDemoChartData = @json($userDemoChartData);
     var userTrailChartData = @json($userTrailChartData);
     var userRegualrChartData = @json($userRegualrChartData);
 
-    // Users
     var options1 = {
       chart: {
-        fontFamily: 'Nunito, sans-serif',
-        height: 365,
+        fontFamily: 'Plus Jakarta Sans, Nunito, sans-serif',
+        height: 330,
         type: 'area',
-        zoom: {
-          enabled: false
-        },
-        dropShadow: {
-          enabled: true,
-          opacity: 0.3,
-          blur: 5,
-          left: -7,
-          top: 22
-        },
-        toolbar: {
-          show: false
-        }
+        toolbar: { show: false }
       },
-
-      // 🎨 3 Different Colors
-      colors: ['#1b55e2', '#e7515a', '#00ab55'],
-
-      dataLabels: {
-        enabled: false
-      },
-
+      colors: ['#3246d3', '#ef4444', '#10b981'],
+      dataLabels: { enabled: false },
       stroke: {
         show: true,
         curve: 'smooth',
-        width: 2
+        width: 3
       },
-
-      // 📊 3 SERIES
       series: [
-        {
-          name: 'Demo',
-          data: userDemoChartData
-        },
-        {
-          name: '3 Days',
-          data: userTrailChartData
-        },
-        {
-          name: 'Regular Users',
-          data: userRegualrChartData
-        }
+        { name: 'Demo Users', data: userDemoChartData },
+        { name: '3-Day Trial', data: userTrailChartData },
+        { name: 'Regular Users', data: userRegualrChartData }
       ],
-
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-
       xaxis: {
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        labels: {
-          style: {
-            fontSize: '12px',
-            fontFamily: 'Nunito, sans-serif'
-          }
-        }
+        axisBorder: { show: false },
+        axisTicks: { show: false }
       },
-
-      yaxis: {
-        labels: {
-          formatter: function(value) {
-            return value;
-          },
-          style: {
-            fontSize: '12px',
-            fontFamily: 'Nunito, sans-serif'
-          }
-        }
-      },
-
       grid: {
-        borderColor: '#e0e6ed',
-        strokeDashArray: 5
+        borderColor: '#e2e8f0',
+        strokeDashArray: 4
       },
-
-      legend: {
-        position: 'top',
-        horizontalAlign: 'right',
-        offsetY: -20,
-        fontSize: '14px'
-      },
-
+      legend: { show: false },
       tooltip: {
         theme: 'dark',
         y: {
-          formatter: function(val) {
-            return '₹ ' + val;
-          }
+          formatter: function(val) { return val + ' Users'; }
         }
       },
-
       fill: {
         type: "gradient",
         gradient: {
           shadeIntensity: 1,
           opacityFrom: 0.35,
-          opacityTo: 0.1,
+          opacityTo: 0.05,
           stops: [0, 90, 100]
         }
       }
@@ -1031,98 +949,58 @@
       document.querySelector("#revenueMonthly"),
       options1
     );
-
     chart1.render();
 
+    // ApexCharts - Income & Expenses Bar Graph
     var transactionAddUserChartData = @json($transactionAddUserChartData);
     var transactionOrderPlacedChartData = @json($transactionOrderPlacedChartData);
 
-    // Income & Expenses
     var options = {
       chart: {
-          height: 350,
+          height: 340,
           type: 'bar',
-          toolbar: {
-            show: false
-          },
-          dropShadow: {
-              enabled: false,
-              // top: 1,
-              // left: 1,
-              // blur: 2,
-              // color: '#acb0c3',
-              // opacity: 1
-          }
+          fontFamily: 'Plus Jakarta Sans, Nunito, sans-serif',
+          toolbar: { show: false }
       },
-
-      // 🎨 Income & Expense colors
-      colors: ['#1b55e2', '#e7515a'],
-
+      colors: ['#3246d3', '#ef4444'],
       plotOptions: {
           bar: {
               horizontal: false,
-              columnWidth: '45%',
-              endingShape: 'rounded'
+              columnWidth: '40%',
+              borderRadius: 6
           }
       },
-
-      dataLabels: {
-          enabled: false,
-          position: 'top',
-          style: {
-              fontSize: '12px',
-              fontWeight: '600',
-              colors: ['#333']
-          },
-          formatter: function (val) {
-              return '₹ ' + val;
-          }
-      },
-
-      legend: {
-          position: 'top',
-          horizontalAlign: 'right'
-      },
-
-      stroke: {
-          show: true,
-          width: 2,
-          colors: ['transparent']
-      },
-
-      // 📊 TWO SERIES
+      dataLabels: { enabled: false },
+      legend: { show: false },
+      stroke: { show: true, width: 2, colors: ['transparent'] },
       series: [
-          {
-              name: 'Income',
-              data: transactionOrderPlacedChartData
-          },
-          {
-              name: 'Revenue',
-              data: transactionAddUserChartData
-          }
+          { name: 'Income (Orders)', data: transactionOrderPlacedChartData },
+          { name: 'Revenue (User Days)', data: transactionAddUserChartData }
       ],
-
       xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          axisBorder: { show: false },
+          axisTicks: { show: false }
       },
-
+      grid: {
+        borderColor: '#e2e8f0',
+        strokeDashArray: 4
+      },
       fill: {
         type: 'gradient',
         gradient: {
           shade: 'light',
           type: 'vertical',
-          shadeIntensity: 0.3,
+          shadeIntensity: 0.2,
           opacityFrom: 1,
           opacityTo: 0.8,
           stops: [0, 100]
         }
       },
-
       tooltip: {
+          theme: 'dark',
           y: {
-              formatter: function (val) {
-                  return '₹ ' + val;
-              }
+              formatter: function (val) { return '₹ ' + Number(val).toLocaleString('en-IN'); }
           }
       }
     };

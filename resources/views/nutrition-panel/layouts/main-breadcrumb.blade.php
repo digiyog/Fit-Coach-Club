@@ -1,38 +1,25 @@
+@if(!request()->is(Request::segment(1).'/dashboard*') && isset($breadcrumb) && count($breadcrumb) > 0)
 <!--  BEGIN NAVBAR  -->
-<div class="sub-header-container layout-px-spacing custom-breadcrumbs">
-    <header class="header navbar navbar-expand-sm">
-
-        <ul class="navbar-nav flex-row">
-            <li>
-                <div class="page-header">
-                    <nav class="breadcrumb-one" aria-label="breadcrumb">
-                        @if(isset($breadcrumb))
-                            <ol class="breadcrumb">
-                                @foreach($breadcrumb as $key => $value)
-                                    @if(!empty($value))
-                                        <li class="breadcrumb-item active" aria-current="page">
-                                            <a href="{{$value}}">{{$key}}</a>
-                                        </li>
-                                    @else
-                                        @if(!request()->is(Request::segment(1).'/dashboard*') && request()->route()->getName() != 'adminPanel.dashboard')
-                                        <li class="breadcrumb-item">
-                                            <span>{{$key}}</span>
-                                        </li>
-                                        @endif
-                                    @endif
-                                @endforeach
-                            </ol>
+<div class="sub-header-container custom-breadcrumbs px-4 py-2">
+    <div class="d-flex align-items-center justify-content-between w-100">
+        <div class="page-header">
+            <nav class="breadcrumb-one" aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    @foreach($breadcrumb as $key => $value)
+                        @if(!empty($value))
+                            <li class="breadcrumb-item">
+                                <a href="{{$value}}">{{$key}}</a>
+                            </li>
+                        @else
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <span>{{$key}}</span>
+                            </li>
                         @endif
-                        <!-- @if (request()->is(Request::segment(1).'/dashboard*'))
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    <span>{{ __('language.dashboard') }}</span></li>
-                            </ol>
-                        @endif -->
-                    </nav>
-                </div>
-            </li>
-        </ul>
-    </header>
+                    @endforeach
+                </ol>
+            </nav>
+        </div>
+    </div>
 </div>
 <!--  END NAVBAR  -->
+@endif

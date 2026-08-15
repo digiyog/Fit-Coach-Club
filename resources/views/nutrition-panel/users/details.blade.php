@@ -101,293 +101,164 @@
             </div>
             <div class="col-xl-9 col-lg-6 col-md-7 col-12 layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <div class="container-fluid mt2">
-                        <div class="row">
-                            <div class="col-lg-12 col-12 layout-spacing">
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Name</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->name))
-                                                    {{ $user->name}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Email</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->email))
-                                                    {{ $user->email}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Mobile Number</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->mobile_number))
-                                                    {{ $user->mobile_number}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Coach Name</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->coach_name))
-                                                    {{ $user->coach_name}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Meal Type Name</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->meal_type->name))
-                                                    {{ $user->meal_type->name}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Coach Name</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->coach_name))
-                                                    {{ $user->coach_name}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">User Type</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->user_type))
-                                                    {{ $user->user_type}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">User State</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->user_state))
-                                                    {{ $user->user_state}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Age</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->age))
-                                                    {{ $user->age}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Weight(In Kg)</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->current_weight))
-                                                    {{ $user->current_weight}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Height(In cm)</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->height))
-                                                    {{ $user->height}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Weight Goal</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->weight_goal))
-                                                    {{ $user->weight_goal}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Gender</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->gender))
-                                                    {{ $user->gender}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Remaining Days</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->days))
-                                                    {{ $user->days}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Due Amount</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->due_amount))
-                                                    {{ $user->due_amount}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Joining Date</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->created_at))
-                                                    {{\Carbon\Carbon::parse($user->created_at)->timezone(session()->get('timezone'))->format('d M, Y h:i A')}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Joining Weight</label>
-                                            <div class="text-dark">
-                                                @if(!empty($user->starting_weight))
-                                                    {{ $user->starting_weight}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Status</label>
-                                            <div class="">
-                                                @if($user->status == 1)
-                                                    <label class="badge badge-primary text-white">Active</label>
-                                                @else
-                                                    <label class="badge badge-warning text-white">Inactive</label>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">Latest Weight</label>
-                                            <div class="text-dark">
-                                                @if(!empty($lastRecord->weight))
-                                                    {{ $lastRecord->weight}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">OverAll Max Weight</label>
-                                            <div class="text-dark">
-                                                @if(!empty($maxWeight->weight))
-                                                    {{ $maxWeight->weight}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label for="name">OverAll Min Weight</label>
-                                            <div class="text-dark">
-                                                @if(!empty($minWeight->weight))
-                                                    {{ $minWeight->weight}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
-                                            <i class="fa fa-eye"></i> 
-                                            View Weight
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
-                                            <i class="fa fa-eye"></i> 
-                                            View Attendance
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
-                                            <i class="fa fa-eye"></i> 
-                                            Manual Attendance
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
-                                            <i class="fa fa-eye"></i> 
-                                            Track Shake
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                                        <a class="btn btn-primary" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
-                                            <i class="fa fa-eye"></i> 
-                                            Purchase Products
-                                        </a>
+                    <div class="container-fluid mt-2">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h4 class="mb-0">User Information</h4>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Name</div>
+                                    <div class="detail-tile-value">{{ !empty($user->name) ? $user->name : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Email</div>
+                                    <div class="detail-tile-value">{{ !empty($user->email) ? $user->email : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Mobile Number</div>
+                                    <div class="detail-tile-value">{{ !empty($user->mobile_number) ? $user->mobile_number : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Coach Name</div>
+                                    <div class="detail-tile-value">{{ !empty($user->coach_name) ? $user->coach_name : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Meal Type</div>
+                                    <div class="detail-tile-value">{{ !empty($user->meal_type->name) ? $user->meal_type->name : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">User Type</div>
+                                    <div class="detail-tile-value">
+                                        <span class="badge badge-purple">{{ !empty($user->user_type) ? $user->user_type : 'N/A' }}</span>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">User State</div>
+                                    <div class="detail-tile-value">{{ !empty($user->user_state) ? $user->user_state : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Age</div>
+                                    <div class="detail-tile-value">{{ !empty($user->age) ? $user->age . ' yrs' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Current Weight</div>
+                                    <div class="detail-tile-value text-primary">{{ !empty($user->current_weight) ? $user->current_weight . ' kg' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Height</div>
+                                    <div class="detail-tile-value">{{ !empty($user->height) ? $user->height . ' cm' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Weight Goal</div>
+                                    <div class="detail-tile-value text-success">{{ !empty($user->weight_goal) ? $user->weight_goal . ' kg' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Gender</div>
+                                    <div class="detail-tile-value">{{ !empty($user->gender) ? $user->gender : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Remaining Days</div>
+                                    <div class="detail-tile-value text-info font-weight-bold">{{ !empty($user->days) ? $user->days . ' Days' : '0 Days' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Due Amount</div>
+                                    <div class="detail-tile-value text-danger font-weight-bold">{{ !empty($user->due_amount) ? '₹' . number_format($user->due_amount, 2) : '₹0.00' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Joining Date</div>
+                                    <div class="detail-tile-value">
+                                        {{ !empty($user->created_at) ? \Carbon\Carbon::parse($user->created_at)->timezone(session()->get('timezone'))->format('d M, Y h:i A') : 'N/A' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Joining Weight</div>
+                                    <div class="detail-tile-value">{{ !empty($user->starting_weight) ? $user->starting_weight . ' kg' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Status</div>
+                                    <div class="detail-tile-value">
+                                        @if($user->status == 1)
+                                            <span class="badge badge-success">Active</span>
+                                        @else
+                                            <span class="badge badge-danger">Inactive</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Latest Weight</div>
+                                    <div class="detail-tile-value">{{ !empty($lastRecord->weight) ? $lastRecord->weight . ' kg' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Overall Max Weight</div>
+                                    <div class="detail-tile-value text-danger">{{ !empty($maxWeight->weight) ? $maxWeight->weight . ' kg' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                                <div class="detail-tile">
+                                    <div class="detail-tile-label">Overall Min Weight</div>
+                                    <div class="detail-tile-value text-success">{{ !empty($minWeight->weight) ? $minWeight->weight . ' kg' : 'N/A' }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons Row -->
+                        <div class="row mt-4 pt-2 border-top">
+                            <div class="col-12 d-flex flex-wrap gap-2">
+                                <a class="btn btn-primary" href="{{ route('nutritionPanel.users.viewWeights', ['id' => ev($user->id)]) }}">
+                                    <i class="fa fa-line-chart"></i> View Weight
+                                </a>
+                                <a class="btn btn-primary" href="{{ route('nutritionPanel.users.viewAttendance', ['id' => ev($user->id)]) }}">
+                                    <i class="fa fa-calendar-check-o"></i> View Attendance
+                                </a>
+                                <a class="btn btn-primary" href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($user->id)]) }}">
+                                    <i class="fa fa-edit"></i> Manual Attendance
+                                </a>
+                                <a class="btn btn-primary" href="{{ route('nutritionPanel.track-shake.index', ['id' => ev($user->id)]) }}">
+                                    <i class="fa fa-coffee"></i> Track Shake
+                                </a>
+                                <a class="btn btn-primary" href="{{ route('nutritionPanel.orders.index', ['id' => ev($user->id)]) }}">
+                                    <i class="fa fa-shopping-bag"></i> Purchase Products
+                                </a>
                             </div>
                         </div>
                     </div>
