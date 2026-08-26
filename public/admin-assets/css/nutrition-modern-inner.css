@@ -1642,28 +1642,197 @@ textarea.form-control:focus {
 /* ==========================================================================
    20. Micro-Animations & Keyframes
    ========================================================================== */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
+/* ==========================================================================
+   21. Modern Ultra-Fine Sidebar Styles
+   ========================================================================== */
+.sidebar-wrapper {
+    width: 255px !important;
+    background: #ffffff !important;
+    border-right: 1px solid #eef2f7 !important;
+    box-shadow: 2px 0 16px rgba(15, 23, 42, 0.03) !important;
+    top: 56px !important;
+    height: calc(100vh - 56px) !important;
+    z-index: 1030 !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+#content,
+#content.main-content {
+    margin-left: 255px !important;
+}
+
+@media (max-width: 991px) {
+    .sidebar-wrapper {
+        margin-left: -255px !important;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .sidebar-wrapper.sidebar-opened {
+        margin-left: 0 !important;
+    }
+    #content,
+    #content.main-content {
+        margin-left: 0 !important;
     }
 }
 
-.fade-in-up {
-    animation: fadeInUp 0.3s ease-out;
+#sidebar {
+    height: 100% !important;
+    background: #ffffff !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+#sidebar::-webkit-scrollbar {
+    width: 5px;
 }
+#sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+#sidebar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+#sidebar::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+/* Category Headers */
+.sidebar-category-header {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    color: #94a3b8 !important;
+    padding: 16px 14px 6px 14px !important;
+    margin: 0 !important;
+    list-style: none !important;
+}
+
+#sidebar ul.menu-categories {
+    padding: 8px 12px 40px 12px !important;
+    margin: 0 !important;
+}
+
+#sidebar ul.menu-categories li.menu {
+    margin-bottom: 4px !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    text-decoration: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-grow: 1 !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle svg,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle i {
+    width: 18px !important;
+    height: 18px !important;
+    color: #64748b !important;
+    flex-shrink: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle span {
+    color: #334155 !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.3 !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle:hover {
+    background: #f1f5f9 !important;
+    color: #3246d3 !important;
+    transform: translateX(2px) !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle:hover svg,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle:hover i,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle:hover span {
+    color: #3246d3 !important;
+}
+
+/* Active Menu Item */
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[data-active="true"],
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"]:not(.collapsed) {
+    background: linear-gradient(135deg, #3246d3 0%, #4361ee 100%) !important;
+    box-shadow: 0 4px 14px rgba(50, 70, 211, 0.28) !important;
+    transform: none !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[data-active="true"] span,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[data-active="true"] svg,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[data-active="true"] i,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"]:not(.collapsed) span,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"]:not(.collapsed) svg,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"]:not(.collapsed) i {
+    color: #ffffff !important;
+}
+
+/* Chevron indicator */
+#sidebar ul.menu-categories li.menu > .dropdown-toggle .feather-chevron-right {
+    width: 15px !important;
+    height: 15px !important;
+    transition: transform 0.2s ease !important;
+}
+
+#sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"] .feather-chevron-right {
+    transform: rotate(90deg) !important;
+}
+
+/* Submenu Styling */
+#sidebar ul.menu-categories ul.submenu {
+    padding: 4px 0 6px 20px !important;
+    margin: 4px 0 6px 14px !important;
+    border-left: 1.5px solid #e2e8f0 !important;
+}
+
+#sidebar ul.menu-categories ul.submenu > li {
+    margin-bottom: 2px !important;
+}
+
+#sidebar ul.menu-categories ul.submenu > li a {
+    display: flex !important;
+    align-items: center !important;
+    padding: 7px 12px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+    border-radius: 8px !important;
+    margin: 0 !important;
+    transition: all 0.15s ease !important;
+}
+
+#sidebar ul.menu-categories ul.submenu > li a:hover {
+    color: #3246d3 !important;
+    background: #f8fafc !important;
+    padding-left: 16px !important;
+}
+
+#sidebar ul.menu-categories ul.submenu > li.active a {
+    color: #3246d3 !important;
+    font-weight: 700 !important;
+    background: #eef2ff !important;
+}
+
