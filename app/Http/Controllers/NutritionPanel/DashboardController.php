@@ -46,6 +46,7 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
         $authUser = auth()->user();
+        $userId = $authUser->id ?? 0;
 
         if ($request->year_filter != '') {
             $year = $request->year_filter;
@@ -54,11 +55,11 @@ class DashboardController extends Controller
         }
 
         // 1. Total Members Breakdown
-        $totalUsers = User::where('role_type', 'user')->where('created_by', $authUser['id'])->count();
-        $offlineUsers = User::where('role_type', 'user')->where('user_state', 'Offline')->where('created_by', $authUser['id'])->count();
-        $onlineUsers = User::where('role_type', 'user')->where('user_state', 'Online')->where('created_by', $authUser['id'])->count();
+        $totalUsers = User::where('role_type', 'user')->where('created_by', $userId)->count();
+        $offlineUsers = User::where('role_type', 'user')->where('user_state', 'Offline')->where('created_by', $userId)->count();
+        $onlineUsers = User::where('role_type', 'user')->where('user_state', 'Online')->where('created_by', $userId)->count();
         $totalCoaches = User::where('role_type', 'user')
-            ->where('created_by', $authUser['id'])
+            ->where('created_by', $userId)
             ->whereNotNull('coach_name')
             ->where('coach_name', '!=', '')
             ->distinct()
@@ -141,7 +142,7 @@ class DashboardController extends Controller
             ->count();
 
         $thisMonthBirthdayUsers = User::where('role_id', 3)
-            ->where('created_by', $authUser['id'])
+            ->where('created_by', $userId)
             ->whereDay('date_of_birth', now()->day)
             ->whereMonth('date_of_birth', now()->month)
             ->get();
@@ -366,7 +367,7 @@ class DashboardController extends Controller
         ->whereYear('created_at', $year)
         ->groupBy('month', 'user_type')
         ->where('user_type', '!=', '')
-        ->where('created_by', $authUser['id'])
+        ->where('created_by', $userId)
         ->get();
 
         $userDemoChartData = [];
@@ -386,7 +387,7 @@ class DashboardController extends Controller
         ->whereYear('created_at', $year)
         ->whereIn('title', ['Add User Days', 'Order Placed'])
         ->groupBy('month', 'title')
-        ->where('created_by', $authUser['id'])
+        ->where('created_by', $userId)
         ->get();
 
         $transactionAddUserChartData = [];
@@ -398,7 +399,7 @@ class DashboardController extends Controller
 
         $secretyKey = 1234567890;
         $encryption = new \MrShan0\CryptoLib\CryptoLib();
-        $plainText  = $encryption->encryptPlainTextWithRandomIV($authUser['id'], $secretyKey);
+        $plainText  = $encryption->encryptPlainTextWithRandomIV($userId, $secretyKey);
 
         $breadcrumb = [
             __('language.dashboard_menu') => ''

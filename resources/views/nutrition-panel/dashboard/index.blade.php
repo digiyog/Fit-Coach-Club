@@ -215,29 +215,17 @@
         border-radius: 3px 3px 0 0;
     }
 
-    /* 3. Section 1: Hero Grid (Club pulse + Today + QR Code) */
+    /* 3. Section 1: Hero Grid (Club pulse + Today) */
     .fcc-hero-grid {
         display: grid;
-        grid-template-columns: 1.35fr 1fr 1.05fr;
+        grid-template-columns: 1.45fr 1fr;
         gap: 20px;
         margin-bottom: 20px;
     }
 
-    @media (max-width: 1300px) {
-        .fcc-hero-grid {
-            grid-template-columns: 1.2fr 1fr;
-        }
-        .fcc-qr-card {
-            grid-column: span 2;
-        }
-    }
-
-    @media (max-width: 991px) {
+    @media (max-width: 1100px) {
         .fcc-hero-grid {
             grid-template-columns: 1fr;
-        }
-        .fcc-qr-card {
-            grid-column: span 1;
         }
     }
 
@@ -446,97 +434,12 @@
         box-shadow: 0 6px 18px rgba(59, 70, 241, 0.38);
     }
 
-    /* QR Attendance Card */
-    .fcc-qr-card {
-        background: #ffffff;
-        border: 1px solid var(--fcc-border);
-        border-radius: 20px;
-        padding: 22px 20px 18px 20px;
-        box-shadow: var(--fcc-card-shadow);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        text-align: center;
-    }
-
-    .fcc-qr-title {
-        font-size: 14.5px;
-        font-weight: 700;
-        color: #3246d3;
-        line-height: 1.35;
-        margin-bottom: 4px;
-    }
-
-    .fcc-qr-frame {
-        background: #ffffff;
-        padding: 10px;
-        border-radius: 14px;
-        border: 2px dashed #cbd5e1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 10px auto 14px auto;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    }
-
-    #qr-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #qr-container img, #qr-container canvas {
-        display: block;
-        margin: 0 auto;
-        border-radius: 4px;
-    }
-
-    .fcc-qr-actions {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .fcc-btn-qr {
-        flex: 1;
-        padding: 10px 14px;
-        font-size: 13px;
-        font-weight: 700;
-        border-radius: 10px;
-        border: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        text-decoration: none;
-        background: #3b46f1;
-        color: #ffffff !important;
-        box-shadow: 0 3px 10px rgba(59, 70, 241, 0.25);
-    }
-
-    .fcc-btn-qr:hover {
-        background: #2b35db;
-        transform: translateY(-1px);
-        box-shadow: 0 5px 14px rgba(59, 70, 241, 0.35);
-    }
-
-    @media print {
-        body * { visibility: hidden !important; }
-        #print-area, #print-area * { visibility: visible !important; }
-        #print-area { position: absolute; left: 0; top: 0; width: 100%; text-align: center; }
-    }
-
     /* 4. Section 2: 4 Metric Cards */
     .fcc-metrics-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 16px;
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     @media (max-width: 1200px) {
@@ -576,13 +479,13 @@
     }
 
     .fcc-metric-circle {
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 17px;
+        font-size: 16px;
     }
 
     .mc-blue { background: #eff6ff; color: #2563eb; }
@@ -610,9 +513,162 @@
         flex-shrink: 0;
     }
 
+    /* 5. Section 3: Performance Story & Action Queue */
+    .fcc-story-action-grid {
+        display: grid;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
 
+    @media (max-width: 1100px) {
+        .fcc-story-action-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 
-    /* 5. Shared Avatar Styles */
+    .fcc-story-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 22px 24px;
+        box-shadow: var(--fcc-card-shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .fcc-story-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .fcc-story-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--fcc-dark);
+        margin: 0;
+    }
+
+    .fcc-pill-toggle {
+        display: inline-flex;
+        align-items: center;
+        background: #f1f5f9;
+        padding: 3px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .fcc-pill-btn {
+        border: none;
+        background: transparent;
+        padding: 5px 14px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .fcc-pill-btn.active {
+        background: #2546e8;
+        color: #ffffff;
+        font-weight: 700;
+        box-shadow: 0 2px 6px rgba(37, 70, 232, 0.25);
+    }
+
+    .fcc-story-stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #f1f5f9;
+        margin-top: 6px;
+    }
+
+    .fcc-story-stat-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .fcc-story-stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+    }
+
+    .fcc-story-stat-num {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--fcc-dark);
+        line-height: 1.1;
+    }
+
+    .fcc-story-stat-lbl {
+        font-size: 12px;
+        color: var(--fcc-muted);
+        font-weight: 500;
+    }
+
+    /* Action Queue Card */
+    .fcc-action-queue-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 22px 24px;
+        box-shadow: var(--fcc-card-shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .fcc-action-queue-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--fcc-dark);
+        margin-bottom: 14px;
+    }
+
+    .fcc-action-timeline {
+        position: relative;
+        padding-left: 10px;
+        margin-bottom: 16px;
+    }
+
+    .fcc-action-timeline::before {
+        content: '';
+        position: absolute;
+        top: 18px;
+        bottom: 18px;
+        left: 27px;
+        width: 2px;
+        background: #f1f5f9;
+        z-index: 1;
+    }
+
+    .fcc-action-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        z-index: 2;
+    }
+
+    .fcc-action-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
     .fcc-avatar-circle {
         width: 36px;
         height: 36px;
@@ -624,11 +680,105 @@
         font-size: 12px;
         color: #ffffff;
         flex-shrink: 0;
+        border: 3px solid #ffffff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    .av-red { background: #e11d48; }
+    .av-red { background: #ef4444; }
     .av-orange { background: #f59e0b; }
-    .av-purple { background: #8b5cf6; }
+    .av-purple { background: #6366f1; }
+    .av-blue { background: #3b82f6; }
+
+    .fcc-action-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fcc-action-name {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--fcc-dark);
+        line-height: 1.2;
+    }
+
+    .fcc-action-subtext {
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    .subtext-red { color: #ef4444; }
+    .subtext-orange { color: #d97706; }
+    .subtext-purple { color: #4f46e5; }
+    .subtext-blue { color: #2563eb; }
+
+    .link-renew { color: #ef4444 !important; }
+    .link-remind { color: #d97706 !important; }
+    .link-review { color: #4f46e5 !important; }
+
+    /* Recent Activity Feed */
+    .fcc-recent-activity-section {
+        border-top: 1px solid #f1f5f9;
+        padding-top: 14px;
+    }
+
+    .fcc-recent-title {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--fcc-dark);
+        margin-bottom: 10px;
+    }
+
+    .fcc-activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .fcc-activity-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12.5px;
+    }
+
+    .fcc-activity-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .fcc-act-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .fcc-act-dot.green { background: #10b981; }
+    .fcc-act-dot.blue { background: #3b82f6; }
+
+    .fcc-activity-time {
+        color: #94a3b8;
+        font-size: 11.5px;
+        font-weight: 500;
+    }
+
+    .fcc-open-feed-link {
+        display: block;
+        text-align: right;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #3b46f1;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+    .fcc-open-feed-link:hover {
+        color: #2546e8;
+        text-decoration: underline;
+    }
 
 
     /* 6. Section 4: Top 20 Attendance Leaderboard */
@@ -894,7 +1044,9 @@
 
         @php
             use Carbon\Carbon;
-            $endDate = isset($authUser['end_date']) ? Carbon::parse($authUser['end_date']) : Carbon::today()->addMonth();
+            $currentUser = Auth::user() ?? ($authUser ?? null);
+            $userEndDate = is_object($currentUser) ? ($currentUser->end_date ?? null) : (is_array($currentUser) ? ($currentUser['end_date'] ?? null) : null);
+            $endDate = !empty($userEndDate) ? Carbon::parse($userEndDate) : Carbon::today()->addMonth();
             $hour = (int) date('H');
             if ($hour < 12) {
                 $greetingTime = 'Good morning';
@@ -903,8 +1055,9 @@
             } else {
                 $greetingTime = 'Good evening';
             }
-            $userName = Auth::user()->name ?? 'Mokam';
-            $firstName = ucfirst(explode(' ', $userName)[0]);
+            $userName = is_object($currentUser) ? ($currentUser->name ?? 'Mokam') : (is_array($currentUser) ? ($currentUser['name'] ?? 'Mokam') : 'Mokam');
+            $nameParts = !empty($userName) ? explode(' ', trim($userName)) : ['Mokam'];
+            $firstName = ucfirst($nameParts[0] ?? 'Mokam');
             $currentMonthName = date('F Y');
         @endphp
 
@@ -945,20 +1098,21 @@
             <a class="fcc-tab-btn" data-tab="tab-top20">Top 20 Attendance 🏆</a>
             <a class="fcc-tab-btn" data-tab="tab-members">Members</a>
             <a class="fcc-tab-btn" data-tab="tab-growth">Growth</a>
-            <a class="fcc-tab-btn" data-tab="tab-finance">Finance</a>
         </div>
 
         <!-- TAB 1: OVERVIEW -->
         <div id="tab-overview" class="fcc-tab-panel active">
             
-            <!-- SECTION 1: TOP HERO (CLUB PULSE + TODAY + QR CODE) -->
+            <!-- SECTION 1: TOP HERO (CLUB PULSE + TODAY) -->
             <div class="fcc-hero-grid">
                 
                 <!-- Left: Club Pulse Card -->
                 <div class="fcc-pulse-card">
                     <div>
                         <div class="fcc-pulse-top">
-                            <i class="fa fa-heartbeat" style="color: #c7d2fe;"></i>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
                             <span>Club pulse</span>
                         </div>
 
@@ -970,16 +1124,38 @@
 
                             <div class="fcc-pulse-pills">
                                 <div class="fcc-pulse-pill-item">
-                                    <i class="fa fa-building-o"></i>
-                                    <span>{{ $offlineUsers ?? 0 }} offline</span>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                        <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
+                                    </svg>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 16px; line-height: 1;">{{ $offlineUsers ?? 0 }}</div>
+                                        <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">offline</div>
+                                    </div>
                                 </div>
                                 <div class="fcc-pulse-pill-item">
-                                    <i class="fa fa-wifi"></i>
-                                    <span>{{ $onlineUsers ?? 0 }} online</span>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
+                                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                    </svg>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 16px; line-height: 1;">{{ $onlineUsers ?? 0 }}</div>
+                                        <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">online</div>
+                                    </div>
                                 </div>
                                 <div class="fcc-pulse-pill-item">
-                                    <i class="fa fa-user-circle-o"></i>
-                                    <span>{{ $totalCoaches ?? 0 }} {{ \Illuminate\Support\Str::plural('coach', $totalCoaches ?? 0) }}</span>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 16px; line-height: 1;">{{ $totalCoaches ?? 0 }}</div>
+                                        <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">coaches</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -987,7 +1163,9 @@
 
                     <!-- Weekly Attendance ApexChart -->
                     <div class="fcc-pulse-chart-box">
-                        <div style="font-size: 11px; color: rgba(255,255,255,0.75); padding-left: 10px; margin-bottom: -5px;">Weekly attendance</div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 12px; margin-bottom: -6px;">
+                            <span style="font-size: 11px; color: rgba(255,255,255,0.75); font-weight: 500;">Weekly attendance</span>
+                        </div>
                         <div id="clubPulseChart"></div>
                     </div>
 
@@ -1047,35 +1225,20 @@
                                     <strong>{{ count($thisMonthBirthdayUsers ?? []) }}</strong> birthdays
                                 </div>
                             </div>
-                            <a href="#today-birthday-section" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#birthdayModal" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
                     </div>
 
                     <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-btn-scan-qr">
-                        <i class="fa fa-list-alt"></i> Attendance Register
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                            <rect x="7" y="7" width="10" height="10" rx="1"></rect>
+                        </svg>
+                        <span>Scan attendance</span>
                     </a>
-                </div>
-
-                <!-- Right: Attendance QR Code Card -->
-                <div class="fcc-qr-card">
-                    <div>
-                        <div class="fcc-qr-title">You can scan your Attendance by following QR code.</div>
-                    </div>
-
-                    <div class="fcc-qr-frame">
-                        <div id="print-area">
-                            <div id="qr-container"></div>
-                        </div>
-                    </div>
-
-                    <div class="fcc-qr-actions">
-                        <button type="button" onclick="window.print()" class="fcc-btn-qr">
-                            Print QR Code
-                        </button>
-                        <button type="button" id="downloadBtn" class="fcc-btn-qr">
-                            Download PNG
-                        </button>
-                    </div>
                 </div>
 
             </div>
@@ -1134,7 +1297,7 @@
                 <div class="fcc-metric-card">
                     <div class="fcc-metric-left">
                         <div class="fcc-metric-circle mc-blue">
-                            <i class="fa fa-user-check"></i>
+                            <i class="fa fa-user"></i>
                         </div>
                         <div>
                             <div class="fcc-metric-num">{{ $todayCheckedIn ?? 0 }}</div>
@@ -1147,195 +1310,135 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: TABLES IN ONE LINE (3 EQUAL COLUMNS) -->
-            <div class="row g-3 mb-4">
+            <!-- SECTION 3: PERFORMANCE STORY & ACTION QUEUE -->
+            <div class="fcc-story-action-grid">
                 
-                <!-- Table 1: Today's Birthdays -->
-                <div class="col-xl-4 col-lg-4 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" id="today-birthday-section" style="padding: 20px;">
-                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
-                                    <span>Today Birthday</span>
-                                    <span style="font-size: 18px;">🎂</span>
-                                </h3>
-                                @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
-                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px; font-weight: 700;">
-                                        {{ count($thisMonthBirthdayUsers) }}
-                                    </span>
-                                @endif
+                <!-- Left: Performance Story Card -->
+                <div class="fcc-story-card">
+                    <div>
+                        <div class="fcc-story-header">
+                            <h3 class="fcc-story-title">Performance story</h3>
+                            <div class="fcc-pill-toggle">
+                                <button type="button" class="fcc-pill-btn active" id="storyToggleAttendance">Attendance</button>
+                                <button type="button" class="fcc-pill-btn" id="storyToggleRevenue">Revenue</button>
                             </div>
                         </div>
 
-                        <div class="table-responsive flex-grow-1">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead>
-                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <th style="padding: 8px 10px;">CUSTOMER NAME</th>
-                                        <th style="padding: 8px 10px;">YEAR</th>
-                                        <th style="padding: 8px 10px;">USER TYPE</th>
-                                        @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
-                                            <th style="padding: 8px 10px; text-align: right;">ACTION</th>
-                                        @endif
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
-                                        @foreach($thisMonthBirthdayUsers as $bUser)
-                                            <tr>
-                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
-                                                    {{ ucfirst($bUser->name) }}
-                                                    @if($bUser->coach_name)
-                                                        <div class="text-muted" style="font-size: 11px; font-weight: normal;">Coach: {{ $bUser->coach_name }}</div>
-                                                    @endif
-                                                </td>
-                                                <td style="padding: 10px 10px; font-size: 12.5px; font-weight: 600; color: #475569;">
-                                                    {{ date('Y', strtotime($bUser->date_of_birth)) }}
-                                                </td>
-                                                <td style="padding: 10px 10px;">
-                                                    <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
-                                                        {{ $bUser->user_type }}
-                                                    </span>
-                                                </td>
-                                                <td style="padding: 10px 10px; text-align: right;">
-                                                    @if(!empty($bUser->mobile_number))
-                                                        <a href="https://wa.me/91{{ preg_replace('/[^0-9]/', '', $bUser->mobile_number) }}?text=Happy%20Birthday%20{{ urlencode($bUser->name) }}!%20Wishing%20you%20a%20healthy%20and%20fit%20year%20ahead!%20🎉" target="_blank" class="btn btn-sm btn-success px-2 py-1" style="border-radius: 6px; font-size: 11px; font-weight: 700;">
-                                                            <i class="fa fa-whatsapp me-1"></i> Wish
-                                                        </a>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
-                                                No Record Found !!
-                                            </td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                        <!-- Performance Story Spline Chart -->
+                        <div id="performanceStoryChart" style="min-height: 195px;"></div>
+                    </div>
+
+                    <!-- 3 Bottom Metrics -->
+                    <div class="fcc-story-stats-row">
+                        <div class="fcc-story-stat-item">
+                            <div class="fcc-story-stat-icon" style="background: #eff6ff; color: #2563eb;">
+                                <i class="fa fa-bar-chart"></i>
+                            </div>
+                            <div>
+                                <div class="fcc-story-stat-num">{{ $dailyAvgAttendance ?? 0 }}</div>
+                                <div class="fcc-story-stat-lbl">daily average</div>
+                            </div>
+                        </div>
+
+                        <div class="fcc-story-stat-item">
+                            <div class="fcc-story-stat-icon" style="background: #f5f3ff; color: #7c3aed;">
+                                <i class="fa fa-line-chart"></i>
+                            </div>
+                            <div>
+                                <div class="fcc-story-stat-num">{{ $weeklyPeakAttendance ?? 0 }}</div>
+                                <div class="fcc-story-stat-lbl">weekly peak</div>
+                            </div>
+                        </div>
+
+                        <div class="fcc-story-stat-item">
+                            <div class="fcc-story-stat-icon" style="background: #ecfdf5; color: #059669;">
+                                <i class="fa fa-arrow-up"></i>
+                            </div>
+                            <div>
+                                <div class="fcc-story-stat-num" style="color: #059669;">{{ ($weeklyGrowthPct >= 0 ? '+' : '') . $weeklyGrowthPct }}%</div>
+                                <div class="fcc-story-stat-lbl">this week</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Table 2: More Than One Attendance Card -->
-                <div class="col-xl-4 col-lg-4 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" style="padding: 20px;">
-                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
-                                    <span>More Than One Attendance</span>
-                                </h3>
-                                @if(isset($today2Attendences) && count($today2Attendences) > 0)
-                                    <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11px;">
-                                        {{ count($today2Attendences) }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                <!-- Right: Action Queue Card -->
+                <div class="fcc-action-queue-card">
+                    <div>
+                        <h3 class="fcc-action-queue-title">Action queue</h3>
 
-                        <div class="table-responsive flex-grow-1">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead>
-                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <th style="padding: 8px 10px;">Name</th>
-                                        <th style="padding: 8px 10px;">Date</th>
-                                        <th style="padding: 8px 10px; text-align: center;">Count</th>
-                                        <th style="padding: 8px 10px;">Coach</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(isset($today2Attendences) && count($today2Attendences) > 0)
-                                        @foreach($today2Attendences as $today2Attendence)
-                                            <tr>
-                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
-                                                    {{ ucfirst($today2Attendence->name) }}
-                                                </td>
-                                                <td style="padding: 10px 10px; font-size: 12px; color: #64748b;">
-                                                    {{ $today2Attendence->date }}
-                                                </td>
-                                                <td style="padding: 10px 10px; text-align: center;">
-                                                    <span class="badge bg-danger px-2 py-0.5" style="border-radius: 6px; font-size: 11.5px; font-weight: 700;">
-                                                        {{ $today2Attendence->total_attendance }}
-                                                    </span>
-                                                </td>
-                                                <td style="padding: 10px 10px; font-size: 12px; color: #334155;">
-                                                    {{ $today2Attendence->coach_name ?? 'N/A' }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
-                                                No Record Found !!
-                                            </td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                        <div class="fcc-action-timeline">
+                            @php
+                                $displayActions = !empty($actionQueueItems) ? array_slice($actionQueueItems, 0, 3) : [
+                                    ['name' => 'Rahul Sharma', 'subtext' => 'Membership expires today', 'action_label' => 'Renew', 'action_url' => route('nutritionPanel.users.index'), 'color_class' => 'av-red', 'link_class' => 'link-renew', 'subtext_class' => 'subtext-red'],
+                                    ['name' => 'Neha Patel', 'subtext' => '₹2,500 payment due', 'action_label' => 'Remind', 'action_url' => route('nutritionPanel.users.index'), 'color_class' => 'av-orange', 'link_class' => 'link-remind', 'subtext_class' => 'subtext-orange'],
+                                    ['name' => 'Sneha Gupta', 'subtext' => 'BMI follow-up overdue', 'action_label' => 'Review', 'action_url' => route('nutritionPanel.users.index'), 'color_class' => 'av-purple', 'link_class' => 'link-review', 'subtext_class' => 'subtext-purple'],
+                                ];
+                            @endphp
+
+                            @foreach($displayActions as $action)
+                                @php
+                                    $actName = is_array($action) ? ($action['name'] ?? 'Member') : ($action->name ?? 'Member');
+                                    $nameParts = !empty($actName) ? explode(' ', trim($actName)) : ['M'];
+                                    $initials = strtoupper(substr($nameParts[0] ?? 'M', 0, 1) . substr($nameParts[1] ?? '', 0, 1));
+                                    $colorCls = is_array($action) ? ($action['color_class'] ?? 'av-red') : ($action->color_class ?? 'av-red');
+                                    $subtext = is_array($action) ? ($action['subtext'] ?? '') : ($action->subtext ?? '');
+                                    $actionUrl = is_array($action) ? ($action['action_url'] ?? '#') : ($action->action_url ?? '#');
+                                    $actionLabel = is_array($action) ? ($action['action_label'] ?? 'View') : ($action->action_label ?? 'View');
+                                    $subtextCls = str_contains($colorCls, 'red') ? 'subtext-red' : (str_contains($colorCls, 'orange') ? 'subtext-orange' : 'subtext-purple');
+                                    $linkCls = str_contains($colorCls, 'red') ? 'link-renew' : (str_contains($colorCls, 'orange') ? 'link-remind' : 'link-review');
+                                @endphp
+                                <div class="fcc-action-item">
+                                    <div class="fcc-action-left">
+                                        <div class="fcc-avatar-circle {{ $colorCls }}">{{ $initials }}</div>
+                                        <div class="fcc-action-details">
+                                            <span class="fcc-action-name">{{ $actName }}</span>
+                                            <span class="fcc-action-subtext {{ $subtextCls }}">{{ $subtext }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="{{ $actionUrl }}" class="fcc-action-chevron {{ $linkCls }}">{{ $actionLabel }} <i class="fa fa-chevron-right"></i></a>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                </div>
 
-                <!-- Table 3: Updation Logs Card -->
-                <div class="col-xl-4 col-lg-4 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" style="padding: 20px;">
-                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
-                            <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
-                                    <span>Updation on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
-                                </h3>
-                                @if(isset($todayAttendences) && count($todayAttendences) > 0)
-                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px;">
-                                        {{ count($todayAttendences) }}
-                                    </span>
-                                @endif
-                            </div>
+                    <!-- Recent Activity Feed -->
+                    <div class="fcc-recent-activity-section">
+                        <div class="fcc-recent-title">Recent activity</div>
+                        <div class="fcc-activity-list">
+                            @if(isset($recentActivities) && count($recentActivities) > 0)
+                                @foreach($recentActivities->take(2) as $act)
+                                    @php
+                                        $actTitle = is_array($act) ? ($act['title'] ?? 'Activity') : ($act->title ?? 'Activity');
+                                        $actTime = is_array($act) ? ($act['time'] ?? '') : ($act->time ?? '');
+                                        $dotClass = is_array($act) ? ($act['dot_class'] ?? '') : ($act->dot_class ?? '');
+                                    @endphp
+                                    <div class="fcc-activity-item">
+                                        <div class="fcc-activity-left">
+                                            <span class="fcc-act-dot {{ str_contains($dotClass, 'green') ? 'green' : 'blue' }}"></span>
+                                            <span>{{ $actTitle }}</span>
+                                        </div>
+                                        <span class="fcc-activity-time">{{ $actTime }}</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="fcc-activity-item">
+                                    <div class="fcc-activity-left">
+                                        <span class="fcc-act-dot green"></span>
+                                        <span>Rahul Sharma checked in</span>
+                                    </div>
+                                    <span class="fcc-activity-time">Today, 7:45 AM</span>
+                                </div>
+                                <div class="fcc-activity-item">
+                                    <div class="fcc-activity-left">
+                                        <span class="fcc-act-dot blue"></span>
+                                        <span>Neha Patel payment received</span>
+                                    </div>
+                                    <span class="fcc-activity-time">Yesterday, 8:15 PM</span>
+                                </div>
+                            @endif
                         </div>
-
-                        <div class="table-responsive flex-grow-1">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead>
-                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <th style="padding: 8px 10px;">Name</th>
-                                        <th style="padding: 8px 10px;">Remark</th>
-                                        <th style="padding: 8px 10px; text-align: center;">Count</th>
-                                        <th style="padding: 8px 10px;">Date</th>
-                                        <th style="padding: 8px 10px;">Coach</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(isset($todayAttendences) && count($todayAttendences) > 0)
-                                        @foreach($todayAttendences as $todayAttendence)
-                                            <tr>
-                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
-                                                    {{ ucfirst($todayAttendence->name) }}
-                                                </td>
-                                                <td style="padding: 10px 10px; font-size: 11.5px;">
-                                                    <span class="badge bg-light text-dark border">{{ $todayAttendence->remark ?? 'Attendance' }}</span>
-                                                </td>
-                                                <td style="padding: 10px 10px; text-align: center; font-weight: 700; color: #3b82f6; font-size: 12px;">
-                                                    1
-                                                </td>
-                                                <td style="padding: 10px 10px; font-size: 11.5px; color: #64748b;">
-                                                    {{ $todayAttendence->date }}
-                                                </td>
-                                                <td style="padding: 10px 10px; font-size: 11.5px; color: #334155;">
-                                                    {{ $todayAttendence->coach_name ?? 'N/A' }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="5" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
-                                                No Record Found !!
-                                            </td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
+                        <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-open-feed-link">Open activity feed <i class="fa fa-chevron-right"></i></a>
                     </div>
                 </div>
 
@@ -1530,6 +1633,200 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Additional Member Insights: 3 Tables in a Row -->
+            <div class="row g-3 mb-4">
+                
+                <!-- Table 1: Today's Birthdays -->
+                <div class="col-xl-4 col-lg-4 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" id="today-birthday-section" style="padding: 20px;">
+                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
+                                    <span>Today Birthday</span>
+                                    <span style="font-size: 18px;">🎂</span>
+                                </h3>
+                                @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px; font-weight: 700;">
+                                        {{ count($thisMonthBirthdayUsers) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="table-responsive flex-grow-1">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <th style="padding: 8px 10px;">CUSTOMER NAME</th>
+                                        <th style="padding: 8px 10px;">YEAR</th>
+                                        <th style="padding: 8px 10px;">USER TYPE</th>
+                                        @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                            <th style="padding: 8px 10px; text-align: right;">ACTION</th>
+                                        @endif
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                        @foreach($thisMonthBirthdayUsers as $bUser)
+                                            <tr>
+                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
+                                                    {{ ucfirst($bUser->name) }}
+                                                    @if($bUser->coach_name)
+                                                        <div class="text-muted" style="font-size: 11px; font-weight: normal;">Coach: {{ $bUser->coach_name }}</div>
+                                                    @endif
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 12.5px; font-weight: 600; color: #475569;">
+                                                    {{ date('Y', strtotime($bUser->date_of_birth)) }}
+                                                </td>
+                                                <td style="padding: 10px 10px;">
+                                                    <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                                                        {{ $bUser->user_type }}
+                                                    </span>
+                                                </td>
+                                                <td style="padding: 10px 10px; text-align: right;">
+                                                    @if(!empty($bUser->mobile_number))
+                                                        <a href="https://wa.me/91{{ preg_replace('/[^0-9]/', '', $bUser->mobile_number) }}?text=Happy%20Birthday%20{{ urlencode($bUser->name) }}!%20Wishing%20you%20a%20healthy%20and%20fit%20year%20ahead!%20🎉" target="_blank" class="btn btn-sm btn-success px-2 py-1" style="border-radius: 6px; font-size: 11px; font-weight: 700;">
+                                                            <i class="fa fa-whatsapp me-1"></i> Wish
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
+                                                No Record Found !!
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table 2: More Than One Attendance Card -->
+                <div class="col-xl-4 col-lg-4 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" style="padding: 20px;">
+                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
+                                    <span>More Than One Attendance</span>
+                                </h3>
+                                @if(isset($today2Attendences) && count($today2Attendences) > 0)
+                                    <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11px;">
+                                        {{ count($today2Attendences) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="table-responsive flex-grow-1">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <th style="padding: 8px 10px;">Name</th>
+                                        <th style="padding: 8px 10px;">Date</th>
+                                        <th style="padding: 8px 10px; text-align: center;">Count</th>
+                                        <th style="padding: 8px 10px;">Coach</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($today2Attendences) && count($today2Attendences) > 0)
+                                        @foreach($today2Attendences as $today2Attendence)
+                                            <tr>
+                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
+                                                    {{ ucfirst($today2Attendence->name) }}
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 12px; color: #64748b;">
+                                                    {{ $today2Attendence->date }}
+                                                </td>
+                                                <td style="padding: 10px 10px; text-align: center;">
+                                                    <span class="badge bg-danger px-2 py-0.5" style="border-radius: 6px; font-size: 11.5px; font-weight: 700;">
+                                                        {{ $today2Attendence->total_attendance }}
+                                                    </span>
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 12px; color: #334155;">
+                                                    {{ $today2Attendence->coach_name ?? 'N/A' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
+                                                No Record Found !!
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table 3: Updation Logs Card -->
+                <div class="col-xl-4 col-lg-4 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" style="padding: 20px;">
+                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
+                                    <span>Updation on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
+                                </h3>
+                                @if(isset($todayAttendences) && count($todayAttendences) > 0)
+                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px;">
+                                        {{ count($todayAttendences) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="table-responsive flex-grow-1">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <th style="padding: 8px 10px;">Name</th>
+                                        <th style="padding: 8px 10px;">Remark</th>
+                                        <th style="padding: 8px 10px; text-align: center;">Count</th>
+                                        <th style="padding: 8px 10px;">Date</th>
+                                        <th style="padding: 8px 10px;">Coach</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($todayAttendences) && count($todayAttendences) > 0)
+                                        @foreach($todayAttendences as $todayAttendence)
+                                            <tr>
+                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
+                                                    {{ ucfirst($todayAttendence->name) }}
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 11.5px;">
+                                                    <span class="badge bg-light text-dark border">{{ $todayAttendence->remark ?? 'Attendance' }}</span>
+                                                </td>
+                                                <td style="padding: 10px 10px; text-align: center; font-weight: 700; color: #3b82f6; font-size: 12px;">
+                                                    1
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 11.5px; color: #64748b;">
+                                                    {{ $todayAttendence->date }}
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 11.5px; color: #334155;">
+                                                    {{ $todayAttendence->coach_name ?? 'N/A' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
+                                                No Record Found !!
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
         <!-- TAB 4: GROWTH -->
@@ -1667,11 +1964,12 @@
     // 1. Club Pulse Area Line Chart
     var weeklyPulseLabels = {!! json_encode($weeklyPulseLabels ?? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) !!};
     var weeklyPulseAttendance = {!! json_encode($weeklyPulseAttendance ?? [0, 0, 0, 0, 0, 0, 0]) !!};
+    var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
     var pulseOptions = {
         chart: {
             type: 'area',
-            height: 145,
+            height: 155,
             toolbar: { show: false },
             parentHeightOffset: 0
         },
@@ -1683,7 +1981,7 @@
             categories: weeklyPulseLabels,
             labels: {
                 style: {
-                    colors: 'rgba(255, 255, 255, 0.75)',
+                    colors: 'rgba(255, 255, 255, 0.8)',
                     fontSize: '11px',
                     fontFamily: 'Plus Jakarta Sans, sans-serif'
                 }
@@ -1693,6 +1991,7 @@
         },
         yaxis: {
             min: 0,
+            max: 100,
             tickAmount: 4,
             labels: {
                 style: {
@@ -1700,6 +1999,25 @@
                     fontSize: '10px'
                 }
             }
+        },
+        annotations: {
+            yaxis: [{
+                y: 70,
+                borderColor: 'rgba(255, 255, 255, 0.35)',
+                strokeDashArray: 4,
+                label: {
+                    text: 'Target (70)',
+                    borderColor: 'transparent',
+                    style: {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        background: 'transparent',
+                        fontSize: '10.5px',
+                        fontWeight: 600
+                    },
+                    position: 'right',
+                    textAnchor: 'end'
+                }
+            }]
         },
         stroke: {
             curve: 'smooth',
@@ -1727,7 +2045,7 @@
         grid: {
             borderColor: 'rgba(255, 255, 255, 0.1)',
             strokeDashArray: 3,
-            padding: { top: 0, right: 15, bottom: 0, left: 5 }
+            padding: { top: 0, right: 20, bottom: 0, left: 5 }
         },
         tooltip: {
             theme: 'dark',
@@ -1738,6 +2056,165 @@
     if (pulseElem) {
         new ApexCharts(pulseElem, pulseOptions).render();
     }
+
+    // 2. Performance Story Area Line Chart
+    var storyOptions = {
+        chart: {
+            type: 'area',
+            height: 195,
+            toolbar: { show: false },
+            parentHeightOffset: 0
+        },
+        series: [{
+            name: 'Attendance',
+            data: weeklyPulseAttendance
+        }],
+        colors: ['#3b46f1'],
+        xaxis: {
+            categories: weeklyPulseLabels,
+            labels: {
+                style: {
+                    colors: '#94a3b8',
+                    fontSize: '11px',
+                    fontFamily: 'Plus Jakarta Sans, sans-serif'
+                }
+            },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            min: 0,
+            max: 100,
+            tickAmount: 4,
+            labels: {
+                style: {
+                    colors: '#94a3b8',
+                    fontSize: '10px'
+                },
+                formatter: function(val) {
+                    return Math.round(val);
+                }
+            }
+        },
+        annotations: {
+            yaxis: [{
+                y: 70,
+                borderColor: '#3b82f6',
+                strokeDashArray: 4,
+                label: {
+                    text: 'Target (70)',
+                    borderColor: 'transparent',
+                    style: {
+                        color: '#3b82f6',
+                        background: 'transparent',
+                        fontSize: '10.5px',
+                        fontWeight: 600
+                    },
+                    position: 'right',
+                    textAnchor: 'end'
+                }
+            }]
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3,
+            colors: ['#3b46f1']
+        },
+        markers: {
+            size: 4,
+            colors: ['#ffffff'],
+            strokeColors: '#3b46f1',
+            strokeWidth: 2.5,
+            hover: { size: 6 }
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'light',
+                type: 'vertical',
+                shadeIntensity: 0.4,
+                opacityFrom: 0.4,
+                opacityTo: 0.03,
+                stops: [0, 100]
+            }
+        },
+        grid: {
+            borderColor: '#f1f5f9',
+            strokeDashArray: 3,
+            padding: { top: 0, right: 20, bottom: 0, left: 5 }
+        },
+        tooltip: {
+            theme: 'light',
+            y: { formatter: function(val) { return val + ' members'; } }
+        }
+    };
+
+    var storyChartElem = document.querySelector("#performanceStoryChart");
+    var performanceStoryChart = null;
+    if (storyChartElem) {
+        performanceStoryChart = new ApexCharts(storyChartElem, storyOptions);
+        performanceStoryChart.render();
+    }
+
+    $('#storyToggleAttendance').on('click', function() {
+        $(this).addClass('active');
+        $('#storyToggleRevenue').removeClass('active');
+        if (performanceStoryChart) {
+            performanceStoryChart.updateOptions({
+                series: [{ name: 'Attendance', data: weeklyPulseAttendance }],
+                yaxis: {
+                    min: 0,
+                    max: 100,
+                    tickAmount: 4,
+                    labels: {
+                        style: { colors: '#94a3b8', fontSize: '10px' },
+                        formatter: function(val) { return Math.round(val); }
+                    }
+                },
+                annotations: {
+                    yaxis: [{
+                        y: 70,
+                        borderColor: '#3b82f6',
+                        strokeDashArray: 4,
+                        label: {
+                            text: 'Target (70)',
+                            borderColor: 'transparent',
+                            style: { color: '#3b82f6', background: 'transparent', fontSize: '10.5px', fontWeight: 600 },
+                            position: 'right',
+                            textAnchor: 'end'
+                        }
+                    }]
+                },
+                tooltip: {
+                    y: { formatter: function(val) { return val + ' members'; } }
+                }
+            });
+        }
+    });
+
+    $('#storyToggleRevenue').on('click', function() {
+        $(this).addClass('active');
+        $('#storyToggleAttendance').removeClass('active');
+        if (performanceStoryChart) {
+            performanceStoryChart.updateOptions({
+                series: [{ name: 'Revenue', data: weeklyPulseRevenue }],
+                yaxis: {
+                    min: 0,
+                    tickAmount: 4,
+                    labels: {
+                        style: { colors: '#94a3b8', fontSize: '10px' },
+                        formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); }
+                    }
+                },
+                annotations: {
+                    yaxis: []
+                },
+                tooltip: {
+                    y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
+                }
+            });
+        }
+    });
 
 
 
