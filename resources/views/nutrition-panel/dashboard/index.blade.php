@@ -1280,7 +1280,7 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-btn-scan-qr">
+                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#qrAttendanceModal" class="fcc-btn-scan-qr">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
                             <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
@@ -2303,12 +2303,112 @@
         </div>
     </div>
 </div>
+
+<!-- ATTENDANCE QR CODE & SCANNER MODAL -->
+<div class="modal fade" id="qrAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+        <div class="modal-content" style="border-radius: 22px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25); overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: #eef2ff; color: #3b46f1; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                        <i class="fa fa-qrcode"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" style="color: #0f172a; font-size: 17px;">Attendance QR Pass</h5>
+                        <p class="text-muted mb-0" style="font-size: 12px;">Scan or display QR code for daily check-in</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body px-4 py-3">
+                <!-- Segmented Tabs for QR Pass vs Live Camera Scanner -->
+                <div class="d-flex p-1 mb-3" style="background: #f1f5f9; border-radius: 12px;">
+                    <button type="button" class="btn btn-sm flex-fill fw-bold bg-white text-dark shadow-sm qr-modal-tab-btn" data-target="#qrPassView" style="border-radius: 9px; font-size: 12.5px; padding: 7px 12px;">
+                        <i class="fa fa-id-badge me-1 text-primary"></i> Club QR Pass
+                    </button>
+                    <button type="button" class="btn btn-sm flex-fill fw-bold text-muted qr-modal-tab-btn" data-target="#qrScannerView" style="border-radius: 9px; font-size: 12.5px; padding: 7px 12px;">
+                        <i class="fa fa-camera me-1"></i> Camera Scanner
+                    </button>
+                </div>
+
+                <!-- VIEW 1: QR PASS DISPLAY -->
+                <div id="qrPassView" class="qr-modal-view-panel">
+                    <div class="text-center p-3" style="background: #f8fafc; border-radius: 18px; border: 1px dashed #cbd5e1;">
+                        <div class="d-inline-flex align-items-center gap-1.5 px-3 py-1 mb-2 rounded-pill" style="background: #dcfce7; color: #15803d; font-size: 11.5px; font-weight: 700;">
+                            <span style="width: 7px; height: 7px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+                            Active Club Pass
+                        </div>
+                        <h6 class="fw-bold mb-1" style="color: #1e293b; font-size: 16px;">{{ $authUser->name ?? 'Fit Coach Club' }}</h6>
+                        <p class="text-muted mb-3" style="font-size: 12px;">Members scan this pass on their mobile app</p>
+
+                        <div class="d-flex justify-content-center my-2">
+                            <div style="background: #ffffff; padding: 16px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; display: inline-block;">
+                                <div id="qr-container" style="display: flex; justify-content: center; align-items: center; min-width: 170px; min-height: 170px;">
+                                    <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                                        <span class="visually-hidden">Generating QR...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 text-muted" style="font-size: 11.5px;">
+                            <i class="fa fa-info-circle text-primary me-1"></i> Valid for all club members to record daily attendance &amp; shake
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="button" id="downloadBtn" class="btn btn-primary flex-fill fw-bold py-2" style="border-radius: 12px; font-size: 13px; background: #3b46f1; border-color: #3b46f1;">
+                            <i class="fa fa-download me-1.5"></i> Download QR
+                        </button>
+                        <button type="button" id="printQrBtn" class="btn btn-outline-secondary flex-fill fw-bold py-2" style="border-radius: 12px; font-size: 13px;">
+                            <i class="fa fa-print me-1.5"></i> Print Pass
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: LIVE CAMERA SCANNER -->
+                <div id="qrScannerView" class="qr-modal-view-panel d-none">
+                    <div class="text-center p-3" style="background: #0f172a; border-radius: 18px; color: #fff;">
+                        <div id="qr-reader" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000; min-height: 230px;"></div>
+                        <div id="scanner-status" class="mt-2 text-muted" style="font-size: 12px; color: #94a3b8 !important;">
+                            <i class="fa fa-video-camera me-1"></i> Camera is idle. Click start to scan.
+                        </div>
+                        <div id="scanner-result-box" class="mt-2 p-2 rounded text-start d-none" style="background: #1e293b; border: 1px solid #334155;">
+                            <div class="text-success fw-bold" style="font-size: 11px;"><i class="fa fa-check-circle me-1"></i> Scanned Result:</div>
+                            <div id="scanner-result-text" class="text-white font-monospace text-break" style="font-size: 12px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="button" id="btnStartScan" class="btn btn-success flex-fill fw-bold py-2" style="border-radius: 12px; font-size: 13px;">
+                            <i class="fa fa-camera me-1.5"></i> Start Camera
+                        </button>
+                        <button type="button" id="btnStopScan" class="btn btn-danger flex-fill fw-bold py-2 d-none" style="border-radius: 12px; font-size: 13px;">
+                            <i class="fa fa-stop-circle me-1.5"></i> Stop Camera
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 pb-3 px-4 d-flex justify-content-between align-items-center" style="background: #f8fafc !important; border-top: 1px solid #f1f5f9 !important;">
+                <div class="d-flex gap-2">
+                    <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="btn btn-link text-decoration-none p-0 fw-semibold text-primary" style="font-size: 12.5px;">
+                        <i class="fa fa-list-alt me-1"></i> Attendance Register
+                    </a>
+                </div>
+                <button type="button" class="btn btn-light px-3 py-1.5" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600; font-size: 12.5px;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/datatables.js') }}"></script>
 <script src="{{ asset('admin-assets/plugins/apex/apexcharts.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
     // Tab switching
@@ -2747,38 +2847,186 @@
         xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
     }).render();
 
-    // 4. QR Code Generator
-    const qrValue = "{{ $qr_code }}";
-    if(qrValue && qrValue.trim() !== ""){
+    // 4. Attendance QR Pass & Scanner Logic
+    const qrValue = "{{ $qr_code ?? '' }}";
+    let qrRendered = false;
+
+    function renderQrCode() {
+        if (!qrValue || qrValue.trim() === "") return;
         const qrBox = document.getElementById("qr-container");
-        if(qrBox) {
+        if (qrBox) {
             qrBox.innerHTML = '';
             new QRCode(qrBox, {
                 text: qrValue,
-                width: 140,
-                height: 140,
+                width: 170,
+                height: 170,
                 colorDark: "#1e266d",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
+            qrRendered = true;
         }
     }
 
+    // Render immediately or when modal shown
+    renderQrCode();
+    $('#qrAttendanceModal').on('shown.bs.modal', function () {
+        if (!qrRendered || $('#qr-container canvas, #qr-container img').length === 0) {
+            renderQrCode();
+        }
+    });
+
+    // Modal Sub-Tabs (QR Pass vs Camera Scanner)
+    $('.qr-modal-tab-btn').on('click', function() {
+        $('.qr-modal-tab-btn').removeClass('active bg-white text-dark shadow-sm').addClass('text-muted');
+        $(this).addClass('active bg-white text-dark shadow-sm').removeClass('text-muted');
+        
+        const targetView = $(this).data('target');
+        $('.qr-modal-view-panel').addClass('d-none');
+        $(targetView).removeClass('d-none');
+
+        if (targetView === '#qrScannerView') {
+            startScanner();
+        } else {
+            stopScanner();
+        }
+    });
+
+    // Download QR Code
     const downloadBtn = document.getElementById('downloadBtn');
-    if(downloadBtn) {
+    if (downloadBtn) {
         downloadBtn.onclick = function(){
             const canvas = document.querySelector('#qr-container canvas');
             const img = document.querySelector('#qr-container img');
             const link = document.createElement('a');
-            link.download = 'attendance-qr-pass.png';
-            if(canvas) {
+            link.download = 'club-attendance-qr.png';
+            if (canvas) {
                 link.href = canvas.toDataURL("image/png");
                 link.click();
-            } else if(img && img.src) {
+            } else if (img && img.src) {
                 link.href = img.src;
                 link.click();
             }
         };
     }
+
+    // Print QR Pass
+    $('#printQrBtn').on('click', function() {
+        const canvas = document.querySelector('#qr-container canvas');
+        const img = document.querySelector('#qr-container img');
+        let qrSrc = '';
+        if (canvas) {
+            qrSrc = canvas.toDataURL("image/png");
+        } else if (img && img.src) {
+            qrSrc = img.src;
+        }
+
+        const clubName = "{{ addslashes($authUser->name ?? 'Fit Coach Club') }}";
+        const printWindow = window.open('', '_blank', 'width=600,height=700');
+        if (printWindow) {
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print Attendance QR - ${clubName}</title>
+                    <style>
+                        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-align: center; padding: 40px; background: #fff; color: #1e293b; }
+                        .pass-card { border: 2.5px dashed #3b46f1; border-radius: 24px; padding: 36px 24px; max-width: 380px; margin: 0 auto; box-sizing: border-box; }
+                        .club-name { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
+                        .pass-subtitle { font-size: 13px; color: #64748b; margin: 0 0 24px 0; }
+                        .qr-wrap { background: #fff; padding: 12px; border-radius: 16px; display: inline-block; border: 1px solid #e2e8f0; }
+                        .qr-wrap img { display: block; }
+                        .pass-badge { display: inline-block; background: #eef2ff; color: #3b46f1; font-weight: 700; font-size: 12px; padding: 5px 14px; border-radius: 20px; margin-top: 20px; }
+                        .instructions { font-size: 11.5px; color: #94a3b8; margin-top: 16px; line-height: 1.5; }
+                    </style>
+                </head>
+                <body>
+                    <div class="pass-card">
+                        <div class="club-name">${clubName}</div>
+                        <div class="pass-subtitle">Daily Attendance &amp; Shake Check-In</div>
+                        <div class="qr-wrap">
+                            <img src="${qrSrc}" width="200" height="200" alt="Attendance QR Code" />
+                        </div>
+                        <br/>
+                        <div class="pass-badge">Fit Coach Club Pass</div>
+                        <div class="instructions">Open your Fit Coach Club Mobile App &gt; Tap Scan to check-in.</div>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); window.close(); };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    });
+
+    // Live HTML5 Camera Scanner
+    let html5QrCode = null;
+    let isScanning = false;
+
+    function startScanner() {
+        if (isScanning) return;
+        if (typeof Html5Qrcode === 'undefined') {
+            $('#scanner-status').html('<span class="text-danger"><i class="fa fa-exclamation-circle me-1"></i> Scanner library loading...</span>');
+            return;
+        }
+
+        $('#scanner-status').html('<span class="text-info"><i class="fa fa-spinner fa-spin me-1"></i> Initializing camera...</span>');
+        
+        try {
+            html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: { width: 200, height: 200 }
+                },
+                (decodedText, decodedResult) => {
+                    // Success callback
+                    $('#scanner-result-box').removeClass('d-none');
+                    $('#scanner-result-text').text(decodedText);
+                    $('#scanner-status').html('<span class="text-success fw-bold"><i class="fa fa-check-circle me-1"></i> QR Scanned Successfully!</span>');
+                },
+                (errorMessage) => {
+                    // Ongoing frame scanning - ignore
+                }
+            ).then(() => {
+                isScanning = true;
+                $('#scanner-status').html('<span class="text-success"><i class="fa fa-camera me-1"></i> Camera active. Align QR in frame.</span>');
+                $('#btnStartScan').addClass('d-none');
+                $('#btnStopScan').removeClass('d-none');
+            }).catch(err => {
+                $('#scanner-status').html('<span class="text-danger"><i class="fa fa-exclamation-triangle me-1"></i> Camera access unavailable or permission denied.</span>');
+            });
+        } catch(e) {
+            $('#scanner-status').html('<span class="text-danger"><i class="fa fa-exclamation-triangle me-1"></i> Scanner error: ' + e.message + '</span>');
+        }
+    }
+
+    function stopScanner() {
+        if (html5QrCode && isScanning) {
+            html5QrCode.stop().then(() => {
+                isScanning = false;
+                $('#scanner-status').html('<span class="text-muted"><i class="fa fa-video-camera me-1"></i> Camera is turned off.</span>');
+                $('#btnStartScan').removeClass('d-none');
+                $('#btnStopScan').addClass('d-none');
+            }).catch(err => {
+                console.error(err);
+                isScanning = false;
+            });
+        }
+    }
+
+    $('#btnStartScan').on('click', startScanner);
+    $('#btnStopScan').on('click', stopScanner);
+
+    // Turn off camera when modal closes
+    $('#qrAttendanceModal').on('hidden.bs.modal', function () {
+        stopScanner();
+        // Reset subtab to Pass View
+        $('.qr-modal-tab-btn[data-target="#qrPassView"]').trigger('click');
+        $('#scanner-result-box').addClass('d-none');
+    });
 </script>
 @endpush
