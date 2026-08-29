@@ -23,8 +23,21 @@
 
     body {
         background-color: var(--fcc-bg) !important;
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        letter-spacing: -0.01em;
+    }
+
+    /* Modern Typography Polish */
+    h1, h2, h3, h4, h5, h6,
+    .fcc-greeting-title,
+    .fcc-pulse-big-num,
+    .fcc-stat-num,
+    .fcc-metric-value,
+    .fcc-card-title,
+    .fcc-tab-btn {
+        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
     }
 
     .fcc-main-container {
@@ -4519,7 +4532,7 @@
                 style: {
                     colors: 'rgba(255, 255, 255, 0.8)',
                     fontSize: '11px',
-                    fontFamily: 'Plus Jakarta Sans, sans-serif'
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
                 }
             },
             axisBorder: { show: false },
@@ -4612,7 +4625,7 @@
                 style: {
                     colors: '#94a3b8',
                     fontSize: '11px',
-                    fontFamily: 'Plus Jakarta Sans, sans-serif'
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
                 }
             },
             axisBorder: { show: false },
@@ -4767,7 +4780,7 @@
             chart: {
                 height: 250,
                 type: 'bar',
-                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false }
             },
             plotOptions: {
@@ -4833,7 +4846,7 @@
             chart: {
                 height: 250,
                 type: 'area',
-                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false }
             },
             colors: ['#10b981', '#3b82f6', '#8b5cf6'],
@@ -4894,7 +4907,7 @@
             chart: {
                 height: 250,
                 type: 'bar',
-                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false }
             },
             colors: ['#059669', '#ef4444'],
@@ -4972,7 +4985,7 @@
                 style: {
                     colors: '#94a3b8',
                     fontSize: '10px',
-                    fontFamily: 'Plus Jakarta Sans, sans-serif'
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
                 }
             },
             axisBorder: { show: false },
@@ -5165,7 +5178,7 @@
                     style: {
                         colors: 'rgba(255, 255, 255, 0.75)',
                         fontSize: '10px',
-                        fontFamily: 'Plus Jakarta Sans, sans-serif'
+                        fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
                     }
                 },
                 axisBorder: { show: false },
@@ -5220,7 +5233,7 @@
             chart: {
                 height: 250,
                 type: 'bar',
-                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false }
             },
             colors: ['#059669', '#ef4444'],

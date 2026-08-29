@@ -21,7 +21,7 @@ $authUser = auth()->user();
                 </a>
             </li>
             <li class="nav-item theme-text d-none d-sm-block ps-1">
-                <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link fw-bold text-dark fs-5 p-0 text-decoration-none" style="letter-spacing: -0.02em; font-family: 'Plus Jakarta Sans', sans-serif;">
+                <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link fw-bold text-dark fs-5 p-0 text-decoration-none" style="letter-spacing: -0.02em; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
                     {{ config('app.name', 'Fit Coach Club') }}
                 </a>
             </li>
