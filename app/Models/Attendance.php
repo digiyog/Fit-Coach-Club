@@ -369,5 +369,11 @@ class Attendance extends Model
             return $attendences->get()->count();
         }
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
+
 

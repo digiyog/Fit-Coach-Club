@@ -20,6 +20,8 @@ class DashboardController extends Controller
 {
     use UploadImage;
 
+    public $viewData = [];
+
     /**
       Home Page
     **/
@@ -27,8 +29,7 @@ class DashboardController extends Controller
     {
         $data = array(
             'pageTitle'             => 'Dashboard',
-            'pageDescrption'        => 'Dashboard',
-            'services'              => $services
+            'pageDescrption'        => 'Dashboard'
         );
 
         return view('nutritions.pages.index')->with($data);
@@ -44,178 +45,243 @@ class DashboardController extends Controller
      */
     public function dashboard(Request $request)
     {
-        // Get Users
         $authUser = auth()->user();
-        //----------
 
-        // $today = Carbon::today();
-
-        // // Users range 188 to 238
-        // $userIds = range(188, 238);
-
-        // foreach ($userIds as $userId) {
-
-        //     $exists = Attendance::where('user_id', $userId)->whereDate('date', $today)->exists();
-        //     $type = rand(1, 10) == 1 ? 1 : 2;
-
-        //     if (!$exists) {
-        //         Attendance::create([
-        //             'user_id' => $userId,
-        //             'date'    => $today,
-        //             'weight'  => rand(30, 70),
-        //             'type'    => $type, // 10% chance Absent
-        //         ]);
-
-        //         $user           = User::where('id', $userId)->first();
-
-        //         if($type == 2 && $user['days'] > 1){
-        //             $attendenceLogs = AttendanceLogs::where('user_id',$user->id)->orderBy('id','DESC')->first();
-
-        //             if ($attendanceLogs) {
-        //                 $data = [
-        //                     'user_id'       => $user->id,
-        //                     'date'          => date('Y-m-d'),
-        //                     'remark'        => 'QR Attendance Add',
-        //                     'days'          => 1,
-        //                     'total_days'    => 1,
-        //                     'created_by'    => $authUser->id,
-        //                 ];
-                        
-        //                 AttendanceLogs::create($data);
-        //             } else {
-        //                 $data = [
-        //                     'user_id'       => $user->id,
-        //                     'date'          => date('Y-m-d'),
-        //                     'remark'        => 'QR Attendance Add',
-        //                     'days'          => 1,
-        //                     'total_days'    => $attendenceLogs['total_days'] - 1,
-        //                     'created_by'    => $authUser->id,
-        //                 ];
-                        
-        //                 AttendanceLogs::create($data);
-        //             }
-
-        //             User::where('id', $userId)->decrement('days', 1);
-        //         }
-        //     } else {
-        //     }
-        // }
-
-        if($request->year_filter != ''){
+        if ($request->year_filter != '') {
             $year = $request->year_filter;
         } else {
             $year = date('Y');
         }
 
-        $months = [];
-        for ($m = 1; $m <= 12; $m++) {
-            $months[] = Carbon::create($year, $m, 1)->format('M y');
+        // 1. Total Members Breakdown
+        $totalUsers = User::where('role_id', 3)->where('created_by', $authUser['id'])->count();
+        $offlineUsers = User::where('role_id', 3)->where('user_state', 'Offline')->where('created_by', $authUser['id'])->count();
+        $onlineUsers = User::where('role_id', 3)->where('user_state', 'Online')->where('created_by', $authUser['id'])->count();
+        $totalCoaches = User::where('role_id', 3)
+            ->where('created_by', $authUser['id'])
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->distinct('coach_name')
+            ->count('coach_name');
+
+        // 2. Weekly Pulse (Last 7 Days) for Attendance and Revenue Charts
+        $weeklyPulseLabels = [];
+        $weeklyPulseAttendance = [];
+        $weeklyPulseRevenue = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $dayDate = Carbon::today()->subDays($i);
+            $dayStr = $dayDate->format('Y-m-d');
+            $weeklyPulseLabels[] = $dayDate->format('M d');
+
+            $attendCount = Attendance::where('franchise_id', $authUser->id)
+                ->where('type', 2)
+                ->whereDate('date', $dayStr)
+                ->count();
+            $weeklyPulseAttendance[] = (int)$attendCount;
+
+            $revSum = Transaction::where('created_by', $authUser->id)
+                ->whereDate('created_at', $dayStr)
+                ->sum('received_amount');
+            if ($revSum == 0) {
+                $revSum = Transaction::where('created_by', $authUser->id)
+                    ->whereDate('created_at', $dayStr)
+                    ->sum('total_amount');
+            }
+            $weeklyPulseRevenue[] = (float)$revSum;
         }
 
-        // This Month Total Shakes
-        $thisMonthTotalShakes = Attendance::select(
-            DB::raw('COUNT(id) as total'),
-            DB::raw('MONTH(created_at) as month')
-        )
-        ->whereYear('created_at', $year)
-        ->where('type', 2)
-        ->where('franchise_id', $authUser->id)
-        ->groupBy(DB::raw('MONTH(created_at)'))
-        ->get();
+        // Previous 7 days vs current 7 days attendance for growth %
+        $prev7DaysAttendance = Attendance::where('franchise_id', $authUser->id)
+            ->where('type', 2)
+            ->whereBetween('date', [Carbon::today()->subDays(13)->format('Y-m-d'), Carbon::today()->subDays(7)->format('Y-m-d')])
+            ->count();
+        $curr7DaysAttendance = array_sum($weeklyPulseAttendance);
 
-        $totalShakeChartData = [];
-
-        for ($m = 1; $m <= 12; $m++) {
-            $totalShakeChartData[] = $thisMonthTotalShakes->where('month', $m)->sum('total');
+        if ($prev7DaysAttendance > 0) {
+            $weeklyGrowthPct = round((($curr7DaysAttendance - $prev7DaysAttendance) / $prev7DaysAttendance) * 100, 1);
+        } else {
+            $weeklyGrowthPct = $curr7DaysAttendance > 0 ? 100 : 0;
         }
 
+        $dailyAvgAttendance = count($weeklyPulseAttendance) > 0 ? round(array_sum($weeklyPulseAttendance) / count($weeklyPulseAttendance), 1) : 0;
+        $weeklyPeakAttendance = count($weeklyPulseAttendance) > 0 ? max($weeklyPulseAttendance) : 0;
 
-        // Users Chart Data
-        $usersRaw = User::select(
-            DB::raw('COUNT(id) as total'),
-            DB::raw('MONTH(created_at) as month'),
-            'user_type'
-        )
-        ->whereYear('created_at', $year)
-        ->groupBy('month', 'user_type')
-        ->where('user_type','!=','')
-        ->where('created_by', $authUser['id'])
-        ->get();
+        // 3. Today Stats
+        $todayDate = date('Y-m-d');
+        $todayCounsellingCount = Attendance::where('franchise_id', $authUser->id)
+            ->where('type', 2)
+            ->whereDate('date', $todayDate)
+            ->distinct('user_id')
+            ->count('user_id');
 
-        $userDemoChartData = [];
-        $userTrailChartData = [];
-        $userRegualrChartData = [];
+        $todayNewMemberships = User::where('role_id', 3)
+            ->where('created_by', $authUser->id)
+            ->whereDate('created_at', $todayDate)
+            ->count();
 
-        for ($m = 1; $m <= 12; $m++) {
-            $userDemoChartData[] = $usersRaw->where('month', $m)->where('user_type', 'Demo User')->sum('total');
-            $userTrailChartData[] = $usersRaw->where('month', $m)->where('user_type', '3 Days Trial')->sum('total');
-            $userRegualrChartData[] = $usersRaw->where('month', $m)->where('user_type', 'Regular User')->sum('total');
+        $todayRenewalsDue = User::where('role_id', 3)
+            ->where('created_by', $authUser->id)
+            ->where('days', '<=', 10)
+            ->where('days', '>', 0)
+            ->count();
+
+        $todayUrgentRenewals = User::where('role_id', 3)
+            ->where('created_by', $authUser->id)
+            ->where('days', '<=', 3)
+            ->where('days', '>', 0)
+            ->count();
+
+        $thisMonthBirthdayUsers = User::where('role_id', 3)
+            ->where('created_by', $authUser['id'])
+            ->whereDay('date_of_birth', now()->day)
+            ->whereMonth('date_of_birth', now()->month)
+            ->get();
+
+        // 4. Metric Cards
+        $thisMonthShake = Attendance::where('franchise_id', $authUser->id)
+            ->where('type', 2)
+            ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->count();
+
+        $thisMonthRevenue = Transaction::where('created_by', $authUser->id)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('received_amount');
+        if ($thisMonthRevenue == 0) {
+            $thisMonthRevenue = Transaction::where('created_by', $authUser->id)
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->sum('total_amount');
         }
 
-        // Transaction Chart
-        $transactionRaw = Transaction::select(
-            DB::raw('SUM(total_amount) as total_amount'),
-            DB::raw('MONTH(created_at) as month'),
-            'title'
-        )
-        ->whereYear('created_at', $year)
-        ->whereIn('title', ['Add User Days', 'Order Placed'])
-        // ->where('payment_status', 1)
-        ->groupBy('month', 'title')
-        ->where('created_by', $authUser['id'])
-        ->get();
-
-        $transactionAddUserChartData = [];
-        $transactionOrderPlacedChartData = [];
-
-        for ($m = 1; $m <= 12; $m++) {
-            $transactionAddUserChartData[] = $transactionRaw->where('month', $m)->where('title', 'Add User Days')->sum('total_amount');
-            $transactionOrderPlacedChartData[] = $transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('total_amount');
+        $todayCollected = Transaction::where('created_by', $authUser->id)
+            ->whereDate('created_at', $todayDate)
+            ->sum('received_amount');
+        if ($todayCollected == 0) {
+            $todayCollected = Transaction::where('created_by', $authUser->id)
+                ->whereDate('created_at', $todayDate)
+                ->sum('total_amount');
         }
 
-        $totalUsers     = User::where('role_id', 3)->where('created_by', $authUser['id'])->get()->count();
-        $thisMonthShake = Attendance::where('franchise_id', $authUser->id)->where('type', 2)->whereMonth('date', now()->month)->whereYear('date', now()->year)->count();
+        $todayCheckedIn = Attendance::where('franchise_id', $authUser->id)
+            ->where('type', 2)
+            ->whereDate('date', $todayDate)
+            ->count();
 
-        $offlineUsers     = User::where('role_id', 3)->where('user_state', 'Offline')->where('created_by', $authUser['id'])->get()->count();
-        $onlineUsers     = User::where('role_id', 3)->where('user_state', 'Online')->where('created_by', $authUser['id'])->get()->count();
-
-        $thisMonthUsers     = User::where('role_id', 3)->where('created_by', $authUser['id'])->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->get()->count();
-
-        $todayAttendences = AttendanceLogs::
-        leftJoin('users', function($join) use ($authUser){
-            $join->on('attendance_logs.user_id', '=', 'users.id');
-        })
-        ->where('users.created_by', $authUser->id)
-        ->where('date', date('Y-m-d'))
-        ->get();
+        $todayAttendences = AttendanceLogs::select('attendance_logs.*', 'users.name', 'users.coach_name')
+            ->leftJoin('users', function($join) use ($authUser){
+                $join->on('attendance_logs.user_id', '=', 'users.id');
+            })
+            ->where('users.created_by', $authUser->id)
+            ->where('attendance_logs.date', $todayDate)
+            ->get();
 
         $today2Attendences = Attendance::select(
-            'attendances.user_id',
-            'attendances.date',
-            'users.name',
-            'users.coach_name',
-            DB::raw('COUNT(attendances.id) as total_attendance')
-        )
-        ->join('users', 'attendances.user_id', '=', 'users.id')
-        ->where('attendances.franchise_id', $authUser->id)
-        ->where('attendances.type', 2)
-        ->where('attendances.date', date('Y-m-d'))
-        ->groupBy('attendances.user_id')
-        ->having('total_attendance', '>', 1)
-        ->get();
+                'attendances.user_id',
+                'attendances.date',
+                'users.name',
+                'users.coach_name',
+                DB::raw('COUNT(attendances.id) as total_attendance')
+            )
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->where('attendances.franchise_id', $authUser->id)
+            ->where('attendances.type', 2)
+            ->whereDate('attendances.date', $todayDate)
+            ->groupBy('attendances.user_id', 'attendances.date', 'users.name', 'users.coach_name')
+            ->having('total_attendance', '>', 1)
+            ->get();
 
-        $month = now()->month;
-        $year  = now()->year;
+        // 5. Expiring Memberships & Pending Payments
+        $paymentPendings = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
+            ->where("users.role_type", 'user')
+            ->where("users.created_by", $authUser->id)
+            ->where('due_amount', '>', 0)
+            ->orderBy('due_amount', 'DESC')
+            ->get();
 
-        // Agar current month hai → aaj tak
-        if ($month == now()->month && $year == now()->year) {
-            $totalDaysTillToday = now()->day;
-        } else {
-            // Purana month hai → full month
-            $totalDaysTillToday = Carbon::createFromDate($year, $month)->daysInMonth;
+        $membershipExpires = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
+            ->where("users.role_type", 'user')
+            ->where("users.created_by", $authUser->id)
+            ->where('days', '<=', 10)
+            ->orderBy('days', 'ASC')
+            ->get();
+
+        $totalAlertsCount = count($membershipExpires->where('days', '<=', 3)) + count($paymentPendings) + count($thisMonthBirthdayUsers);
+
+        // Dynamic Action Queue Items
+        $actionQueueItems = [];
+        foreach ($membershipExpires->take(4) as $mExp) {
+            $actionQueueItems[] = [
+                'name' => $mExp->name,
+                'subtext' => ($mExp->days <= 0) ? 'Membership expired' : 'Membership expires in ' . $mExp->days . ' ' . \Illuminate\Support\Str::plural('day', $mExp->days),
+                'action_label' => 'Renew',
+                'action_url' => route('nutritionPanel.users.addUserDays', ['id' => ev($mExp->id)]),
+                'color_class' => 'av-red',
+                'link_class' => 'link-renew'
+            ];
+        }
+        foreach ($paymentPendings->take(4) as $pPen) {
+            $actionQueueItems[] = [
+                'name' => $pPen->name,
+                'subtext' => '₹' . number_format($pPen->due_amount, 0) . ' payment due',
+                'action_label' => 'Remind',
+                'action_url' => route('nutritionPanel.users.details', ['id' => ev($pPen->id)]),
+                'color_class' => 'av-orange',
+                'link_class' => 'link-remind'
+            ];
         }
 
-        // Top 20 January Attendance
+        // 6. Dynamic Recent Activity Feed (Latest Attendances + Transactions)
+        $recentAttendances = Attendance::select('attendances.*', 'users.name as user_name')
+            ->leftJoin('users', 'attendances.user_id', '=', 'users.id')
+            ->where('attendances.franchise_id', $authUser->id)
+            ->where('attendances.type', 2)
+            ->orderBy('attendances.id', 'DESC')
+            ->limit(5)
+            ->get();
+
+        $recentTransactions = Transaction::select('transactions.*', 'users.name as user_name')
+            ->leftJoin('users', 'transactions.user_id', '=', 'users.id')
+            ->where('transactions.created_by', $authUser->id)
+            ->orderBy('transactions.id', 'DESC')
+            ->limit(5)
+            ->get();
+
+        $recentActivities = collect();
+        foreach ($recentAttendances as $att) {
+            $recentActivities->push([
+                'title' => ($att->user_name ? ucfirst($att->user_name) : 'Member') . ' checked in',
+                'time' => $att->created_at ? $att->created_at->diffForHumans() : ($att->date ? date('d M, h:i A', strtotime($att->date)) : 'Today'),
+                'raw_time' => $att->created_at ? $att->created_at->timestamp : strtotime($att->date ?? 'now'),
+                'dot_class' => 'fcc-dot-green'
+            ]);
+        }
+        foreach ($recentTransactions as $trx) {
+            $amt = $trx->received_amount ?: $trx->total_amount;
+            $recentActivities->push([
+                'title' => ($trx->user_name ? ucfirst($trx->user_name) : 'Member') . ' payment of ₹' . number_format($amt, 0) . ' recorded',
+                'time' => $trx->created_at ? $trx->created_at->diffForHumans() : 'Recent',
+                'raw_time' => $trx->created_at ? $trx->created_at->timestamp : 0,
+                'dot_class' => 'fcc-dot-blue'
+            ]);
+        }
+        $recentActivities = $recentActivities->sortByDesc('raw_time')->take(5)->values();
+
+        // 7. Top 20 & Least 20 Attendance
+        $month = now()->month;
+        $currYear = now()->year;
+
+        if ($month == now()->month && $currYear == now()->year) {
+            $totalDaysTillToday = now()->day;
+        } else {
+            $totalDaysTillToday = Carbon::createFromDate($currYear, $month)->daysInMonth;
+        }
+        if ($totalDaysTillToday <= 0) {
+            $totalDaysTillToday = 1;
+        }
+
         $top20Attendance = Attendance::select(
             'attendances.user_id',
             'users.name',
@@ -232,7 +298,7 @@ class DashboardController extends Controller
         ->where('attendances.franchise_id', $authUser->id)
         ->where('attendances.type', 2)
         ->whereMonth('attendances.date', $month)
-        ->whereYear('attendances.date', $year)
+        ->whereYear('attendances.date', $currYear)
         ->groupBy(
             'attendances.user_id',
             'users.name',
@@ -242,7 +308,6 @@ class DashboardController extends Controller
         ->limit(20)
         ->get();
 
-        // Least 20 January Attendance
         $least20Attendance = Attendance::select(
             'attendances.user_id',
             'users.name',
@@ -259,7 +324,7 @@ class DashboardController extends Controller
         ->where('attendances.franchise_id', $authUser->id)
         ->where('attendances.type', 2)
         ->whereMonth('attendances.date', $month)
-        ->whereYear('attendances.date', $year)
+        ->whereYear('attendances.date', $currYear)
         ->groupBy(
             'attendances.user_id',
             'users.name',
@@ -269,15 +334,59 @@ class DashboardController extends Controller
         ->limit(20)
         ->get();
 
-        // Pending Payments
-        $paymentPendings = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
-        ->where("users.role_type", 'user')->where("users.created_by", $authUser->id)->where('due_amount','>', 0)->orderBy('due_amount', 'DESC')->get();
+        // 8. Yearly Charts (Shake Count, Users Breakdown, Transactions Breakdown)
+        $thisMonthTotalShakes = Attendance::select(
+            DB::raw('COUNT(id) as total'),
+            DB::raw('MONTH(date) as month')
+        )
+        ->whereYear('date', $year)
+        ->where('type', 2)
+        ->where('franchise_id', $authUser->id)
+        ->groupBy(DB::raw('MONTH(date)'))
+        ->get();
 
-        // Customer whose Membership Expire Soon
-        $membershipExpires = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
-        ->where("users.role_type", 'user')->where("users.created_by", $authUser->id)->where('days','<=', 10)->orderBy('id', 'DESC')->get();
+        $totalShakeChartData = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $totalShakeChartData[] = (int)($thisMonthTotalShakes->where('month', $m)->sum('total'));
+        }
 
-        $thisMonthBirthdayUsers = User::where('role_id', 3)->where('created_by', $authUser['id'])->whereDay('date_of_birth', now()->day)->whereMonth('date_of_birth', now()->month)->get();
+        $usersRaw = User::select(
+            DB::raw('COUNT(id) as total'),
+            DB::raw('MONTH(created_at) as month'),
+            'user_type'
+        )
+        ->whereYear('created_at', $year)
+        ->groupBy('month', 'user_type')
+        ->where('user_type', '!=', '')
+        ->where('created_by', $authUser['id'])
+        ->get();
+
+        $userDemoChartData = [];
+        $userTrailChartData = [];
+        $userRegualrChartData = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $userDemoChartData[] = (int)($usersRaw->where('month', $m)->where('user_type', 'Demo User')->sum('total'));
+            $userTrailChartData[] = (int)($usersRaw->where('month', $m)->where('user_type', '3 Days Trial')->sum('total'));
+            $userRegualrChartData[] = (int)($usersRaw->where('month', $m)->where('user_type', 'Regular User')->sum('total'));
+        }
+
+        $transactionRaw = Transaction::select(
+            DB::raw('SUM(COALESCE(received_amount, total_amount)) as total_amount'),
+            DB::raw('MONTH(created_at) as month'),
+            'title'
+        )
+        ->whereYear('created_at', $year)
+        ->whereIn('title', ['Add User Days', 'Order Placed'])
+        ->groupBy('month', 'title')
+        ->where('created_by', $authUser['id'])
+        ->get();
+
+        $transactionAddUserChartData = [];
+        $transactionOrderPlacedChartData = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $transactionAddUserChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Add User Days')->sum('total_amount'));
+            $transactionOrderPlacedChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('total_amount'));
+        }
 
         $secretyKey = 1234567890;
         $encryption = new \MrShan0\CryptoLib\CryptoLib();
@@ -289,28 +398,52 @@ class DashboardController extends Controller
 
         $this->viewData['breadcrumb'] = $breadcrumb;
         $this->viewData['qr_code'] = $plainText;
+        $this->viewData['authUser'] = $authUser;
+
         $this->viewData['totalUsers'] = $totalUsers;
-        $this->viewData['thisMonthShake'] = $thisMonthShake;
         $this->viewData['offlineUsers'] = $offlineUsers;
         $this->viewData['onlineUsers'] = $onlineUsers;
-        $this->viewData['thisMonthUsers'] = $thisMonthUsers;
+        $this->viewData['totalCoaches'] = $totalCoaches;
+
+        $this->viewData['weeklyPulseLabels'] = $weeklyPulseLabels;
+        $this->viewData['weeklyPulseAttendance'] = $weeklyPulseAttendance;
+        $this->viewData['weeklyPulseRevenue'] = $weeklyPulseRevenue;
+        $this->viewData['dailyAvgAttendance'] = $dailyAvgAttendance;
+        $this->viewData['weeklyPeakAttendance'] = $weeklyPeakAttendance;
+        $this->viewData['weeklyGrowthPct'] = $weeklyGrowthPct;
+
+        $this->viewData['todayCounsellingCount'] = $todayCounsellingCount;
+        $this->viewData['todayNewMemberships'] = $todayNewMemberships;
+        $this->viewData['todayRenewalsDue'] = $todayRenewalsDue;
+        $this->viewData['todayUrgentRenewals'] = $todayUrgentRenewals;
+        $this->viewData['thisMonthBirthdayUsers'] = $thisMonthBirthdayUsers;
+        $this->viewData['totalAlertsCount'] = $totalAlertsCount;
+
+        $this->viewData['thisMonthShake'] = $thisMonthShake;
+        $this->viewData['thisMonthRevenue'] = $thisMonthRevenue;
+        $this->viewData['today'] = $todayDate;
         $this->viewData['todayAttendences'] = $todayAttendences;
         $this->viewData['today2Attendences'] = $today2Attendences;
+        $this->viewData['todayCollected'] = $todayCollected;
+        $this->viewData['todayCheckedIn'] = $todayCheckedIn;
+
+        $this->viewData['actionQueueItems'] = $actionQueueItems;
+        $this->viewData['recentActivities'] = $recentActivities;
+
         $this->viewData['top20Attendance'] = $top20Attendance;
         $this->viewData['least20Attendance'] = $least20Attendance;
         $this->viewData['totalDaysInMonth'] = $totalDaysTillToday;
+
         $this->viewData['paymentPendings'] = $paymentPendings;
         $this->viewData['membershipExpires'] = $membershipExpires;
-        $this->viewData['authUser'] = $authUser;
+
         $this->viewData['totalShakeChartData'] = $totalShakeChartData;
         $this->viewData['userDemoChartData'] = $userDemoChartData;
         $this->viewData['userTrailChartData'] = $userTrailChartData;
         $this->viewData['userRegualrChartData'] = $userRegualrChartData;
         $this->viewData['transactionAddUserChartData'] = $transactionAddUserChartData;
         $this->viewData['transactionOrderPlacedChartData'] = $transactionOrderPlacedChartData;
-        $this->viewData['thisMonthBirthdayUsers'] = $thisMonthBirthdayUsers;
 
         return view('nutrition-panel.dashboard.index')->with($this->viewData);
     }
-
 }

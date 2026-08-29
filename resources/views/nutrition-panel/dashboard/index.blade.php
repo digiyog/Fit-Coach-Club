@@ -215,17 +215,29 @@
         border-radius: 3px 3px 0 0;
     }
 
-    /* 3. Section 1: Hero Grid (Club pulse + Today) */
+    /* 3. Section 1: Hero Grid (Club pulse + Today + QR Code) */
     .fcc-hero-grid {
         display: grid;
-        grid-template-columns: 1.52fr 1fr;
+        grid-template-columns: 1.35fr 1fr 1.05fr;
         gap: 20px;
         margin-bottom: 20px;
+    }
+
+    @media (max-width: 1300px) {
+        .fcc-hero-grid {
+            grid-template-columns: 1.2fr 1fr;
+        }
+        .fcc-qr-card {
+            grid-column: span 2;
+        }
     }
 
     @media (max-width: 991px) {
         .fcc-hero-grid {
             grid-template-columns: 1fr;
+        }
+        .fcc-qr-card {
+            grid-column: span 1;
         }
     }
 
@@ -432,6 +444,91 @@
     .fcc-btn-scan-qr:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 18px rgba(59, 70, 241, 0.38);
+    }
+
+    /* QR Attendance Card */
+    .fcc-qr-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 20px 18px 16px 18px;
+        box-shadow: var(--fcc-card-shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+    }
+
+    .fcc-qr-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #3246d3;
+        line-height: 1.35;
+        margin-bottom: 2px;
+    }
+
+    .fcc-qr-frame {
+        background: #ffffff;
+        padding: 8px;
+        border-radius: 12px;
+        border: 2px dashed #cbd5e1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 6px auto 12px auto;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    #qr-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #qr-container img, #qr-container canvas {
+        display: block;
+        margin: 0 auto;
+        border-radius: 4px;
+    }
+
+    .fcc-qr-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .fcc-btn-qr {
+        flex: 1;
+        padding: 8px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 9px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        background: #3b46f1;
+        color: #ffffff !important;
+        box-shadow: 0 3px 10px rgba(59, 70, 241, 0.25);
+    }
+
+    .fcc-btn-qr:hover {
+        background: #2b35db;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 14px rgba(59, 70, 241, 0.35);
+    }
+
+    @media print {
+        body * { visibility: hidden !important; }
+        #print-area, #print-area * { visibility: visible !important; }
+        #print-area { position: absolute; left: 0; top: 0; width: 100%; text-align: center; }
     }
 
     /* 4. Section 2: 4 Metric Cards */
@@ -1009,7 +1106,9 @@
 
                 <a href="#action-queue-section" class="fcc-icon-btn" title="Alerts">
                     <i class="fa fa-bell-o"></i>
-                    <span class="badge-dot">7</span>
+                    @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
+                        <span class="badge-dot">{{ $totalAlertsCount }}</span>
+                    @endif
                 </a>
 
                 <div class="fcc-plan-pill">
@@ -1048,14 +1147,14 @@
 
                         <div class="fcc-pulse-stats-row">
                             <div>
-                                <div class="fcc-pulse-big-num">{{ $totalUsers ?? 68 }}</div>
+                                <div class="fcc-pulse-big-num">{{ $totalUsers ?? 0 }}</div>
                                 <div class="fcc-pulse-big-lbl">total users</div>
                             </div>
 
                             <div class="fcc-pulse-pills">
                                 <div class="fcc-pulse-pill-item">
                                     <i class="fa fa-building-o"></i>
-                                    <span>{{ $offlineUsers ?? 31 }} offline</span>
+                                    <span>{{ $offlineUsers ?? 0 }} offline</span>
                                 </div>
                                 <div class="fcc-pulse-pill-item">
                                     <i class="fa fa-wifi"></i>
@@ -1063,7 +1162,7 @@
                                 </div>
                                 <div class="fcc-pulse-pill-item">
                                     <i class="fa fa-user-circle-o"></i>
-                                    <span>3 coaches</span>
+                                    <span>{{ $totalCoaches ?? 0 }} {{ \Illuminate\Support\Str::plural('coach', $totalCoaches ?? 0) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1092,7 +1191,7 @@
                                     <i class="fa fa-commenting-o"></i>
                                 </div>
                                 <div class="fcc-today-text">
-                                    <strong>22</strong> counselling sessions
+                                    <strong>{{ $todayCounsellingCount ?? 0 }}</strong> counselling sessions
                                 </div>
                             </div>
                             <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
@@ -1104,7 +1203,7 @@
                                     <i class="fa fa-user-plus"></i>
                                 </div>
                                 <div class="fcc-today-text">
-                                    <strong>11</strong> new memberships
+                                    <strong>{{ $todayNewMemberships ?? 0 }}</strong> new memberships
                                 </div>
                             </div>
                             <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-action-chevron">Follow up <i class="fa fa-chevron-right"></i></a>
@@ -1116,7 +1215,7 @@
                                     <i class="fa fa-calendar-o"></i>
                                 </div>
                                 <div class="fcc-today-text">
-                                    <strong>14</strong> renewals due · <span class="fcc-urgent-badge">5 urgent</span>
+                                    <strong>{{ $todayRenewalsDue ?? 0 }}</strong> renewals due @if(($todayUrgentRenewals ?? 0) > 0)· <span class="fcc-urgent-badge">{{ $todayUrgentRenewals }} urgent</span>@endif
                                 </div>
                             </div>
                             <a href="#action-queue-section" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
@@ -1128,30 +1227,52 @@
                                     <i class="fa fa-gift"></i>
                                 </div>
                                 <div class="fcc-today-text">
-                                    <strong>2</strong> birthdays
+                                    <strong>{{ count($thisMonthBirthdayUsers ?? []) }}</strong> birthdays
                                 </div>
                             </div>
-                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#birthdayModal" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                            <a href="#today-birthday-section" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
                     </div>
 
-                    <button type="button" class="fcc-btn-scan-qr" data-bs-toggle="modal" data-bs-target="#qrScanModal">
-                        <i class="fa fa-qrcode"></i> Scan attendance
-                    </button>
+                    <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-btn-scan-qr">
+                        <i class="fa fa-list-alt"></i> Attendance Register
+                    </a>
+                </div>
+
+                <!-- 3. Attendance QR Code Card -->
+                <div class="fcc-qr-card">
+                    <div>
+                        <div class="fcc-qr-title">You can scan your Attendance by following QR code.</div>
+                    </div>
+
+                    <div class="fcc-qr-frame">
+                        <div id="print-area">
+                            <div id="qr-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="fcc-qr-actions">
+                        <button type="button" onclick="window.print()" class="fcc-btn-qr fcc-btn-print">
+                            Print QR Code
+                        </button>
+                        <button type="button" id="downloadBtn" class="fcc-btn-qr fcc-btn-download">
+                            Download PNG
+                        </button>
+                    </div>
                 </div>
 
             </div>
 
             <!-- SECTION 2: 4 METRIC CARDS -->
             <div class="fcc-metrics-row">
-                <!-- 1. August shake count -->
+                <!-- 1. Current month shake count -->
                 <div class="fcc-metric-card">
                     <div class="fcc-metric-left">
                         <div class="fcc-metric-circle mc-blue">
                             <i class="fa fa-line-chart"></i>
                         </div>
                         <div>
-                            <div class="fcc-metric-num">{{ $thisMonthShake ?? 560 }}</div>
+                            <div class="fcc-metric-num">{{ $thisMonthShake ?? 0 }}</div>
                             <div class="fcc-metric-label">{{ date('F') }} shake count</div>
                         </div>
                     </div>
@@ -1167,7 +1288,7 @@
                             <i class="fa fa-inr"></i>
                         </div>
                         <div>
-                            <div class="fcc-metric-num">₹ 1,62,400</div>
+                            <div class="fcc-metric-num">₹ {{ number_format($thisMonthRevenue ?? 0, 0) }}</div>
                             <div class="fcc-metric-label">monthly revenue</div>
                         </div>
                     </div>
@@ -1183,7 +1304,7 @@
                             <i class="fa fa-credit-card"></i>
                         </div>
                         <div>
-                            <div class="fcc-metric-num">₹ 8,780</div>
+                            <div class="fcc-metric-num">₹ {{ number_format($todayCollected ?? 0, 0) }}</div>
                             <div class="fcc-metric-label">collected today</div>
                         </div>
                     </div>
@@ -1199,7 +1320,7 @@
                             <i class="fa fa-user-check"></i>
                         </div>
                         <div>
-                            <div class="fcc-metric-num">68</div>
+                            <div class="fcc-metric-num">{{ $todayCheckedIn ?? 0 }}</div>
                             <div class="fcc-metric-label">checked in today</div>
                         </div>
                     </div>
@@ -1229,17 +1350,17 @@
                     <div class="fcc-summary-chips">
                         <div class="fcc-sum-chip">
                             <i class="fa fa-bar-chart text-primary"></i>
-                            <div><strong>64</strong> daily average</div>
+                            <div><strong>{{ $dailyAvgAttendance ?? 0 }}</strong> daily average</div>
                         </div>
 
                         <div class="fcc-sum-chip">
                             <i class="fa fa-line-chart" style="color: #8b5cf6;"></i>
-                            <div><strong>82</strong> weekly peak</div>
+                            <div><strong>{{ $weeklyPeakAttendance ?? 0 }}</strong> weekly peak</div>
                         </div>
 
                         <div class="fcc-sum-chip">
-                            <i class="fa fa-arrow-up" style="color: #10b981;"></i>
-                            <div><strong style="color: #10b981;">+12%</strong> this week</div>
+                            <i class="fa fa-arrow-up" style="color: {{ ($weeklyGrowthPct ?? 0) >= 0 ? '#10b981' : '#ef4444' }};"></i>
+                            <div><strong style="color: {{ ($weeklyGrowthPct ?? 0) >= 0 ? '#10b981' : '#ef4444' }};">{{ ($weeklyGrowthPct ?? 0) >= 0 ? '+'.$weeklyGrowthPct : $weeklyGrowthPct }}%</strong> this week</div>
                         </div>
                     </div>
                 </div>
@@ -1252,59 +1373,50 @@
                         </div>
 
                         <div class="fcc-queue-group">
-                            <div class="fcc-queue-row">
-                                <div class="fcc-queue-avatar-side">
-                                    <div class="fcc-avatar-circle av-red">RS</div>
-                                    <div class="fcc-queue-info">
-                                        <h6>Rahul Sharma</h6>
-                                        <p>Membership expires today</p>
+                            @if(isset($actionQueueItems) && count($actionQueueItems) > 0)
+                                @foreach($actionQueueItems as $item)
+                                    @php
+                                        $words = explode(' ', trim($item['name']));
+                                        $initials = '';
+                                        foreach(array_slice($words, 0, 2) as $w) {
+                                            $initials .= strtoupper(substr($w, 0, 1));
+                                        }
+                                    @endphp
+                                    <div class="fcc-queue-row">
+                                        <div class="fcc-queue-avatar-side">
+                                            <div class="fcc-avatar-circle {{ $item['color_class'] }}">{{ $initials ?: 'M' }}</div>
+                                            <div class="fcc-queue-info">
+                                                <h6>{{ ucfirst($item['name']) }}</h6>
+                                                <p>{{ $item['subtext'] }}</p>
+                                            </div>
+                                        </div>
+                                        <a href="{{ $item['action_url'] }}" class="fcc-queue-link {{ $item['link_class'] }}">{{ $item['action_label'] }} <i class="fa fa-chevron-right"></i></a>
                                     </div>
+                                @endforeach
+                            @else
+                                <div class="py-3 text-center text-muted" style="font-size: 13px;">
+                                    <i class="fa fa-check-circle text-success me-1"></i> All action items are up to date!
                                 </div>
-                                <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-queue-link link-renew">Renew <i class="fa fa-chevron-right"></i></a>
-                            </div>
-
-                            <div class="fcc-queue-row">
-                                <div class="fcc-queue-avatar-side">
-                                    <div class="fcc-avatar-circle av-orange">NP</div>
-                                    <div class="fcc-queue-info">
-                                        <h6>Neha Patel</h6>
-                                        <p>₹2,500 payment due</p>
-                                    </div>
-                                </div>
-                                <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-queue-link link-remind">Remind <i class="fa fa-chevron-right"></i></a>
-                            </div>
-
-                            <div class="fcc-queue-row">
-                                <div class="fcc-queue-avatar-side">
-                                    <div class="fcc-avatar-circle av-purple">SG</div>
-                                    <div class="fcc-queue-info">
-                                        <h6>Sneha Gupta</h6>
-                                        <p>BMI follow-up overdue</p>
-                                    </div>
-                                </div>
-                                <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-queue-link link-review">Review <i class="fa fa-chevron-right"></i></a>
-                            </div>
+                            @endif
                         </div>
                     </div>
 
                     <div class="fcc-activity-feed-box">
                         <div class="fcc-feed-title">Recent activity</div>
 
-                        <div class="fcc-feed-row">
-                            <div class="fcc-feed-left">
-                                <span class="fcc-dot-green"></span>
-                                <span>Rahul Sharma checked in</span>
-                            </div>
-                            <span class="fcc-feed-time">Today, 7:45 AM</span>
-                        </div>
-
-                        <div class="fcc-feed-row">
-                            <div class="fcc-feed-left">
-                                <span class="fcc-dot-blue"></span>
-                                <span>Neha Patel payment received</span>
-                            </div>
-                            <span class="fcc-feed-time">Yesterday, 8:15 PM</span>
-                        </div>
+                        @if(isset($recentActivities) && count($recentActivities) > 0)
+                            @foreach($recentActivities as $activity)
+                                <div class="fcc-feed-row">
+                                    <div class="fcc-feed-left">
+                                        <span class="{{ $activity['dot_class'] }}"></span>
+                                        <span>{{ $activity['title'] }}</span>
+                                    </div>
+                                    <span class="fcc-feed-time">{{ $activity['time'] }}</span>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="text-muted py-2" style="font-size: 12px;">No recent activity recorded yet today.</div>
+                        @endif
 
                         <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-open-feed-link">
                             Open activity feed <i class="fa fa-chevron-right"></i>
@@ -1314,7 +1426,203 @@
 
             </div>
 
-            <!-- SECTION 4: TOP 20 ATTENDANCE PREVIEW LEADERBOARD -->
+            <!-- SECTION 4: TODAY'S BIRTHDAYS -->
+            <div class="fcc-leaderboard-card mb-4" id="today-birthday-section">
+                <div class="fcc-leaderboard-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <h3 class="fcc-leaderboard-title" style="color: #3246d3;">
+                            <span>Today's Birthdays</span>
+                            <span style="font-size: 20px;">🎂</span>
+                        </h3>
+                        <span class="badge bg-primary rounded-pill px-3 py-1.5" style="font-size: 12px; font-weight: 700;">
+                            {{ count($thisMonthBirthdayUsers ?? []) }} {{ \Illuminate\Support\Str::plural('Member', count($thisMonthBirthdayUsers ?? [])) }}
+                        </span>
+                    </div>
+                    <span class="text-muted" style="font-size: 13px; font-weight: 600;">
+                        <i class="fa fa-calendar text-primary me-1"></i> {{ date('d F Y') }}
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr style="font-size: 12.5px; color: #64748b; border-bottom: 1px solid #f1f5f9; background: #f8fafc;">
+                                <th style="padding: 12px 16px;">Customer Name</th>
+                                <th style="padding: 12px 16px;">Birthday Year</th>
+                                <th style="padding: 12px 16px;">User Type</th>
+                                <th style="padding: 12px 16px; text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                @foreach($thisMonthBirthdayUsers as $bUser)
+                                    <tr>
+                                        <td style="padding: 14px 16px;">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="fcc-avatar-circle av-purple" style="width: 38px; height: 38px; font-size: 13px;">
+                                                    {{ strtoupper(substr($bUser->name, 0, 1)) }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark" style="font-size: 14px;">{{ ucfirst($bUser->name) }}</div>
+                                                    @if($bUser->coach_name)
+                                                        <div class="text-muted" style="font-size: 11.5px;">Coach: {{ $bUser->coach_name }}</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: #334155;">
+                                            {{ date('Y', strtotime($bUser->date_of_birth)) }}
+                                        </td>
+                                        <td style="padding: 14px 16px;">
+                                            <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; border: 1px solid #dbeafe;">
+                                                {{ $bUser->user_type }} @if($bUser->user_state) ({{ $bUser->user_state }}) @endif
+                                            </span>
+                                        </td>
+                                        <td style="padding: 14px 16px; text-align: right;">
+                                            @if(!empty($bUser->mobile_number))
+                                                <a href="https://wa.me/91{{ preg_replace('/[^0-9]/', '', $bUser->mobile_number) }}?text=Happy%20Birthday%20{{ urlencode($bUser->name) }}!%20Wishing%20you%20a%20healthy%20and%20fit%20year%20ahead!%20🎉" target="_blank" class="btn btn-sm btn-success px-3 py-1.5" style="border-radius: 9px; font-size: 12px; font-weight: 700; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
+                                                    <i class="fa fa-whatsapp me-1"></i> Wish on WhatsApp
+                                                </a>
+                                            @else
+                                                <span class="badge bg-light text-muted" style="font-size: 12px;">🎉 Birthday Today</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <div style="font-size: 28px; margin-bottom: 6px;">🎂</div>
+                                        <div style="font-size: 14px; font-weight: 700; color: #475569;">No birthdays today!</div>
+                                        <div style="font-size: 12px; color: #94a3b8;">When a member has a birthday today, they will appear here to send wishes.</div>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 5: TODAY'S ATTENDANCE LOGS & MULTIPLE CHECK-INS -->
+            <div class="row g-4 mb-4">
+                <!-- Left: More Than One Attendance Card -->
+                <div class="col-xl-6 col-lg-12 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0">
+                        <div class="fcc-leaderboard-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fcc-leaderboard-title" style="color: #3246d3; font-size: 16px;">
+                                    <span>More Than One Attendance on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
+                                </h3>
+                                <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
+                                    {{ count($today2Attendences ?? []) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr style="font-size: 12px; color: #64748b; background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                                        <th style="padding: 10px 14px;">Name</th>
+                                        <th style="padding: 10px 14px;">Date</th>
+                                        <th style="padding: 10px 14px; text-align: center;">Attendance Count</th>
+                                        <th style="padding: 10px 14px;">Coach</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($today2Attendences) && count($today2Attendences) > 0)
+                                        @foreach($today2Attendences as $today2Attendence)
+                                            <tr>
+                                                <td style="padding: 12px 14px; font-weight: 700; color: #1e293b;">
+                                                    {{ ucfirst($today2Attendence->name) }}
+                                                </td>
+                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #64748b;">
+                                                    {{ $today2Attendence->date }}
+                                                </td>
+                                                <td style="padding: 12px 14px; text-align: center;">
+                                                    <span class="badge bg-danger px-2.5 py-1" style="border-radius: 8px; font-size: 12px; font-weight: 700;">
+                                                        {{ $today2Attendence->total_attendance }} check-ins
+                                                    </span>
+                                                </td>
+                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #334155;">
+                                                    {{ $today2Attendence->coach_name ?? 'N/A' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">
+                                                <i class="fa fa-check-circle text-success me-1"></i> No duplicate/multiple attendances recorded today.
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Updation Logs Card -->
+                <div class="col-xl-6 col-lg-12 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0">
+                        <div class="fcc-leaderboard-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fcc-leaderboard-title" style="color: #3246d3; font-size: 16px;">
+                                    <span>Updation on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
+                                </h3>
+                                <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
+                                    {{ count($todayAttendences ?? []) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr style="font-size: 12px; color: #64748b; background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                                        <th style="padding: 10px 14px;">Name</th>
+                                        <th style="padding: 10px 14px;">Type / Remark</th>
+                                        <th style="padding: 10px 14px; text-align: center;">Count</th>
+                                        <th style="padding: 10px 14px;">Date</th>
+                                        <th style="padding: 10px 14px;">Coach</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($todayAttendences) && count($todayAttendences) > 0)
+                                        @foreach($todayAttendences as $todayAttendence)
+                                            <tr>
+                                                <td style="padding: 12px 14px; font-weight: 700; color: #1e293b;">
+                                                    {{ ucfirst($todayAttendence->name) }}
+                                                </td>
+                                                <td style="padding: 12px 14px; font-size: 12px;">
+                                                    <span class="badge bg-light text-dark border">{{ $todayAttendence->remark ?? 'Attendance' }}</span>
+                                                </td>
+                                                <td style="padding: 12px 14px; text-align: center; font-weight: 700; color: #3b82f6;">
+                                                    1
+                                                </td>
+                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #64748b;">
+                                                    {{ $todayAttendence->date }}
+                                                </td>
+                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #334155;">
+                                                    {{ $todayAttendence->coach_name ?? 'N/A' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="fa fa-info-circle me-1"></i> No attendance updates logged today.
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: TOP 20 ATTENDANCE PREVIEW LEADERBOARD -->
             <div class="fcc-leaderboard-card">
                 <div class="fcc-leaderboard-header">
                     <div class="d-flex align-items-center gap-2">
@@ -1377,40 +1685,9 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td><span class="fcc-rank-badge rank-gold">🥇 1</span></td>
-                                    <td><span class="fcc-member-name">Rajan Rathi</span></td>
-                                    <td><span class="fcc-days-pill">16 / 26</span></td>
-                                    <td>
-                                        <div class="fcc-prog-container">
-                                            <div class="fcc-prog-track"><div class="fcc-prog-bar" style="width: 61.54%;"></div></div>
-                                            <span class="fcc-prog-pct">61.54%</span>
-                                        </div>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <i class="fa fa-calendar-o me-1"></i> No attendance records found yet this month.
                                     </td>
-                                    <td><span class="fcc-coach-name">Daksha</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="fcc-rank-badge rank-silver">🥈 2</span></td>
-                                    <td><span class="fcc-member-name">Vijaya Solanki</span></td>
-                                    <td><span class="fcc-days-pill">15 / 26</span></td>
-                                    <td>
-                                        <div class="fcc-prog-container">
-                                            <div class="fcc-prog-track"><div class="fcc-prog-bar" style="width: 57.69%;"></div></div>
-                                            <span class="fcc-prog-pct">57.69%</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="fcc-coach-name">Daksha</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="fcc-rank-badge rank-bronze">🥉 3</span></td>
-                                    <td><span class="fcc-member-name">Daksha Sankhla</span></td>
-                                    <td><span class="fcc-days-pill">15 / 26</span></td>
-                                    <td>
-                                        <div class="fcc-prog-container">
-                                            <div class="fcc-prog-track"><div class="fcc-prog-bar" style="width: 57.69%;"></div></div>
-                                            <span class="fcc-prog-pct">57.69%</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="fcc-coach-name">Mark Hughes</span></td>
                                 </tr>
                             @endif
                         </tbody>
@@ -1659,31 +1936,6 @@
     </div>
 </div>
 
-<!-- QR MODAL -->
-<div class="modal fade" id="qrScanModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 18px;">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Club Attendance QR Code</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center py-4">
-                <p class="text-muted fs-6 mb-3">Members can scan this QR code directly at your club to mark attendance.</p>
-                <div id="print-area" class="d-flex justify-content-center my-3">
-                    <div id="qr-container" style="padding: 16px; background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 16px;"></div>
-                </div>
-                <div class="d-flex justify-content-center gap-2 mt-4">
-                    <button type="button" onclick="window.print()" class="btn btn-primary px-4 py-2" style="border-radius: 10px;">
-                        <i class="fa fa-print me-1"></i> Print QR Pass
-                    </button>
-                    <button type="button" id="downloadBtn" class="btn btn-dark px-4 py-2" style="border-radius: 10px;">
-                        <i class="fa fa-download me-1"></i> Download PNG
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- BIRTHDAY MODAL -->
 <div class="modal fade" id="birthdayModal" tabindex="-1" aria-hidden="true">
@@ -1748,8 +2000,9 @@
     });
 
     // 1. Club Pulse Area Line Chart
-    var weeklyPulseLabels = ['Aug 19', 'Aug 20', 'Aug 21', 'Aug 22', 'Aug 23', 'Aug 24', 'Aug 25'];
-    var weeklyPulseData = [45, 52, 68, 55, 48, 58, 68];
+    var weeklyPulseLabels = {!! json_encode($weeklyPulseLabels ?? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) !!};
+    var weeklyPulseAttendance = {!! json_encode($weeklyPulseAttendance ?? [0, 0, 0, 0, 0, 0, 0]) !!};
+    var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
     var pulseOptions = {
         chart: {
@@ -1760,7 +2013,7 @@
         },
         series: [{
             name: 'Attendance',
-            data: weeklyPulseData
+            data: weeklyPulseAttendance
         }],
         xaxis: {
             categories: weeklyPulseLabels,
@@ -1776,7 +2029,6 @@
         },
         yaxis: {
             min: 0,
-            max: 100,
             tickAmount: 4,
             labels: {
                 style: {
@@ -1810,7 +2062,7 @@
         },
         annotations: {
             yaxis: [{
-                y: 70,
+                y: 50,
                 borderColor: 'rgba(255, 255, 255, 0.45)',
                 strokeDashArray: 4,
                 label: {
@@ -1820,7 +2072,7 @@
                         background: 'transparent',
                         fontSize: '10.5px'
                     },
-                    text: 'Target (70)',
+                    text: 'Avg Target',
                     position: 'right'
                 }
             }]
@@ -1832,15 +2084,12 @@
         },
         tooltip: {
             theme: 'dark',
-            y: { formatter: function(val) { return val + ' users'; } }
+            y: { formatter: function(val) { return val + ' members'; } }
         }
     };
     new ApexCharts(document.querySelector("#clubPulseChart"), pulseOptions).render();
 
     // 2. Performance Story Area Chart
-    var perfAttendanceData = [45, 52, 68, 55, 48, 58, 68];
-    var perfRevenueData = [5400, 6800, 12000, 8900, 7500, 10200, 8780];
-
     var performanceOptions = {
         chart: {
             type: 'area',
@@ -1850,7 +2099,7 @@
         },
         series: [{
             name: 'Attendance',
-            data: perfAttendanceData
+            data: weeklyPulseAttendance
         }],
         xaxis: {
             categories: weeklyPulseLabels,
@@ -1866,7 +2115,6 @@
         },
         yaxis: {
             min: 0,
-            max: 100,
             tickAmount: 4,
             labels: {
                 style: {
@@ -1898,23 +2146,6 @@
                 stops: [0, 100]
             }
         },
-        annotations: {
-            yaxis: [{
-                y: 70,
-                borderColor: '#cbd5e1',
-                strokeDashArray: 4,
-                label: {
-                    borderColor: 'transparent',
-                    style: {
-                        color: '#6b7280',
-                        background: 'transparent',
-                        fontSize: '11px'
-                    },
-                    text: 'Target (70)',
-                    position: 'right'
-                }
-            }]
-        },
         grid: {
             borderColor: '#f3f4f6',
             strokeDashArray: 4,
@@ -1922,7 +2153,7 @@
         },
         tooltip: {
             theme: 'light',
-            y: { formatter: function(val) { return val + ' users'; } }
+            y: { formatter: function(val) { return val + ' members'; } }
         }
     };
     var performanceChart = new ApexCharts(document.querySelector("#performanceStoryChart"), performanceOptions);
@@ -1934,10 +2165,10 @@
         performanceChart.updateOptions({
             colors: ['#3b82f6'],
             markers: { colors: ['#3b82f6'] },
-            yaxis: { min: 0, max: 100, tickAmount: 4 },
-            tooltip: { y: { formatter: function(v) { return v + ' users'; } } }
+            yaxis: { min: 0, max: undefined, tickAmount: 4 },
+            tooltip: { y: { formatter: function(v) { return v + ' members'; } } }
         });
-        performanceChart.updateSeries([{ name: 'Attendance', data: perfAttendanceData }]);
+        performanceChart.updateSeries([{ name: 'Attendance', data: weeklyPulseAttendance }]);
     });
 
     $('#btnToggleRevenue').on('click', function() {
@@ -1946,14 +2177,14 @@
         performanceChart.updateOptions({
             colors: ['#8b5cf6'],
             markers: { colors: ['#8b5cf6'] },
-            yaxis: { min: undefined, max: undefined, tickAmount: 4 },
+            yaxis: { min: 0, max: undefined, tickAmount: 4 },
             tooltip: { y: { formatter: function(v) { return '₹ ' + Number(v).toLocaleString('en-IN'); } } }
         });
-        performanceChart.updateSeries([{ name: 'Revenue (₹)', data: perfRevenueData }]);
+        performanceChart.updateSeries([{ name: 'Revenue (₹)', data: weeklyPulseRevenue }]);
     });
 
     // 3. Yearly Analytics Charts
-    var shakeCount = {!! json_encode($totalShakeChartData ?? [45, 60, 75, 80, 65, 90, 85, 110, 95, 100, 105, 120]) !!};
+    var shakeCount = {!! json_encode($totalShakeChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
     new ApexCharts(document.querySelector("#shakeCountGraph"), {
         chart: { height: 280, type: 'bar', fontFamily: 'Plus Jakarta Sans, sans-serif', toolbar: { show: false } },
         colors: ['#3b46f1'],
@@ -1963,9 +2194,9 @@
         xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
     }).render();
 
-    var userDemoChartData = {!! json_encode($userDemoChartData ?? [10, 15, 20, 25, 18, 22, 30, 28, 35, 40, 38, 42]) !!};
-    var userTrailChartData = {!! json_encode($userTrailChartData ?? [5, 8, 12, 14, 10, 15, 18, 20, 22, 25, 24, 28]) !!};
-    var userRegualrChartData = {!! json_encode($userRegualrChartData ?? [20, 30, 45, 50, 48, 60, 70, 75, 80, 90, 95, 105]) !!};
+    var userDemoChartData = {!! json_encode($userDemoChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
+    var userTrailChartData = {!! json_encode($userTrailChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
+    var userRegualrChartData = {!! json_encode($userRegualrChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
 
     new ApexCharts(document.querySelector("#revenueMonthly"), {
         chart: { fontFamily: 'Plus Jakarta Sans, sans-serif', height: 280, type: 'area', toolbar: { show: false } },
@@ -1980,8 +2211,8 @@
         xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
     }).render();
 
-    var transactionAddUserChartData = {!! json_encode($transactionAddUserChartData ?? [15000, 22000, 30000, 35000, 28000, 40000, 45000, 50000, 48000, 55000, 60000, 65000]) !!};
-    var transactionOrderPlacedChartData = {!! json_encode($transactionOrderPlacedChartData ?? [25000, 32000, 45000, 50000, 42000, 60000, 70000, 80000, 75000, 85000, 90000, 97400]) !!};
+    var transactionAddUserChartData = {!! json_encode($transactionAddUserChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
+    var transactionOrderPlacedChartData = {!! json_encode($transactionOrderPlacedChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
 
     new ApexCharts(document.querySelector("#incomeExpenseGraph"), {
         chart: { height: 280, type: 'bar', fontFamily: 'Plus Jakarta Sans, sans-serif', toolbar: { show: false } },
@@ -1998,24 +2229,32 @@
     // 4. QR Code Generator
     const qrValue = "{{ $qr_code }}";
     if(qrValue && qrValue.trim() !== ""){
-        new QRCode(document.getElementById("qr-container"), {
-            text: qrValue,
-            width: 160,
-            height: 160,
-            colorDark: "#3246d3",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
+        const qrBox = document.getElementById("qr-container");
+        if(qrBox) {
+            qrBox.innerHTML = '';
+            new QRCode(qrBox, {
+                text: qrValue,
+                width: 140,
+                height: 140,
+                colorDark: "#1e266d",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
     }
 
     const downloadBtn = document.getElementById('downloadBtn');
     if(downloadBtn) {
         downloadBtn.onclick = function(){
             const canvas = document.querySelector('#qr-container canvas');
+            const img = document.querySelector('#qr-container img');
+            const link = document.createElement('a');
+            link.download = 'attendance-qr-pass.png';
             if(canvas) {
-                const link = document.createElement('a');
-                link.download = 'qr-' + qrValue + '.png';
-                link.href = canvas.toDataURL();
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            } else if(img && img.src) {
+                link.href = img.src;
                 link.click();
             }
         };
