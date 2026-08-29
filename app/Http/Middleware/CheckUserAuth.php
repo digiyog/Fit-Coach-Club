@@ -17,20 +17,20 @@ class CheckUserAuth
      */
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-        $response->headers->set('Cache-Control','nocache, no-store, max-age=0, must-revalidate');
-        $response->headers->set('Pragma','no-cache');
-        $response->headers->set('Expires','Fri, 01 Jan 1990 00:00:00 GMT');
-
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             return redirect()->route('adminPanel.login');
         }
 
         $user = Auth::user();
 
-        if ($user->role_type == 'franchise') {
+        if (($user->role_type ?? '') == 'franchise') {
             return redirect()->route('nutritionPanel.login');
         }
+
+        $response = $next($request);
+        $response->headers->set('Cache-Control','nocache, no-store, max-age=0, must-revalidate');
+        $response->headers->set('Pragma','no-cache');
+        $response->headers->set('Expires','Fri, 01 Jan 1990 00:00:00 GMT');
 
         return $response;
     }

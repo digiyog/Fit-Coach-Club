@@ -77,17 +77,17 @@ class DashboardController extends Controller
             $dayStr = $dayDate->format('Y-m-d');
             $weeklyPulseLabels[] = $dayDate->format('M d');
 
-            $attendCount = Attendance::where('franchise_id', $authUser->id)
+            $attendCount = Attendance::where('franchise_id', $userId)
                 ->where('type', 2)
                 ->whereDate('date', $dayStr)
                 ->count();
             $weeklyPulseAttendance[] = (int)$attendCount;
 
-            $revSum = Transaction::where('created_by', $authUser->id)
+            $revSum = Transaction::where('created_by', $userId)
                 ->whereDate('created_at', $dayStr)
                 ->sum('received_amount');
             if ($revSum == 0) {
-                $revSum = Transaction::where('created_by', $authUser->id)
+                $revSum = Transaction::where('created_by', $userId)
                     ->whereDate('created_at', $dayStr)
                     ->sum('total_amount');
             }
@@ -95,7 +95,7 @@ class DashboardController extends Controller
         }
 
         // Previous 7 days vs current 7 days attendance for growth %
-        $prev7DaysAttendance = Attendance::where('franchise_id', $authUser->id)
+        $prev7DaysAttendance = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->whereBetween('date', [Carbon::today()->subDays(13)->format('Y-m-d'), Carbon::today()->subDays(7)->format('Y-m-d')])
             ->count();
@@ -112,31 +112,31 @@ class DashboardController extends Controller
 
         // 3. Today Stats
         $todayDate = date('Y-m-d');
-        $todayCounsellingCount = Attendance::where('franchise_id', $authUser->id)
+        $todayCounsellingCount = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->whereDate('date', $todayDate)
             ->distinct('user_id')
             ->count('user_id');
 
         $todayNewMemberships = User::where('role_id', 3)
-            ->where('created_by', $authUser->id)
+            ->where('created_by', $userId)
             ->whereDate('created_at', $todayDate)
             ->count();
 
         $thisMonthNewMembers = User::where('role_id', 3)
-            ->where('created_by', $authUser->id)
+            ->where('created_by', $userId)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
         $todayRenewalsDue = User::where('role_id', 3)
-            ->where('created_by', $authUser->id)
+            ->where('created_by', $userId)
             ->where('days', '<=', 10)
             ->where('days', '>', 0)
             ->count();
 
         $todayUrgentRenewals = User::where('role_id', 3)
-            ->where('created_by', $authUser->id)
+            ->where('created_by', $userId)
             ->where('days', '<=', 3)
             ->where('days', '>', 0)
             ->count();
@@ -148,33 +148,33 @@ class DashboardController extends Controller
             ->get();
 
         // 4. Metric Cards
-        $thisMonthShake = Attendance::where('franchise_id', $authUser->id)
+        $thisMonthShake = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->count();
 
-        $thisMonthRevenue = Transaction::where('created_by', $authUser->id)
+        $thisMonthRevenue = Transaction::where('created_by', $userId)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('received_amount');
         if ($thisMonthRevenue == 0) {
-            $thisMonthRevenue = Transaction::where('created_by', $authUser->id)
+            $thisMonthRevenue = Transaction::where('created_by', $userId)
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->sum('total_amount');
         }
 
-        $todayCollected = Transaction::where('created_by', $authUser->id)
+        $todayCollected = Transaction::where('created_by', $userId)
             ->whereDate('created_at', $todayDate)
             ->sum('received_amount');
         if ($todayCollected == 0) {
-            $todayCollected = Transaction::where('created_by', $authUser->id)
+            $todayCollected = Transaction::where('created_by', $userId)
                 ->whereDate('created_at', $todayDate)
                 ->sum('total_amount');
         }
 
-        $todayCheckedIn = Attendance::where('franchise_id', $authUser->id)
+        $todayCheckedIn = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->whereDate('date', $todayDate)
             ->count();
@@ -183,7 +183,7 @@ class DashboardController extends Controller
             ->leftJoin('users', function($join) use ($authUser){
                 $join->on('attendance_logs.user_id', '=', 'users.id');
             })
-            ->where('users.created_by', $authUser->id)
+            ->where('users.created_by', $userId)
             ->where('attendance_logs.date', $todayDate)
             ->get();
 
@@ -195,7 +195,7 @@ class DashboardController extends Controller
                 DB::raw('COUNT(attendances.id) as total_attendance')
             )
             ->join('users', 'attendances.user_id', '=', 'users.id')
-            ->where('attendances.franchise_id', $authUser->id)
+            ->where('attendances.franchise_id', $userId)
             ->where('attendances.type', 2)
             ->whereDate('attendances.date', $todayDate)
             ->groupBy('attendances.user_id', 'attendances.date', 'users.name', 'users.coach_name')
@@ -205,14 +205,14 @@ class DashboardController extends Controller
         // 5. Expiring Memberships & Pending Payments
         $paymentPendings = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
             ->where("users.role_type", 'user')
-            ->where("users.created_by", $authUser->id)
+            ->where("users.created_by", $userId)
             ->where('due_amount', '>', 0)
             ->orderBy('due_amount', 'DESC')
             ->get();
 
         $membershipExpires = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
             ->where("users.role_type", 'user')
-            ->where("users.created_by", $authUser->id)
+            ->where("users.created_by", $userId)
             ->where('days', '<=', 10)
             ->orderBy('days', 'ASC')
             ->get();
@@ -245,7 +245,7 @@ class DashboardController extends Controller
         // 6. Dynamic Recent Activity Feed (Latest Attendances + Transactions)
         $recentAttendances = Attendance::select('attendances.*', 'users.name as user_name')
             ->leftJoin('users', 'attendances.user_id', '=', 'users.id')
-            ->where('attendances.franchise_id', $authUser->id)
+            ->where('attendances.franchise_id', $userId)
             ->where('attendances.type', 2)
             ->orderBy('attendances.id', 'DESC')
             ->limit(5)
@@ -253,7 +253,7 @@ class DashboardController extends Controller
 
         $recentTransactions = Transaction::select('transactions.*', 'users.name as user_name')
             ->leftJoin('users', 'transactions.user_id', '=', 'users.id')
-            ->where('transactions.created_by', $authUser->id)
+            ->where('transactions.created_by', $userId)
             ->orderBy('transactions.id', 'DESC')
             ->limit(5)
             ->get();
@@ -304,7 +304,7 @@ class DashboardController extends Controller
             ")
         )
         ->join('users', 'users.id', '=', 'attendances.user_id')
-        ->where('attendances.franchise_id', $authUser->id)
+        ->where('attendances.franchise_id', $userId)
         ->where('attendances.type', 2)
         ->whereMonth('attendances.date', $month)
         ->whereYear('attendances.date', $currYear)
@@ -330,7 +330,7 @@ class DashboardController extends Controller
             ")
         )
         ->join('users', 'users.id', '=', 'attendances.user_id')
-        ->where('attendances.franchise_id', $authUser->id)
+        ->where('attendances.franchise_id', $userId)
         ->where('attendances.type', 2)
         ->whereMonth('attendances.date', $month)
         ->whereYear('attendances.date', $currYear)
@@ -350,7 +350,7 @@ class DashboardController extends Controller
         )
         ->whereYear('date', $year)
         ->where('type', 2)
-        ->where('franchise_id', $authUser->id)
+        ->where('franchise_id', $userId)
         ->groupBy(DB::raw('MONTH(date)'))
         ->get();
 
