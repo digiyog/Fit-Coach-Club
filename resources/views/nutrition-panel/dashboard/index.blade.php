@@ -1147,135 +1147,127 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: TODAY'S BIRTHDAYS -->
-            <div class="fcc-leaderboard-card mb-4" id="today-birthday-section">
-                <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
-                    <div class="d-flex align-items-center gap-2">
-                        <h3 class="fcc-leaderboard-title" style="color: #3246d3;">
-                            <span>Today's Birthdays</span>
-                            <span style="font-size: 20px;">🎂</span>
-                        </h3>
-                        <span class="badge bg-primary rounded-pill px-3 py-1.5" style="font-size: 12px; font-weight: 700;">
-                            {{ count($thisMonthBirthdayUsers ?? []) }} {{ \Illuminate\Support\Str::plural('Member', count($thisMonthBirthdayUsers ?? [])) }}
-                        </span>
-                    </div>
-                    <span class="text-muted" style="font-size: 13px; font-weight: 600;">
-                        <i class="fa fa-calendar text-primary me-1"></i> {{ date('d F Y') }}
-                    </span>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr style="font-size: 12.5px; color: #64748b; border-bottom: 1px solid #f1f5f9; background: #f8fafc;">
-                                <th style="padding: 12px 16px;">Customer Name</th>
-                                <th style="padding: 12px 16px;">Birthday Year</th>
-                                <th style="padding: 12px 16px;">User Type</th>
-                                <th style="padding: 12px 16px; text-align: right;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
-                                @foreach($thisMonthBirthdayUsers as $bUser)
-                                    <tr>
-                                        <td style="padding: 14px 16px;">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <div class="fcc-avatar-circle av-purple" style="width: 38px; height: 38px; font-size: 13px;">
-                                                    {{ strtoupper(substr($bUser->name, 0, 1)) }}
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold text-dark" style="font-size: 14px;">{{ ucfirst($bUser->name) }}</div>
-                                                    @if($bUser->coach_name)
-                                                        <div class="text-muted" style="font-size: 11.5px;">Coach: {{ $bUser->coach_name }}</div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td style="padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: #334155;">
-                                            {{ date('Y', strtotime($bUser->date_of_birth)) }}
-                                        </td>
-                                        <td style="padding: 14px 16px;">
-                                            <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; border: 1px solid #dbeafe;">
-                                                {{ $bUser->user_type }} @if($bUser->user_state) ({{ $bUser->user_state }}) @endif
-                                            </span>
-                                        </td>
-                                        <td style="padding: 14px 16px; text-align: right;">
-                                            @if(!empty($bUser->mobile_number))
-                                                <a href="https://wa.me/91{{ preg_replace('/[^0-9]/', '', $bUser->mobile_number) }}?text=Happy%20Birthday%20{{ urlencode($bUser->name) }}!%20Wishing%20you%20a%20healthy%20and%20fit%20year%20ahead!%20🎉" target="_blank" class="btn btn-sm btn-success px-3 py-1.5" style="border-radius: 9px; font-size: 12px; font-weight: 700; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
-                                                    <i class="fa fa-whatsapp me-1"></i> Wish on WhatsApp
-                                                </a>
-                                            @else
-                                                <span class="badge bg-light text-muted" style="font-size: 12px;">🎉 Birthday Today</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">
-                                        <div style="font-size: 28px; margin-bottom: 6px;">🎂</div>
-                                        <div style="font-size: 14px; font-weight: 700; color: #475569;">No birthdays today!</div>
-                                        <div style="font-size: 12px; color: #94a3b8;">When a member has a birthday today, they will appear here to send wishes.</div>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
-            <!-- ROW 3: TODAY'S ATTENDANCE LOGS & MULTIPLE CHECK-INS -->
-            <div class="row g-4 mb-4">
-                <!-- Left: More Than One Attendance Card -->
-                <div class="col-xl-6 col-lg-12 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0" style="padding: 24px;">
+            <!-- SECTION 3: TABLES IN ONE LINE (3 EQUAL COLUMNS) -->
+            <div class="row g-3 mb-4">
+                
+                <!-- Table 1: Today's Birthdays -->
+                <div class="col-xl-4 col-lg-4 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" id="today-birthday-section" style="padding: 20px;">
                         <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
                             <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 16px; font-weight: 700;">
-                                    <span>More Than One Attendance on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
+                                    <span>Today Birthday</span>
+                                    <span style="font-size: 18px;">🎂</span>
+                                </h3>
+                                @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px; font-weight: 700;">
+                                        {{ count($thisMonthBirthdayUsers) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="table-responsive flex-grow-1">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <th style="padding: 8px 10px;">CUSTOMER NAME</th>
+                                        <th style="padding: 8px 10px;">YEAR</th>
+                                        <th style="padding: 8px 10px;">USER TYPE</th>
+                                        @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                            <th style="padding: 8px 10px; text-align: right;">ACTION</th>
+                                        @endif
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                        @foreach($thisMonthBirthdayUsers as $bUser)
+                                            <tr>
+                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
+                                                    {{ ucfirst($bUser->name) }}
+                                                    @if($bUser->coach_name)
+                                                        <div class="text-muted" style="font-size: 11px; font-weight: normal;">Coach: {{ $bUser->coach_name }}</div>
+                                                    @endif
+                                                </td>
+                                                <td style="padding: 10px 10px; font-size: 12.5px; font-weight: 600; color: #475569;">
+                                                    {{ date('Y', strtotime($bUser->date_of_birth)) }}
+                                                </td>
+                                                <td style="padding: 10px 10px;">
+                                                    <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                                                        {{ $bUser->user_type }}
+                                                    </span>
+                                                </td>
+                                                <td style="padding: 10px 10px; text-align: right;">
+                                                    @if(!empty($bUser->mobile_number))
+                                                        <a href="https://wa.me/91{{ preg_replace('/[^0-9]/', '', $bUser->mobile_number) }}?text=Happy%20Birthday%20{{ urlencode($bUser->name) }}!%20Wishing%20you%20a%20healthy%20and%20fit%20year%20ahead!%20🎉" target="_blank" class="btn btn-sm btn-success px-2 py-1" style="border-radius: 6px; font-size: 11px; font-weight: 700;">
+                                                            <i class="fa fa-whatsapp me-1"></i> Wish
+                                                        </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
+                                                No Record Found !!
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table 2: More Than One Attendance Card -->
+                <div class="col-xl-4 col-lg-4 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" style="padding: 20px;">
+                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
+                                    <span>More Than One Attendance</span>
                                 </h3>
                                 @if(isset($today2Attendences) && count($today2Attendences) > 0)
-                                    <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
+                                    <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11px;">
                                         {{ count($today2Attendences) }}
                                     </span>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive flex-grow-1">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
-                                    <tr style="font-size: 12px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <th style="padding: 10px 14px;">Name</th>
-                                        <th style="padding: 10px 14px;">Date</th>
-                                        <th style="padding: 10px 14px; text-align: center;">Attendance Count</th>
-                                        <th style="padding: 10px 14px;">Coach</th>
+                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <th style="padding: 8px 10px;">Name</th>
+                                        <th style="padding: 8px 10px;">Date</th>
+                                        <th style="padding: 8px 10px; text-align: center;">Count</th>
+                                        <th style="padding: 8px 10px;">Coach</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if(isset($today2Attendences) && count($today2Attendences) > 0)
                                         @foreach($today2Attendences as $today2Attendence)
                                             <tr>
-                                                <td style="padding: 12px 14px; font-weight: 700; color: #1e293b;">
+                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
                                                     {{ ucfirst($today2Attendence->name) }}
                                                 </td>
-                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #64748b;">
+                                                <td style="padding: 10px 10px; font-size: 12px; color: #64748b;">
                                                     {{ $today2Attendence->date }}
                                                 </td>
-                                                <td style="padding: 12px 14px; text-align: center;">
-                                                    <span class="badge bg-danger px-2.5 py-1" style="border-radius: 8px; font-size: 12px; font-weight: 700;">
-                                                        {{ $today2Attendence->total_attendance }} check-ins
+                                                <td style="padding: 10px 10px; text-align: center;">
+                                                    <span class="badge bg-danger px-2 py-0.5" style="border-radius: 6px; font-size: 11.5px; font-weight: 700;">
+                                                        {{ $today2Attendence->total_attendance }}
                                                     </span>
                                                 </td>
-                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #334155;">
+                                                <td style="padding: 10px 10px; font-size: 12px; color: #334155;">
                                                     {{ $today2Attendence->coach_name ?? 'N/A' }}
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13.5px;">
+                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
                                                 No Record Found !!
                                             </td>
                                         </tr>
@@ -1286,57 +1278,57 @@
                     </div>
                 </div>
 
-                <!-- Right: Updation Logs Card -->
-                <div class="col-xl-6 col-lg-12 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0" style="padding: 24px;">
+                <!-- Table 3: Updation Logs Card -->
+                <div class="col-xl-4 col-lg-4 col-12">
+                    <div class="fcc-leaderboard-card h-100 mb-0 d-flex flex-column" style="padding: 20px;">
                         <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
                             <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 16px; font-weight: 700;">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 15px; font-weight: 700;">
                                     <span>Updation on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
                                 </h3>
                                 @if(isset($todayAttendences) && count($todayAttendences) > 0)
-                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
+                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px;">
                                         {{ count($todayAttendences) }}
                                     </span>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive flex-grow-1">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
-                                    <tr style="font-size: 12px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <th style="padding: 10px 14px;">Name</th>
-                                        <th style="padding: 10px 14px;">Type / Remark</th>
-                                        <th style="padding: 10px 14px; text-align: center;">Count</th>
-                                        <th style="padding: 10px 14px;">Date</th>
-                                        <th style="padding: 10px 14px;">Coach</th>
+                                    <tr style="font-size: 11.5px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <th style="padding: 8px 10px;">Name</th>
+                                        <th style="padding: 8px 10px;">Remark</th>
+                                        <th style="padding: 8px 10px; text-align: center;">Count</th>
+                                        <th style="padding: 8px 10px;">Date</th>
+                                        <th style="padding: 8px 10px;">Coach</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if(isset($todayAttendences) && count($todayAttendences) > 0)
                                         @foreach($todayAttendences as $todayAttendence)
                                             <tr>
-                                                <td style="padding: 12px 14px; font-weight: 700; color: #1e293b;">
+                                                <td style="padding: 10px 10px; font-weight: 700; color: #1e293b; font-size: 13px;">
                                                     {{ ucfirst($todayAttendence->name) }}
                                                 </td>
-                                                <td style="padding: 12px 14px; font-size: 12px;">
+                                                <td style="padding: 10px 10px; font-size: 11.5px;">
                                                     <span class="badge bg-light text-dark border">{{ $todayAttendence->remark ?? 'Attendance' }}</span>
                                                 </td>
-                                                <td style="padding: 12px 14px; text-align: center; font-weight: 700; color: #3b82f6;">
+                                                <td style="padding: 10px 10px; text-align: center; font-weight: 700; color: #3b82f6; font-size: 12px;">
                                                     1
                                                 </td>
-                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #64748b;">
+                                                <td style="padding: 10px 10px; font-size: 11.5px; color: #64748b;">
                                                     {{ $todayAttendence->date }}
                                                 </td>
-                                                <td style="padding: 12px 14px; font-size: 12.5px; color: #334155;">
+                                                <td style="padding: 10px 10px; font-size: 11.5px; color: #334155;">
                                                     {{ $todayAttendence->coach_name ?? 'N/A' }}
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="5" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13.5px;">
+                                            <td colspan="5" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13px;">
                                                 No Record Found !!
                                             </td>
                                         </tr>
@@ -1346,6 +1338,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
