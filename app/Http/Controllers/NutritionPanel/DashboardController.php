@@ -397,6 +397,66 @@ class DashboardController extends Controller
             $transactionOrderPlacedChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('total_amount'));
         }
 
+        // 9. Coach List & Performance Analytics
+        $coachesData = User::select(
+            'coach_name',
+            DB::raw('COUNT(id) as total_members'),
+            DB::raw('SUM(CASE WHEN status = 1 AND days > 0 THEN 1 ELSE 0 END) as active_members'),
+            DB::raw('SUM(CASE WHEN days <= 0 OR status = 0 THEN 1 ELSE 0 END) as inactive_members'),
+            DB::raw('SUM(CASE WHEN user_state = "Online" THEN 1 ELSE 0 END) as online_members'),
+            DB::raw('SUM(CASE WHEN user_state = "Offline" THEN 1 ELSE 0 END) as offline_members'),
+            DB::raw('SUM(CASE WHEN due_amount > 0 THEN due_amount ELSE 0 END) as total_due_amount')
+        )
+        ->where('role_type', 'user')
+        ->where('created_by', $userId)
+        ->whereNotNull('coach_name')
+        ->where('coach_name', '!=', '')
+        ->groupBy('coach_name')
+        ->orderByDesc('total_members')
+        ->get();
+
+        $coachMonthlyAttendance = Attendance::join('users', 'attendances.user_id', '=', 'users.id')
+            ->where('attendances.franchise_id', $userId)
+            ->where('attendances.type', 2)
+            ->whereMonth('attendances.date', now()->month)
+            ->whereYear('attendances.date', now()->year)
+            ->whereNotNull('users.coach_name')
+            ->where('users.coach_name', '!=', '')
+            ->groupBy('users.coach_name')
+            ->selectRaw('users.coach_name, COUNT(attendances.id) as total_attendance')
+            ->pluck('total_attendance', 'coach_name');
+
+        $coachMonthlyRevenue = Transaction::join('users', 'transactions.user_id', '=', 'users.id')
+            ->where('transactions.created_by', $userId)
+            ->whereMonth('transactions.created_at', now()->month)
+            ->whereYear('transactions.created_at', now()->year)
+            ->whereNotNull('users.coach_name')
+            ->where('users.coach_name', '!=', '')
+            ->groupBy('users.coach_name')
+            ->selectRaw('users.coach_name, SUM(COALESCE(transactions.received_amount, transactions.total_amount)) as total_revenue')
+            ->pluck('total_revenue', 'coach_name');
+
+        $coachMembers = User::select('id', 'name', 'email', 'mobile_number', 'coach_name', 'user_type', 'user_state', 'days', 'due_amount', 'status', 'created_at')
+            ->where('role_type', 'user')
+            ->where('created_by', $userId)
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->map(function ($u) {
+                $u->encrypted_id = ev($u->id);
+                $u->details_url = route('nutritionPanel.users.details', ['id' => ev($u->id)]);
+                return $u;
+            })
+            ->groupBy('coach_name');
+
+        $unassignedMembersCount = User::where('role_type', 'user')
+            ->where('created_by', $userId)
+            ->where(function($q) {
+                $q->whereNull('coach_name')->orWhere('coach_name', '');
+            })
+            ->count();
+
         $secretyKey = 1234567890;
         $encryption = new \MrShan0\CryptoLib\CryptoLib();
         $plainText  = $encryption->encryptPlainTextWithRandomIV($userId, $secretyKey);
@@ -413,6 +473,12 @@ class DashboardController extends Controller
         $this->viewData['offlineUsers'] = $offlineUsers;
         $this->viewData['onlineUsers'] = $onlineUsers;
         $this->viewData['totalCoaches'] = $totalCoaches;
+
+        $this->viewData['coachesData'] = $coachesData;
+        $this->viewData['coachMonthlyAttendance'] = $coachMonthlyAttendance;
+        $this->viewData['coachMonthlyRevenue'] = $coachMonthlyRevenue;
+        $this->viewData['coachMembers'] = $coachMembers;
+        $this->viewData['unassignedMembersCount'] = $unassignedMembersCount;
 
         $this->viewData['weeklyPulseLabels'] = $weeklyPulseLabels;
         $this->viewData['weeklyPulseAttendance'] = $weeklyPulseAttendance;

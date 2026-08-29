@@ -1035,6 +1035,56 @@
         box-shadow: var(--fcc-card-shadow);
         margin-bottom: 20px;
     }
+
+    /* Coach Hub Styles */
+    .fcc-coach-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: var(--fcc-card-shadow);
+        transition: all 0.2s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .fcc-coach-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08);
+        border-color: #cbd5e1;
+    }
+
+    .fcc-coach-avatar-lg {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.25);
+        flex-shrink: 0;
+    }
+
+    .fcc-coach-avatar-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        margin-right: 10px;
+        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+    }
 </style>
 @endpush
 
@@ -1095,6 +1145,7 @@
         <!-- 2. NAVIGATION TABS BAR -->
         <div class="fcc-tabs-bar">
             <a class="fcc-tab-btn active" data-tab="tab-overview">Overview</a>
+            <a class="fcc-tab-btn" data-tab="tab-coaches">Coaches <span class="badge rounded-pill bg-primary ms-1" style="font-size: 11px; padding: 2px 7px;">{{ count($coachesData ?? []) }}</span></a>
             <a class="fcc-tab-btn" data-tab="tab-top20">Top 20 Attendance 🏆</a>
             <a class="fcc-tab-btn" data-tab="tab-members">Members</a>
             <a class="fcc-tab-btn" data-tab="tab-growth">Growth</a>
@@ -1145,7 +1196,7 @@
                                         <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">online</div>
                                     </div>
                                 </div>
-                                <div class="fcc-pulse-pill-item">
+                                <div class="fcc-pulse-pill-item" style="cursor: pointer; transition: all 0.2s ease;" onclick="$('.fcc-tab-btn[data-tab=\'tab-coaches\']').trigger('click');" title="Click to view all coaches">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
                                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="9" cy="7" r="4"></circle>
@@ -1154,7 +1205,7 @@
                                     </svg>
                                     <div>
                                         <div style="font-weight: 800; font-size: 16px; line-height: 1;">{{ $totalCoaches ?? 0 }}</div>
-                                        <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">coaches</div>
+                                        <div style="font-size: 11px; opacity: 0.85; font-weight: 600;">coaches <i class="fa fa-arrow-right" style="font-size: 9px; margin-left: 2px;"></i></div>
                                     </div>
                                 </div>
                             </div>
@@ -1442,6 +1493,286 @@
                     </div>
                 </div>
 
+            </div>
+
+        </div>
+
+        <!-- TAB: ALL COACHES LIST & PERFORMANCE -->
+        <div id="tab-coaches" class="fcc-tab-panel">
+            
+            <!-- Coach Metrics Row -->
+            <div class="fcc-metrics-row mb-4">
+                <div class="fcc-metric-card">
+                    <div class="fcc-metric-left">
+                        <div class="fcc-metric-circle mc-blue">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <div>
+                            <div class="fcc-metric-num">{{ count($coachesData ?? []) }}</div>
+                            <div class="fcc-metric-label">total active coaches</div>
+                        </div>
+                    </div>
+                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px;">Coaches</span>
+                </div>
+
+                <div class="fcc-metric-card">
+                    <div class="fcc-metric-left">
+                        <div class="fcc-metric-circle mc-purple">
+                            <i class="fa fa-user-plus"></i>
+                        </div>
+                        <div>
+                            <div class="fcc-metric-num">{{ $coachesData->sum('total_members') ?? 0 }}</div>
+                            <div class="fcc-metric-label">assigned members</div>
+                        </div>
+                    </div>
+                    <span class="badge bg-info rounded-pill px-2.5 py-1" style="font-size: 11px;">Clients</span>
+                </div>
+
+                <div class="fcc-metric-card">
+                    <div class="fcc-metric-left">
+                        <div class="fcc-metric-circle mc-green">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <div class="fcc-metric-num">{{ $coachesData->sum('active_members') ?? 0 }}</div>
+                            <div class="fcc-metric-label">active clients</div>
+                        </div>
+                    </div>
+                    <span class="badge bg-success rounded-pill px-2.5 py-1" style="font-size: 11px;">Active</span>
+                </div>
+
+                <div class="fcc-metric-card">
+                    <div class="fcc-metric-left">
+                        <div class="fcc-metric-circle mc-blue">
+                            <i class="fa fa-calendar-check-o"></i>
+                        </div>
+                        <div>
+                            <div class="fcc-metric-num">{{ $coachMonthlyAttendance->sum() ?? 0 }}</div>
+                            <div class="fcc-metric-label">{{ date('F') }} check-ins</div>
+                        </div>
+                    </div>
+                    <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1" style="font-size: 11px;">This Month</span>
+                </div>
+            </div>
+
+            @if(isset($unassignedMembersCount) && $unassignedMembersCount > 0)
+                <div class="alert alert-warning border-0 rounded-4 d-flex align-items-center justify-content-between p-3 mb-4" style="background: #fffbeb; border: 1px solid #fde68a !important; color: #92400e;">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fa fa-exclamation-circle fa-2x text-warning"></i>
+                        <div>
+                            <strong style="font-size: 14px;">{{ $unassignedMembersCount }} Unassigned Members Found</strong>
+                            <div style="font-size: 12.5px; opacity: 0.9;">These members do not have a coach assigned yet. You can assign coaches in member edit pages.</div>
+                        </div>
+                    </div>
+                    <a href="{{ route('nutritionPanel.users.index') }}" class="btn btn-sm btn-warning text-dark fw-bold px-3 py-1.5" style="border-radius: 8px;">View Members</a>
+                </div>
+            @endif
+
+            <!-- Top Coaches Highlights Cards -->
+            @if(isset($coachesData) && count($coachesData) > 0)
+                <div class="row g-3 mb-4">
+                    @foreach($coachesData->take(3) as $cIndex => $topCoach)
+                        @php
+                            $cName = $topCoach->coach_name ?? 'Coach';
+                            $cInitials = strtoupper(substr($cName, 0, 1) . (str_contains($cName, ' ') ? substr(explode(' ', $cName)[1] ?? '', 0, 1) : ''));
+                            $cTotal = $topCoach->total_members ?? 0;
+                            $cActive = $topCoach->active_members ?? 0;
+                            $cPct = $cTotal > 0 ? round(($cActive / $cTotal) * 100) : 0;
+                            $cAtt = $coachMonthlyAttendance[$cName] ?? 0;
+                            $cRev = $coachMonthlyRevenue[$cName] ?? 0;
+                        @endphp
+                        <div class="col-xl-4 col-md-6 col-12">
+                            <div class="fcc-coach-card h-100">
+                                <div>
+                                    <div class="d-flex align-items-start justify-content-between mb-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="fcc-coach-avatar-lg" style="background: {{ $cIndex == 0 ? 'linear-gradient(135deg, #3b46f1 0%, #1e1b4b 100%)' : ($cIndex == 1 ? 'linear-gradient(135deg, #059669 0%, #064e3b 100%)' : 'linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)') }};">
+                                                {{ $cInitials ?: 'C' }}
+                                            </div>
+                                            <div>
+                                                <h5 class="fw-bold mb-1" style="color: #0f172a; font-size: 16px;">{{ $cName }}</h5>
+                                                <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 11.5px; font-weight: 600;">
+                                                    Coach #{{ $cIndex + 1 }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        @if($cIndex == 0)
+                                            <span class="badge bg-warning text-dark px-2.5 py-1" style="border-radius: 8px; font-weight: 800; font-size: 12px;">🥇 Top Coach</span>
+                                        @elseif($cIndex == 1)
+                                            <span class="badge bg-secondary px-2.5 py-1" style="border-radius: 8px; font-weight: 800; font-size: 12px;">🥈 #2</span>
+                                        @elseif($cIndex == 2)
+                                            <span class="badge bg-light text-dark border px-2.5 py-1" style="border-radius: 8px; font-weight: 800; font-size: 12px;">🥉 #3</span>
+                                        @endif
+                                    </div>
+
+                                    <!-- Quick Stats Grid -->
+                                    <div class="row g-2 text-center my-3">
+                                        <div class="col-4">
+                                            <div class="p-2 rounded-3" style="background: #f8fafc; border: 1px solid #f1f5f9;">
+                                                <div class="fw-bold text-dark" style="font-size: 16px;">{{ $cTotal }}</div>
+                                                <div class="text-muted" style="font-size: 11px; font-weight: 500;">Clients</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="p-2 rounded-3" style="background: #ecfdf5; border: 1px solid #d1fae5;">
+                                                <div class="fw-bold text-success" style="font-size: 16px;">{{ $cActive }}</div>
+                                                <div class="text-muted" style="font-size: 11px; font-weight: 500;">Active</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="p-2 rounded-3" style="background: #eff6ff; border: 1px solid #dbeafe;">
+                                                <div class="fw-bold text-primary" style="font-size: 16px;">{{ $cAtt }}</div>
+                                                <div class="text-muted" style="font-size: 11px; font-weight: 500;">Check-ins</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Active Ratio Bar -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1" style="font-size: 12px;">
+                                            <span class="text-muted font-weight-500">Client Retention</span>
+                                            <span class="fw-bold text-dark">{{ $cPct }}% Active</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px; border-radius: 10px; background: #e2e8f0;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $cPct }}%; border-radius: 10px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-top d-flex align-items-center justify-content-between">
+                                    <div style="font-size: 12px; color: #64748b;">
+                                        Revenue: <strong class="text-dark">₹{{ number_format($cRev, 0) }}</strong>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary view-coach-members-btn" data-coach="{{ $cName }}" style="border-radius: 8px; font-weight: 700; font-size: 12px; padding: 5px 12px;">
+                                        <i class="fa fa-users me-1"></i> View Members
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- Full Coaches Table Card -->
+            <div class="fcc-white-card mb-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 pb-3 border-bottom">
+                    <div>
+                        <h4 class="fw-bold mb-1" style="color: #0f172a; font-size: 18px;">
+                            <i class="fa fa-id-badge text-primary me-2"></i>All Coaches Directory
+                        </h4>
+                        <p class="text-muted mb-0" style="font-size: 13px;">Overview of all club coaches, client assignments, attendance performance, and revenue</p>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="input-group input-group-sm" style="width: 250px;">
+                            <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px;"><i class="fa fa-search text-muted"></i></span>
+                            <input type="text" id="coachTableSearchInput" class="form-control border-start-0" placeholder="Filter coaches..." style="border-radius: 0 10px 10px 0;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" id="allCoachesTable">
+                        <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                            <tr style="font-size: 12px; color: #475569; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <th style="padding: 12px 14px; width: 60px;">#</th>
+                                <th style="padding: 12px 14px;">Coach Name</th>
+                                <th style="padding: 12px 14px; text-align: center;">Total Clients</th>
+                                <th style="padding: 12px 14px; text-align: center;">Active Ratio</th>
+                                <th style="padding: 12px 14px; text-align: center;">Month Check-ins</th>
+                                <th style="padding: 12px 14px; text-align: right;">Month Revenue</th>
+                                <th style="padding: 12px 14px; text-align: right;">Pending Due</th>
+                                <th style="padding: 12px 14px; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($coachesData) && count($coachesData) > 0)
+                                @foreach($coachesData as $index => $coach)
+                                    @php
+                                        $cName = $coach->coach_name ?? 'Coach';
+                                        $cInitials = strtoupper(substr($cName, 0, 1) . (str_contains($cName, ' ') ? substr(explode(' ', $cName)[1] ?? '', 0, 1) : ''));
+                                        $cTotal = $coach->total_members ?? 0;
+                                        $cActive = $coach->active_members ?? 0;
+                                        $cInactive = $coach->inactive_members ?? 0;
+                                        $cOnline = $coach->online_members ?? 0;
+                                        $cOffline = $coach->offline_members ?? 0;
+                                        $cPct = $cTotal > 0 ? round(($cActive / $cTotal) * 100) : 0;
+                                        $cAtt = $coachMonthlyAttendance[$cName] ?? 0;
+                                        $cRev = $coachMonthlyRevenue[$cName] ?? 0;
+                                        $cDue = $coach->total_due_amount ?? 0;
+                                    @endphp
+                                    <tr class="coach-row">
+                                        <td style="padding: 14px 14px; font-weight: 700; color: #64748b;">
+                                            @if($index == 0)
+                                                <span class="badge bg-warning text-dark rounded-circle p-1.5" style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px;">1</span>
+                                            @elseif($index == 1)
+                                                <span class="badge bg-secondary text-white rounded-circle p-1.5" style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px;">2</span>
+                                            @elseif($index == 2)
+                                                <span class="badge bg-dark text-white rounded-circle p-1.5" style="width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px;">3</span>
+                                            @else
+                                                <span class="text-muted ms-1">#{{ $index + 1 }}</span>
+                                            @endif
+                                        </td>
+                                        <td style="padding: 14px 14px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="fcc-coach-avatar-sm">
+                                                    {{ $cInitials ?: 'C' }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark coach-name-cell" style="font-size: 14px;">{{ $cName }}</div>
+                                                    <div class="text-muted" style="font-size: 11.5px;">Coach</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding: 14px 14px; text-align: center;">
+                                            <span class="badge bg-primary rounded-pill px-3 py-1.5" style="font-size: 12.5px; font-weight: 700;">{{ $cTotal }}</span>
+                                            <div class="mt-1" style="font-size: 11px; color: #64748b;">
+                                                <span class="text-success fw-bold">{{ $cOnline }} Online</span> · <span class="text-info fw-bold">{{ $cOffline }} Offline</span>
+                                            </div>
+                                        </td>
+                                        <td style="padding: 14px 14px; text-align: center; min-width: 140px;">
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <div class="progress flex-grow-1" style="height: 6px; max-width: 90px; border-radius: 10px; background: #fee2e2;">
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $cPct }}%; border-radius: 10px;"></div>
+                                                </div>
+                                                <span class="fw-bold text-dark" style="font-size: 12px;">{{ $cActive }}/{{ $cTotal }}</span>
+                                            </div>
+                                            <div style="font-size: 11px; color: #10b981; font-weight: 600;" class="mt-1">{{ $cPct }}% Active</div>
+                                        </td>
+                                        <td style="padding: 14px 14px; text-align: center;">
+                                            <span class="badge" style="background: #eff6ff; color: #2563eb; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 8px;">
+                                                <i class="fa fa-check-circle me-1"></i> {{ $cAtt }}
+                                            </span>
+                                        </td>
+                                        <td style="padding: 14px 14px; text-align: right; font-weight: 800; color: #0f172a; font-size: 13.5px;">
+                                            ₹{{ number_format($cRev, 0) }}
+                                        </td>
+                                        <td style="padding: 14px 14px; text-align: right;">
+                                            @if($cDue > 0)
+                                                <span class="badge bg-danger" style="font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 6px;">₹{{ number_format($cDue, 0) }}</span>
+                                            @else
+                                                <span class="badge bg-light text-muted border" style="font-size: 11px;">₹0</span>
+                                            @endif
+                                        </td>
+                                        <td style="padding: 14px 14px; text-align: right;">
+                                            <button type="button" class="btn btn-sm btn-outline-primary view-coach-members-btn px-3 py-1.5" data-coach="{{ $cName }}" style="border-radius: 8px; font-weight: 700; font-size: 12px;">
+                                                <i class="fa fa-users me-1"></i> View ({{ $cTotal }})
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="8" class="text-center py-5 text-muted">
+                                        <i class="fa fa-user-times fa-3x mb-3 d-block opacity-25"></i>
+                                        <h5 class="fw-bold text-dark">No coaches found</h5>
+                                        <p class="mb-0" style="font-size: 13px;">When you assign coach names to your members, they will automatically be organized here.</p>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -1916,17 +2247,58 @@
                                         <td><span class="badge bg-primary">{{ $bUser->user_type }}</span></td>
                                     </tr>
                                 @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">
-                                        <i class="fa fa-gift fa-2x mb-2 d-block opacity-50"></i>
-                                        No birthdays today.
-                                    </td>
-                                </tr>
                             @endif
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- COACH MEMBERS MODAL -->
+<div class="modal fade" id="coachMembersModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);">
+            <div class="modal-header border-0 pb-2 pt-4 px-4">
+                <div>
+                    <h5 class="modal-title fw-bold" style="color: #0f172a; font-size: 18px;">
+                        <i class="fa fa-id-card-o text-primary me-2"></i>Members under <span id="coachModalTitleName" class="text-primary"></span>
+                    </h5>
+                    <p class="text-muted mb-0" style="font-size: 13px;" id="coachModalSubtitle">Showing assigned members</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 py-3">
+                <div class="mb-3">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0" style="border-radius: 8px 0 0 8px;"><i class="fa fa-search text-muted"></i></span>
+                        <input type="text" id="modalMemberSearchInput" class="form-control border-start-0" placeholder="Search members in this coach list..." style="border-radius: 0 8px 8px 0; font-size: 13px;">
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover align-middle mb-0" id="coachMembersTable">
+                        <thead style="background: #f8fafc; position: sticky; top: 0; z-index: 2; border-bottom: 2px solid #e2e8f0;">
+                            <tr style="font-size: 11.5px; color: #64748b; font-weight: 700; text-transform: uppercase;">
+                                <th style="padding: 10px;">#</th>
+                                <th style="padding: 10px;">Member</th>
+                                <th style="padding: 10px;">Contact</th>
+                                <th style="padding: 10px;">Type</th>
+                                <th style="padding: 10px; text-align: center;">Days Left</th>
+                                <th style="padding: 10px; text-align: right;">Due</th>
+                                <th style="padding: 10px; text-align: center;">Status</th>
+                                <th style="padding: 10px; text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coachMembersTableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0 pb-4 px-4 d-flex justify-content-between">
+                <span class="text-muted" style="font-size: 12.5px;" id="coachModalCountText">0 members</span>
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Close</button>
             </div>
         </div>
     </div>
@@ -1960,6 +2332,98 @@
         $(`.fcc-tab-btn[data-tab="${activeTabParam}"]`).addClass('active');
         $('#' + activeTabParam).addClass('active');
     }
+
+    // Coach data for dynamic modal
+    var allCoachMembers = {!! json_encode($coachMembers ?? []) !!};
+
+    // Open Coach Members Modal
+    $(document).on('click', '.view-coach-members-btn', function() {
+        var coachName = $(this).data('coach');
+        var members = allCoachMembers[coachName] || [];
+        
+        $('#coachModalTitleName').text(coachName);
+        $('#coachModalSubtitle').text(members.length + ' member' + (members.length === 1 ? '' : 's') + ' assigned to ' + coachName);
+        $('#coachModalCountText').text(members.length + ' total members assigned');
+        $('#modalMemberSearchInput').val('');
+
+        renderCoachMembersRows(members);
+
+        $('#coachMembersModal').modal('show');
+    });
+
+    function renderCoachMembersRows(members) {
+        var tbody = $('#coachMembersTableBody');
+        tbody.empty();
+
+        if (!members || members.length === 0) {
+            tbody.append('<tr><td colspan="8" class="text-center py-4 text-muted">No members found under this coach.</td></tr>');
+            return;
+        }
+
+        $.each(members, function(idx, m) {
+            var mName = m.name ? m.name.charAt(0).toUpperCase() + m.name.slice(1) : 'Member';
+            var mobile = m.mobile_number || 'N/A';
+            var cleanPhone = mobile.replace(/[^0-9]/g, '');
+            var userType = m.user_type || 'Regular User';
+            var userState = m.user_state ? ' (' + m.user_state + ')' : '';
+            var days = m.days !== undefined && m.days !== null ? m.days : 0;
+            var daysBadge = days <= 3 ? 'bg-danger' : (days <= 10 ? 'bg-warning text-dark' : 'bg-success');
+            var dueAmt = parseFloat(m.due_amount || 0);
+            var statusBadge = m.status == 1 ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>';
+            var profileUrl = m.details_url || '#';
+
+            var contactHtml = mobile !== 'N/A' && cleanPhone.length >= 10 ? 
+                `<span>${mobile}</span> <a href="https://wa.me/91${cleanPhone}" target="_blank" class="text-success ms-1" title="Chat on WhatsApp"><i class="fa fa-whatsapp"></i></a>` : 
+                `<span>${mobile}</span>`;
+
+            var row = `
+                <tr class="modal-member-row">
+                    <td style="padding: 10px; font-weight: 600; color: #64748b;">${idx + 1}</td>
+                    <td style="padding: 10px;">
+                        <strong class="text-dark member-name-text">${mName}</strong>
+                        <div class="text-muted" style="font-size: 11px;">ID: #${m.id}</div>
+                    </td>
+                    <td style="padding: 10px; font-size: 12.5px;">${contactHtml}</td>
+                    <td style="padding: 10px;"><span class="badge bg-light text-dark border" style="font-size: 11px;">${userType}${userState}</span></td>
+                    <td style="padding: 10px; text-align: center;"><span class="badge ${daysBadge}" style="font-size: 11.5px; font-weight: 700;">${days} Days</span></td>
+                    <td style="padding: 10px; text-align: right; font-weight: 700; color: ${dueAmt > 0 ? '#ef4444' : '#64748b'};">₹${dueAmt.toLocaleString('en-IN')}</td>
+                    <td style="padding: 10px; text-align: center;">${statusBadge}</td>
+                    <td style="padding: 10px; text-align: right;">
+                        <a href="${profileUrl}" class="btn btn-sm btn-light text-primary px-2 py-1" style="font-size: 11.5px; border-radius: 6px; font-weight: 700;">
+                            <i class="fa fa-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }
+
+    // Modal Member Search Filter
+    $('#modalMemberSearchInput').on('keyup', function() {
+        var query = $(this).val().toLowerCase().trim();
+        $('#coachMembersTableBody tr.modal-member-row').each(function() {
+            var rowText = $(this).text().toLowerCase();
+            if (rowText.indexOf(query) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
+    // Coaches Table Filter
+    $('#coachTableSearchInput').on('keyup', function() {
+        var query = $(this).val().toLowerCase().trim();
+        $('#allCoachesTable tbody tr.coach-row').each(function() {
+            var rowText = $(this).text().toLowerCase();
+            if (rowText.indexOf(query) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
 
     // 1. Club Pulse Area Line Chart
     var weeklyPulseLabels = {!! json_encode($weeklyPulseLabels ?? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) !!};
