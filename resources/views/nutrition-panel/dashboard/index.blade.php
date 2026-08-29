@@ -243,7 +243,7 @@
 
     /* Club pulse */
     .fcc-pulse-card {
-        background: var(--fcc-pulse-gradient);
+        background: linear-gradient(135deg, #1e266d 0%, #3042d6 50%, #4338ca 100%);
         border-radius: 20px;
         padding: 24px 26px 18px 26px;
         color: #ffffff;
@@ -423,7 +423,7 @@
     }
 
     .fcc-btn-scan-qr {
-        background: var(--fcc-primary-gradient);
+        background: linear-gradient(135deg, #3b46f1 0%, #2f38c7 100%);
         color: #ffffff !important;
         border: none;
         border-radius: 13px;
@@ -451,7 +451,7 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 20px;
-        padding: 20px 18px 16px 18px;
+        padding: 22px 20px 18px 20px;
         box-shadow: var(--fcc-card-shadow);
         display: flex;
         flex-direction: column;
@@ -461,22 +461,22 @@
     }
 
     .fcc-qr-title {
-        font-size: 14px;
+        font-size: 14.5px;
         font-weight: 700;
         color: #3246d3;
         line-height: 1.35;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
     }
 
     .fcc-qr-frame {
         background: #ffffff;
-        padding: 8px;
-        border-radius: 12px;
+        padding: 10px;
+        border-radius: 14px;
         border: 2px dashed #cbd5e1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin: 6px auto 12px auto;
+        margin: 10px auto 14px auto;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
 
@@ -496,21 +496,21 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 12px;
         width: 100%;
     }
 
     .fcc-btn-qr {
         flex: 1;
-        padding: 8px 10px;
-        font-size: 12px;
+        padding: 10px 14px;
+        font-size: 13px;
         font-weight: 700;
-        border-radius: 9px;
+        border-radius: 10px;
         border: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 5px;
+        gap: 6px;
         cursor: pointer;
         transition: all 0.15s ease;
         text-decoration: none;
@@ -555,7 +555,7 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 18px;
-        padding: 16px 18px;
+        padding: 16px 20px;
         box-shadow: var(--fcc-card-shadow);
         display: flex;
         align-items: center;
@@ -572,17 +572,17 @@
     .fcc-metric-left {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
     }
 
     .fcc-metric-circle {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 17px;
     }
 
     .mc-blue { background: #eff6ff; color: #2563eb; }
@@ -590,7 +590,7 @@
     .mc-green { background: #ecfdf5; color: #059669; }
 
     .fcc-metric-num {
-        font-size: 21px;
+        font-size: 22px;
         font-weight: 800;
         color: var(--fcc-dark);
         line-height: 1.15;
@@ -598,7 +598,7 @@
     }
 
     .fcc-metric-label {
-        font-size: 12px;
+        font-size: 12.5px;
         color: var(--fcc-muted);
         font-weight: 500;
         margin-top: 2px;
@@ -610,117 +610,9 @@
         flex-shrink: 0;
     }
 
-    /* 5. Section 3: Performance Story & Action Queue */
-    .fcc-analytics-grid {
-        display: grid;
-        grid-template-columns: 1.52fr 1fr;
-        gap: 20px;
-        margin-bottom: 22px;
-    }
 
-    @media (max-width: 991px) {
-        .fcc-analytics-grid {
-            grid-template-columns: 1fr;
-        }
-    }
 
-    .fcc-card-panel {
-        background: #ffffff;
-        border: 1px solid var(--fcc-border);
-        border-radius: 20px;
-        padding: 22px 24px;
-        box-shadow: var(--fcc-card-shadow);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .fcc-panel-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-    }
-
-    .fcc-panel-title {
-        font-size: 17px;
-        font-weight: 800;
-        color: var(--fcc-dark);
-        margin: 0;
-    }
-
-    .fcc-toggle-pills-box {
-        display: inline-flex;
-        background: #f1f5f9;
-        padding: 3px;
-        border-radius: 9px;
-    }
-
-    .fcc-toggle-btn {
-        border: none;
-        background: transparent;
-        padding: 4px 12px;
-        border-radius: 7px;
-        font-size: 12px;
-        font-weight: 700;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.15s ease;
-    }
-
-    .fcc-toggle-btn.active {
-        background: var(--fcc-primary);
-        color: #ffffff;
-        box-shadow: 0 2px 5px rgba(59, 70, 241, 0.25);
-    }
-
-    .fcc-summary-chips {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 12px;
-        flex-wrap: wrap;
-    }
-
-    .fcc-sum-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 14px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        font-size: 12.5px;
-        color: #475569;
-        font-weight: 600;
-    }
-
-    .fcc-sum-chip strong {
-        font-weight: 800;
-        color: var(--fcc-dark);
-        font-size: 15px;
-    }
-
-    /* Action queue timeline */
-    .fcc-queue-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .fcc-queue-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .fcc-queue-avatar-side {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
+    /* 5. Shared Avatar Styles */
     .fcc-avatar-circle {
         width: 36px;
         height: 36px;
@@ -738,81 +630,6 @@
     .av-orange { background: #f59e0b; }
     .av-purple { background: #8b5cf6; }
 
-    .fcc-queue-info h6 {
-        font-size: 13.5px;
-        font-weight: 700;
-        color: var(--fcc-dark);
-        margin: 0;
-        line-height: 1.2;
-    }
-
-    .fcc-queue-info p {
-        font-size: 11.5px;
-        color: var(--fcc-muted);
-        margin: 2px 0 0 0;
-    }
-
-    .fcc-queue-link {
-        font-size: 12.5px;
-        font-weight: 700;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .link-renew { color: #e11d48; }
-    .link-remind { color: #ea580c; }
-    .link-review { color: #3b46f1; }
-
-    .fcc-activity-feed-box {
-        border-top: 1px solid #f1f5f9;
-        padding-top: 12px;
-    }
-
-    .fcc-feed-title {
-        font-size: 12px;
-        font-weight: 700;
-        color: #64748b;
-        margin-bottom: 8px;
-    }
-
-    .fcc-feed-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 12px;
-        color: #334155;
-        margin-bottom: 6px;
-    }
-
-    .fcc-feed-left {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-    }
-
-    .fcc-dot-green { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
-    .fcc-dot-blue { width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; }
-
-    .fcc-feed-time {
-        color: #94a3b8;
-        font-size: 11px;
-    }
-
-    .fcc-open-feed-link {
-        display: block;
-        text-align: right;
-        font-size: 12.5px;
-        font-weight: 700;
-        color: var(--fcc-primary);
-        text-decoration: none;
-        margin-top: 4px;
-    }
-
-    .fcc-open-feed-link:hover {
-        text-decoration: underline;
-    }
 
     /* 6. Section 4: Top 20 Attendance Leaderboard */
     .fcc-leaderboard-card {
@@ -1104,7 +921,7 @@
                     <input type="text" placeholder="Search members, logs..." />
                 </div>
 
-                <a href="#action-queue-section" class="fcc-icon-btn" title="Alerts">
+                <a href="javascript:void(0)" class="fcc-icon-btn" title="Alerts">
                     <i class="fa fa-bell-o"></i>
                     @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
                         <span class="badge-dot">{{ $totalAlertsCount }}</span>
@@ -1134,7 +951,7 @@
         <!-- TAB 1: OVERVIEW -->
         <div id="tab-overview" class="fcc-tab-panel active">
             
-            <!-- SECTION 1: TOP HERO (CLUB PULSE + TODAY) -->
+            <!-- SECTION 1: TOP HERO (CLUB PULSE + TODAY + QR CODE) -->
             <div class="fcc-hero-grid">
                 
                 <!-- Left: Club Pulse Card -->
@@ -1180,7 +997,7 @@
                     </div>
                 </div>
 
-                <!-- Right: Today Card -->
+                <!-- Middle: Today Card -->
                 <div class="fcc-today-card">
                     <div class="fcc-today-title">Today</div>
 
@@ -1218,7 +1035,7 @@
                                     <strong>{{ $todayRenewalsDue ?? 0 }}</strong> renewals due @if(($todayUrgentRenewals ?? 0) > 0)· <span class="fcc-urgent-badge">{{ $todayUrgentRenewals }} urgent</span>@endif
                                 </div>
                             </div>
-                            <a href="#action-queue-section" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                            <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
 
                         <div class="fcc-today-item">
@@ -1239,7 +1056,7 @@
                     </a>
                 </div>
 
-                <!-- 3. Attendance QR Code Card -->
+                <!-- Right: Attendance QR Code Card -->
                 <div class="fcc-qr-card">
                     <div>
                         <div class="fcc-qr-title">You can scan your Attendance by following QR code.</div>
@@ -1252,10 +1069,10 @@
                     </div>
 
                     <div class="fcc-qr-actions">
-                        <button type="button" onclick="window.print()" class="fcc-btn-qr fcc-btn-print">
+                        <button type="button" onclick="window.print()" class="fcc-btn-qr">
                             Print QR Code
                         </button>
-                        <button type="button" id="downloadBtn" class="fcc-btn-qr fcc-btn-download">
+                        <button type="button" id="downloadBtn" class="fcc-btn-qr">
                             Download PNG
                         </button>
                     </div>
@@ -1330,105 +1147,9 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: PERFORMANCE STORY & ACTION QUEUE -->
-            <div class="fcc-analytics-grid" id="action-queue-section">
-                
-                <!-- Left: Performance story -->
-                <div class="fcc-card-panel">
-                    <div>
-                        <div class="fcc-panel-header">
-                            <h3 class="fcc-panel-title">Performance story</h3>
-                            <div class="fcc-toggle-pills-box">
-                                <button type="button" class="fcc-toggle-btn active" id="btnToggleAttendance">Attendance</button>
-                                <button type="button" class="fcc-toggle-btn" id="btnToggleRevenue">Revenue</button>
-                            </div>
-                        </div>
-
-                        <div id="performanceStoryChart"></div>
-                    </div>
-
-                    <div class="fcc-summary-chips">
-                        <div class="fcc-sum-chip">
-                            <i class="fa fa-bar-chart text-primary"></i>
-                            <div><strong>{{ $dailyAvgAttendance ?? 0 }}</strong> daily average</div>
-                        </div>
-
-                        <div class="fcc-sum-chip">
-                            <i class="fa fa-line-chart" style="color: #8b5cf6;"></i>
-                            <div><strong>{{ $weeklyPeakAttendance ?? 0 }}</strong> weekly peak</div>
-                        </div>
-
-                        <div class="fcc-sum-chip">
-                            <i class="fa fa-arrow-up" style="color: {{ ($weeklyGrowthPct ?? 0) >= 0 ? '#10b981' : '#ef4444' }};"></i>
-                            <div><strong style="color: {{ ($weeklyGrowthPct ?? 0) >= 0 ? '#10b981' : '#ef4444' }};">{{ ($weeklyGrowthPct ?? 0) >= 0 ? '+'.$weeklyGrowthPct : $weeklyGrowthPct }}%</strong> this week</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Action queue & Recent activity -->
-                <div class="fcc-card-panel">
-                    <div>
-                        <div class="fcc-panel-header">
-                            <h3 class="fcc-panel-title">Action queue</h3>
-                        </div>
-
-                        <div class="fcc-queue-group">
-                            @if(isset($actionQueueItems) && count($actionQueueItems) > 0)
-                                @foreach($actionQueueItems as $item)
-                                    @php
-                                        $words = explode(' ', trim($item['name']));
-                                        $initials = '';
-                                        foreach(array_slice($words, 0, 2) as $w) {
-                                            $initials .= strtoupper(substr($w, 0, 1));
-                                        }
-                                    @endphp
-                                    <div class="fcc-queue-row">
-                                        <div class="fcc-queue-avatar-side">
-                                            <div class="fcc-avatar-circle {{ $item['color_class'] }}">{{ $initials ?: 'M' }}</div>
-                                            <div class="fcc-queue-info">
-                                                <h6>{{ ucfirst($item['name']) }}</h6>
-                                                <p>{{ $item['subtext'] }}</p>
-                                            </div>
-                                        </div>
-                                        <a href="{{ $item['action_url'] }}" class="fcc-queue-link {{ $item['link_class'] }}">{{ $item['action_label'] }} <i class="fa fa-chevron-right"></i></a>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="py-3 text-center text-muted" style="font-size: 13px;">
-                                    <i class="fa fa-check-circle text-success me-1"></i> All action items are up to date!
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="fcc-activity-feed-box">
-                        <div class="fcc-feed-title">Recent activity</div>
-
-                        @if(isset($recentActivities) && count($recentActivities) > 0)
-                            @foreach($recentActivities as $activity)
-                                <div class="fcc-feed-row">
-                                    <div class="fcc-feed-left">
-                                        <span class="{{ $activity['dot_class'] }}"></span>
-                                        <span>{{ $activity['title'] }}</span>
-                                    </div>
-                                    <span class="fcc-feed-time">{{ $activity['time'] }}</span>
-                                </div>
-                            @endforeach
-                        @else
-                            <div class="text-muted py-2" style="font-size: 12px;">No recent activity recorded yet today.</div>
-                        @endif
-
-                        <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-open-feed-link">
-                            Open activity feed <i class="fa fa-chevron-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- SECTION 4: TODAY'S BIRTHDAYS -->
+            <!-- SECTION 3: TODAY'S BIRTHDAYS -->
             <div class="fcc-leaderboard-card mb-4" id="today-birthday-section">
-                <div class="fcc-leaderboard-header">
+                <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
                     <div class="d-flex align-items-center gap-2">
                         <h3 class="fcc-leaderboard-title" style="color: #3246d3;">
                             <span>Today's Birthdays</span>
@@ -1503,26 +1224,29 @@
                 </div>
             </div>
 
-            <!-- SECTION 5: TODAY'S ATTENDANCE LOGS & MULTIPLE CHECK-INS -->
+
+            <!-- ROW 3: TODAY'S ATTENDANCE LOGS & MULTIPLE CHECK-INS -->
             <div class="row g-4 mb-4">
                 <!-- Left: More Than One Attendance Card -->
                 <div class="col-xl-6 col-lg-12 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0">
-                        <div class="fcc-leaderboard-header">
+                    <div class="fcc-leaderboard-card h-100 mb-0" style="padding: 24px;">
+                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
                             <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #3246d3; font-size: 16px;">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 16px; font-weight: 700;">
                                     <span>More Than One Attendance on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
                                 </h3>
-                                <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
-                                    {{ count($today2Attendences ?? []) }}
-                                </span>
+                                @if(isset($today2Attendences) && count($today2Attendences) > 0)
+                                    <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
+                                        {{ count($today2Attendences) }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
-                                    <tr style="font-size: 12px; color: #64748b; background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                                    <tr style="font-size: 12px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
                                         <th style="padding: 10px 14px;">Name</th>
                                         <th style="padding: 10px 14px;">Date</th>
                                         <th style="padding: 10px 14px; text-align: center;">Attendance Count</th>
@@ -1551,8 +1275,8 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="4" class="text-center py-4 text-muted">
-                                                <i class="fa fa-check-circle text-success me-1"></i> No duplicate/multiple attendances recorded today.
+                                            <td colspan="4" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13.5px;">
+                                                No Record Found !!
                                             </td>
                                         </tr>
                                     @endif
@@ -1564,22 +1288,24 @@
 
                 <!-- Right: Updation Logs Card -->
                 <div class="col-xl-6 col-lg-12 col-12">
-                    <div class="fcc-leaderboard-card h-100 mb-0">
-                        <div class="fcc-leaderboard-header">
+                    <div class="fcc-leaderboard-card h-100 mb-0" style="padding: 24px;">
+                        <div class="fcc-leaderboard-header mb-3 pb-2" style="border-bottom: 1px solid #f1f5f9;">
                             <div class="d-flex align-items-center gap-2">
-                                <h3 class="fcc-leaderboard-title" style="color: #3246d3; font-size: 16px;">
+                                <h3 class="fcc-leaderboard-title" style="color: #4338ca; font-size: 16px; font-weight: 700;">
                                     <span>Updation on {{ date('Y-m-d', strtotime($today ?? date('Y-m-d'))) }}</span>
                                 </h3>
-                                <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
-                                    {{ count($todayAttendences ?? []) }}
-                                </span>
+                                @if(isset($todayAttendences) && count($todayAttendences) > 0)
+                                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11.5px;">
+                                        {{ count($todayAttendences) }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
-                                    <tr style="font-size: 12px; color: #64748b; background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                                    <tr style="font-size: 12px; color: #4338ca; font-weight: 800; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;">
                                         <th style="padding: 10px 14px;">Name</th>
                                         <th style="padding: 10px 14px;">Type / Remark</th>
                                         <th style="padding: 10px 14px; text-align: center;">Count</th>
@@ -1610,8 +1336,8 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="5" class="text-center py-4 text-muted">
-                                                <i class="fa fa-info-circle me-1"></i> No attendance updates logged today.
+                                            <td colspan="5" class="text-center py-4 text-muted" style="font-weight: 600; font-size: 13.5px;">
+                                                No Record Found !!
                                             </td>
                                         </tr>
                                     @endif
@@ -1621,95 +1347,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- SECTION 6: TOP 20 ATTENDANCE PREVIEW LEADERBOARD -->
-            <div class="fcc-leaderboard-card">
-                <div class="fcc-leaderboard-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <h3 class="fcc-leaderboard-title">
-                            <span>Top 20 Attendance ({{ $currentMonthName }})</span>
-                            <span style="font-size: 20px;">🏆</span>
-                        </h3>
-                        <span class="fcc-leaderboard-badge">Goal: {{ $totalDaysInMonth }} Days</span>
-                    </div>
-                    <a href="javascript:void(0);" onclick="$('.fcc-tab-btn[data-tab=tab-top20]').click();" class="fcc-action-chevron">
-                        View Full Ranking <i class="fa fa-chevron-right"></i>
-                    </a>
-                </div>
-
-                <!-- Top 20 Table Preview with Fixed Badges & Progress -->
-                <div class="table-responsive">
-                    <table class="fcc-rank-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 80px;">Rank</th>
-                                <th>Member Name</th>
-                                <th style="width: 140px;">Attendance Days</th>
-                                <th style="width: 240px;">Progress</th>
-                                <th>Coach</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(isset($top20Attendance) && count($top20Attendance) > 0)
-                                @foreach($top20Attendance->take(10) as $index => $topAttend)
-                                    <tr>
-                                        <td>
-                                            @if($index == 0)
-                                                <span class="fcc-rank-badge rank-gold">🥇 1</span>
-                                            @elseif($index == 1)
-                                                <span class="fcc-rank-badge rank-silver">🥈 2</span>
-                                            @elseif($index == 2)
-                                                <span class="fcc-rank-badge rank-bronze">🥉 3</span>
-                                            @else
-                                                <span class="fcc-rank-badge rank-normal">#{{ $index + 1 }}</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <span class="fcc-member-name">{{ ucfirst($topAttend->name) }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="fcc-days-pill">{{ $topAttend->total_attendance }} / {{ $totalDaysInMonth }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="fcc-prog-container">
-                                                <div class="fcc-prog-track">
-                                                    <div class="fcc-prog-bar" style="width: {{ min(100, $topAttend->attendance_percentage) }}%;"></div>
-                                                </div>
-                                                <span class="fcc-prog-pct">{{ $topAttend->attendance_percentage }}%</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="fcc-coach-name">{{ $topAttend->coach_name ?? 'N/A' }}</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <i class="fa fa-calendar-o me-1"></i> No attendance records found yet this month.
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SECTION 5: INTELLIGENCE BANNER -->
-            <a href="javascript:void(0);" onclick="$('.fcc-tab-btn[data-tab=tab-top20]').click();" class="fcc-intel-banner">
-                <div class="fcc-intel-left">
-                    <div class="fcc-intel-icon-box">
-                        <i class="fa fa-bar-chart"></i>
-                    </div>
-                    <div>
-                        <div class="fcc-intel-title">Explore attendance intelligence</div>
-                        <div class="fcc-intel-subtitle">Dive deeper into trends, patterns, and member engagement.</div>
-                    </div>
-                </div>
-                <div class="fcc-intel-arrow-btn">
-                    <i class="fa fa-arrow-right"></i>
-                </div>
-            </a>
 
         </div>
 
@@ -2002,7 +1639,6 @@
     // 1. Club Pulse Area Line Chart
     var weeklyPulseLabels = {!! json_encode($weeklyPulseLabels ?? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) !!};
     var weeklyPulseAttendance = {!! json_encode($weeklyPulseAttendance ?? [0, 0, 0, 0, 0, 0, 0]) !!};
-    var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
     var pulseOptions = {
         chart: {
@@ -2060,23 +1696,6 @@
                 stops: [0, 100]
             }
         },
-        annotations: {
-            yaxis: [{
-                y: 50,
-                borderColor: 'rgba(255, 255, 255, 0.45)',
-                strokeDashArray: 4,
-                label: {
-                    borderColor: 'transparent',
-                    style: {
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        background: 'transparent',
-                        fontSize: '10.5px'
-                    },
-                    text: 'Avg Target',
-                    position: 'right'
-                }
-            }]
-        },
         grid: {
             borderColor: 'rgba(255, 255, 255, 0.1)',
             strokeDashArray: 3,
@@ -2087,101 +1706,12 @@
             y: { formatter: function(val) { return val + ' members'; } }
         }
     };
-    new ApexCharts(document.querySelector("#clubPulseChart"), pulseOptions).render();
+    var pulseElem = document.querySelector("#clubPulseChart");
+    if (pulseElem) {
+        new ApexCharts(pulseElem, pulseOptions).render();
+    }
 
-    // 2. Performance Story Area Chart
-    var performanceOptions = {
-        chart: {
-            type: 'area',
-            height: 235,
-            toolbar: { show: false },
-            parentHeightOffset: 0
-        },
-        series: [{
-            name: 'Attendance',
-            data: weeklyPulseAttendance
-        }],
-        xaxis: {
-            categories: weeklyPulseLabels,
-            labels: {
-                style: {
-                    colors: '#9ca3af',
-                    fontSize: '11px',
-                    fontFamily: 'Plus Jakarta Sans, sans-serif'
-                }
-            },
-            axisBorder: { show: false },
-            axisTicks: { show: false }
-        },
-        yaxis: {
-            min: 0,
-            tickAmount: 4,
-            labels: {
-                style: {
-                    colors: '#9ca3af',
-                    fontSize: '10.5px'
-                }
-            }
-        },
-        colors: ['#3b82f6'],
-        stroke: {
-            curve: 'smooth',
-            width: 3
-        },
-        markers: {
-            size: 5,
-            colors: ['#3b82f6'],
-            strokeColors: '#ffffff',
-            strokeWidth: 2,
-            hover: { size: 7 }
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shade: 'light',
-                type: 'vertical',
-                shadeIntensity: 0.3,
-                opacityFrom: 0.35,
-                opacityTo: 0.05,
-                stops: [0, 100]
-            }
-        },
-        grid: {
-            borderColor: '#f3f4f6',
-            strokeDashArray: 4,
-            padding: { top: 0, right: 15, bottom: 0, left: 10 }
-        },
-        tooltip: {
-            theme: 'light',
-            y: { formatter: function(val) { return val + ' members'; } }
-        }
-    };
-    var performanceChart = new ApexCharts(document.querySelector("#performanceStoryChart"), performanceOptions);
-    performanceChart.render();
 
-    $('#btnToggleAttendance').on('click', function() {
-        $('.fcc-toggle-btn').removeClass('active');
-        $(this).addClass('active');
-        performanceChart.updateOptions({
-            colors: ['#3b82f6'],
-            markers: { colors: ['#3b82f6'] },
-            yaxis: { min: 0, max: undefined, tickAmount: 4 },
-            tooltip: { y: { formatter: function(v) { return v + ' members'; } } }
-        });
-        performanceChart.updateSeries([{ name: 'Attendance', data: weeklyPulseAttendance }]);
-    });
-
-    $('#btnToggleRevenue').on('click', function() {
-        $('.fcc-toggle-btn').removeClass('active');
-        $(this).addClass('active');
-        performanceChart.updateOptions({
-            colors: ['#8b5cf6'],
-            markers: { colors: ['#8b5cf6'] },
-            yaxis: { min: 0, max: undefined, tickAmount: 4 },
-            tooltip: { y: { formatter: function(v) { return '₹ ' + Number(v).toLocaleString('en-IN'); } } }
-        });
-        performanceChart.updateSeries([{ name: 'Revenue (₹)', data: weeklyPulseRevenue }]);
-    });
 
     // 3. Yearly Analytics Charts
     var shakeCount = {!! json_encode($totalShakeChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};

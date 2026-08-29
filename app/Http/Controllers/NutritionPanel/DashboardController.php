@@ -54,15 +54,17 @@ class DashboardController extends Controller
         }
 
         // 1. Total Members Breakdown
-        $totalUsers = User::where('role_id', 3)->where('created_by', $authUser['id'])->count();
-        $offlineUsers = User::where('role_id', 3)->where('user_state', 'Offline')->where('created_by', $authUser['id'])->count();
-        $onlineUsers = User::where('role_id', 3)->where('user_state', 'Online')->where('created_by', $authUser['id'])->count();
-        $totalCoaches = User::where('role_id', 3)
+        $totalUsers = User::where('role_type', 'user')->where('created_by', $authUser['id'])->count();
+        $offlineUsers = User::where('role_type', 'user')->where('user_state', 'Offline')->where('created_by', $authUser['id'])->count();
+        $onlineUsers = User::where('role_type', 'user')->where('user_state', 'Online')->where('created_by', $authUser['id'])->count();
+        $totalCoaches = User::where('role_type', 'user')
             ->where('created_by', $authUser['id'])
             ->whereNotNull('coach_name')
             ->where('coach_name', '!=', '')
-            ->distinct('coach_name')
-            ->count('coach_name');
+            ->distinct()
+            ->pluck('coach_name')
+            ->unique()
+            ->count();
 
         // 2. Weekly Pulse (Last 7 Days) for Attendance and Revenue Charts
         $weeklyPulseLabels = [];
@@ -118,6 +120,12 @@ class DashboardController extends Controller
         $todayNewMemberships = User::where('role_id', 3)
             ->where('created_by', $authUser->id)
             ->whereDate('created_at', $todayDate)
+            ->count();
+
+        $thisMonthNewMembers = User::where('role_id', 3)
+            ->where('created_by', $authUser->id)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
             ->count();
 
         $todayRenewalsDue = User::where('role_id', 3)
@@ -414,6 +422,7 @@ class DashboardController extends Controller
 
         $this->viewData['todayCounsellingCount'] = $todayCounsellingCount;
         $this->viewData['todayNewMemberships'] = $todayNewMemberships;
+        $this->viewData['thisMonthNewMembers'] = $thisMonthNewMembers;
         $this->viewData['todayRenewalsDue'] = $todayRenewalsDue;
         $this->viewData['todayUrgentRenewals'] = $todayUrgentRenewals;
         $this->viewData['thisMonthBirthdayUsers'] = $thisMonthBirthdayUsers;
