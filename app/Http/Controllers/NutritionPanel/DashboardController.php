@@ -452,6 +452,7 @@ class DashboardController extends Controller
         $this->viewData['userRegualrChartData'] = $userRegualrChartData;
         $this->viewData['transactionAddUserChartData'] = $transactionAddUserChartData;
         $this->viewData['transactionOrderPlacedChartData'] = $transactionOrderPlacedChartData;
+        $this->viewData['year'] = $year;
 
         return view('nutrition-panel.dashboard.index')->with($this->viewData);
     }

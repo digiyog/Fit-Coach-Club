@@ -1532,18 +1532,43 @@
             </div>
         </div>
 
-        <!-- TAB 4: GROWTH & TAB 5: FINANCE -->
+        <!-- TAB 4: GROWTH -->
         <div id="tab-growth" class="fcc-tab-panel">
-            <div class="row g-3 mb-4">
+            
+            <!-- Filter Card -->
+            <div class="fcc-leaderboard-card mb-4" style="padding: 24px;">
+                <h4 style="color: #4338ca; font-weight: 700; font-size: 16px; text-align: center; margin-bottom: 16px;">
+                    Shake Count Income & Expense and User Graph {{ $year ?? date('Y') }}
+                </h4>
+                <form action="{{ route('nutritionPanel.dashboard') }}" method="GET" class="d-flex align-items-end justify-content-center gap-3">
+                    <input type="hidden" name="tab" value="tab-growth">
+                    <div>
+                        <label style="font-size: 12.5px; color: #64748b; font-weight: 600; margin-bottom: 4px; display: block;">Year</label>
+                        <select name="year_filter" class="form-select form-control" style="width: 220px; border-radius: 8px; border: 1px solid #cbd5e1; height: 38px; font-weight: 600; font-size: 13.5px;">
+                            @for($y = date('Y'); $y >= 2020; $y--)
+                                <option value="{{ $y }}" {{ (($year ?? date('Y')) == $y) ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4" style="background: #3b46f1; border: none; border-radius: 8px; font-weight: 700; height: 38px; font-size: 13.5px;">Apply</button>
+                </form>
+            </div>
+
+            <!-- 2 Graph Cards in a Row -->
+            <div class="row g-4 mb-4">
                 <div class="col-xl-6 col-12">
-                    <div class="fcc-white-card">
-                        <h4 class="fw-bold mb-3">Monthly Shake Count Graph</h4>
+                    <div class="fcc-leaderboard-card h-100 mb-0" style="padding: 24px;">
+                        <h4 style="color: #4338ca; font-size: 16px; font-weight: 700; margin-bottom: 20px;">
+                            Bar Graph Representation of Shake Count {{ $year ?? date('Y') }}
+                        </h4>
                         <div id="shakeCountGraph"></div>
                     </div>
                 </div>
                 <div class="col-xl-6 col-12">
-                    <div class="fcc-white-card">
-                        <h4 class="fw-bold mb-3">User Growth Breakdown</h4>
+                    <div class="fcc-leaderboard-card h-100 mb-0" style="padding: 24px;">
+                        <h4 style="color: #4338ca; font-size: 16px; font-weight: 700; margin-bottom: 20px;">
+                            Lines Graph Representation of Demo, 3 Days & Regular User Count {{ $year ?? date('Y') }}
+                        </h4>
                         <div id="revenueMonthly"></div>
                     </div>
                 </div>
@@ -1629,6 +1654,16 @@
         window.dispatchEvent(new Event('resize'));
     });
 
+    // Auto switch to active tab from URL query param if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTabParam = urlParams.get('tab');
+    if (activeTabParam && $('#' + activeTabParam).length) {
+        $('.fcc-tab-btn').removeClass('active');
+        $('.fcc-tab-panel').removeClass('active');
+        $(`.fcc-tab-btn[data-tab="${activeTabParam}"]`).addClass('active');
+        $('#' + activeTabParam).addClass('active');
+    }
+
     // 1. Club Pulse Area Line Chart
     var weeklyPulseLabels = {!! json_encode($weeklyPulseLabels ?? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) !!};
     var weeklyPulseAttendance = {!! json_encode($weeklyPulseAttendance ?? [0, 0, 0, 0, 0, 0, 0]) !!};
@@ -1706,33 +1741,55 @@
 
 
 
-    // 3. Yearly Analytics Charts
+    // 3. Yearly Analytics Charts (Growth Tab)
     var shakeCount = {!! json_encode($totalShakeChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
-    new ApexCharts(document.querySelector("#shakeCountGraph"), {
-        chart: { height: 280, type: 'bar', fontFamily: 'Plus Jakarta Sans, sans-serif', toolbar: { show: false } },
-        colors: ['#3b46f1'],
-        plotOptions: { bar: { horizontal: false, columnWidth: '38%', borderRadius: 6 } },
-        dataLabels: { enabled: false },
-        series: [{ name: 'Shake Count', data: shakeCount }],
-        xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
-    }).render();
+    var shakeElem = document.querySelector("#shakeCountGraph");
+    if (shakeElem) {
+        new ApexCharts(shakeElem, {
+            chart: { height: 320, type: 'bar', fontFamily: 'Plus Jakarta Sans, sans-serif', toolbar: { show: false } },
+            colors: ['#6366f1'],
+            plotOptions: { bar: { horizontal: false, columnWidth: '40%', borderRadius: 8 } },
+            dataLabels: { enabled: false },
+            series: [{ name: 'Shake Count', data: shakeCount }],
+            xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    type: 'vertical',
+                    shadeIntensity: 0.25,
+                    opacityFrom: 0.95,
+                    opacityTo: 0.65,
+                    stops: [0, 100]
+                }
+            }
+        }).render();
+    }
 
     var userDemoChartData = {!! json_encode($userDemoChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
     var userTrailChartData = {!! json_encode($userTrailChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
     var userRegualrChartData = {!! json_encode($userRegualrChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
 
-    new ApexCharts(document.querySelector("#revenueMonthly"), {
-        chart: { fontFamily: 'Plus Jakarta Sans, sans-serif', height: 280, type: 'area', toolbar: { show: false } },
-        colors: ['#3b82f6', '#ef4444', '#10b981'],
-        dataLabels: { enabled: false },
-        stroke: { show: true, curve: 'smooth', width: 3 },
-        series: [
-            { name: 'Demo Users', data: userDemoChartData },
-            { name: '3-Day Trial', data: userTrailChartData },
-            { name: 'Regular Users', data: userRegualrChartData }
-        ],
-        xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
-    }).render();
+    var userGrowthElem = document.querySelector("#revenueMonthly");
+    if (userGrowthElem) {
+        new ApexCharts(userGrowthElem, {
+            chart: { fontFamily: 'Plus Jakarta Sans, sans-serif', height: 320, type: 'line', toolbar: { show: false } },
+            colors: ['#3b82f6', '#ef4444', '#10b981'],
+            dataLabels: { enabled: false },
+            stroke: { show: true, curve: 'smooth', width: 2.5 },
+            series: [
+                { name: 'Demo', data: userDemoChartData },
+                { name: '3 Days', data: userTrailChartData },
+                { name: 'Regular Users', data: userRegualrChartData }
+            ],
+            legend: {
+                position: 'top',
+                horizontalAlign: 'left',
+                markers: { radius: 12 }
+            },
+            xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
+        }).render();
+    }
 
     var transactionAddUserChartData = {!! json_encode($transactionAddUserChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
     var transactionOrderPlacedChartData = {!! json_encode($transactionOrderPlacedChartData ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
