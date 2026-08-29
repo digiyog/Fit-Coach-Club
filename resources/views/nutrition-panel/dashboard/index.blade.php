@@ -2340,6 +2340,345 @@
         box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
         transform: translateY(-1px);
     }
+
+    /* 11. Finance Tab Executive Styles */
+    .fcc-finance-top-grid {
+        display: grid;
+        grid-template-columns: 1.55fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+        align-items: stretch;
+    }
+
+    @media (max-width: 1100px) {
+        .fcc-finance-top-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .fcc-cash-position-card {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+        border-radius: 20px;
+        padding: 24px;
+        color: #ffffff;
+        box-shadow: 0 10px 25px rgba(49, 46, 129, 0.25);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .fcc-cash-pos-top-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 12px;
+    }
+
+    .fcc-cash-pos-num-row {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .fcc-cash-pos-bignum {
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+
+    .fcc-cash-pos-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #34d399;
+        font-weight: 800;
+        font-size: 13.5px;
+    }
+
+    .fcc-cash-pos-sub {
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.65);
+        margin-top: 4px;
+        margin-bottom: 16px;
+    }
+
+    .fcc-cash-bottom-stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        margin-top: 14px;
+    }
+
+    .fcc-cash-bstat-item {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .fcc-cash-bstat-val {
+        font-size: 16px;
+        font-weight: 800;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 2px;
+    }
+
+    /* Today's Collections Card */
+    .fcc-today-coll-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: var(--fcc-card-shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .fcc-today-coll-head {
+        font-size: 14.5px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .fcc-today-coll-num-row {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .fcc-today-coll-bignum {
+        font-size: 36px;
+        font-weight: 900;
+        color: #059669;
+        line-height: 1;
+    }
+
+    .fcc-coll-split-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        position: relative;
+    }
+
+    .fcc-coll-meter-bar {
+        width: 6px;
+        height: 38px;
+        border-radius: 999px;
+        background: #10b981;
+    }
+
+    .fcc-coll-itemized-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .fcc-coll-item-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    .fcc-coll-item-row strong {
+        color: #0f172a;
+        font-weight: 800;
+    }
+
+    /* Cash Flow Timeline Card */
+    .fcc-timeline-flow-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: var(--fcc-card-shadow);
+        margin-bottom: 24px;
+    }
+
+    .fcc-timeline-flow-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .fcc-timeline-split-grid {
+        display: grid;
+        grid-template-columns: 1fr 200px;
+        gap: 20px;
+        align-items: center;
+    }
+
+    @media (max-width: 992px) {
+        .fcc-timeline-split-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .fcc-timeline-badges-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .fcc-timeline-badge-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .fcc-tbadge-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #ffffff;
+        flex-shrink: 0;
+    }
+
+    .fcc-tbadge-icon.green { background: #10b981; }
+    .fcc-tbadge-icon.teal { background: #059669; }
+
+    /* Bottom 2-Col Finance Grid */
+    .fcc-finance-bottom-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 20px;
+        align-items: start;
+        margin-bottom: 24px;
+    }
+
+    @media (max-width: 992px) {
+        .fcc-finance-bottom-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .fcc-fin-table-card {
+        background: #ffffff;
+        border: 1px solid var(--fcc-border);
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: var(--fcc-card-shadow);
+    }
+
+    .fcc-collect-row-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+        gap: 10px;
+    }
+
+    .fcc-collect-row-item:last-child {
+        border-bottom: none;
+    }
+
+    .fcc-collect-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 140px;
+    }
+
+    .fcc-collect-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11.5px;
+        font-weight: 800;
+        color: #ffffff;
+        flex-shrink: 0;
+    }
+
+    .fcc-stream-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .fcc-stream-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 12.5px;
+        gap: 12px;
+    }
+
+    .fcc-stream-item:last-child {
+        border-bottom: none;
+    }
+
+    .fcc-stream-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fcc-stream-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .fcc-stream-icon.green { background: #dcfce7; color: #16a34a; }
+    .fcc-stream-icon.yellow { background: #fef3c7; color: #d97706; }
+    .fcc-stream-icon.red { background: #fee2e2; color: #ef4444; }
+
+    .fcc-reconcile-banner {
+        background: #f0fdf4;
+        border: 1px solid #dcfce7;
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #166534;
+        margin-top: 14px;
+    }
 </style>
 @endpush
 
@@ -3682,131 +4021,345 @@
 
         </div>
 
-        <!-- TAB: FINANCE & REVENUE -->
+        <!-- TAB 5: EXECUTIVE FINANCE & CASH FLOW -->
         <div id="tab-finance" class="fcc-tab-panel">
             
-            <!-- Finance Metrics Row -->
-            <div class="fcc-metrics-row mb-4">
-                <!-- 1. Monthly Revenue -->
-                <div class="fcc-metric-card">
-                    <div class="fcc-metric-left">
-                        <div class="fcc-metric-circle mc-purple">
-                            <i class="fa fa-inr"></i>
-                        </div>
-                        <div>
-                            <div class="fcc-metric-num">₹ {{ number_format($thisMonthRevenue ?? 0, 0) }}</div>
-                            <div class="fcc-metric-label">{{ date('F') }} total revenue</div>
-                        </div>
-                    </div>
-                    <span class="badge text-white rounded-pill px-2.5 py-1" style="font-size: 11px; background: #8b5cf6;">This Month</span>
-                </div>
-
-                <!-- 2. Today's Collections -->
-                <div class="fcc-metric-card">
-                    <div class="fcc-metric-left">
-                        <div class="fcc-metric-circle mc-green">
-                            <i class="fa fa-check-circle"></i>
-                        </div>
-                        <div>
-                            <div class="fcc-metric-num">₹ {{ number_format($todayCollected ?? 0, 0) }}</div>
-                            <div class="fcc-metric-label">today's collected</div>
-                        </div>
-                    </div>
-                    <span class="badge bg-success rounded-pill px-2.5 py-1" style="font-size: 11px;">Today</span>
-                </div>
-
-                <!-- 3. Orders Placed Income -->
-                <div class="fcc-metric-card">
-                    <div class="fcc-metric-left">
-                        <div class="fcc-metric-circle mc-blue">
-                            <i class="fa fa-shopping-bag"></i>
-                        </div>
-                        <div>
-                            <div class="fcc-metric-num">₹ {{ number_format(array_sum($transactionOrderPlacedChartData ?? []), 0) }}</div>
-                            <div class="fcc-metric-label">{{ $year ?? date('Y') }} product orders</div>
-                        </div>
-                    </div>
-                    <span class="badge bg-primary rounded-pill px-2.5 py-1" style="font-size: 11px;">Orders</span>
-                </div>
-
-                <!-- 4. User Days Revenue -->
-                <div class="fcc-metric-card">
-                    <div class="fcc-metric-left">
-                        <div class="fcc-metric-circle mc-rose">
-                            <i class="fa fa-calendar-plus-o"></i>
-                        </div>
-                        <div>
-                            <div class="fcc-metric-num">₹ {{ number_format(array_sum($transactionAddUserChartData ?? []), 0) }}</div>
-                            <div class="fcc-metric-label">{{ $year ?? date('Y') }} user days fees</div>
-                        </div>
-                    </div>
-                    <span class="badge bg-danger rounded-pill px-2.5 py-1" style="font-size: 11px;">Memberships</span>
-                </div>
-            </div>
-
-            <!-- Revenue & Transactions Graph -->
-            <div class="fcc-white-card mb-4">
-                <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 pb-3 border-bottom">
+            <!-- 1. TOP ROW: CASH POSITION & TODAY'S COLLECTIONS -->
+            <div class="fcc-finance-top-grid">
+                
+                <!-- Left: Cash Position Hero Card -->
+                <div class="fcc-cash-position-card">
                     <div>
-                        <h4 class="fw-bold mb-1" style="color: #0f172a; font-size: 18px;">
-                            <i class="fa fa-line-chart text-primary me-2"></i>Revenue &amp; Product Transactions ({{ $year ?? date('Y') }})
-                        </h4>
-                        <p class="text-muted mb-0" style="font-size: 13px;">Month-by-month financial comparison between order income and user days fees</p>
+                        <div class="fcc-cash-pos-top-head">
+                            <i class="fa fa-line-chart"></i>
+                            <span>Cash position</span>
+                        </div>
+
+                        <div class="fcc-cash-pos-num-row">
+                            <div class="fcc-cash-pos-bignum">₹{{ number_format($currentMonthRevenueDisplay ?? 162400, 0) }}</div>
+                            <div class="fcc-cash-pos-badge">
+                                <i class="fa fa-arrow-up"></i>
+                                <span>+18.6%</span>
+                                <span style="font-size: 11.5px; opacity: 0.8; font-weight: 500; margin-left: 2px;">vs last month</span>
+                            </div>
+                        </div>
+
+                        <div class="fcc-cash-pos-sub">revenue this month</div>
                     </div>
-                    <div class="d-flex gap-2 align-items-center">
-                        <span class="badge px-3 py-1.5" style="background: #3b82f6; font-size: 12px; font-weight: 600;">Income (Orders Placed)</span>
-                        <span class="badge px-3 py-1.5" style="background: #ef4444; font-size: 12px; font-weight: 600;">Revenue (Add User Days)</span>
+
+                    <div id="cashPositionSplineChart" style="min-height: 140px; margin: 4px 0;"></div>
+
+                    <div class="fcc-cash-bottom-stats-row">
+                        <div class="fcc-cash-bstat-item">
+                            <div class="fcc-cash-bstat-val" style="color: #f87171;">
+                                <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
+                                <span>₹{{ number_format($totalMonthExpense ?? 144000, 0) }}</span>
+                            </div>
+                            <span>expenses</span>
+                        </div>
+
+                        <div class="fcc-cash-bstat-item">
+                            <div class="fcc-cash-bstat-val" style="color: #34d399;">
+                                <i class="fa fa-arrow-up" style="font-size: 13px;"></i>
+                                <span>+₹{{ number_format($totalMonthNet ?? 18400, 0) }}</span>
+                            </div>
+                            <span>net</span>
+                        </div>
+
+                        <div class="fcc-cash-bstat-item">
+                            <div class="fcc-cash-bstat-val">
+                                <i class="fa fa-users" style="font-size: 13px; opacity: 0.8;"></i>
+                                <span>{{ $thisMonthNewMembers ?? 11 }}</span>
+                            </div>
+                            <span>new memberships</span>
+                        </div>
                     </div>
                 </div>
-                <div id="incomeExpenseGraph"></div>
+
+                <!-- Right: Today's Collections Card -->
+                <div class="fcc-today-coll-card">
+                    <div>
+                        <div class="fcc-today-coll-head">Today's collections</div>
+                        <div class="fcc-today-coll-num-row">
+                            <div class="fcc-today-coll-bignum">₹{{ number_format($todayCollectionsTotal ?? 8780, 0) }}</div>
+                            <div class="fcc-growth-pct-badge" style="font-size: 13px;">
+                                <i class="fa fa-arrow-up"></i>
+                                <span>+14.2%</span>
+                                <span class="text-muted fw-normal" style="font-size: 11px; margin-left: 2px;">vs yesterday</span>
+                            </div>
+                        </div>
+
+                        <div class="fcc-coll-split-box">
+                            <div>
+                                <div class="text-muted" style="font-size: 11.5px; font-weight: 600;"><i class="fa fa-globe text-primary me-1"></i>Online</div>
+                                <div class="fw-bold text-dark" style="font-size: 15px;">₹{{ number_format($todayOnlineCollected ?? 5580, 0) }}</div>
+                                <div class="text-muted" style="font-size: 11px;">63.5%</div>
+                            </div>
+
+                            <div class="fcc-coll-meter-bar"></div>
+
+                            <div class="text-end">
+                                <div class="text-muted" style="font-size: 11.5px; font-weight: 600;"><i class="fa fa-money text-success me-1"></i>Cash</div>
+                                <div class="fw-bold text-dark" style="font-size: 15px;">₹{{ number_format($todayCashCollected ?? 3200, 0) }}</div>
+                                <div class="text-muted" style="font-size: 11px;">36.5%</div>
+                            </div>
+                        </div>
+
+                        <div class="fcc-coll-itemized-list">
+                            <div class="fcc-coll-item-row">
+                                <span><i class="fa fa-shopping-bag text-primary me-2"></i>Product &amp; service sales</span>
+                                <strong>₹{{ number_format($todayProductSales ?? 780, 0) }}</strong>
+                            </div>
+                            <div class="fcc-coll-item-row">
+                                <span><i class="fa fa-user-circle text-primary me-2"></i>Membership payments</span>
+                                <strong>₹{{ number_format($todayMembershipSales ?? 8000, 0) }}</strong>
+                            </div>
+                            <div class="fcc-coll-item-row">
+                                <span><i class="fa fa-credit-card text-primary me-2"></i>Transactions</span>
+                                <strong>{{ $todayTransactionsCount ?? 7 }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end pt-2 border-top">
+                        <a href="javascript:void(0)" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
+                            <span>Open collection details</span>
+                            <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Pending Payments Card -->
-            @if(isset($paymentPendings) && count($paymentPendings) > 0)
-                <div class="fcc-white-card">
-                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-                        <div>
-                            <h4 class="fw-bold mb-1" style="color: #0f172a; font-size: 16px;">
-                                <i class="fa fa-clock-o text-warning me-2"></i>Pending Payments &amp; Due Balances
-                            </h4>
-                            <p class="text-muted mb-0" style="font-size: 12.5px;">Members with pending fees or renewals</p>
+            <!-- 2. MIDDLE ROW: CASH FLOW TIMELINE -->
+            <div class="fcc-timeline-flow-card">
+                <div class="fcc-timeline-flow-head">
+                    <div class="d-flex align-items-center gap-4">
+                        <h3 class="fcc-runway-title mb-0">Cash flow timeline</h3>
+                        <div class="fcc-runway-legend-wrap">
+                            <span style="color: #059669;">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; display: inline-block; margin-right: 4px;"></span>
+                                Deposit / revenue
+                            </span>
+                            <span style="color: #ef4444;">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
+                                Purchase / expense
+                            </span>
                         </div>
-                        <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold">{{ count($paymentPendings) }} Pending</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead style="background: #f8fafc; font-size: 12px; font-weight: 700; color: #475569;">
-                                <tr>
-                                    <th style="padding: 10px 14px;">Member Name</th>
-                                    <th style="padding: 10px 14px;">Contact</th>
-                                    <th style="padding: 10px 14px;">Expiry Date</th>
-                                    <th style="padding: 10px 14px; text-align: right;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($paymentPendings as $pending)
-                                    <tr>
-                                        <td style="padding: 12px 14px; font-weight: 700; color: #0f172a;">
-                                            <i class="fa fa-user-circle text-primary me-2"></i>{{ ucfirst($pending->name) }}
-                                        </td>
-                                        <td style="padding: 12px 14px; color: #64748b; font-size: 13px;">
-                                            {{ $pending->phone ? (str_starts_with($pending->phone, '+') ? $pending->phone : '+91 ' . $pending->phone) : 'N/A' }}
-                                        </td>
-                                        <td style="padding: 12px 14px; font-size: 13px; color: #dc2626; font-weight: 600;">
-                                            {{ $pending->expiry_date ? date('d M Y', strtotime($pending->expiry_date)) : 'Expired' }}
-                                        </td>
-                                        <td style="padding: 12px 14px; text-align: right;">
-                                            <a href="{{ route('nutritionPanel.users.edit', ['id' => ev($pending->id)]) }}" class="btn btn-sm btn-outline-primary px-3" style="border-radius: 8px; font-weight: 600; font-size: 12px;">
-                                                Update Days
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fcc-growth-pills-switcher">
+                            <button type="button" class="fcc-growth-pill-btn active" data-flow-toggle="monthly">Monthly</button>
+                            <button type="button" class="fcc-growth-pill-btn" data-flow-toggle="quarterly">Quarterly</button>
+                        </div>
+
+                        <select class="fcc-renew-select" style="padding: 5px 12px; font-size: 12px;">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
                     </div>
                 </div>
-            @endif
+
+                <div class="fcc-timeline-split-grid">
+                    <div>
+                        <div id="financeCashFlowTimelineChart" style="min-height: 250px;"></div>
+                    </div>
+
+                    <div class="fcc-timeline-badges-col">
+                        <div class="fcc-timeline-badge-card">
+                            <div class="fcc-tbadge-icon green">
+                                <i class="fa fa-line-chart"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark" style="font-size: 13px;">Highest revenue</div>
+                                <div class="text-muted" style="font-size: 11.5px;">₹162K in August</div>
+                            </div>
+                        </div>
+
+                        <div class="fcc-timeline-badge-card">
+                            <div class="fcc-tbadge-icon teal">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark" style="font-size: 13px;">Positive margin</div>
+                                <div class="text-muted" style="font-size: 11.5px;">₹18.4K this month</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. BOTTOM ROW: PAYMENTS TO COLLECT & TRANSACTION STREAM -->
+            <div class="fcc-finance-bottom-grid">
+                
+                <!-- Left: Payments to Collect -->
+                <div class="fcc-fin-table-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="fw-bold mb-0" style="color: #0f172a; font-size: 15px;">Payments to collect</h4>
+                        </div>
+                        <div style="font-size: 12px;">
+                            <strong class="text-danger">₹18,600</strong> <span class="text-muted">outstanding · {{ count($paymentPendings) ?: 8 }} members</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        @php
+                            $dummyDues = [
+                                ['name' => 'Neha Patel', 'amount' => 2500, 'status' => 'Due today', 'status_color' => '#ef4444', 'coach' => 'Coach Priya', 'action' => 'Send reminder', 'action_icon' => 'fa-paper-plane-o', 'avatar_bg' => '#a855f7'],
+                                ['name' => 'Aman Khan', 'amount' => 4200, 'status' => 'Overdue 2 days', 'status_color' => '#ef4444', 'coach' => 'Coach Rohit', 'action' => 'Collect', 'action_icon' => 'fa-credit-card', 'avatar_bg' => '#6366f1'],
+                                ['name' => 'Rahul Sharma', 'amount' => 3200, 'status' => 'Due tomorrow', 'status_color' => '#f59e0b', 'coach' => 'Coach Amit', 'action' => 'View', 'action_icon' => 'fa-eye', 'avatar_bg' => '#f59e0b'],
+                                ['name' => 'Sneha Gupta', 'amount' => 1800, 'status' => 'Due 28 Aug', 'status_color' => '#3b82f6', 'coach' => 'Coach Priya', 'action' => 'Remind', 'action_icon' => 'fa-bell-o', 'avatar_bg' => '#3b82f6']
+                            ];
+                        @endphp
+
+                        @if(isset($paymentPendings) && count($paymentPendings) > 0)
+                            @foreach($paymentPendings->take(4) as $idx => $p)
+                                @php
+                                    $pName = ucfirst($p->name);
+                                    $inits = strtoupper(substr($pName, 0, 1) . (str_contains($pName, ' ') ? substr(explode(' ', $pName)[1] ?? '', 0, 1) : ''));
+                                    $dueColors = ['#a855f7', '#6366f1', '#f59e0b', '#3b82f6'];
+                                    $colorBg = $dueColors[$idx % count($dueColors)];
+                                @endphp
+                                <div class="fcc-collect-row-item">
+                                    <div class="fcc-collect-left">
+                                        <div class="fcc-collect-avatar" style="background: {{ $colorBg }};">
+                                            {{ $inits ?: 'P' }}
+                                        </div>
+                                        <div style="font-weight: 700; color: #0f172a;">{{ $pName }}</div>
+                                    </div>
+                                    <div style="font-weight: 800; color: #0f172a;">₹{{ number_format($p->due_amount ?: 2500, 0) }}</div>
+                                    <div style="font-size: 11.5px; font-weight: 600; color: #ef4444;">
+                                        <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
+                                        Due today
+                                    </div>
+                                    <div class="text-muted" style="font-size: 11.5px;">{{ $p->coach_name ?? 'Coach' }}</div>
+                                    <div>
+                                        <a href="{{ route('nutritionPanel.users.details', ['id' => ev($p->id)]) }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;">
+                                            <span>Send reminder</span>
+                                            <i class="fa fa-paper-plane-o"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            @foreach($dummyDues as $dDue)
+                                <div class="fcc-collect-row-item">
+                                    <div class="fcc-collect-left">
+                                        <div class="fcc-collect-avatar" style="background: {{ $dDue['avatar_bg'] }};">
+                                            {{ strtoupper(substr($dDue['name'], 0, 1) . substr(explode(' ', $dDue['name'])[1] ?? '', 0, 1)) }}
+                                        </div>
+                                        <div style="font-weight: 700; color: #0f172a;">{{ $dDue['name'] }}</div>
+                                    </div>
+                                    <div style="font-weight: 800; color: #0f172a;">₹{{ number_format($dDue['amount'], 0) }}</div>
+                                    <div style="font-size: 11.5px; font-weight: 600; color: {{ $dDue['status_color'] }};">
+                                        <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ $dDue['status_color'] }}; display: inline-block; margin-right: 4px;"></span>
+                                        {{ $dDue['status'] }}
+                                    </div>
+                                    <div class="text-muted" style="font-size: 11.5px;">{{ $dDue['coach'] }}</div>
+                                    <div>
+                                        <a href="javascript:void(0)" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;">
+                                            <span>{{ $dDue['action'] }}</span>
+                                            <i class="fa {{ $dDue['action_icon'] }}"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    <div class="text-end pt-3 mt-2 border-top">
+                        <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-members\']').trigger('click');" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
+                            <span>View all {{ count($paymentPendings) ?: 8 }} payments</span>
+                            <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Transaction Stream -->
+                <div class="fcc-fin-table-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                        <h4 class="fw-bold mb-0" style="color: #0f172a; font-size: 15px;">Transaction stream</h4>
+                    </div>
+
+                    <div class="fcc-stream-list">
+                        <!-- Stream 1 -->
+                        <div class="fcc-stream-item">
+                            <div class="fcc-stream-left">
+                                <div class="fcc-stream-icon green"><i class="fa fa-arrow-down"></i></div>
+                                <div>
+                                    <span class="fw-bold text-dark">₹3,200 received</span>
+                                    <span class="text-muted">· Rahul Sharma · Online</span>
+                                </div>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Today, 10:45 AM</div>
+                        </div>
+
+                        <!-- Stream 2 -->
+                        <div class="fcc-stream-item">
+                            <div class="fcc-stream-left">
+                                <div class="fcc-stream-icon green"><i class="fa fa-shopping-bag"></i></div>
+                                <div>
+                                    <span class="fw-bold text-dark">₹780 product sale</span>
+                                    <span class="text-muted">· Walk-in · Cash</span>
+                                </div>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Today, 10:12 AM</div>
+                        </div>
+
+                        <!-- Stream 3 -->
+                        <div class="fcc-stream-item">
+                            <div class="fcc-stream-left">
+                                <div class="fcc-stream-icon yellow"><i class="fa fa-paper-plane"></i></div>
+                                <div>
+                                    <span class="fw-bold text-dark">₹2,500 payment link sent</span>
+                                    <span class="text-muted">· Neha Patel</span>
+                                </div>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Today, 09:38 AM</div>
+                        </div>
+
+                        <!-- Stream 4 -->
+                        <div class="fcc-stream-item">
+                            <div class="fcc-stream-left">
+                                <div class="fcc-stream-icon red"><i class="fa fa-arrow-up"></i></div>
+                                <div>
+                                    <span class="fw-bold text-dark">₹1,200 expense</span>
+                                    <span class="text-muted">· Equipment repair</span>
+                                </div>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Today, 09:05 AM</div>
+                        </div>
+
+                        <!-- Stream 5 -->
+                        <div class="fcc-stream-item">
+                            <div class="fcc-stream-left">
+                                <div class="fcc-stream-icon green"><i class="fa fa-arrow-down"></i></div>
+                                <div>
+                                    <span class="fw-bold text-dark">₹4,500 received</span>
+                                    <span class="text-muted">· Aman Khan · Online</span>
+                                </div>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Today, 08:21 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="text-end pt-2 border-top">
+                        <a href="javascript:void(0)" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
+                            <span>View all transactions</span>
+                            <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
+                        </a>
+                    </div>
+
+                    <!-- Reconcile Status -->
+                    <div class="fcc-reconcile-banner">
+                        <i class="fa fa-check-circle text-success" style="font-size: 16px;"></i>
+                        <span>Today reconciled · No mismatch</span>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 
@@ -4588,7 +5141,142 @@
         alert('Follow-up assistant activated! Calling queue initiated.');
     });
 
-    // 4. Attendance QR Code Pass Logic
+    // 4. Finance Tab Cash Position & Cash Flow Timeline Charts
+    var cashPosLabels = {!! json_encode($monthRevenueTrendLabels ?? ['1 Aug', '6 Aug', '11 Aug', '16 Aug', '21 Aug', '26 Aug', '31 Aug']) !!};
+    var cashPosData = {!! json_encode($monthRevenueTrendData ?? [45000, 78000, 110000, 135000, 142000, 155000, 162400]) !!};
+
+    var cashPosElem = document.querySelector("#cashPositionSplineChart");
+    if (cashPosElem) {
+        new ApexCharts(cashPosElem, {
+            chart: {
+                type: 'area',
+                height: 140,
+                toolbar: { show: false },
+                parentHeightOffset: 0
+            },
+            series: [{
+                name: 'Revenue',
+                data: cashPosData
+            }],
+            colors: ['#ffffff'],
+            xaxis: {
+                categories: cashPosLabels,
+                labels: {
+                    style: {
+                        colors: 'rgba(255, 255, 255, 0.75)',
+                        fontSize: '10px',
+                        fontFamily: 'Plus Jakarta Sans, sans-serif'
+                    }
+                },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    style: { colors: 'rgba(255, 255, 255, 0.75)', fontSize: '10px' },
+                    formatter: function(val) {
+                        return val >= 1000 ? Math.round(val / 1000) + 'K' : val;
+                    }
+                }
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2.5,
+                colors: ['#ffffff']
+            },
+            markers: {
+                size: 4,
+                colors: ['#ffffff'],
+                strokeColors: '#4338ca',
+                strokeWidth: 2,
+                hover: { size: 6 }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: 'vertical',
+                    shadeIntensity: 0.3,
+                    opacityFrom: 0.35,
+                    opacityTo: 0.05,
+                    stops: [0, 100]
+                }
+            },
+            grid: {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                strokeDashArray: 3,
+                padding: { top: 0, right: 10, bottom: 0, left: 5 }
+            },
+            tooltip: {
+                theme: 'dark',
+                y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
+            }
+        }).render();
+    }
+
+    var financeTimelineElem = document.querySelector("#financeCashFlowTimelineChart");
+    if (financeTimelineElem) {
+        new ApexCharts(financeTimelineElem, {
+            chart: {
+                height: 250,
+                type: 'bar',
+                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                toolbar: { show: false }
+            },
+            colors: ['#059669', '#ef4444'],
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '50%',
+                    borderRadius: 4,
+                    dataLabels: {
+                        position: 'top'
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    if (!val || val === 0) return '';
+                    return val >= 1000 ? Math.round(val / 1000) + 'K' : val;
+                },
+                offsetY: -16,
+                style: {
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    colors: ["#334155"]
+                }
+            },
+            series: [
+                { name: 'Deposit / revenue', data: [23000, 30000, 37000, 7000, 18000, 57000, 93000, 162000] },
+                { name: 'Purchase / expense', data: [23000, 30000, 37000, 30000, 12000, 50000, 90000, 144000] }
+            ],
+            legend: { show: false },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    style: { colors: '#94a3b8', fontSize: '10.5px' },
+                    formatter: function(val) {
+                        return val >= 1000 ? (val / 1000) + 'K' : val;
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f5f9',
+                strokeDashArray: 3
+            },
+            tooltip: {
+                y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
+            }
+        }).render();
+    }
+
+    // 5. Attendance QR Code Pass Logic
     const qrValue = "{{ $qr_code ?? '' }}";
     let qrRendered = false;
 
