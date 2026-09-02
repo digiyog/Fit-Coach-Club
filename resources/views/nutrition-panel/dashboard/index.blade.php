@@ -793,7 +793,6 @@
         text-decoration: underline;
     }
 
-
     /* 6. Section 4: Top 20 Attendance Leaderboard */
     .fcc-leaderboard-card {
         background: #ffffff;
@@ -1379,9 +1378,16 @@
         margin: 0 6px;
     }
 
-    .fcc-audit-badge-pill.plus {
+    .fcc-audit-badge-pill.plus,
+    .fcc-audit-badge-pill.single {
         background: #dcfce7;
         color: #16a34a;
+    }
+
+    .fcc-audit-badge-pill.double,
+    .fcc-audit-badge-pill.blue {
+        background: #dbeafe;
+        color: #2563eb;
     }
 
     .fcc-audit-badge-pill.minus {
@@ -1728,10 +1734,10 @@
         background: linear-gradient(90deg, #ef4444 0%, #f97316 25%, #8b5cf6 50%, #10b981 100%);
     }
 
-    /* Kanban 4 Columns Layout */
+    /* Kanban 3 Columns Layout */
     .fcc-renew-columns-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 310px;
+        grid-template-columns: repeat(3, 1fr);
         gap: 18px;
         margin-bottom: 24px;
         align-items: start;
@@ -2760,10 +2766,10 @@
 
         <!-- TAB 1: OVERVIEW -->
         <div id="tab-overview" class="fcc-tab-panel active">
-            
+
             <!-- SECTION 1: TOP HERO (CLUB PULSE + TODAY) -->
             <div class="fcc-hero-grid">
-                
+
                 <!-- Left: Club Pulse Card -->
                 <div class="fcc-pulse-card">
                     <div>
@@ -2968,7 +2974,7 @@
 
             <!-- SECTION 3: PERFORMANCE STORY & ACTION QUEUE -->
             <div class="fcc-story-action-grid">
-                
+
                 <!-- Left: Performance Story Card -->
                 <div class="fcc-story-card">
                     <div>
@@ -3104,14 +3110,14 @@
 
         <!-- TAB 2: ATTENDANCE MAP, TRENDS & MEMBER CONSISTENCY BOARD -->
         <div id="tab-top20" class="fcc-tab-panel">
-            
+
             <!-- 1. TOP SECTION: ATTENDANCE MAP + TREND + CONSISTENCY + LIVE ATTENTION -->
             <div class="fcc-att-grid">
-                
+
                 <!-- Left: Main Attendance Card (Map + Trend + Consistency) -->
                 <div class="fcc-att-main-card">
                     <div class="fcc-att-top-row">
-                        
+
                         <!-- 1. Attendance Calendar Map -->
                         <div class="fcc-cal-box">
                             <div class="fcc-cal-header">
@@ -3181,7 +3187,7 @@
                         <div class="fcc-consist-box">
                             <div class="fcc-consist-title">Consistency score</div>
                             <div id="consistencyRadialChart" style="min-height: 120px;"></div>
-                            
+
                             <div class="fcc-consist-legend">
                                 <div class="fcc-consist-leg-item">
                                     <span class="text-muted"><span class="fcc-leg-dot" style="background: #3b82f6;"></span>Regular</span>
@@ -3203,7 +3209,7 @@
 
                 <!-- Right: Live Attention & Audit Timeline Sidebar -->
                 <div class="fcc-att-side-card">
-                    
+
                     <!-- Live Attention Box -->
                     @if(isset($today2Attendences) && count($today2Attendences) > 0)
                         @php $firstAlert = $today2Attendences->first(); @endphp
@@ -3243,18 +3249,27 @@
 
                         <div class="fcc-audit-list">
                             @if(isset($todayAttendences) && count($todayAttendences) > 0)
-                                @foreach($todayAttendences->take(3) as $tIndex => $tAtt)
+                                @foreach($todayAttendences->take(5) as $tIndex => $tAtt)
                                     @php
                                         $tTime = $tAtt->created_at ? date('H:i', strtotime($tAtt->created_at)) : date('H:i');
-                                        $badgeVal = '+1';
-                                        $badgeClass = 'plus';
+                                        $daysCount = (int)($tAtt->days ?? 1);
+                                        $isDouble = ($daysCount >= 2) || (isset($today2Attendences) && $today2Attendences->where('user_id', $tAtt->user_id)->isNotEmpty());
+                                        if ($isDouble) {
+                                            $badgeVal = '+2';
+                                            $badgeClass = 'double';
+                                            $nodeColor = '#2563eb';
+                                        } else {
+                                            $badgeVal = '+1';
+                                            $badgeClass = 'single';
+                                            $nodeColor = '#16a34a';
+                                        }
                                     @endphp
                                     <div class="fcc-audit-item">
-                                        <span class="fcc-audit-node" style="border-color: #16a34a;"></span>
+                                        <span class="fcc-audit-node" style="border-color: {{ $nodeColor }};"></span>
                                         <div class="d-flex align-items-center flex-wrap">
                                             <span class="text-muted" style="font-size: 11.5px; font-weight: 600;">{{ $tTime }}</span>
                                             <span class="fcc-audit-badge-pill {{ $badgeClass }}">{{ $badgeVal }}</span>
-                                            <strong class="text-dark">{{ $tAtt->remark ?? 'QR Attendance' }}</strong>
+                                            <strong class="text-dark">{{ $tAtt->remark ?? ($isDouble ? 'Double Attendance' : 'QR Attendance') }}</strong>
                                         </div>
                                         <div class="text-muted" style="font-size: 11px; margin-top: 1px;">
                                             {{ ucfirst($tAtt->name) }} · {{ $tAtt->coach_name ?? 'Club' }}
@@ -3263,10 +3278,10 @@
                                 @endforeach
                             @else
                                 <div class="fcc-audit-item">
-                                    <span class="fcc-audit-node" style="border-color: #3b82f6;"></span>
+                                    <span class="fcc-audit-node" style="border-color: #16a34a;"></span>
                                     <div class="d-flex align-items-center">
                                         <span class="text-muted" style="font-size: 11.5px;">{{ date('H:i') }}</span>
-                                        <span class="fcc-audit-badge-pill plus">+1</span>
+                                        <span class="fcc-audit-badge-pill single">+1</span>
                                         <strong class="text-dark">Ready for check-ins</strong>
                                     </div>
                                     <div class="text-muted" style="font-size: 11px;">Awaiting scans</div>
@@ -3288,23 +3303,17 @@
 
             <!-- 2. MEMBER CONSISTENCY BOARD -->
             <div class="fcc-board-card">
-                
-                <!-- Board Header & Filters -->
+
+                <!-- Board Header -->
                 <div class="fcc-board-top-bar">
                     <h3 class="fcc-board-title">Member consistency board</h3>
-
-                    <div class="fcc-board-filter-pills">
-                        <button type="button" class="fcc-board-pill-btn active" data-board-filter="top">Top performers</button>
-                        <button type="button" class="fcc-board-pill-btn" data-board-filter="nudge">Needs follow-up</button>
-                        <button type="button" class="fcc-board-pill-btn" data-board-filter="all">All members</button>
-                    </div>
 
                     <span class="text-muted" style="font-size: 12.5px; font-weight: 500;">Present out of {{ $totalDaysInMonth ?? 25 }} days</span>
                 </div>
 
                 <!-- 3 Columns Board Layout -->
                 <div class="fcc-board-cols-grid">
-                    
+
                     <!-- Column 1: Leaders (Top 1-4) -->
                     <div class="fcc-board-col">
                         <div class="fcc-board-col-head">
@@ -3464,7 +3473,7 @@
 
          <!-- TAB 3: MEMBERSHIP RENEWALS & FOLLOW-UP ASSISTANT -->
         <div id="tab-members" class="fcc-tab-panel">
-            
+
             <!-- 1. TOP HEADER & ACTION TOOLBAR -->
             <div class="fcc-renew-header-bar">
                 <div>
@@ -3504,7 +3513,7 @@
             <!-- 2. KPI SUMMARY STRIP WITH RAINBOW BAR -->
             <div class="fcc-renew-summary-wrap">
                 <div class="fcc-renew-summary-grid">
-                    
+
                     <!-- Stat 1: Due Soon -->
                     <div class="fcc-renew-stat-item">
                         <div class="fcc-renew-stat-icon red">
@@ -3555,7 +3564,7 @@
 
             <!-- 3. KANBAN 4-COLUMNS BOARD LAYOUT -->
             <div class="fcc-renew-columns-grid">
-                
+
                 <!-- Column 1: Expires Today -->
                 <div class="fcc-renew-column-box col-red">
                     <div class="fcc-renew-col-header">
@@ -3754,62 +3763,6 @@
                     </div>
                 </div>
 
-                <!-- Column 4: Follow-up Assistant -->
-                <div class="fcc-assistant-card">
-                    <div class="fcc-assistant-head">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="fa fa-magic text-primary" style="font-size: 16px;"></i>
-                            <span>Follow-up assistant</span>
-                        </div>
-                        <i class="fa fa-chevron-up text-muted" style="font-size: 12px; cursor: pointer;"></i>
-                    </div>
-
-                    <div>
-                        <div class="fw-bold text-dark mb-2.5" style="font-size: 14px;">Today's plan</div>
-
-                        <div class="fcc-plan-checklist">
-                            <label class="fcc-plan-check-item">
-                                <input type="checkbox" checked />
-                                <span>Call {{ max(1, count($expiresTodayMembers ?? [])) }} urgent members</span>
-                            </label>
-                            <label class="fcc-plan-check-item">
-                                <input type="checkbox" checked />
-                                <span>Send {{ max(1, count($expiresTomorrowMembers ?? [])) }} reminders</span>
-                            </label>
-                            <label class="fcc-plan-check-item">
-                                <input type="checkbox" />
-                                <span>Review payment links</span>
-                            </label>
-                        </div>
-
-                        <!-- Progress Line -->
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1" style="font-size: 11.5px; color: #64748b; font-weight: 600;">
-                                <span>Progress</span>
-                                <span>2 of 3 completed</span>
-                            </div>
-                            <div class="progress" style="height: 6px; border-radius: 999px; background: #e2e8f0;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 66%; border-radius: 999px;"></div>
-                            </div>
-                        </div>
-
-                        <button type="button" class="btn fcc-btn-start-followup" id="startFollowupBtn">
-                            Start follow-up
-                        </button>
-
-                        <div class="fcc-reminder-pill-box">
-                            <div class="fcc-reminder-bell-icon">
-                                <i class="fa fa-bell-o"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold text-dark" style="font-size: 12.5px;">Next reminder</div>
-                                <div class="text-muted" style="font-size: 11.5px;">at 6:00 PM</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
             </div>
 
             <!-- 4. BOTTOM HORIZONTAL RECENT RENEWAL ACTIVITY STRIP -->
@@ -3866,11 +3819,11 @@
 
         <!-- TAB 4: GROWTH CANVAS & FINANCIAL RUNWAY -->
         <div id="tab-growth" class="fcc-tab-panel">
-            
+
             <!-- 1. TOP CARD: GROWTH CANVAS -->
             <div class="fcc-growth-canvas-card">
-                
-                <!-- Header with Title, Big KPI & View Switcher -->
+
+                <!-- Header with Title, Big KPI -->
                 <div class="fcc-growth-header-row">
                     <div>
                         <div class="fcc-growth-canvas-title">Growth canvas</div>
@@ -3886,17 +3839,11 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="fcc-growth-pills-switcher">
-                        <button type="button" class="fcc-growth-pill-btn active" data-growth-view="engagement">Engagement</button>
-                        <button type="button" class="fcc-growth-pill-btn" data-growth-view="member-mix">Member mix</button>
-                        <button type="button" class="fcc-growth-pill-btn" data-growth-view="revenue">Revenue</button>
-                    </div>
                 </div>
 
                 <!-- Split Grid: Shake Count (Left) & Trajectories (Right) -->
                 <div class="fcc-growth-split-grid">
-                    
+
                     <!-- Left: Shake Count Bar Chart -->
                     <div class="fcc-growth-chart-col">
                         <div class="fcc-growth-col-subhead">
@@ -3928,19 +3875,21 @@
 
             <!-- 2. MIDDLE CARD: FINANCIAL RUNWAY -->
             <div class="fcc-runway-card">
-                
+
                 <!-- Runway Header -->
                 <div class="fcc-runway-header">
-                    <h3 class="fcc-runway-title mb-0">Financial runway</h3>
+                    <div>
+                        <h3 class="fcc-runway-title mb-0">Income and Expenses Graph (Purchase & Deposit Graph {{ $year ?? date('Y') }})</h3>
+                    </div>
 
                     <div class="fcc-runway-legend-wrap">
-                        <span style="color: #059669;">
-                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; display: inline-block; margin-right: 4px;"></span>
-                            Deposit / revenue
+                        <span style="color: #059669; font-weight: 700; font-size: 12.5px;">
+                            <span style="width: 9px; height: 9px; border-radius: 50%; background: #059669; display: inline-block; margin-right: 4px;"></span>
+                            Deposit (Your Revenue)
                         </span>
-                        <span style="color: #ef4444;">
-                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
-                            Purchase / expense
+                        <span style="color: #ef4444; font-weight: 700; font-size: 12.5px;">
+                            <span style="width: 9px; height: 9px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
+                            Purchase (You are Giving Product)
                         </span>
                     </div>
 
@@ -3952,27 +3901,27 @@
 
                 <!-- Runway Grid: KPI Stats + Runway Area/Bar Chart -->
                 <div class="fcc-runway-grid">
-                    
+
                     <!-- Left KPIs -->
                     <div class="fcc-runway-kpi-col">
                         <div>
                             <div class="fcc-runway-kpi-item-lbl">Revenue</div>
                             <div class="fcc-runway-kpi-item-val text-success">
-                                ₹{{ number_format(($totalGrowthRevenue ?? 162000)/100000, 2) }}L
+                                ₹{{ number_format(($totalGrowthRevenue ?? 0)/100000, 2) }}L
                             </div>
                         </div>
 
                         <div>
                             <div class="fcc-runway-kpi-item-lbl">Expense</div>
                             <div class="fcc-runway-kpi-item-val text-danger">
-                                ₹{{ number_format(($totalGrowthExpense ?? 144000)/100000, 2) }}L
+                                ₹{{ number_format(($totalGrowthExpense ?? 0)/100000, 2) }}L
                             </div>
                         </div>
 
                         <div>
                             <div class="fcc-runway-kpi-item-lbl">Net</div>
-                            <div class="fcc-runway-kpi-item-val" style="color: #2563eb;">
-                                +₹{{ number_format(($totalGrowthNet ?? 18000)/1000, 0) }}K
+                            <div class="fcc-runway-kpi-item-val" style="color: {{ ($totalGrowthNet ?? 0) >= 0 ? '#2563eb' : '#ef4444' }};">
+                                {{ ($totalGrowthNet ?? 0) >= 0 ? '+' : '' }}₹{{ number_format(abs($totalGrowthNet ?? 0)/1000, 0) }}K
                             </div>
                         </div>
                     </div>
@@ -3982,6 +3931,18 @@
                         <div id="financialRunwayChart" style="min-height: 260px;"></div>
                     </div>
 
+                </div>
+
+                <!-- Bottom Color Representation Strips -->
+                <div class="mt-3 pt-3 border-top d-flex flex-column gap-2" style="font-size: 12.5px; font-weight: 600;">
+                    <div style="background: #eff6ff; color: #1e40af; padding: 7px 14px; border-radius: 8px; border-left: 4px solid #ef4444; display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; display: inline-block; flex-shrink: 0;"></span>
+                        <span>This Color Represent The Purchase(You are Giving Product)</span>
+                    </div>
+                    <div style="background: #f0fdf4; color: #166534; padding: 7px 14px; border-radius: 8px; border-left: 4px solid #059669; display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #059669; display: inline-block; flex-shrink: 0;"></span>
+                        <span>This Color Represent The Deposit(Your Revenue)</span>
+                    </div>
                 </div>
 
             </div>
@@ -4036,10 +3997,10 @@
 
         <!-- TAB 5: EXECUTIVE FINANCE & CASH FLOW -->
         <div id="tab-finance" class="fcc-tab-panel">
-            
+
             <!-- 1. TOP ROW: CASH POSITION & TODAY'S COLLECTIONS -->
             <div class="fcc-finance-top-grid">
-                
+
                 <!-- Left: Cash Position Hero Card -->
                 <div class="fcc-cash-position-card">
                     <div>
@@ -4205,7 +4166,7 @@
 
             <!-- 3. BOTTOM ROW: PAYMENTS TO COLLECT & TRANSACTION STREAM -->
             <div class="fcc-finance-bottom-grid">
-                
+
                 <!-- Left: Payments to Collect -->
                 <div class="fcc-fin-table-card">
                     <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
@@ -4379,7 +4340,6 @@
     </div>
 </div>
 
-
 <!-- BIRTHDAY MODAL -->
 <div class="modal fade" id="birthdayModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -4432,7 +4392,7 @@
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
+
             <div class="modal-body px-4 py-3">
                 <div class="text-center p-3" style="background: #f8fafc; border-radius: 18px; border: 1px dashed #cbd5e1;">
                     <div class="d-inline-flex align-items-center gap-1.5 px-3 py-1 mb-2.5 rounded-pill" style="background: #dcfce7; color: #15803d; font-size: 11.5px; font-weight: 700;">
@@ -4507,8 +4467,6 @@
         $(`.fcc-tab-btn[data-tab="${activeTabParam}"]`).addClass('active');
         $('#' + activeTabParam).addClass('active');
     }
-
-
 
     // 1. Club Pulse Area Line Chart
     var weeklyPulseLabels = {!! json_encode($weeklyPulseLabels ?? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']) !!};
@@ -4765,12 +4723,10 @@
         }
     });
 
-
-
     // 3. Growth Canvas & Financial Runway Charts
     var monthsCategories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var rawShakeCount = {!! json_encode($totalShakeChartData ?? [78, 125, 136, 121, 165, 170, 312, 560, 0, 0, 0, 0]) !!};
-    
+
     var hasShakes = rawShakeCount.some(function(v) { return v > 0; });
     var displayShakeCount = hasShakes ? rawShakeCount : [78, 125, 136, 121, 165, 170, 312, 560, 0, 0, 0, 0];
 
@@ -4895,11 +4851,8 @@
     }
 
     // Financial Runway Dual Bars & Area Chart
-    var rawRevenue = {!! json_encode($transactionAddUserChartData ?? []) !!};
-    var rawExpense = {!! json_encode($transactionOrderPlacedChartData ?? []) !!};
-
-    var displayRev = rawRevenue.some(function(v){ return v > 0; }) ? rawRevenue : [23000, 30000, 37000, 7000, 18000, 57000, 93000, 162000, 0, 0, 0, 0];
-    var displayExp = rawExpense.some(function(v){ return v > 0; }) ? rawExpense : [23000, 30000, 37000, 30000, 12000, 50000, 90000, 144000, 0, 0, 0, 0];
+    var rawRevenue = {!! json_encode($transactionAddUserChartData ?? array_fill(0, 12, 0)) !!};
+    var rawExpense = {!! json_encode($transactionOrderPlacedChartData ?? array_fill(0, 12, 0)) !!};
 
     var runwayElem = document.querySelector("#financialRunwayChart");
     if (runwayElem) {
@@ -4935,8 +4888,8 @@
                 }
             },
             series: [
-                { name: 'Deposit / revenue', data: displayRev },
-                { name: 'Purchase / expense', data: displayExp }
+                { name: 'Deposit (Your Revenue)', data: rawRevenue },
+                { name: 'Purchase (You are Giving Product)', data: rawExpense }
             ],
             legend: { show: false },
             xaxis: {
@@ -5094,26 +5047,7 @@
         new ApexCharts(radialElem, radialOptions).render();
     }
 
-    // Consistency Board Filter Switcher
-    $(document).on('click', '.fcc-board-pill-btn', function() {
-        $('.fcc-board-pill-btn').removeClass('active');
-        $(this).addClass('active');
 
-        var filter = $(this).data('board-filter');
-        var cols = $('.fcc-board-cols-grid .fcc-board-col');
-
-        if (filter === 'all') {
-            cols.show();
-        } else if (filter === 'top') {
-            cols.eq(0).show();
-            cols.eq(1).show();
-            cols.eq(2).hide();
-        } else if (filter === 'nudge') {
-            cols.eq(0).hide();
-            cols.eq(1).hide();
-            cols.eq(2).show();
-        }
-    });
 
     // 3.8 Membership Renewals Search & Filter Logic
     $('#renewMemberSearchInput').on('keyup', function() {
@@ -5150,9 +5084,7 @@
         }
     });
 
-    $('#startFollowupBtn').on('click', function() {
-        alert('Follow-up assistant activated! Calling queue initiated.');
-    });
+
 
     // 4. Finance Tab Cash Position & Cash Flow Timeline Charts
     var cashPosLabels = {!! json_encode($monthRevenueTrendLabels ?? ['1 Aug', '6 Aug', '11 Aug', '16 Aug', '21 Aug', '26 Aug', '31 Aug']) !!};
@@ -5261,12 +5193,12 @@
                 }
             },
             series: [
-                { name: 'Deposit / revenue', data: [23000, 30000, 37000, 7000, 18000, 57000, 93000, 162000] },
-                { name: 'Purchase / expense', data: [23000, 30000, 37000, 30000, 12000, 50000, 90000, 144000] }
+                { name: 'Deposit / revenue', data: rawRevenue },
+                { name: 'Purchase / expense', data: rawExpense }
             ],
             legend: { show: false },
             xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                categories: monthsCategories,
                 labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
                 axisBorder: { show: false },
                 axisTicks: { show: false }

@@ -185,6 +185,7 @@ class DashboardController extends Controller
             })
             ->where('users.created_by', $userId)
             ->where('attendance_logs.date', $todayDate)
+            ->orderBy('attendance_logs.id', 'DESC')
             ->get();
 
         $today2Attendences = Attendance::select(
@@ -441,7 +442,8 @@ class DashboardController extends Controller
         }
 
         $transactionRaw = Transaction::select(
-            DB::raw('SUM(COALESCE(received_amount, total_amount)) as total_amount'),
+            DB::raw('SUM(CASE WHEN received_amount > 0 THEN received_amount ELSE 0 END) as received_amount'),
+            DB::raw('SUM(total_amount) as gross_amount'),
             DB::raw('MONTH(created_at) as month'),
             'title'
         )
@@ -454,18 +456,14 @@ class DashboardController extends Controller
         $transactionAddUserChartData = [];
         $transactionOrderPlacedChartData = [];
         for ($m = 1; $m <= 12; $m++) {
-            $transactionAddUserChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Add User Days')->sum('total_amount'));
-            $transactionOrderPlacedChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('total_amount'));
+            $monthRev = (float)($transactionRaw->where('month', $m)->where('title', 'Add User Days')->sum('received_amount'));
+            $monthExp = (float)($transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('received_amount'));
+            $transactionAddUserChartData[] = $monthRev;
+            $transactionOrderPlacedChartData[] = $monthExp;
         }
 
         $totalGrowthRevenue = array_sum($transactionAddUserChartData);
         $totalGrowthExpense = array_sum($transactionOrderPlacedChartData);
-        if ($totalGrowthRevenue == 0) {
-            $totalGrowthRevenue = 162000;
-        }
-        if ($totalGrowthExpense == 0) {
-            $totalGrowthExpense = 144000;
-        }
         $totalGrowthNet = $totalGrowthRevenue - $totalGrowthExpense;
 
         $currentMonthShakesCount = $totalShakeChartData[now()->month - 1] ?? 560;
