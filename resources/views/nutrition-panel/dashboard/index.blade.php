@@ -2082,121 +2082,184 @@
         margin-bottom: 24px;
     }
 
-    .fcc-growth-header-row {
+    .fcc-growth-top-header {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+    }
+
+    .fcc-growth-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .fcc-growth-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #ecfdf5;
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
     }
 
     .fcc-growth-canvas-title {
-        font-size: 14px;
+        font-size: 19px;
         font-weight: 800;
-        color: #3b46f1;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 8px;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
     }
 
-    .fcc-growth-kpi-block {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .fcc-growth-big-number {
-        font-size: 46px;
-        font-weight: 900;
-        color: #059669;
-        line-height: 1;
-        letter-spacing: -0.03em;
-    }
-
-    .fcc-growth-big-sub {
+    .fcc-growth-canvas-subtitle {
         font-size: 13px;
-        color: #475569;
-        font-weight: 600;
-        margin-top: 4px;
-    }
-
-    .fcc-growth-pct-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 14px;
-        font-weight: 800;
-        color: #059669;
-    }
-
-    .fcc-growth-pills-switcher {
-        display: inline-flex;
-        background: #f1f5f9;
-        padding: 4px;
-        border-radius: 12px;
-        gap: 4px;
-    }
-
-    .fcc-growth-pill-btn {
-        background: transparent;
-        border: none;
-        padding: 6px 16px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 700;
         color: #64748b;
-        cursor: pointer;
-        transition: all 0.15s ease;
+        font-weight: 500;
+        margin-top: 2px;
     }
 
-    .fcc-growth-pill-btn.active {
+    .fcc-growth-date-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         background: #ffffff;
-        color: #3b46f1;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        border: 1px solid #e2e8f0;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
-    .fcc-growth-split-grid {
+    .fcc-growth-date-pill:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
+
+    .fcc-growth-3col-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 270px 1.2fr 1.35fr;
         gap: 24px;
         align-items: start;
     }
 
-    @media (max-width: 992px) {
-        .fcc-growth-split-grid {
+    @media (max-width: 1200px) {
+        .fcc-growth-3col-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .fcc-growth-3col-grid {
             grid-template-columns: 1fr;
         }
     }
 
-    .fcc-growth-chart-col {
-        min-width: 0;
+    .fcc-growth-hero-card {
+        background: linear-gradient(145deg, #10b981 0%, #059669 60%, #047857 100%);
+        border-radius: 18px;
+        padding: 24px 22px 28px 22px;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 25px -4px rgba(5, 150, 105, 0.3);
     }
 
-    .fcc-growth-col-subhead {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 13px;
-        font-weight: 700;
-        color: #0f172a;
+    .fcc-growth-hero-bignum {
+        font-size: 52px;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin-bottom: 4px;
+    }
+
+    .fcc-growth-hero-sub {
+        font-size: 14.5px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.92);
         margin-bottom: 12px;
     }
 
-    .fcc-growth-peak-badge {
-        font-size: 11px;
-        font-weight: 700;
-        color: #059669;
+    .fcc-growth-hero-badge {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .fcc-growth-overview-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-top: 18px;
+        margin-bottom: 12px;
+    }
+
+    .fcc-growth-overview-stats {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .fcc-growth-ov-lbl {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        margin-bottom: 2px;
+    }
+
+    .fcc-growth-ov-val {
+        font-size: 22px;
+        font-weight: 900;
+        color: #2563eb;
+        line-height: 1.1;
+    }
+
+    .fcc-growth-chart-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .fcc-growth-chart-heading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
     }
 
     .fcc-growth-traject-legend {
         display: flex;
         align-items: center;
-        gap: 16px;
-        justify-content: flex-end;
+        gap: 14px;
+        flex-wrap: wrap;
         font-size: 11.5px;
         font-weight: 700;
     }
@@ -2207,8 +2270,8 @@
         gap: 4px;
     }
 
-    /* Financial Runway Card */
-    .fcc-runway-card {
+    /* Income and Expenses (Financial Runway) Card */
+    .fcc-income-expense-card {
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 20px;
@@ -2217,60 +2280,173 @@
         margin-bottom: 24px;
     }
 
-    .fcc-runway-header {
+    .fcc-income-top-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 20px;
+        gap: 18px;
+        margin-bottom: 24px;
     }
 
-    .fcc-runway-title {
-        font-size: 16px;
-        font-weight: 800;
-        color: #0f172a;
+    .fcc-income-header-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
     }
 
-    .fcc-runway-legend-wrap {
+    .fcc-income-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #ecfdf5;
+        color: #10b981;
         display: flex;
         align-items: center;
-        gap: 18px;
-        font-size: 12px;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .fcc-income-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .fcc-income-color-guide {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-top: 4px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .fcc-income-color-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .fcc-income-center-legend {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 12.5px;
         font-weight: 700;
     }
 
-    .fcc-runway-grid {
+    .fcc-income-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .fcc-btn-view-trans {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #ffffff;
+        color: #3b46f1;
+        border: 1.5px solid #dbeafe;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(59, 70, 241, 0.04);
+    }
+
+    .fcc-btn-view-trans:hover {
+        background: #f8faff;
+        color: #2563eb;
+        border-color: #bfdbfe;
+        transform: translateY(-1px);
+    }
+
+    .fcc-income-grid {
         display: grid;
-        grid-template-columns: 140px 1fr;
+        grid-template-columns: 230px 1fr;
         gap: 24px;
         align-items: center;
     }
 
-    @media (max-width: 768px) {
-        .fcc-runway-grid {
+    @media (max-width: 992px) {
+        .fcc-income-grid {
             grid-template-columns: 1fr;
         }
     }
 
-    .fcc-runway-kpi-col {
+    .fcc-income-kpi-col {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
     }
 
-    .fcc-runway-kpi-item-lbl {
-        font-size: 12px;
+    .fcc-income-kpi-card {
+        border-radius: 14px;
+        padding: 14px 16px;
+        transition: all 0.2s ease;
+    }
+
+    .fcc-income-kpi-card.green {
+        background: #f0fdf4;
+        border: 1px solid #dcfce7;
+    }
+
+    .fcc-income-kpi-card.red {
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+    }
+
+    .fcc-income-kpi-card.blue {
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+    }
+
+    .fcc-income-kpi-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+    }
+
+    .fcc-income-kpi-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    .fcc-income-kpi-card.green .fcc-income-kpi-icon { background: #dcfce7; color: #16a34a; }
+    .fcc-income-kpi-card.red .fcc-income-kpi-icon { background: #fee2e2; color: #ef4444; }
+    .fcc-income-kpi-card.blue .fcc-income-kpi-icon { background: #dbeafe; color: #2563eb; }
+
+    .fcc-income-kpi-lbl {
+        font-size: 11.5px;
+        font-weight: 700;
         color: #64748b;
-        font-weight: 600;
-        margin-bottom: 2px;
     }
 
-    .fcc-runway-kpi-item-val {
-        font-size: 24px;
+    .fcc-income-kpi-val {
+        font-size: 23px;
         font-weight: 900;
         line-height: 1;
+        padding-left: 36px;
     }
+
+    .fcc-income-kpi-card.green .fcc-income-kpi-val { color: #059669; }
+    .fcc-income-kpi-card.red .fcc-income-kpi-val { color: #ef4444; }
+    .fcc-income-kpi-card.blue .fcc-income-kpi-val { color: #2563eb; }
 
     /* Growth Alert Bottom Strip */
     .fcc-growth-alert-strip {
@@ -3823,112 +3999,211 @@
             <!-- 1. TOP CARD: GROWTH CANVAS -->
             <div class="fcc-growth-canvas-card">
 
-                <!-- Header with Title, Big KPI -->
-                <div class="fcc-growth-header-row">
-                    <div>
-                        <div class="fcc-growth-canvas-title">Growth canvas</div>
-                        <div class="fcc-growth-kpi-block">
-                            <div>
-                                <div class="fcc-growth-big-number">{{ $currentMonthShakesCount ?? 560 }}</div>
-                                <div class="fcc-growth-big-sub">shakes in {{ date('F') }}</div>
-                            </div>
-                            <div class="fcc-growth-pct-badge">
-                                <i class="fa fa-arrow-up"></i>
-                                <span>+{{ $shakeGrowthRate ?? 79 }}%</span>
-                                <span class="text-muted fw-normal" style="font-size: 12px; margin-left: 2px;">vs {{ date('F', strtotime('-1 month')) }}</span>
-                            </div>
+                <!-- Header with Icon, Title, Subtitle, Date Selector -->
+                <div class="fcc-growth-top-header">
+                    <div class="fcc-growth-header-left">
+                        <div class="fcc-growth-icon-box">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
                         </div>
+                        <div>
+                            <h3 class="fcc-growth-canvas-title">Growth Canvas</h3>
+                            <div class="fcc-growth-canvas-subtitle">Track your growth momentum and member activity</div>
+                        </div>
+                    </div>
+
+                    <div class="fcc-growth-date-pill">
+                        <i class="fa fa-calendar-o" style="color: #64748b;"></i>
+                        <span>{{ date('F Y') }}</span>
+                        <i class="fa fa-chevron-down" style="font-size: 10px; color: #94a3b8;"></i>
                     </div>
                 </div>
 
-                <!-- Split Grid: Shake Count (Left) & Trajectories (Right) -->
-                <div class="fcc-growth-split-grid">
+                <!-- 3-Column Split Grid -->
+                <div class="fcc-growth-3col-grid">
 
-                    <!-- Left: Shake Count Bar Chart -->
-                    <div class="fcc-growth-chart-col">
-                        <div class="fcc-growth-col-subhead">
-                            <span>Shake count</span>
-                            <span class="fcc-growth-peak-badge">
-                                <span style="width: 7px; height: 7px; border-radius: 50%; background: #059669; display: inline-block;"></span>
-                                <span>Peak engagement</span>
-                            </span>
+                    <!-- Col 1: Hero Card + Shake Count Overview -->
+                    <div>
+                        <!-- Gradient Hero Card -->
+                        <div class="fcc-growth-hero-card">
+                            <div class="fcc-growth-hero-bignum">{{ $currentMonthShakesCount ?? 38 }}</div>
+                            <div class="fcc-growth-hero-sub">Shakes in {{ date('F') }}</div>
+                            <div class="fcc-growth-hero-badge">
+                                <i class="fa fa-arrow-up"></i>
+                                <span>+{{ $shakeGrowthRate ?? 94 }}% vs {{ date('F', strtotime('-1 month')) }}</span>
+                            </div>
+
+                            <!-- Glowing Wave Graphic -->
+                            <svg viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 55px; pointer-events: none; opacity: 0.85;">
+                                <path d="M0 48 C 50 48, 70 36, 120 38 C 170 40, 195 20, 226 10" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                <circle cx="226" cy="10" r="4" fill="#ffffff" stroke="rgba(255,255,255,0.5)" stroke-width="3"/>
+                            </svg>
                         </div>
-                        <div id="shakeCountCanvasChart" style="min-height: 260px;"></div>
-                    </div>
 
-                    <!-- Right: Member Trajectories Line Chart -->
-                    <div class="fcc-growth-chart-col">
-                        <div class="fcc-growth-col-subhead">
-                            <span>Member trajectories (by month)</span>
-                            <div class="fcc-growth-traject-legend">
-                                <span style="color: #10b981;">Regular users <strong>{{ $regularUsersCount ?? 12 }}</strong></span>
-                                <span style="color: #3b82f6;">3-day users <strong>{{ $trialUsersCount ?? 15 }}</strong></span>
-                                <span style="color: #8b5cf6;">Demo users <strong>{{ $demoUsersCount ?? 11 }}</strong></span>
+                        <!-- Shake Count Overview Stats -->
+                        <div class="fcc-growth-overview-head">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            <span>Shake count overview</span>
+                        </div>
+
+                        <div class="fcc-growth-overview-stats">
+                            <div>
+                                <div class="fcc-growth-ov-lbl">Total shakes this year</div>
+                                <div class="fcc-growth-ov-val">{{ number_format(array_sum($totalShakeChartData ?? [3807])) }}</div>
+                            </div>
+                            <div>
+                                <div class="fcc-growth-ov-lbl">Monthly avg.</div>
+                                <div class="fcc-growth-ov-val">{{ number_format(round(array_sum($totalShakeChartData ?? [3807]) / max(1, date('n')))) }}</div>
                             </div>
                         </div>
-                        <div id="memberTrajectoriesChart" style="min-height: 260px;"></div>
+                    </div>
+
+                    <!-- Col 2: Shake Count (by month) Bar Chart -->
+                    <div>
+                        <div class="fcc-growth-chart-title-row">
+                            <h4 class="fcc-growth-chart-heading">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                                <span>Shake count (by month)</span>
+                            </h4>
+                        </div>
+                        <div id="shakeCountCanvasChart" style="min-height: 250px;"></div>
+                    </div>
+
+                    <!-- Col 3: Member trajectories (by month) Multi-line Chart -->
+                    <div>
+                        <div class="fcc-growth-chart-title-row">
+                            <h4 class="fcc-growth-chart-heading">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                                <span>Member trajectories (by month)</span>
+                            </h4>
+                            <div class="fcc-growth-traject-legend">
+                                <span style="color: #059669;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #059669; display: inline-block;"></span> Peak engagement</span>
+                                <span style="color: #10b981;">Regular users <strong>{{ $regularUsersCount ?? 75 }}</strong></span>
+                                <span style="color: #3b82f6;">3-day users <strong>{{ $trialUsersCount ?? 1 }}</strong></span>
+                                <span style="color: #8b5cf6;">Demo users <strong>{{ $demoUsersCount ?? 0 }}</strong></span>
+                            </div>
+                        </div>
+                        <div id="memberTrajectoriesChart" style="min-height: 250px;"></div>
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- 2. MIDDLE CARD: FINANCIAL RUNWAY -->
-            <div class="fcc-runway-card">
+            <!-- 2. MIDDLE CARD: INCOME AND EXPENSES GRAPH -->
+            <div class="fcc-income-expense-card">
 
-                <!-- Runway Header -->
-                <div class="fcc-runway-header">
-                    <div>
-                        <h3 class="fcc-runway-title mb-0">Financial runway</h3>
+                <!-- Header with Icon, Title, Color Guide, Legend, View Transactions -->
+                <div class="fcc-income-top-header">
+                    <div class="fcc-income-header-left">
+                        <div class="fcc-income-icon-box">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="fcc-income-title">Income and Expenses Graph (Purchase &amp; Deposit Graph {{ $year ?? date('Y') }})</h3>
+                            <div class="fcc-income-color-guide">
+                                <div class="fcc-income-color-item">
+                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                                    <span>This Color Represent The Deposit (Your Revenue)</span>
+                                </div>
+                                <div class="fcc-income-color-item">
+                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                                    <span>This Color Represent The Purchase (You are Giving Product)</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="fcc-runway-legend-wrap">
-                        <span style="color: #059669; font-weight: 700; font-size: 12.5px;">
-                            <span style="width: 9px; height: 9px; border-radius: 50%; background: #059669; display: inline-block; margin-right: 4px;"></span>
-                            Deposit / revenue
+                    <div class="fcc-income-center-legend">
+                        <span class="fcc-income-legend-item" style="color: #059669;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; display: inline-block;"></span>
+                            Deposit (Revenue)
                         </span>
-                        <span style="color: #ef4444; font-weight: 700; font-size: 12.5px;">
-                            <span style="width: 9px; height: 9px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
-                            Purchase / expense
+                        <span class="fcc-income-legend-item" style="color: #ef4444;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                            Purchase (Expense)
                         </span>
                     </div>
 
-                    <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-finance\']').trigger('click');" class="text-primary fw-bold d-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
-                        <span>View transactions</span>
+                    <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-finance\']').trigger('click');" class="fcc-btn-view-trans">
+                        <span>View Transactions</span>
                         <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
                     </a>
                 </div>
 
-                <!-- Runway Grid: KPI Stats + Runway Area/Bar Chart -->
-                <div class="fcc-runway-grid">
+                <!-- Income Grid: 3 KPI Cards + Dual Grouped Bar Chart -->
+                <div class="fcc-income-grid">
 
                     <!-- Left KPIs -->
-                    <div class="fcc-runway-kpi-col">
-                        <div>
-                            <div class="fcc-runway-kpi-item-lbl">Revenue</div>
-                            <div class="fcc-runway-kpi-item-val text-success">
+                    <div class="fcc-income-kpi-col">
+                        <!-- Deposit Card -->
+                        <div class="fcc-income-kpi-card green">
+                            <div class="fcc-income-kpi-top">
+                                <div class="fcc-income-kpi-icon">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                        <polyline points="17 6 23 6 23 12"></polyline>
+                                    </svg>
+                                </div>
+                                <span class="fcc-income-kpi-lbl">Total Deposit (Revenue)</span>
+                            </div>
+                            <div class="fcc-income-kpi-val">
                                 ₹{{ number_format(($totalGrowthRevenue ?? 0)/100000, 2) }}L
                             </div>
                         </div>
 
-                        <div>
-                            <div class="fcc-runway-kpi-item-lbl">Expense</div>
-                            <div class="fcc-runway-kpi-item-val text-danger">
+                        <!-- Purchase Card -->
+                        <div class="fcc-income-kpi-card red">
+                            <div class="fcc-income-kpi-top">
+                                <div class="fcc-income-kpi-icon">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                                        <polyline points="17 18 23 18 23 12"></polyline>
+                                    </svg>
+                                </div>
+                                <span class="fcc-income-kpi-lbl">Total Purchase (Expense)</span>
+                            </div>
+                            <div class="fcc-income-kpi-val">
                                 ₹{{ number_format(($totalGrowthExpense ?? 0)/100000, 2) }}L
                             </div>
                         </div>
 
-                        <div>
-                            <div class="fcc-runway-kpi-item-lbl">Net</div>
-                            <div class="fcc-runway-kpi-item-val" style="color: {{ ($totalGrowthNet ?? 0) >= 0 ? '#2563eb' : '#ef4444' }};">
-                                {{ ($totalGrowthNet ?? 0) >= 0 ? '+' : '' }}₹{{ number_format(abs($totalGrowthNet ?? 0)/1000, 0) }}K
+                        <!-- Net Profit Card -->
+                        <div class="fcc-income-kpi-card blue">
+                            <div class="fcc-income-kpi-top">
+                                <div class="fcc-income-kpi-icon">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <span class="fcc-income-kpi-lbl">Net Profit</span>
+                            </div>
+                            <div class="fcc-income-kpi-val">
+                                {{ ($totalGrowthNet ?? 0) >= 0 ? '+' : '' }}₹{{ number_format(abs($totalGrowthNet ?? 0)/1000, 2) }}K
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Financial Runway Chart -->
+                    <!-- Right Grouped Bar Chart -->
                     <div>
-                        <div id="financialRunwayChart" style="min-height: 260px;"></div>
+                        <div id="financialRunwayChart" style="min-height: 270px;"></div>
                     </div>
 
                 </div>
@@ -4713,10 +4988,20 @@
 
     // 3. Growth Canvas & Financial Runway Charts
     var monthsCategories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var rawShakeCount = {!! json_encode($totalShakeChartData ?? [78, 125, 136, 121, 165, 170, 312, 560, 0, 0, 0, 0]) !!};
+    var rawShakeCount = {!! json_encode($totalShakeChartData ?? [77, 267, 307, 499, 440, 503, 566, 610, 38, 0, 0, 0]) !!};
 
     var hasShakes = rawShakeCount.some(function(v) { return v > 0; });
-    var displayShakeCount = hasShakes ? rawShakeCount : [78, 125, 136, 121, 165, 170, 312, 560, 0, 0, 0, 0];
+    var displayShakeCount = hasShakes ? rawShakeCount : [77, 267, 307, 499, 440, 503, 566, 610, 38, 0, 0, 0];
+
+    // Peak month detection for custom bar styling
+    var maxVal = Math.max.apply(null, displayShakeCount);
+    var barColors = displayShakeCount.map(function(val, idx) {
+        if (val === 0) return '#e2e8f0';
+        if (val === maxVal && val > 0) return '#059669'; // Peak green
+        if (idx === 6) return '#38bdf8'; // Cyan highlight
+        if (idx === 8 && val < 100) return '#94a3b8'; // Grey for current/recent
+        return '#2563eb'; // Royal Blue
+    });
 
     var shakeCanvasElem = document.querySelector("#shakeCountCanvasChart");
     if (shakeCanvasElem) {
@@ -4730,23 +5015,23 @@
             plotOptions: {
                 bar: {
                     horizontal: false,
-                    columnWidth: '45%',
-                    borderRadius: 6,
+                    columnWidth: '48%',
+                    borderRadius: 4,
                     distributed: true,
                     dataLabels: {
                         position: 'top'
                     }
                 }
             },
-            colors: ['#2563eb', '#2563eb', '#2563eb', '#2563eb', '#2563eb', '#2563eb', '#38bdf8', '#059669', '#cbd5e1', '#cbd5e1', '#cbd5e1', '#cbd5e1'],
+            colors: barColors,
             dataLabels: {
                 enabled: true,
                 formatter: function (val) {
                     return val > 0 ? val : '';
                 },
-                offsetY: -18,
+                offsetY: -16,
                 style: {
-                    fontSize: '11px',
+                    fontSize: '10.5px',
                     fontWeight: 700,
                     colors: ["#334155"]
                 }
@@ -4758,18 +5043,19 @@
             legend: { show: false },
             xaxis: {
                 categories: monthsCategories,
-                labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
+                labels: { style: { colors: '#94a3b8', fontSize: '11px', fontWeight: 600 } },
                 axisBorder: { show: false },
                 axisTicks: { show: false }
             },
             yaxis: {
-                labels: { style: { colors: '#94a3b8', fontSize: '10.5px' } }
+                labels: { style: { colors: '#94a3b8', fontSize: '10px' } }
             },
             grid: {
                 borderColor: '#f1f5f9',
                 strokeDashArray: 3
             },
             tooltip: {
+                theme: 'light',
                 y: { formatter: function(val) { return val + ' shakes'; } }
             }
         }).render();
@@ -4780,9 +5066,9 @@
     var rawTrail = {!! json_encode($userTrailChartData ?? []) !!};
     var rawDemo = {!! json_encode($userDemoChartData ?? []) !!};
 
-    var regData = rawReg.some(function(v){ return v > 0; }) ? rawReg : [1, 1, 1.5, 3, 5, 7, 11, 16, 15, 12, 12, 12];
-    var trailData = rawTrail.some(function(v){ return v > 0; }) ? rawTrail : [0.5, 0.8, 1, 2, 4, 6, 9, 13, 14, 9, 8.5, 8.5];
-    var demoData = rawDemo.some(function(v){ return v > 0; }) ? rawDemo : [0.2, 0.3, 0.5, 1, 2, 4, 7, 9.5, 10, 0.5, 0.5, 0.5];
+    var regData = rawReg.some(function(v){ return v > 0; }) ? rawReg : [36, 8.5, 1, 3.5, 4, 9, 11, 2, 0.5, 0, 0, 0];
+    var trailData = rawTrail.some(function(v){ return v > 0; }) ? rawTrail : [0.5, 0.8, 1, 1.5, 2, 4, 7, 9.5, 9.5, 0, 0, 0];
+    var demoData = rawDemo.some(function(v){ return v > 0; }) ? rawDemo : [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0];
 
     var trajElem = document.querySelector("#memberTrajectoriesChart");
     if (trajElem) {
@@ -4797,7 +5083,7 @@
             dataLabels: { enabled: false },
             stroke: {
                 curve: 'smooth',
-                width: [3, 2.5, 2]
+                width: [2.5, 2.5, 2]
             },
             fill: {
                 type: 'gradient',
@@ -4805,8 +5091,8 @@
                     shade: 'light',
                     type: 'vertical',
                     shadeIntensity: 0.2,
-                    opacityFrom: [0.35, 0.25, 0.15],
-                    opacityTo: [0.02, 0.02, 0.02],
+                    opacityFrom: [0.25, 0.18, 0.12],
+                    opacityTo: [0.01, 0.01, 0.01],
                     stops: [0, 100]
                 }
             },
@@ -4824,16 +5110,22 @@
             legend: { show: false },
             xaxis: {
                 categories: monthsCategories,
-                labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
+                labels: { style: { colors: '#94a3b8', fontSize: '11px', fontWeight: 600 } },
                 axisBorder: { show: false },
                 axisTicks: { show: false }
             },
             yaxis: {
-                labels: { style: { colors: '#94a3b8', fontSize: '10.5px' } }
+                labels: {
+                    style: { colors: '#94a3b8', fontSize: '10px' },
+                    formatter: function(val) { return Number(val).toFixed(1); }
+                }
             },
             grid: {
                 borderColor: '#f1f5f9',
                 strokeDashArray: 3
+            },
+            tooltip: {
+                theme: 'light'
             }
         }).render();
     }
@@ -4842,14 +5134,14 @@
     var rawRevenue = {!! json_encode($transactionAddUserChartData ?? []) !!};
     var rawExpense = {!! json_encode($transactionOrderPlacedChartData ?? []) !!};
 
-    var displayRev = (rawRevenue.length && rawRevenue.some(function(v){ return v > 0; })) ? rawRevenue : [23000, 30000, 37000, 7000, 18000, 57000, 93000, 162000, 0, 0, 0, 0];
-    var displayExp = (rawExpense.length && rawExpense.some(function(v){ return v > 0; })) ? rawExpense : [23000, 30000, 37000, 30000, 12000, 50000, 90000, 144000, 0, 0, 0, 0];
+    var displayRev = (rawRevenue.length && rawRevenue.some(function(v){ return v > 0; })) ? rawRevenue : [181000, 38000, 100000, 107000, 34000, 117000, 150000, 69000, 0, 0, 0, 0];
+    var displayExp = (rawExpense.length && rawExpense.some(function(v){ return v > 0; })) ? rawExpense : [9000, 0, 16000, 4000, 3000, 0, 0, 0, 0, 0, 0, 0];
 
     var runwayElem = document.querySelector("#financialRunwayChart");
     if (runwayElem) {
         new ApexCharts(runwayElem, {
             chart: {
-                height: 260,
+                height: 270,
                 type: 'bar',
                 fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false }
@@ -4873,14 +5165,14 @@
                 },
                 offsetY: -14,
                 style: {
-                    fontSize: '11px',
+                    fontSize: '10.5px',
                     fontWeight: 700,
                     colors: ["#1e293b"]
                 }
             },
             series: [
-                { name: 'Deposit / revenue', data: displayRev },
-                { name: 'Purchase / expense', data: displayExp }
+                { name: 'Deposit (Revenue)', data: displayRev },
+                { name: 'Purchase (Expense)', data: displayExp }
             ],
             legend: { show: false },
             xaxis: {
@@ -4902,7 +5194,7 @@
                 strokeDashArray: 3
             },
             tooltip: {
-                theme: 'dark',
+                theme: 'light',
                 shared: true,
                 intersect: false,
                 y: {
