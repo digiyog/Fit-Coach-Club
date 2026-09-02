@@ -224,8 +224,8 @@ class DashboardController extends Controller
 
         $totalDueSoonCount = count($membershipExpires);
         $totalExpireTodayCount = count($expiresTodayMembers);
-        $estimatedRenewalValue = $membershipExpires->sum('due_amount') > 0 ? $membershipExpires->sum('due_amount') : max(28500, count($membershipExpires) * 2500);
-        $contactedRate = 72;
+        $estimatedRenewalValue = (float)$membershipExpires->sum('due_amount');
+        $contactedRate = $totalDueSoonCount > 0 ? min(100, round((count($membershipExpires->where('status', 1)) / $totalDueSoonCount) * 100)) : 0;
 
         $totalAlertsCount = count($membershipExpires->where('days', '<=', 3)) + count($paymentPendings) + count($thisMonthBirthdayUsers);
 
@@ -289,19 +289,56 @@ class DashboardController extends Controller
         $recentActivities = $recentActivities->sortByDesc('raw_time')->take(5)->values();
 
         // 6.5 Finance Tab Specific Metrics
-        $todayCollectionsTotal = $todayCollected > 0 ? $todayCollected : 8780;
-        $todayOnlineCollected = round($todayCollectionsTotal * 0.635);
-        $todayCashCollected = $todayCollectionsTotal - $todayOnlineCollected;
-        $todayProductSales = 780;
-        $todayMembershipSales = max(0, $todayCollectionsTotal - $todayProductSales);
-        $todayTransactionsCount = max(7, Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->count());
+        $todayCollectionsTotal = (float)$todayCollected;
+        $todayOnlineCollected = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('payment_type', 'Online')->sum('received_amount');
+        if ($todayOnlineCollected == 0 && $todayCollectionsTotal > 0) {
+            $todayOnlineCollected = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('payment_type', 'Received')->sum('received_amount');
+        }
+        $todayCashCollected = max(0, $todayCollectionsTotal - $todayOnlineCollected);
 
-        $totalMonthExpense = 144000;
-        $currentMonthRevenueDisplay = $thisMonthRevenue > 0 ? $thisMonthRevenue : 162400;
+        $todayProductSales = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('title', 'Order Placed')->sum('received_amount');
+        if ($todayProductSales == 0) {
+            $todayProductSales = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('title', 'Order Placed')->sum('total_amount');
+        }
+        $todayMembershipSales = max(0, $todayCollectionsTotal - $todayProductSales);
+        $todayTransactionsCount = Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->count();
+
+        $thisMonthExpenses = (float)Transaction::where('created_by', $userId)->where('title', 'Order Placed')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->sum('received_amount');
+        if ($thisMonthExpenses == 0) {
+            $thisMonthExpenses = (float)Transaction::where('created_by', $userId)->where('title', 'Order Placed')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->sum('total_amount');
+        }
+        $totalMonthExpense = $thisMonthExpenses;
+        $currentMonthRevenueDisplay = (float)$thisMonthRevenue;
         $totalMonthNet = $currentMonthRevenueDisplay - $totalMonthExpense;
 
-        $monthRevenueTrendLabels = ['1 ' . date('M'), '6 ' . date('M'), '11 ' . date('M'), '16 ' . date('M'), '21 ' . date('M'), '26 ' . date('M'), '31 ' . date('M')];
-        $monthRevenueTrendData = [45000, 78000, 110000, 135000, 142000, 155000, (int)$currentMonthRevenueDisplay];
+        // Dynamic Monthly Revenue Trend Data (Sampled intervals through the month)
+        $currentMonthDays = now()->daysInMonth;
+        $monthRevenueTrendLabels = [];
+        $monthRevenueTrendData = [];
+        $runningTotal = 0;
+
+        $monthlyDailyRev = Transaction::where('created_by', $userId)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->selectRaw('DAY(created_at) as day_num, SUM(COALESCE(received_amount, total_amount)) as daily_total')
+            ->groupBy('day_num')
+            ->pluck('daily_total', 'day_num')
+            ->toArray();
+
+        for ($d = 1; $d <= $currentMonthDays; $d += 5) {
+            for ($k = max(1, $d - 4); $k <= $d; $k++) {
+                $runningTotal += (float)($monthlyDailyRev[$k] ?? 0);
+            }
+            $monthRevenueTrendLabels[] = $d . ' ' . date('M');
+            $monthRevenueTrendData[] = round($runningTotal);
+        }
+        if (!in_array($currentMonthDays . ' ' . date('M'), $monthRevenueTrendLabels)) {
+            for ($k = end($monthRevenueTrendLabels) ? (int)explode(' ', end($monthRevenueTrendLabels))[0] + 1 : 1; $k <= $currentMonthDays; $k++) {
+                $runningTotal += (float)($monthlyDailyRev[$k] ?? 0);
+            }
+            $monthRevenueTrendLabels[] = $currentMonthDays . ' ' . date('M');
+            $monthRevenueTrendData[] = round($runningTotal > 0 ? $runningTotal : $currentMonthRevenueDisplay);
+        }
 
         // 7. Top 20 & Least 20 Attendance
         $month = now()->month;
@@ -442,8 +479,7 @@ class DashboardController extends Controller
         }
 
         $transactionRaw = Transaction::select(
-            DB::raw('SUM(CASE WHEN received_amount > 0 THEN received_amount ELSE 0 END) as received_amount'),
-            DB::raw('SUM(total_amount) as gross_amount'),
+            DB::raw('SUM(total_amount) as total_amount'),
             DB::raw('MONTH(created_at) as month'),
             'title'
         )
@@ -456,10 +492,8 @@ class DashboardController extends Controller
         $transactionAddUserChartData = [];
         $transactionOrderPlacedChartData = [];
         for ($m = 1; $m <= 12; $m++) {
-            $monthRev = (float)($transactionRaw->where('month', $m)->where('title', 'Add User Days')->sum('received_amount'));
-            $monthExp = (float)($transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('received_amount'));
-            $transactionAddUserChartData[] = $monthRev;
-            $transactionOrderPlacedChartData[] = $monthExp;
+            $transactionAddUserChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Add User Days')->sum('total_amount'));
+            $transactionOrderPlacedChartData[] = (float)($transactionRaw->where('month', $m)->where('title', 'Order Placed')->sum('total_amount'));
         }
 
         $totalGrowthRevenue = array_sum($transactionAddUserChartData);

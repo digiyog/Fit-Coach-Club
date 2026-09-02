@@ -3823,7 +3823,7 @@
             <!-- 1. TOP CARD: GROWTH CANVAS -->
             <div class="fcc-growth-canvas-card">
 
-                <!-- Header with Title, Big KPI -->
+                <!-- Header with Title, Big KPI, and View Switcher -->
                 <div class="fcc-growth-header-row">
                     <div>
                         <div class="fcc-growth-canvas-title">Growth canvas</div>
@@ -3838,6 +3838,12 @@
                                 <span class="text-muted fw-normal" style="font-size: 12px; margin-left: 2px;">vs {{ date('F', strtotime('-1 month')) }}</span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="fcc-growth-pills-switcher">
+                        <button type="button" class="fcc-growth-pill active" data-growth-view="engagement">Engagement</button>
+                        <button type="button" class="fcc-growth-pill" data-growth-view="mix">Member mix</button>
+                        <button type="button" class="fcc-growth-pill" data-growth-view="revenue">Revenue</button>
                     </div>
                 </div>
 
@@ -3879,17 +3885,17 @@
                 <!-- Runway Header -->
                 <div class="fcc-runway-header">
                     <div>
-                        <h3 class="fcc-runway-title mb-0">Income and Expenses Graph (Purchase & Deposit Graph {{ $year ?? date('Y') }})</h3>
+                        <h3 class="fcc-runway-title mb-0">Financial runway</h3>
                     </div>
 
                     <div class="fcc-runway-legend-wrap">
                         <span style="color: #059669; font-weight: 700; font-size: 12.5px;">
                             <span style="width: 9px; height: 9px; border-radius: 50%; background: #059669; display: inline-block; margin-right: 4px;"></span>
-                            Deposit (Your Revenue)
+                            Deposit / revenue
                         </span>
                         <span style="color: #ef4444; font-weight: 700; font-size: 12.5px;">
                             <span style="width: 9px; height: 9px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
-                            Purchase (You are Giving Product)
+                            Purchase / expense
                         </span>
                     </div>
 
@@ -3931,18 +3937,6 @@
                         <div id="financialRunwayChart" style="min-height: 260px;"></div>
                     </div>
 
-                </div>
-
-                <!-- Bottom Color Representation Strips -->
-                <div class="mt-3 pt-3 border-top d-flex flex-column gap-2" style="font-size: 12.5px; font-weight: 600;">
-                    <div style="background: #eff6ff; color: #1e40af; padding: 7px 14px; border-radius: 8px; border-left: 4px solid #ef4444; display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; display: inline-block; flex-shrink: 0;"></span>
-                        <span>This Color Represent The Purchase(You are Giving Product)</span>
-                    </div>
-                    <div style="background: #f0fdf4; color: #166534; padding: 7px 14px; border-radius: 8px; border-left: 4px solid #059669; display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #059669; display: inline-block; flex-shrink: 0;"></span>
-                        <span>This Color Represent The Deposit(Your Revenue)</span>
-                    </div>
                 </div>
 
             </div>
@@ -4850,7 +4844,7 @@
         }).render();
     }
 
-    // Financial Runway Dual Bars & Area Chart
+    // Financial Runway Dual Grouped Bar Chart
     var rawRevenue = {!! json_encode($transactionAddUserChartData ?? array_fill(0, 12, 0)) !!};
     var rawExpense = {!! json_encode($transactionOrderPlacedChartData ?? array_fill(0, 12, 0)) !!};
 
@@ -4858,7 +4852,7 @@
     if (runwayElem) {
         new ApexCharts(runwayElem, {
             chart: {
-                height: 250,
+                height: 280,
                 type: 'bar',
                 fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false }
@@ -4867,7 +4861,7 @@
             plotOptions: {
                 bar: {
                     horizontal: false,
-                    columnWidth: '50%',
+                    columnWidth: '52%',
                     borderRadius: 4,
                     dataLabels: {
                         position: 'top'
@@ -4877,7 +4871,8 @@
             dataLabels: {
                 enabled: true,
                 formatter: function (val) {
-                    if (!val || val === 0) return '';
+                    if (val === null || val === undefined) return '0';
+                    if (val === 0) return '0';
                     return val >= 1000 ? Math.round(val / 1000) + 'K' : val;
                 },
                 offsetY: -16,
@@ -4888,13 +4883,13 @@
                 }
             },
             series: [
-                { name: 'Deposit (Your Revenue)', data: rawRevenue },
-                { name: 'Purchase (You are Giving Product)', data: rawExpense }
+                { name: 'Deposit / revenue', data: rawRevenue },
+                { name: 'Purchase / expense', data: rawExpense }
             ],
             legend: { show: false },
             xaxis: {
                 categories: monthsCategories,
-                labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
+                labels: { style: { colors: '#94a3b8', fontSize: '11px', fontWeight: 600 } },
                 axisBorder: { show: false },
                 axisTicks: { show: false }
             },
@@ -4902,7 +4897,7 @@
                 labels: {
                     style: { colors: '#94a3b8', fontSize: '10.5px' },
                     formatter: function(val) {
-                        return val >= 1000 ? (val / 1000) + 'K' : val;
+                        return val >= 1000 ? Math.round(val / 1000) + 'K' : val;
                     }
                 }
             },
@@ -4911,7 +4906,14 @@
                 strokeDashArray: 3
             },
             tooltip: {
-                y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
+                theme: 'dark',
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function(val) {
+                        return '₹' + Number(val).toLocaleString('en-IN');
+                    }
+                }
             }
         }).render();
     }
