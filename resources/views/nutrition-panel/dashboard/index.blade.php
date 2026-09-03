@@ -3055,13 +3055,13 @@
                         <div class="fcc-add-menu-header">
                             <span>Select Registration Type</span>
                         </div>
-                        <a class="dropdown-item fcc-add-menu-item" href="{{ route('nutritionPanel.users.create', ['type' => 'demo', 'user_type' => 'Demo User']) }}">
+                        <a class="dropdown-item fcc-add-menu-item" href="{{ route('nutritionPanel.users.createDemo') }}">
                             <div class="fcc-add-item-icon demo">
                                 <i class="fa fa-flask"></i>
                             </div>
                             <div class="fcc-add-item-body">
                                 <div class="fcc-add-item-title">Demo Account</div>
-                                <div class="fcc-add-item-sub">1-Day free trial member pass</div>
+                                <div class="fcc-add-item-sub">3-Day free trial member pass</div>
                             </div>
                             <span class="fcc-add-tag demo-tag">Trial</span>
                         </a>

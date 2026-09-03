@@ -187,6 +187,7 @@ Route::prefix('nutrition-panel')->group(function () {
     Route::group(['prefix' => 'users', 'middleware' => ['checkfranchiseauth']], function () {
         Route::get('/get-users', [Controllers\NutritionPanel\UserController::class, 'getUsers'])->name('nutritionPanel.users.getUsers');
         Route::get('/create', [Controllers\NutritionPanel\UserController::class, 'create'])->name('nutritionPanel.users.create');
+        Route::get('/create-demo', [Controllers\NutritionPanel\UserController::class, 'createDemo'])->name('nutritionPanel.users.createDemo');
         Route::post('/', [Controllers\NutritionPanel\UserController::class, 'store'])->name('nutritionPanel.users.store');
         Route::get('/edit/{id}', [Controllers\NutritionPanel\UserController::class, 'edit'])->name('nutritionPanel.users.edit');
         Route::post('/update/{id}', [Controllers\NutritionPanel\UserController::class, 'update'])->name('nutritionPanel.users.update');

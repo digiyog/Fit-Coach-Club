@@ -255,6 +255,24 @@ class UserController extends Controller
         $mealTypes = MealType::where('status',1)->orderBy('id', 'DESC')->get();
         $productTypes = ProductType::where('status',1)->orderBy('id', 'DESC')->get();
 
+        // Coaches list
+        $coachesList = User::where('created_by', $authUser->id)
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
+            ->groupBy('coach_name')
+            ->orderByDesc('total_members')
+            ->get();
+
+        if ($coachesList->isEmpty() && !empty($authUser->name)) {
+            $coachesList = collect([
+                (object)[
+                    'coach_name' => $authUser->name,
+                    'total_members' => 0
+                ]
+            ]);
+        }
+
         $selectedUserType = $request->get('user_type');
         if (!$selectedUserType) {
             if ($request->get('type') === 'demo') {
@@ -268,9 +286,48 @@ class UserController extends Controller
         $this->viewData['breadcrumb']       = $breadcrumb;
         $this->viewData['mealTypes']        = $mealTypes;
         $this->viewData['productTypes']     = $productTypes;
+        $this->viewData['coachesList']      = $coachesList;
         $this->viewData['selectedUserType'] = $selectedUserType;
 
         return view('nutrition-panel.users.create')->with($this->viewData);
+    }
+
+    /**
+     * View create Demo User (Dedicated Image 1 design).
+     */
+    public function createDemo(Request $request)
+    {
+        $authUser = auth()->user();
+
+        $breadcrumb = [
+            __('language.dashboard') => route('nutritionPanel.dashboard'),
+            'Demo Users' => route('nutritionPanel.users.index') . '/demo',
+            'Add Demo User' => '',
+        ];
+
+        // Coaches list
+        $coachesList = User::where('created_by', $authUser->id)
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
+            ->groupBy('coach_name')
+            ->orderByDesc('total_members')
+            ->get();
+
+        if ($coachesList->isEmpty() && !empty($authUser->name)) {
+            $coachesList = collect([
+                (object)[
+                    'coach_name' => $authUser->name,
+                    'total_members' => 0
+                ]
+            ]);
+        }
+
+        $this->viewData['breadcrumb']   = $breadcrumb;
+        $this->viewData['authUser']     = $authUser;
+        $this->viewData['coachesList']  = $coachesList;
+
+        return view('nutrition-panel.users.create-demo')->with($this->viewData);
     }
 
     /**
@@ -290,50 +347,60 @@ class UserController extends Controller
         $user           = null;
         $errorMessage   = null;
         
+        $isDemo = $request->boolean('is_demo') || $request->input('user_type') === 'Demo User';
+        $userType = $isDemo ? 'Demo User' : ($request->input('user_type') ?: 'Regular User');
+
+        if ($isDemo) {
+            $days = (int)$request->input('days', 3);
+        } elseif ($userType === '3 Days Trial') {
+            $days = 3;
+        } else {
+            $days = (int)$request->input('days', 0);
+        }
+
+        $startDate = !empty($request['start_date']) ? date('Y-m-d', strtotime($request['start_date'])) : Carbon::now()->toDateString();
+        $endDate = Carbon::parse($startDate)->addDays($days)->toDateString();
+        $dob = !empty($request['date_of_birth']) ? date('Y-m-d', strtotime($request['date_of_birth'])) : null;
+        $weight = $request['weight'] ?? $request['current_weight'] ?? null;
+        $weightGoal = $request['weight_goal'] ?? $request['goal_weight'] ?? null;
+        $password = !empty($request['new_pass']) ? bcrypt($request['new_pass']) : (!empty($request['password']) ? bcrypt($request['password']) : bcrypt(Str::random(10)));
+
         // Begin Transaction
         DB::beginTransaction();
 
-        if($request['user_type'] == 'Demo User'){
-            $request['days'] = 1;
-        } else if($request['user_type'] == '3 Days Trial'){
-            $request['days'] = 3;
-        } else {
-            $request['days'] = 0;
-        }
-        
         // Create User
         try {
 
             // Set data
             $data = [
-                'name'                      => $request['name'],
+                'name'                      => $request['name'] ?? $request['user_name'],
                 'email'                     => $request['email'],
                 'email_verified_at'         => Carbon::now()->toDateTimeString(),
+                'country_code'              => $request['country_code'] ?? '+91',
                 'mobile_number'             => $request['mobile_number'],
                 'mobile_number_verified_at' => Carbon::now()->toDateTimeString(),
-                'date_of_birth'             => date('Y-m-d',strtotime($request['date_of_birth'])),
-                'user_type'                 => $request['user_type'],
-                'user_state'                => $request['user_state'],
+                'date_of_birth'             => $dob,
+                'user_type'                 => $userType,
+                'user_state'                => $request['user_state'] ?? 'Offline',
                 'coach_name'                => $request['coach_name'],
-                'meal_type_id'              => $request['meal_type_id'],
-                'product_type_id'           => $request['product_type_id'],
-                'starting_weight'           => $request['weight'],
-                'current_weight'            => $request['weight'],
-                'days'                      => $request['days'],
-                'age'                       => $request['age'],
-                'height'                    => $request['height'],
-                'gender'                    => $request['gender'],
-                'weight_goal'               => $request['weight_goal'],
+                'meal_type_id'              => $request['meal_type_id'] ?? null,
+                'product_type_id'           => $request['product_type_id'] ?? 1,
+                'starting_weight'           => $weight,
+                'current_weight'            => $weight,
+                'start_date'                => $startDate,
+                'end_date'                  => $endDate,
+                'days'                      => $days,
+                'age'                       => $request['age'] ?? null,
+                'height'                    => $request['height'] ?? null,
+                'gender'                    => $request['gender'] ?? null,
+                'weight_goal'               => $weightGoal,
+                'password'                  => $password,
                 'role_id'                   => 3,
                 'role_type'                 => 'user',
                 'created_by'                => $authUser->id,
                 'created_at'                => Carbon::now()->toDateTimeString(),
                 'updated_at'                => Carbon::now()->toDateTimeString()
             ];
-
-            if(!empty($request['new_pass'])){
-                $data['password'] = bcrypt($request['new_pass']);
-            }
 
             // Upload Franchise image
             if ($request->hasFile('image'))
@@ -362,24 +429,26 @@ class UserController extends Controller
             // Set notification
             $notification = [
                 '_status' => true,
-                '_message' => __('messages.record_created', ['record' => 'User']),
+                '_message' => __('messages.record_created', ['record' => $isDemo ? 'Demo User' : 'User']),
                 '_type' => 'success',
             ];
             //-----------------
 
-            return redirect()->route('nutritionPanel.users.index')->with(['notification' => $notification]);
+            $redirectRoute = $isDemo ? route('nutritionPanel.users.index') . '/demo' : route('nutritionPanel.users.index');
+            return redirect($redirectRoute)->with(['notification' => $notification]);
         } 
         else 
         {
             // Set notification
             $notification = [
                 '_status' => false,
-                '_message' => __('messages.record_creation_failed', ['record' => 'User']),
+                '_message' => $errorMessage ?: __('messages.record_creation_failed', ['record' => 'User']),
                 '_type' => 'error',
             ];
             //-----------------
 
-            return redirect()->route('nutritionPanel.users.create')->withInput()->with(['notification' => $notification]);
+            $failRoute = $isDemo ? route('nutritionPanel.users.createDemo') : route('nutritionPanel.users.create');
+            return redirect($failRoute)->withInput()->with(['notification' => $notification]);
         }
     }
 
