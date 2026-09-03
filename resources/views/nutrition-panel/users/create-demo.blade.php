@@ -696,14 +696,16 @@
                                     <span>+91</span>
                                     <i class="fa fa-caret-down ms-1" style="font-size: 10px;"></i>
                                 </div>
-                                <input type="text" name="mobile_number" id="mobile_number" class="fcc-input live-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" />
+                                <input type="text" name="mobile_number" id="mobile_number" class="fcc-input live-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" data-url="{{ route('nutritionPanel.users.checkMobile') }}" />
                             </div>
+                            <div id="demo_mobile_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
                         </div>
 
                         <!-- Email address -->
                         <div class="fcc-field-group">
                             <label class="fcc-label" for="email">Email address <span class="req">*</span></label>
-                            <input type="email" name="email" id="email" class="fcc-input live-track" placeholder="member@example.com" required value="{{ old('email') }}" />
+                            <input type="email" name="email" id="email" class="fcc-input live-track" placeholder="member@example.com" required value="{{ old('email') }}" data-url="{{ route('nutritionPanel.users.checkEmail') }}" />
+                            <div id="demo_email_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
                         </div>
 
                         <!-- Current weight -->
@@ -955,6 +957,54 @@
                 $('#coachAvatarLetter').html('<i class="fa fa-user"></i>');
             }
         }
+
+        // Dynamic remote email duplicate check
+        $('#email').on('blur', function() {
+            var email = $(this).val().trim();
+            if (email) {
+                $.ajax({
+                    url: "{{ route('nutritionPanel.users.checkEmail') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        email: email
+                    },
+                    success: function(resp) {
+                        if (resp === false || resp === 'false') {
+                            $('#demo_email_error').text('The email address you have entered is already registered.').show();
+                        } else {
+                            $('#demo_email_error').text('').hide();
+                        }
+                    }
+                });
+            } else {
+                $('#demo_email_error').text('').hide();
+            }
+        });
+
+        // Dynamic remote mobile duplicate check
+        $('#mobile_number').on('blur', function() {
+            var mobile = $(this).val().trim();
+            if (mobile) {
+                $.ajax({
+                    url: "{{ route('nutritionPanel.users.checkMobile') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        mobile_number: mobile
+                    },
+                    success: function(resp) {
+                        if (resp === false || resp === 'false') {
+                            $('#demo_mobile_error').text('The mobile number you have entered is already registered.').show();
+                        } else {
+                            $('#demo_mobile_error').text('').hide();
+                        }
+                    }
+                });
+            } else {
+                $('#demo_mobile_error').text('').hide();
+            }
+        });
 
         // Attach listeners
         $('.live-track').on('input change', updateProgress);

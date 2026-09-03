@@ -282,6 +282,11 @@ class UserController extends Controller
             }
         }
 
+        // Dynamically route to dedicated Demo page if demo requested
+        if ($request->get('type') === 'demo' || $selectedUserType === 'Demo User') {
+            return $this->createDemo($request);
+        }
+
         // View Data
         $this->viewData['breadcrumb']       = $breadcrumb;
         $this->viewData['mealTypes']        = $mealTypes;

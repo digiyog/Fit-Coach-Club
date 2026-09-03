@@ -850,14 +850,16 @@
                                         <span>+91</span>
                                         <i class="fa fa-caret-down ms-1" style="font-size: 10px;"></i>
                                     </div>
-                                    <input type="text" name="mobile_number" id="mobile_number" class="fcc-input ums-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" />
+                                    <input type="text" name="mobile_number" id="mobile_number" class="fcc-input ums-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" data-url="{{ route('nutritionPanel.users.checkMobile') }}" />
                                 </div>
+                                <div id="mobile_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
                             </div>
 
                             <!-- Email address -->
                             <div class="fcc-field-group">
                                 <label class="fcc-label" for="email">Email address</label>
-                                <input type="email" name="email" id="email" class="fcc-input ums-track" placeholder="member@example.com" value="{{ old('email') }}" />
+                                <input type="email" name="email" id="email" class="fcc-input ums-track" placeholder="member@example.com" value="{{ old('email') }}" data-url="{{ route('nutritionPanel.users.checkEmail') }}" />
+                                <div id="email_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
                             </div>
 
                             <!-- Date of birth -->
@@ -1004,6 +1006,19 @@
                                         {{ $ut['display'] }}
                                     </option>
                                 @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Membership Days -->
+                        <div class="fcc-field-group" id="days_group">
+                            <label class="fcc-label" for="days">Membership days</label>
+                            <select name="days" id="days" class="fcc-input ums-track">
+                                <option value="0">Default / Ongoing</option>
+                                <option value="15" {{ old('days') == '15' ? 'selected' : '' }}>15 Days</option>
+                                <option value="30" {{ old('days') == '30' ? 'selected' : '' }}>30 Days</option>
+                                <option value="45" {{ old('days') == '45' ? 'selected' : '' }}>45 Days</option>
+                                <option value="60" {{ old('days') == '60' ? 'selected' : '' }}>60 Days</option>
+                                <option value="90" {{ old('days') == '90' ? 'selected' : '' }}>90 Days</option>
                             </select>
                         </div>
                     </div>
@@ -1366,6 +1381,85 @@
             calculateBmi();
             checkPasswordStrength();
         }
+
+        // Dynamic DOB to Age calculation
+        $('#date_of_birth').on('change input', function() {
+            var val = $(this).val();
+            if (val) {
+                var dob = new Date(val);
+                var today = new Date();
+                var age = today.getFullYear() - dob.getFullYear();
+                var m = today.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                if (age >= 1 && age <= 120) {
+                    $('#age').val(age).trigger('input');
+                }
+            }
+        });
+
+        // Dynamic remote email duplicate check
+        $('#email').on('blur', function() {
+            var email = $(this).val().trim();
+            if (email) {
+                $.ajax({
+                    url: "{{ route('nutritionPanel.users.checkEmail') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        email: email
+                    },
+                    success: function(resp) {
+                        if (resp === false || resp === 'false') {
+                            $('#email_error').text('The email address you have entered is already registered.').show();
+                        } else {
+                            $('#email_error').text('').hide();
+                        }
+                    }
+                });
+            } else {
+                $('#email_error').text('').hide();
+            }
+        });
+
+        // Dynamic remote mobile duplicate check
+        $('#mobile_number').on('blur', function() {
+            var mobile = $(this).val().trim();
+            if (mobile) {
+                $.ajax({
+                    url: "{{ route('nutritionPanel.users.checkMobile') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        mobile_number: mobile
+                    },
+                    success: function(resp) {
+                        if (resp === false || resp === 'false') {
+                            $('#mobile_error').text('The mobile number you have entered is already registered.').show();
+                        } else {
+                            $('#mobile_error').text('').hide();
+                        }
+                    }
+                });
+            } else {
+                $('#mobile_error').text('').hide();
+            }
+        });
+
+        // Dynamic User Type switcher
+        $('#user_type').on('change', function() {
+            var selected = $(this).val();
+            if (selected === 'Demo User' || selected === '3 Days Trial') {
+                if (confirm('Switch to dedicated Demo Account registration?')) {
+                    window.location.href = "{{ route('nutritionPanel.users.createDemo') }}";
+                }
+            } else if (selected === 'Regular User') {
+                $('#days_group').slideDown(150);
+            } else {
+                $('#days_group').slideUp(150);
+            }
+        });
 
         $('.ums-track').on('input change', updateProgress);
         updateProgress();
