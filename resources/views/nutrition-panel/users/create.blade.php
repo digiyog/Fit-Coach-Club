@@ -33,8 +33,13 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="container-fluid mt2">
                         <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-8 d-flex align-items-center gap-2">
                                 <h4> Create User </h4>
+                                @if(isset($selectedUserType) && $selectedUserType == 'Demo User')
+                                    <span class="badge" style="background: #faf5ff; color: #9333ea; border: 1px solid #e9d5ff; font-size: 11.5px; padding: 4px 10px; border-radius: 6px; font-weight: 700;"><i class="fa fa-flask me-1"></i> Demo Account</span>
+                                @elseif(isset($selectedUserType) && $selectedUserType == 'Regular User')
+                                    <span class="badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-size: 11.5px; padding: 4px 10px; border-radius: 6px; font-weight: 700;"><i class="fa fa-user-plus me-1"></i> UMS Register</span>
+                                @endif
                             </div>
                         </div>
 
@@ -98,7 +103,7 @@
                                 <div class="row mb-4">
                                     <div class="col-md-6 mt-3">
                                         <label for="user_type">User Type</label>
-                                        {!! Form::select('user_type', create_select_options(config('constants.user_type'), 'display', 'value', 'Select User Type'), '', ['class' => 'form-control select-picker', 'id' => 'user_type', 'onchange' => "userType(this)" ]) !!}
+                                        {!! Form::select('user_type', create_select_options(config('constants.user_type'), 'display', 'value', 'Select User Type'), $selectedUserType ?? '', ['class' => 'form-control select-picker', 'id' => 'user_type', 'onchange' => "userType(this)" ]) !!}
                                     </div>
 
                                     <div class="col-md-6 mt-3">

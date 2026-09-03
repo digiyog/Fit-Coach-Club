@@ -239,7 +239,7 @@ class UserController extends Controller
         * @author Sandeep
         * @created 20 Jan 2023
     */
-    public function create()
+    public function create(Request $request)
     {
         // Get user
         $authUser = auth()->user();
@@ -255,10 +255,20 @@ class UserController extends Controller
         $mealTypes = MealType::where('status',1)->orderBy('id', 'DESC')->get();
         $productTypes = ProductType::where('status',1)->orderBy('id', 'DESC')->get();
 
+        $selectedUserType = $request->get('user_type');
+        if (!$selectedUserType) {
+            if ($request->get('type') === 'demo') {
+                $selectedUserType = 'Demo User';
+            } elseif ($request->get('type') === 'ums' || $request->get('type') === 'regular') {
+                $selectedUserType = 'Regular User';
+            }
+        }
+
         // View Data
         $this->viewData['breadcrumb']       = $breadcrumb;
         $this->viewData['mealTypes']        = $mealTypes;
         $this->viewData['productTypes']     = $productTypes;
+        $this->viewData['selectedUserType'] = $selectedUserType;
 
         return view('nutrition-panel.users.create')->with($this->viewData);
     }

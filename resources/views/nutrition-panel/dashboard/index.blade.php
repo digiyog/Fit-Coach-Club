@@ -182,9 +182,131 @@
         text-decoration: none;
     }
 
-    .fcc-btn-add:hover {
+    .fcc-btn-add:hover,
+    .fcc-btn-add:focus,
+    .fcc-btn-add[aria-expanded="true"] {
         transform: translateY(-1px);
         box-shadow: 0 6px 16px rgba(59, 70, 241, 0.4);
+        color: #ffffff !important;
+    }
+
+    .fcc-btn-add::after {
+        display: none !important;
+    }
+
+    .fcc-add-caret {
+        font-size: 10px;
+        margin-left: 2px;
+        transition: transform 0.2s ease;
+    }
+
+    .fcc-add-dropdown.show .fcc-add-caret,
+    .fcc-btn-add[aria-expanded="true"] .fcc-add-caret {
+        transform: rotate(180deg);
+    }
+
+    .fcc-add-menu {
+        border-radius: 14px !important;
+        min-width: 295px !important;
+        padding: 8px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.16), 0 6px 12px -4px rgba(15, 23, 42, 0.08) !important;
+        margin-top: 8px !important;
+        z-index: 1060;
+    }
+
+    .fcc-add-menu-header {
+        padding: 6px 10px 8px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 4px;
+    }
+
+    .fcc-add-menu-item {
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px !important;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        color: #1e293b !important;
+    }
+
+    .fcc-add-menu-item:hover {
+        background: #f8fafc !important;
+        transform: translateX(2px);
+    }
+
+    .fcc-add-item-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .fcc-add-menu-item:hover .fcc-add-item-icon {
+        transform: scale(1.08);
+    }
+
+    .fcc-add-item-icon.demo {
+        background: #faf5ff;
+        color: #9333ea;
+        border: 1px solid #f3e8ff;
+    }
+
+    .fcc-add-item-icon.ums {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #dbeafe;
+    }
+
+    .fcc-add-item-body {
+        flex-grow: 1;
+    }
+
+    .fcc-add-item-title {
+        font-weight: 700;
+        font-size: 13.5px;
+        color: #0f172a;
+        line-height: 1.25;
+        margin-bottom: 2px;
+    }
+
+    .fcc-add-item-sub {
+        font-size: 11.5px;
+        color: #64748b;
+        line-height: 1.2;
+    }
+
+    .fcc-add-tag {
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 6px;
+        letter-spacing: 0.3px;
+        flex-shrink: 0;
+    }
+
+    .fcc-add-tag.demo-tag {
+        background: #faf5ff;
+        color: #9333ea;
+        border: 1px solid #e9d5ff;
+    }
+
+    .fcc-add-tag.ums-tag {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
     }
 
     /* 2. Tabs Bar */
@@ -2925,9 +3047,37 @@
                     <span>Active until {{ $endDate->format('d M') }}</span>
                 </div>
 
-                <a href="{{ route('nutritionPanel.users.create') }}" class="fcc-btn-add">
-                    <i class="fa fa-plus"></i> Add member
-                </a>
+                <div class="dropdown fcc-add-dropdown d-inline-block">
+                    <button class="fcc-btn-add dropdown-toggle" type="button" id="addMemberDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-plus"></i> Add member <i class="fa fa-chevron-down fcc-add-caret"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end fcc-add-menu shadow-lg border-0" aria-labelledby="addMemberDropdown">
+                        <div class="fcc-add-menu-header">
+                            <span>Select Registration Type</span>
+                        </div>
+                        <a class="dropdown-item fcc-add-menu-item" href="{{ route('nutritionPanel.users.create', ['type' => 'demo', 'user_type' => 'Demo User']) }}">
+                            <div class="fcc-add-item-icon demo">
+                                <i class="fa fa-flask"></i>
+                            </div>
+                            <div class="fcc-add-item-body">
+                                <div class="fcc-add-item-title">Demo Account</div>
+                                <div class="fcc-add-item-sub">1-Day free trial member pass</div>
+                            </div>
+                            <span class="fcc-add-tag demo-tag">Trial</span>
+                        </a>
+                        <div class="dropdown-divider my-1"></div>
+                        <a class="dropdown-item fcc-add-menu-item" href="{{ route('nutritionPanel.users.create', ['type' => 'ums', 'user_type' => 'Regular User']) }}">
+                            <div class="fcc-add-item-icon ums">
+                                <i class="fa fa-user-plus"></i>
+                            </div>
+                            <div class="fcc-add-item-body">
+                                <div class="fcc-add-item-title">UMS Register</div>
+                                <div class="fcc-add-item-sub">Full regular member registration</div>
+                            </div>
+                            <span class="fcc-add-tag ums-tag">Full</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
