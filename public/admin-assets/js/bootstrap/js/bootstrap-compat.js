@@ -43,7 +43,7 @@
             return;
         }
 
-        $.fn[name] = function (arg1 /* , ...args */) {
+        var plugin = function (arg1 /* , ...args */) {
             var method = typeof arg1 === "string" ? arg1 : null;
             var config = method ? null : arg1;
             var args = Array.prototype.slice.call(arguments, method ? 1 : 0);
@@ -68,6 +68,10 @@
                 new Component(element, config);
             });
         };
+
+        plugin.Constructor = Component;
+        $.fn[name] = plugin;
+        $.fn[name.toLowerCase()] = plugin;
     });
 
     /* ------------------------------------------------------------------

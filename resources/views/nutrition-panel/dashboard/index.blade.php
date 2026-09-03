@@ -5177,6 +5177,9 @@
             legend: { show: false },
             xaxis: {
                 categories: monthsCategories,
+                crosshairs: {
+                    width: 1
+                },
                 labels: { style: { colors: '#94a3b8', fontSize: '11px', fontWeight: 600 } },
                 axisBorder: { show: false },
                 axisTicks: { show: false }
@@ -5197,6 +5200,7 @@
                 theme: 'light',
                 shared: true,
                 intersect: false,
+                followCursor: true,
                 y: {
                     formatter: function(val) {
                         return '₹' + Number(val).toLocaleString('en-IN');
@@ -5489,6 +5493,9 @@
             legend: { show: false },
             xaxis: {
                 categories: monthsCategories,
+                crosshairs: {
+                    width: 1
+                },
                 labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
                 axisBorder: { show: false },
                 axisTicks: { show: false }
@@ -5506,6 +5513,8 @@
                 strokeDashArray: 3
             },
             tooltip: {
+                shared: true,
+                followCursor: true,
                 y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
             }
         }).render();

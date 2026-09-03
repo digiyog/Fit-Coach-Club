@@ -85,30 +85,37 @@ function checkall(clickchk, relChkbox) {
 =========================================
 */
 
-$('.bs-tooltip').tooltip();
+$(function () {
+    if (typeof $.fn.tooltip === 'function') {
+        $('.bs-tooltip').tooltip();
+    }
 
-/*
-=========================================
-|                                       |
-|               Popovers                |
-|                                       |
-=========================================
-*/
+    /*
+    =========================================
+    |                                       |
+    |               Popovers                |
+    |                                       |
+    =========================================
+    */
 
-$('.bs-popover').popover();
+    if (typeof $.fn.popover === 'function') {
+        $('.bs-popover').popover();
+    }
 
+    /*
+    ================================================
+    |                                              |
+    |               Rounded Tooltip                |
+    |                                              |
+    ================================================
+    */
 
-/*
-================================================
-|                                              |
-|               Rounded Tooltip                |
-|                                              |
-================================================
-*/
-
-$('.t-dot').tooltip({
-    template: '<div class="tooltip status rounded-tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
-})
+    if (typeof $.fn.tooltip === 'function') {
+        $('.t-dot').tooltip({
+            template: '<div class="tooltip status rounded-tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+        });
+    }
+});
 
 
 /*
