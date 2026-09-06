@@ -761,12 +761,6 @@
                         <a href="javascript:void(0)" class="fcc-coach-change" onclick="$('#coach_name').focus();">Change</a>
                     </div>
 
-                    <!-- Notice Strip -->
-                    <div class="fcc-notice-strip">
-                        <i class="fa fa-clock-o"></i>
-                        <span>Demo access expires automatically after 3 days</span>
-                    </div>
-
                 </div>
 
             </div>

@@ -261,11 +261,11 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        $recentTransactions = Transaction::select('transactions.*', 'users.name as user_name')
+        $recentTransactions = Transaction::select('transactions.*', 'users.name as user_name', 'users.mobile_number as user_mobile')
             ->leftJoin('users', 'transactions.user_id', '=', 'users.id')
             ->where('transactions.created_by', $userId)
             ->orderBy('transactions.id', 'DESC')
-            ->limit(5)
+            ->limit(8)
             ->get();
 
         $recentActivities = collect();
@@ -658,6 +658,7 @@ class DashboardController extends Controller
         $this->viewData['todayMembershipSales'] = $todayMembershipSales;
         $this->viewData['todayTransactionsCount'] = $todayTransactionsCount;
         $this->viewData['totalMonthExpense'] = $totalMonthExpense;
+        $this->viewData['recentTransactions'] = $recentTransactions;
         $this->viewData['currentMonthRevenueDisplay'] = $currentMonthRevenueDisplay;
         $this->viewData['totalMonthNet'] = $totalMonthNet;
         $this->viewData['monthRevenueTrendLabels'] = $monthRevenueTrendLabels;

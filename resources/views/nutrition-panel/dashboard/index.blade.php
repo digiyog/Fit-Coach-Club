@@ -81,44 +81,52 @@
 
     .fcc-search-input-box {
         position: relative;
-        min-width: 210px;
+        min-width: 230px;
+        height: 38px;
+        display: flex;
+        align-items: center;
     }
 
     .fcc-search-input-box input {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 8px 14px 8px 36px;
-        font-size: 13px;
-        color: var(--fcc-dark);
-        width: 100%;
-        outline: none;
-        transition: all 0.2s ease;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 11px !important;
+        padding: 0 14px 0 40px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        font-size: 13px !important;
+        color: var(--fcc-dark) !important;
+        width: 100% !important;
+        outline: none !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+        display: block !important;
     }
 
     .fcc-search-input-box input:focus {
-        border-color: var(--fcc-primary);
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.14);
+        border-color: var(--fcc-primary) !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.14) !important;
     }
 
     .fcc-search-input-box .search-icon {
         position: absolute;
-        left: 12px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
-        font-size: 13px;
+        font-size: 14px;
         pointer-events: none;
+        z-index: 2;
     }
 
     .fcc-icon-btn {
         width: 38px;
         height: 38px;
+        min-width: 38px;
         border-radius: 11px;
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         color: #475569;
@@ -126,44 +134,327 @@
         cursor: pointer;
         transition: all 0.2s ease;
         text-decoration: none;
+        padding: 0;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        outline: none !important;
     }
 
-    .fcc-icon-btn:hover {
+    .fcc-icon-btn:hover,
+    .fcc-icon-btn:focus,
+    .fcc-icon-btn[aria-expanded="true"] {
         background: #f8fafc;
         color: var(--fcc-primary);
         border-color: #cbd5e1;
     }
 
+    .fcc-icon-btn i {
+        font-size: 15px;
+        color: #475569;
+        transition: color 0.2s ease;
+    }
+
+    .fcc-icon-btn:hover i,
+    .fcc-icon-btn[aria-expanded="true"] i {
+        color: var(--fcc-primary);
+    }
+
+    .fcc-icon-btn::after {
+        display: none !important;
+    }
+
     .fcc-icon-btn .badge-dot {
         position: absolute;
-        top: -4px;
-        right: -4px;
+        top: -5px;
+        right: -5px;
         background: #ef4444;
         color: #ffffff;
         font-size: 10px;
         font-weight: 800;
-        width: 17px;
-        height: 17px;
-        border-radius: 50%;
+        min-width: 19px;
+        height: 19px;
+        padding: 0 4px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: 2px solid #ffffff;
+        box-shadow: 0 2px 5px rgba(239, 68, 68, 0.35);
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    /* Notifications Dropdown */
+    .fcc-notif-dropdown {
+        position: relative;
+    }
+
+    .fcc-notif-menu {
+        width: 390px !important;
+        max-width: calc(100vw - 28px) !important;
+        border-radius: 16px !important;
+        padding: 0 !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.16), 0 8px 20px -4px rgba(15, 23, 42, 0.08) !important;
+        margin-top: 8px !important;
+        z-index: 1060;
+        overflow: hidden;
+        animation: fccDropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fccDropdownFade {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fcc-notif-header {
+        padding: 14px 16px 10px 16px;
+        background: #ffffff;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .fcc-notif-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--fcc-dark);
+        letter-spacing: -0.02em;
+    }
+
+    .fcc-notif-subtext {
+        font-size: 11.5px;
+        color: var(--fcc-muted);
+        font-weight: 600;
+    }
+
+    .fcc-notif-filter-tabs {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .fcc-notif-filter-tabs::-webkit-scrollbar {
+        height: 0px;
+        display: none;
+    }
+
+    .fcc-notif-tab-btn {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 4px 9px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+        outline: none;
+    }
+
+    .fcc-notif-tab-btn:hover {
+        background: #f1f5f9;
+        color: var(--fcc-dark);
+    }
+
+    .fcc-notif-tab-btn.active {
+        background: var(--fcc-primary);
+        color: #ffffff;
+        border-color: var(--fcc-primary);
+        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.25);
+    }
+
+    .fcc-notif-body {
+        max-height: 340px;
+        overflow-y: auto;
+        padding: 6px 0;
+        background: #ffffff;
+    }
+
+    .fcc-notif-body::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .fcc-notif-body::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .fcc-notif-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        transition: all 0.15s ease;
+        border-bottom: 1px solid #f8fafc;
+        position: relative;
+    }
+
+    .fcc-notif-item:last-child {
+        border-bottom: none;
+    }
+
+    .fcc-notif-item:hover {
+        background: #f8fafc;
+    }
+
+    .fcc-notif-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .fcc-notif-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .fcc-notif-item-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--fcc-dark);
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .fcc-notif-item-desc {
+        font-size: 11.5px;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .fcc-notif-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .fcc-notif-btn-action {
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 5px 10px;
+        border-radius: 7px;
+        background: #eff2fe;
+        color: var(--fcc-primary);
+        text-decoration: none;
+        border: 1px solid rgba(59, 70, 241, 0.15);
+        transition: all 0.15s ease;
+        white-space: nowrap;
+    }
+
+    .fcc-notif-btn-action:hover {
+        background: var(--fcc-primary);
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .fcc-notif-btn-wa {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        background: #dcfce7;
+        color: #16a34a;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+
+    .fcc-notif-btn-wa:hover {
+        background: #16a34a;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .fcc-notif-empty {
+        padding: 28px 16px;
+        text-align: center;
+    }
+
+    .fcc-notif-empty-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #94a3b8;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .fcc-notif-empty-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--fcc-dark);
+        margin-bottom: 4px;
+    }
+
+    .fcc-notif-empty-desc {
+        font-size: 12px;
+        color: #94a3b8;
+        max-width: 260px;
+        margin: 0 auto;
+        line-height: 1.4;
+    }
+
+    .fcc-notif-footer {
+        padding: 10px 16px;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        text-align: center;
+    }
+
+    .fcc-notif-view-all {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--fcc-primary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.15s ease;
+    }
+
+    .fcc-notif-view-all:hover {
+        color: #283593;
+        transform: translateX(2px);
     }
 
     .fcc-plan-pill {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 8px;
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        padding: 7px 14px;
+        padding: 0 14px;
+        height: 38px;
         border-radius: 11px;
         font-size: 12.5px;
         font-weight: 600;
         color: #334155;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        white-space: nowrap;
     }
 
     .fcc-btn-add {
@@ -171,7 +462,8 @@
         color: #ffffff !important;
         border: none;
         border-radius: 11px;
-        padding: 8px 18px;
+        padding: 0 16px;
+        height: 38px;
         font-weight: 700;
         font-size: 13px;
         display: inline-flex;
@@ -180,6 +472,7 @@
         box-shadow: 0 4px 12px rgba(59, 70, 241, 0.3);
         transition: all 0.2s ease;
         text-decoration: none;
+        white-space: nowrap;
     }
 
     .fcc-btn-add:hover,
@@ -1728,61 +2021,84 @@
 
     .fcc-renew-search-box {
         position: relative;
-        min-width: 220px;
+        min-width: 230px;
+        height: 38px;
+        display: flex;
+        align-items: center;
     }
 
     .fcc-renew-search-box input {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 8px 14px 8px 34px;
-        font-size: 13px;
-        color: #0f172a;
-        width: 100%;
-        outline: none;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 11px !important;
+        padding: 0 14px 0 40px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        font-size: 13px !important;
+        color: #0f172a !important;
+        width: 100% !important;
+        outline: none !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+        transition: all 0.2s ease !important;
+        display: block !important;
+    }
+
+    .fcc-renew-search-box input:focus {
+        border-color: var(--fcc-primary) !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.14) !important;
     }
 
     .fcc-renew-search-box .search-icon {
         position: absolute;
-        left: 11px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
-        font-size: 12.5px;
+        font-size: 14px;
+        pointer-events: none;
+        z-index: 2;
     }
 
     .fcc-renew-select {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 8px 14px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #334155;
-        outline: none;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 11px !important;
+        padding: 0 14px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        outline: none !important;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
     }
 
     .fcc-btn-bulk-remind {
-        background: #3b46f1;
+        background: #3b46f1 !important;
         color: #ffffff !important;
-        font-weight: 700;
-        font-size: 13px;
-        padding: 8px 18px;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(59, 70, 241, 0.25);
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        padding: 0 18px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        border-radius: 11px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        text-decoration: none !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(59, 70, 241, 0.25) !important;
+        border: none !important;
+        white-space: nowrap !important;
     }
 
     .fcc-btn-bulk-remind:hover {
-        background: #2f38d4;
-        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.35);
+        background: #2f38d4 !important;
+        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.35) !important;
         transform: translateY(-1px);
+        color: #ffffff !important;
     }
 
     /* KPI Summary Strip with Colored Underline */
@@ -3035,12 +3351,177 @@
                     <input type="text" placeholder="Search members, logs..." />
                 </div>
 
-                <a href="javascript:void(0)" class="fcc-icon-btn" title="Alerts">
-                    <i class="fa fa-bell-o"></i>
-                    @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
-                        <span class="badge-dot">{{ $totalAlertsCount }}</span>
-                    @endif
-                </a>
+                <div class="dropdown fcc-notif-dropdown d-inline-block">
+                    <button class="fcc-icon-btn dropdown-toggle" type="button" id="fccNotificationDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Notifications & Alerts">
+                        <i class="fa fa-bell"></i>
+                        @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
+                            <span class="badge-dot">{{ $totalAlertsCount }}</span>
+                        @endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end fcc-notif-menu shadow-lg border-0" aria-labelledby="fccNotificationDropdown">
+                        <div class="fcc-notif-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fcc-notif-title">Alerts & Notifications</span>
+                                    @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
+                                        <span class="badge rounded-pill bg-danger" style="font-size: 11px; padding: 3px 8px;">{{ $totalAlertsCount }} new</span>
+                                    @endif
+                                </div>
+                                @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
+                                    <span class="fcc-notif-subtext">{{ $totalAlertsCount }} need action</span>
+                                @else
+                                    <span class="text-success" style="font-size: 12px; font-weight: 600;"><i class="fa fa-check-circle me-1"></i>All clear</span>
+                                @endif
+                            </div>
+                            <!-- Filter Tabs -->
+                            <div class="fcc-notif-filter-tabs">
+                                <button type="button" class="fcc-notif-tab-btn active" data-notif-filter="all">All ({{ $totalAlertsCount ?? 0 }})</button>
+                                <button type="button" class="fcc-notif-tab-btn" data-notif-filter="renewals">Renewals ({{ count($membershipExpires ?? []) }})</button>
+                                <button type="button" class="fcc-notif-tab-btn" data-notif-filter="payments">Payments ({{ count($paymentPendings ?? []) }})</button>
+                                <button type="button" class="fcc-notif-tab-btn" data-notif-filter="birthdays">Birthdays ({{ count($thisMonthBirthdayUsers ?? []) }})</button>
+                            </div>
+                        </div>
+
+                        <div class="fcc-notif-body">
+                            @php $hasAnyNotif = false; @endphp
+
+                            {{-- Renewals --}}
+                            @if(isset($membershipExpires) && count($membershipExpires) > 0)
+                                @php $hasAnyNotif = true; @endphp
+                                @foreach($membershipExpires->take(8) as $exp)
+                                    @php
+                                        $expPhone = $exp->mobile_number ?? $exp->mobile ?? '';
+                                        $cleanMobile = preg_replace('/[^0-9]/', '', $expPhone);
+                                        if(strlen($cleanMobile) == 12 && substr($cleanMobile, 0, 2) == '91') {
+                                            $cleanMobile = substr($cleanMobile, 2);
+                                        }
+                                        $daysLeft = $exp->days ?? 0;
+                                    @endphp
+                                    <div class="fcc-notif-item" data-notif-type="renewals">
+                                        <div class="fcc-notif-icon" style="background: {{ $daysLeft <= 0 ? '#fee2e2' : ($daysLeft <= 1 ? '#fef3c7' : '#eff6ff') }}; color: {{ $daysLeft <= 0 ? '#ef4444' : ($daysLeft <= 1 ? '#f59e0b' : '#3b82f6') }};">
+                                            <i class="fa {{ $daysLeft <= 0 ? 'fa-exclamation-triangle' : 'fa-hourglass-half' }}"></i>
+                                        </div>
+                                        <div class="fcc-notif-content">
+                                            <div class="fcc-notif-item-title">{{ $exp->name }}</div>
+                                            <div class="fcc-notif-item-desc">
+                                                @if($daysLeft <= 0)
+                                                    <span class="text-danger fw-bold">Membership Expired</span>
+                                                @elseif($daysLeft == 1)
+                                                    <span class="text-warning fw-bold">Expires tomorrow</span>
+                                                @else
+                                                    <span class="text-info fw-bold">Expires in {{ $daysLeft }} days</span>
+                                                @endif
+                                                @if(!empty($expPhone))
+                                                    · <span class="text-muted">{{ $expPhone }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="fcc-notif-actions">
+                                            <a href="{{ route('nutritionPanel.users.addUserDays', ['id' => ev($exp->id)]) }}" class="fcc-notif-btn-action" title="Renew Plan">
+                                                Renew
+                                            </a>
+                                            @if(!empty($cleanMobile))
+                                                <a href="https://wa.me/91{{ $cleanMobile }}?text=Hi%20{{ urlencode($exp->name) }},%20your%20membership%20at%20Fit%20Coach%20Club%20is%20due%20for%20renewal.%20Please%20renew%20to%20continue%20your%20fitness%20journey!" target="_blank" class="fcc-notif-btn-wa" title="WhatsApp Reminder">
+                                                    <i class="fa fa-whatsapp"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
+                            {{-- Pending Payments --}}
+                            @if(isset($paymentPendings) && count($paymentPendings) > 0)
+                                @php $hasAnyNotif = true; @endphp
+                                @foreach($paymentPendings->take(6) as $pay)
+                                    @php
+                                        $payPhone = $pay->mobile_number ?? $pay->mobile ?? '';
+                                        $cleanMobile = preg_replace('/[^0-9]/', '', $payPhone);
+                                        if(strlen($cleanMobile) == 12 && substr($cleanMobile, 0, 2) == '91') {
+                                            $cleanMobile = substr($cleanMobile, 2);
+                                        }
+                                    @endphp
+                                    <div class="fcc-notif-item" data-notif-type="payments">
+                                        <div class="fcc-notif-icon" style="background: #fff7ed; color: #ea580c;">
+                                            <i class="fa fa-money"></i>
+                                        </div>
+                                        <div class="fcc-notif-content">
+                                            <div class="fcc-notif-item-title">{{ $pay->name }}</div>
+                                            <div class="fcc-notif-item-desc">
+                                                <span class="text-danger fw-bold">₹{{ number_format($pay->due_amount ?? 0, 0) }} pending balance</span>
+                                                @if(!empty($payPhone))
+                                                    · <span class="text-muted">{{ $payPhone }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="fcc-notif-actions">
+                                            <a href="{{ route('nutritionPanel.users.details', ['id' => ev($pay->id)]) }}" class="fcc-notif-btn-action text-dark" style="background: #f1f5f9;" title="View Details">
+                                                View
+                                            </a>
+                                            @if(!empty($cleanMobile))
+                                                <a href="https://wa.me/91{{ $cleanMobile }}?text=Hi%20{{ urlencode($pay->name) }},%20this%20is%20a%20gentle%20reminder%20regarding%20your%20pending%20balance%20of%20INR%20{{ $pay->due_amount }}%20at%20Fit%20Coach%20Club." target="_blank" class="fcc-notif-btn-wa" title="WhatsApp Reminder">
+                                                    <i class="fa fa-whatsapp"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
+                            {{-- Birthdays --}}
+                            @if(isset($thisMonthBirthdayUsers) && count($thisMonthBirthdayUsers) > 0)
+                                @php $hasAnyNotif = true; @endphp
+                                @foreach($thisMonthBirthdayUsers as $bday)
+                                    @php
+                                        $bdayPhone = $bday->mobile_number ?? $bday->mobile ?? '';
+                                        $cleanMobile = preg_replace('/[^0-9]/', '', $bdayPhone);
+                                        if(strlen($cleanMobile) == 12 && substr($cleanMobile, 0, 2) == '91') {
+                                            $cleanMobile = substr($cleanMobile, 2);
+                                        }
+                                        $bdayDate = !empty($bday->dob) ? date('d M', strtotime($bday->dob)) : (!empty($bday->date_of_birth) ? date('d M', strtotime($bday->date_of_birth)) : 'This Month');
+                                    @endphp
+                                    <div class="fcc-notif-item" data-notif-type="birthdays">
+                                        <div class="fcc-notif-icon" style="background: #f3e8ff; color: #9333ea;">
+                                            <i class="fa fa-birthday-cake"></i>
+                                        </div>
+                                        <div class="fcc-notif-content">
+                                            <div class="fcc-notif-item-title">{{ $bday->name }}</div>
+                                            <div class="fcc-notif-item-desc">
+                                                <span style="color: #9333ea; font-weight: 600;">Birthday: {{ $bdayDate }}</span>
+                                                @if(!empty($bdayPhone))
+                                                    · <span class="text-muted">{{ $bdayPhone }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="fcc-notif-actions">
+                                            @if(!empty($cleanMobile))
+                                                <a href="https://wa.me/91{{ $cleanMobile }}?text=Wishing%20you%20a%20very%20Happy%20Birthday%20{{ urlencode($bday->name) }}!%20%F0%9F%8E%82%20From%20all%20of%20us%20at%20Fit%20Coach%20Club!" target="_blank" class="fcc-notif-btn-wa" title="Wish on WhatsApp">
+                                                    <i class="fa fa-whatsapp"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
+                            @if(!$hasAnyNotif)
+                                <div class="fcc-notif-empty">
+                                    <div class="fcc-notif-empty-icon">
+                                        <i class="fa fa-bell-slash-o"></i>
+                                    </div>
+                                    <div class="fcc-notif-empty-title">All Caught Up!</div>
+                                    <div class="fcc-notif-empty-desc">There are no pending renewal alerts, dues, or birthday notifications right now.</div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="fcc-notif-footer">
+                            <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-notif-view-all">
+                                View all members & records <i class="fa fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="fcc-plan-pill">
                     <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
@@ -3356,37 +3837,35 @@
                         <h3 class="fcc-action-queue-title">Action queue</h3>
 
                         <div class="fcc-action-timeline">
-                            @php
-                                $displayActions = !empty($actionQueueItems) ? array_slice($actionQueueItems, 0, 3) : [
-                                    ['name' => 'Rahul Sharma', 'subtext' => 'Membership expires today', 'action_label' => 'Renew', 'action_url' => route('nutritionPanel.users.index'), 'color_class' => 'av-red', 'link_class' => 'link-renew', 'subtext_class' => 'subtext-red'],
-                                    ['name' => 'Neha Patel', 'subtext' => '₹2,500 payment due', 'action_label' => 'Remind', 'action_url' => route('nutritionPanel.users.index'), 'color_class' => 'av-orange', 'link_class' => 'link-remind', 'subtext_class' => 'subtext-orange'],
-                                    ['name' => 'Sneha Gupta', 'subtext' => 'BMI follow-up overdue', 'action_label' => 'Review', 'action_url' => route('nutritionPanel.users.index'), 'color_class' => 'av-purple', 'link_class' => 'link-review', 'subtext_class' => 'subtext-purple'],
-                                ];
-                            @endphp
-
-                            @foreach($displayActions as $action)
-                                @php
-                                    $actName = is_array($action) ? ($action['name'] ?? 'Member') : ($action->name ?? 'Member');
-                                    $nameParts = !empty($actName) ? explode(' ', trim($actName)) : ['M'];
-                                    $initials = strtoupper(substr($nameParts[0] ?? 'M', 0, 1) . substr($nameParts[1] ?? '', 0, 1));
-                                    $colorCls = is_array($action) ? ($action['color_class'] ?? 'av-red') : ($action->color_class ?? 'av-red');
-                                    $subtext = is_array($action) ? ($action['subtext'] ?? '') : ($action->subtext ?? '');
-                                    $actionUrl = is_array($action) ? ($action['action_url'] ?? '#') : ($action->action_url ?? '#');
-                                    $actionLabel = is_array($action) ? ($action['action_label'] ?? 'View') : ($action->action_label ?? 'View');
-                                    $subtextCls = str_contains($colorCls, 'red') ? 'subtext-red' : (str_contains($colorCls, 'orange') ? 'subtext-orange' : 'subtext-purple');
-                                    $linkCls = str_contains($colorCls, 'red') ? 'link-renew' : (str_contains($colorCls, 'orange') ? 'link-remind' : 'link-review');
-                                @endphp
-                                <div class="fcc-action-item">
-                                    <div class="fcc-action-left">
-                                        <div class="fcc-avatar-circle {{ $colorCls }}">{{ $initials }}</div>
-                                        <div class="fcc-action-details">
-                                            <span class="fcc-action-name">{{ $actName }}</span>
-                                            <span class="fcc-action-subtext {{ $subtextCls }}">{{ $subtext }}</span>
+                            @if(!empty($actionQueueItems) && count($actionQueueItems) > 0)
+                                @foreach(array_slice($actionQueueItems, 0, 3) as $action)
+                                    @php
+                                        $actName = is_array($action) ? ($action['name'] ?? 'Member') : ($action->name ?? 'Member');
+                                        $nameParts = !empty($actName) ? explode(' ', trim($actName)) : ['M'];
+                                        $initials = strtoupper(substr($nameParts[0] ?? 'M', 0, 1) . substr($nameParts[1] ?? '', 0, 1));
+                                        $colorCls = is_array($action) ? ($action['color_class'] ?? 'av-red') : ($action->color_class ?? 'av-red');
+                                        $subtext = is_array($action) ? ($action['subtext'] ?? '') : ($action->subtext ?? '');
+                                        $actionUrl = is_array($action) ? ($action['action_url'] ?? '#') : ($action->action_url ?? '#');
+                                        $actionLabel = is_array($action) ? ($action['action_label'] ?? 'View') : ($action->action_label ?? 'View');
+                                        $subtextCls = str_contains($colorCls, 'red') ? 'subtext-red' : (str_contains($colorCls, 'orange') ? 'subtext-orange' : 'subtext-purple');
+                                        $linkCls = str_contains($colorCls, 'red') ? 'link-renew' : (str_contains($colorCls, 'orange') ? 'link-remind' : 'link-review');
+                                    @endphp
+                                    <div class="fcc-action-item">
+                                        <div class="fcc-action-left">
+                                            <div class="fcc-avatar-circle {{ $colorCls }}">{{ $initials }}</div>
+                                            <div class="fcc-action-details">
+                                                <span class="fcc-action-name">{{ $actName }}</span>
+                                                <span class="fcc-action-subtext {{ $subtextCls }}">{{ $subtext }}</span>
+                                            </div>
                                         </div>
+                                        <a href="{{ $actionUrl }}" class="fcc-action-chevron {{ $linkCls }}">{{ $actionLabel }} <i class="fa fa-chevron-right"></i></a>
                                     </div>
-                                    <a href="{{ $actionUrl }}" class="fcc-action-chevron {{ $linkCls }}">{{ $actionLabel }} <i class="fa fa-chevron-right"></i></a>
+                                @endforeach
+                            @else
+                                <div class="text-center py-3 text-muted" style="font-size: 12.5px;">
+                                    <i class="fa fa-check-circle text-success me-1"></i> No urgent action required right now!
                                 </div>
-                            @endforeach
+                            @endif
                         </div>
                     </div>
 
@@ -3410,19 +3889,8 @@
                                     </div>
                                 @endforeach
                             @else
-                                <div class="fcc-activity-item">
-                                    <div class="fcc-activity-left">
-                                        <span class="fcc-act-dot green"></span>
-                                        <span>Rahul Sharma checked in</span>
-                                    </div>
-                                    <span class="fcc-activity-time">Today, 7:45 AM</span>
-                                </div>
-                                <div class="fcc-activity-item">
-                                    <div class="fcc-activity-left">
-                                        <span class="fcc-act-dot blue"></span>
-                                        <span>Neha Patel payment received</span>
-                                    </div>
-                                    <span class="fcc-activity-time">Yesterday, 8:15 PM</span>
+                                <div class="text-center py-2 text-muted" style="font-size: 12px;">
+                                    No check-in activity recorded yet today
                                 </div>
                             @endif
                         </div>
@@ -4102,42 +4570,54 @@
                 </div>
 
                 <div class="fcc-flow-nodes-row">
-                    <!-- Node 1 -->
-                    <div class="fcc-flow-node-item">
-                        <div class="fcc-flow-node-icon green">
-                            <i class="fa fa-credit-card"></i>
+                    @if(isset($recentTransactions) && count($recentTransactions) > 0)
+                        @foreach($recentTransactions->take(3) as $rIdx => $rTrx)
+                            @php
+                                $rAmt = (float)($rTrx->received_amount ?: $rTrx->total_amount);
+                                $rName = ucfirst($rTrx->user_name ?? 'Member');
+                                $rTime = $rTrx->created_at ? $rTrx->created_at->diffForHumans() : 'Recent';
+                                $nodeColors = ['green', 'blue', 'purple'];
+                                $nColor = $nodeColors[$rIdx % count($nodeColors)];
+                            @endphp
+                            <div class="fcc-flow-node-item">
+                                <div class="fcc-flow-node-icon {{ $nColor }}">
+                                    <i class="fa {{ $rTrx->title == 'Order Placed' ? 'fa-shopping-bag' : 'fa-credit-card' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 13.5px;">{{ $rName }} {{ $rTrx->title == 'Order Placed' ? 'ordered' : 'renewed' }}</div>
+                                    <div class="text-muted" style="font-size: 12px;">₹{{ number_format($rAmt, 0) }} · {{ $rTime }}</div>
+                                </div>
+                            </div>
+                            @if(!$loop->last)
+                                <div class="fcc-flow-node-line"></div>
+                            @endif
+                        @endforeach
+                    @elseif(isset($membershipExpires) && count($membershipExpires) > 0)
+                        @foreach($membershipExpires->take(3) as $rIdx => $mExp)
+                            @php
+                                $rName = ucfirst($mExp->name);
+                                $rDays = $mExp->days;
+                                $nodeColors = ['yellow', 'blue', 'purple'];
+                                $nColor = $nodeColors[$rIdx % count($nodeColors)];
+                            @endphp
+                            <div class="fcc-flow-node-item">
+                                <div class="fcc-flow-node-icon {{ $rDays <= 0 ? 'red' : 'yellow' }}">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 13.5px;">{{ $rName }}</div>
+                                    <div class="text-muted" style="font-size: 12px;">{{ $rDays <= 0 ? 'Expired' : 'Expires in ' . $rDays . 'd' }}</div>
+                                </div>
+                            </div>
+                            @if(!$loop->last)
+                                <div class="fcc-flow-node-line"></div>
+                            @endif
+                        @endforeach
+                    @else
+                        <div class="text-center py-2 text-muted" style="font-size: 13px; width: 100%;">
+                            <i class="fa fa-check-circle text-success me-1"></i> No recent renewal activity yet.
                         </div>
-                        <div>
-                            <div class="fw-bold text-dark" style="font-size: 13.5px;">Rahul Sharma renewed</div>
-                            <div class="text-muted" style="font-size: 12px;">₹3,200 · 18 mins ago</div>
-                        </div>
-                    </div>
-
-                    <div class="fcc-flow-node-line"></div>
-
-                    <!-- Node 2 -->
-                    <div class="fcc-flow-node-item">
-                        <div class="fcc-flow-node-icon blue">
-                            <i class="fa fa-link"></i>
-                        </div>
-                        <div>
-                            <div class="fw-bold text-dark" style="font-size: 13.5px;">Payment link sent to Neha Patel</div>
-                            <div class="text-muted" style="font-size: 12px;">₹2,500 · 1 hour ago</div>
-                        </div>
-                    </div>
-
-                    <div class="fcc-flow-node-line"></div>
-
-                    <!-- Node 3 -->
-                    <div class="fcc-flow-node-item">
-                        <div class="fcc-flow-node-icon purple">
-                            <i class="fa fa-envelope-o"></i>
-                        </div>
-                        <div>
-                            <div class="fw-bold text-dark" style="font-size: 13.5px;">Reminder delivered to Mala</div>
-                            <div class="text-muted" style="font-size: 12px;">32 mins ago</div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 
@@ -4266,15 +4746,15 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="fcc-income-title">Income and Expenses Graph (Purchase &amp; Deposit Graph {{ $year ?? date('Y') }})</h3>
+                            <h3 class="fcc-income-title">Revenue Graph (UMS &amp; Product Revenue Graph {{ $year ?? date('Y') }})</h3>
                             <div class="fcc-income-color-guide">
                                 <div class="fcc-income-color-item">
                                     <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-                                    <span>This Color Represent The Deposit (Your Revenue)</span>
+                                    <span>This Color Represents UMS Revenue</span>
                                 </div>
                                 <div class="fcc-income-color-item">
                                     <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
-                                    <span>This Color Represent The Purchase (You are Giving Product)</span>
+                                    <span>This Color Represents Product Revenue</span>
                                 </div>
                             </div>
                         </div>
@@ -4283,11 +4763,11 @@
                     <div class="fcc-income-center-legend">
                         <span class="fcc-income-legend-item" style="color: #059669;">
                             <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; display: inline-block;"></span>
-                            Deposit (Revenue)
+                            Ums revenue
                         </span>
                         <span class="fcc-income-legend-item" style="color: #ef4444;">
                             <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
-                            Purchase (Expense)
+                            Product revenue
                         </span>
                     </div>
 
@@ -4311,7 +4791,7 @@
                                         <polyline points="17 6 23 6 23 12"></polyline>
                                     </svg>
                                 </div>
-                                <span class="fcc-income-kpi-lbl">Total Deposit (Revenue)</span>
+                                <span class="fcc-income-kpi-lbl">Total UMS Revenue</span>
                             </div>
                             <div class="fcc-income-kpi-val">
                                 ₹{{ number_format(($totalGrowthRevenue ?? 0)/100000, 2) }}L
@@ -4327,7 +4807,7 @@
                                         <polyline points="17 18 23 18 23 12"></polyline>
                                     </svg>
                                 </div>
-                                <span class="fcc-income-kpi-lbl">Total Purchase (Expense)</span>
+                                <span class="fcc-income-kpi-lbl">Total Product Revenue</span>
                             </div>
                             <div class="fcc-income-kpi-val">
                                 ₹{{ number_format(($totalGrowthExpense ?? 0)/100000, 2) }}L
@@ -4526,11 +5006,11 @@
                         <div class="fcc-runway-legend-wrap">
                             <span style="color: #059669;">
                                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; display: inline-block; margin-right: 4px;"></span>
-                                Deposit / revenue
+                                Ums revenue
                             </span>
                             <span style="color: #ef4444;">
                                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
-                                Purchase / expense
+                                Product revenue
                             </span>
                         </div>
                     </div>
@@ -4587,20 +5067,11 @@
                             <h4 class="fw-bold mb-0" style="color: #0f172a; font-size: 15px;">Payments to collect</h4>
                         </div>
                         <div style="font-size: 12px;">
-                            <strong class="text-danger">₹18,600</strong> <span class="text-muted">outstanding · {{ count($paymentPendings) ?: 8 }} members</span>
+                            <strong class="text-danger">₹{{ number_format((float)(isset($paymentPendings) ? $paymentPendings->sum('due_amount') : 0), 0) }}</strong> <span class="text-muted">outstanding · {{ count($paymentPendings ?? []) }} members</span>
                         </div>
                     </div>
 
                     <div>
-                        @php
-                            $dummyDues = [
-                                ['name' => 'Neha Patel', 'amount' => 2500, 'status' => 'Due today', 'status_color' => '#ef4444', 'coach' => 'Coach Priya', 'action' => 'Send reminder', 'action_icon' => 'fa-paper-plane-o', 'avatar_bg' => '#a855f7'],
-                                ['name' => 'Aman Khan', 'amount' => 4200, 'status' => 'Overdue 2 days', 'status_color' => '#ef4444', 'coach' => 'Coach Rohit', 'action' => 'Collect', 'action_icon' => 'fa-credit-card', 'avatar_bg' => '#6366f1'],
-                                ['name' => 'Rahul Sharma', 'amount' => 3200, 'status' => 'Due tomorrow', 'status_color' => '#f59e0b', 'coach' => 'Coach Amit', 'action' => 'View', 'action_icon' => 'fa-eye', 'avatar_bg' => '#f59e0b'],
-                                ['name' => 'Sneha Gupta', 'amount' => 1800, 'status' => 'Due 28 Aug', 'status_color' => '#3b82f6', 'coach' => 'Coach Priya', 'action' => 'Remind', 'action_icon' => 'fa-bell-o', 'avatar_bg' => '#3b82f6']
-                            ];
-                        @endphp
-
                         @if(isset($paymentPendings) && count($paymentPendings) > 0)
                             @foreach($paymentPendings->take(4) as $idx => $p)
                                 @php
@@ -4608,6 +5079,11 @@
                                     $inits = strtoupper(substr($pName, 0, 1) . (str_contains($pName, ' ') ? substr(explode(' ', $pName)[1] ?? '', 0, 1) : ''));
                                     $dueColors = ['#a855f7', '#6366f1', '#f59e0b', '#3b82f6'];
                                     $colorBg = $dueColors[$idx % count($dueColors)];
+                                    $pPhone = $p->mobile_number ?? $p->mobile ?? '';
+                                    $cleanMobile = preg_replace('/[^0-9]/', '', $pPhone);
+                                    if(strlen($cleanMobile) == 12 && substr($cleanMobile, 0, 2) == '91') {
+                                        $cleanMobile = substr($cleanMobile, 2);
+                                    }
                                 @endphp
                                 <div class="fcc-collect-row-item">
                                     <div class="fcc-collect-left">
@@ -4616,49 +5092,38 @@
                                         </div>
                                         <div style="font-weight: 700; color: #0f172a;">{{ $pName }}</div>
                                     </div>
-                                    <div style="font-weight: 800; color: #0f172a;">₹{{ number_format($p->due_amount ?: 2500, 0) }}</div>
+                                    <div style="font-weight: 800; color: #0f172a;">₹{{ number_format((float)$p->due_amount, 0) }}</div>
                                     <div style="font-size: 11.5px; font-weight: 600; color: #ef4444;">
                                         <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
                                         Due today
                                     </div>
-                                    <div class="text-muted" style="font-size: 11.5px;">{{ $p->coach_name ?? 'Coach' }}</div>
+                                    <div class="text-muted" style="font-size: 11.5px;">{{ $p->coach_name ?? 'Assigned Coach' }}</div>
                                     <div>
-                                        <a href="{{ route('nutritionPanel.users.details', ['id' => ev($p->id)]) }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;">
-                                            <span>Send reminder</span>
-                                            <i class="fa fa-paper-plane-o"></i>
-                                        </a>
+                                        @if(!empty($cleanMobile))
+                                            <a href="https://wa.me/91{{ $cleanMobile }}?text=Hi%20{{ urlencode($pName) }},%20this%20is%20a%20reminder%20regarding%20your%20pending%20balance%20of%20INR%20{{ $p->due_amount }}%20at%20Fit%20Coach%20Club." target="_blank" class="text-success fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;" title="Send WhatsApp Reminder">
+                                                <span>Remind</span>
+                                                <i class="fa fa-whatsapp"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('nutritionPanel.users.details', ['id' => ev($p->id)]) }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;">
+                                                <span>View</span>
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
                         @else
-                            @foreach($dummyDues as $dDue)
-                                <div class="fcc-collect-row-item">
-                                    <div class="fcc-collect-left">
-                                        <div class="fcc-collect-avatar" style="background: {{ $dDue['avatar_bg'] }};">
-                                            {{ strtoupper(substr($dDue['name'], 0, 1) . substr(explode(' ', $dDue['name'])[1] ?? '', 0, 1)) }}
-                                        </div>
-                                        <div style="font-weight: 700; color: #0f172a;">{{ $dDue['name'] }}</div>
-                                    </div>
-                                    <div style="font-weight: 800; color: #0f172a;">₹{{ number_format($dDue['amount'], 0) }}</div>
-                                    <div style="font-size: 11.5px; font-weight: 600; color: {{ $dDue['status_color'] }};">
-                                        <span style="width: 6px; height: 6px; border-radius: 50%; background: {{ $dDue['status_color'] }}; display: inline-block; margin-right: 4px;"></span>
-                                        {{ $dDue['status'] }}
-                                    </div>
-                                    <div class="text-muted" style="font-size: 11.5px;">{{ $dDue['coach'] }}</div>
-                                    <div>
-                                        <a href="javascript:void(0)" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;">
-                                            <span>{{ $dDue['action'] }}</span>
-                                            <i class="fa {{ $dDue['action_icon'] }}"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            @endforeach
+                            <div class="text-center py-4 text-muted">
+                                <i class="fa fa-check-circle text-success fa-2x mb-2 d-block opacity-75"></i>
+                                <span style="font-size: 13px; font-weight: 600;">No outstanding payment dues!</span>
+                            </div>
                         @endif
                     </div>
 
                     <div class="text-end pt-3 mt-2 border-top">
-                        <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-members\']').trigger('click');" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
-                            <span>View all {{ count($paymentPendings) ?: 8 }} payments</span>
+                        <a href="{{ route('nutritionPanel.users.index') }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
+                            <span>View all {{ count($paymentPendings ?? []) }} payments</span>
                             <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
                         </a>
                     </div>
@@ -4671,69 +5136,38 @@
                     </div>
 
                     <div class="fcc-stream-list">
-                        <!-- Stream 1 -->
-                        <div class="fcc-stream-item">
-                            <div class="fcc-stream-left">
-                                <div class="fcc-stream-icon green"><i class="fa fa-arrow-down"></i></div>
-                                <div>
-                                    <span class="fw-bold text-dark">₹3,200 received</span>
-                                    <span class="text-muted">· Rahul Sharma · Online</span>
+                        @if(isset($recentTransactions) && count($recentTransactions) > 0)
+                            @foreach($recentTransactions->take(5) as $trx)
+                                @php
+                                    $isProduct = ($trx->title == 'Order Placed' || $trx->type == 1);
+                                    $tAmt = (float)($trx->received_amount ?: $trx->total_amount);
+                                    $tName = ucfirst($trx->user_name ?? ($isProduct ? 'Walk-in' : 'Member'));
+                                    $tType = !empty($trx->payment_type) ? $trx->payment_type : ($isProduct ? 'Product' : 'Membership');
+                                    $tTime = $trx->created_at ? $trx->created_at->diffForHumans() : 'Today';
+                                @endphp
+                                <div class="fcc-stream-item">
+                                    <div class="fcc-stream-left">
+                                        <div class="fcc-stream-icon green">
+                                            <i class="fa {{ $isProduct ? 'fa-shopping-bag' : 'fa-arrow-down' }}"></i>
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold text-dark">₹{{ number_format($tAmt, 0) }} {{ $isProduct ? 'product sale' : 'received' }}</span>
+                                            <span class="text-muted">· {{ $tName }} · {{ $tType }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 11px;">{{ $tTime }}</div>
                                 </div>
+                            @endforeach
+                        @else
+                            <div class="text-center py-4 text-muted">
+                                <i class="fa fa-credit-card fa-2x mb-2 opacity-40 d-block"></i>
+                                <span style="font-size: 13px; font-weight: 600;">No transactions recorded yet</span>
                             </div>
-                            <div class="text-muted" style="font-size: 11px;">Today, 10:45 AM</div>
-                        </div>
-
-                        <!-- Stream 2 -->
-                        <div class="fcc-stream-item">
-                            <div class="fcc-stream-left">
-                                <div class="fcc-stream-icon green"><i class="fa fa-shopping-bag"></i></div>
-                                <div>
-                                    <span class="fw-bold text-dark">₹780 product sale</span>
-                                    <span class="text-muted">· Walk-in · Cash</span>
-                                </div>
-                            </div>
-                            <div class="text-muted" style="font-size: 11px;">Today, 10:12 AM</div>
-                        </div>
-
-                        <!-- Stream 3 -->
-                        <div class="fcc-stream-item">
-                            <div class="fcc-stream-left">
-                                <div class="fcc-stream-icon yellow"><i class="fa fa-paper-plane"></i></div>
-                                <div>
-                                    <span class="fw-bold text-dark">₹2,500 payment link sent</span>
-                                    <span class="text-muted">· Neha Patel</span>
-                                </div>
-                            </div>
-                            <div class="text-muted" style="font-size: 11px;">Today, 09:38 AM</div>
-                        </div>
-
-                        <!-- Stream 4 -->
-                        <div class="fcc-stream-item">
-                            <div class="fcc-stream-left">
-                                <div class="fcc-stream-icon red"><i class="fa fa-arrow-up"></i></div>
-                                <div>
-                                    <span class="fw-bold text-dark">₹1,200 expense</span>
-                                    <span class="text-muted">· Equipment repair</span>
-                                </div>
-                            </div>
-                            <div class="text-muted" style="font-size: 11px;">Today, 09:05 AM</div>
-                        </div>
-
-                        <!-- Stream 5 -->
-                        <div class="fcc-stream-item">
-                            <div class="fcc-stream-left">
-                                <div class="fcc-stream-icon green"><i class="fa fa-arrow-down"></i></div>
-                                <div>
-                                    <span class="fw-bold text-dark">₹4,500 received</span>
-                                    <span class="text-muted">· Aman Khan · Online</span>
-                                </div>
-                            </div>
-                            <div class="text-muted" style="font-size: 11px;">Today, 08:21 AM</div>
-                        </div>
+                        @endif
                     </div>
 
                     <div class="text-end pt-2 border-top">
-                        <a href="javascript:void(0)" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
+                        <a href="{{ route('nutritionPanel.transactions.index') }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
                             <span>View all transactions</span>
                             <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
                         </a>
@@ -5321,8 +5755,8 @@
                 }
             },
             series: [
-                { name: 'Deposit (Revenue)', data: displayRev },
-                { name: 'Purchase (Expense)', data: displayExp }
+                { name: 'Ums revenue', data: displayRev },
+                { name: 'Product revenue', data: displayExp }
             ],
             legend: { show: false },
             xaxis: {
@@ -5637,8 +6071,8 @@
                 }
             },
             series: [
-                { name: 'Deposit / revenue', data: rawRevenue },
-                { name: 'Purchase / expense', data: rawExpense }
+                { name: 'Ums revenue', data: rawRevenue },
+                { name: 'Product revenue', data: rawExpense }
             ],
             legend: { show: false },
             xaxis: {
@@ -5765,6 +6199,52 @@
                 </html>
             `);
             printWindow.document.close();
+        }
+    });
+    // Notifications Dropdown Filter Tabs
+    $(document).on('click', '.fcc-notif-tab-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var filter = $(this).data('notif-filter');
+        $('.fcc-notif-tab-btn').removeClass('active');
+        $(this).addClass('active');
+
+        if (filter === 'all') {
+            $('.fcc-notif-item').show();
+        } else {
+            $('.fcc-notif-item').hide();
+            $('.fcc-notif-item[data-notif-type="' + filter + '"]').show();
+        }
+
+        var visibleCount = $('.fcc-notif-item:visible').length;
+        if (visibleCount === 0) {
+            $('.fcc-notif-empty-filtered').remove();
+            $('.fcc-notif-body').append(
+                '<div class="fcc-notif-empty fcc-notif-empty-filtered">' +
+                    '<div class="fcc-notif-empty-icon">' +
+                        '<i class="fa fa-check-circle text-success"></i>' +
+                    '</div>' +
+                    '<div class="fcc-notif-empty-title">No ' + filter + ' alerts</div>' +
+                    '<div class="fcc-notif-empty-desc">There are no pending alerts in this category right now.</div>' +
+                '</div>'
+            );
+        } else {
+            $('.fcc-notif-empty-filtered').remove();
+        }
+    });
+
+    // Keep dropdown open when interacting with filter buttons inside
+    $(document).on('click', '.fcc-notif-header, .fcc-notif-filter-tabs', function(e) {
+        e.stopPropagation();
+    });
+
+    // Search Box Enter Key redirect to member search
+    $('.fcc-search-input-box input').on('keypress', function(e) {
+        if (e.which === 13) {
+            var query = $(this).val().trim();
+            if (query.length > 0) {
+                window.location.href = "{{ route('nutritionPanel.users.index') }}?search=" + encodeURIComponent(query);
+            }
         }
     });
 </script>
