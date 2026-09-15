@@ -1,6 +1,6 @@
 @extends('nutrition-panel.layouts.main-layout')
 
-@section('page-title', 'Add demo user | ' . __('language.page_main_title'))
+@section('page-title', 'Add Demo User | ' . __('language.page_main_title'))
 
 @push('styles')
 <link href="{{ asset('admin-assets/css/flatpickr.min.css') }}" rel="stylesheet">
@@ -9,6 +9,7 @@
         --demo-primary: #3b46f1;
         --demo-primary-hover: #2d37e2;
         --demo-primary-soft: #eff2fe;
+        --demo-primary-border: rgba(59, 70, 241, 0.18);
         --demo-text-main: #0f172a;
         --demo-text-muted: #64748b;
         --demo-border: #e2e8f0;
@@ -20,59 +21,88 @@
         font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     }
 
-    .fcc-demo-wrapper {
-        max-width: 1240px;
-        margin: 0 auto;
-        padding: 24px 20px 80px 20px;
+    .fcc-demo-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0;
+        padding: 16px 20px 48px 20px;
     }
 
-    /* Breadcrumbs */
-    .fcc-breadcrumb-nav {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-        color: var(--demo-text-muted);
-        margin-bottom: 12px;
-    }
-
-    .fcc-breadcrumb-nav a {
-        color: var(--demo-text-muted);
-        text-decoration: none;
-        transition: color 0.15s ease;
-    }
-
-    .fcc-breadcrumb-nav a:hover {
-        color: var(--demo-primary);
-    }
-
-    .fcc-breadcrumb-sep {
-        color: #cbd5e1;
-        font-size: 11px;
-    }
-
-    /* Header Bar */
-    .fcc-demo-header {
+    /* Page Header */
+    .fcc-page-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
         gap: 16px;
         flex-wrap: wrap;
     }
 
-    .fcc-demo-title {
-        font-size: 26px;
+    .fcc-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .fcc-btn-back {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #ffffff;
+        border: 1px solid var(--demo-border);
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.18s ease;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .fcc-btn-back:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+        border-color: #cbd5e1;
+    }
+
+    .fcc-title-area {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fcc-title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fcc-main-title {
+        font-size: 22px;
         font-weight: 800;
         color: var(--demo-text-main);
         letter-spacing: -0.02em;
-        margin: 0 0 4px 0;
+        margin: 0;
+        line-height: 1.2;
     }
 
-    .fcc-demo-subtitle {
-        font-size: 13.5px;
+    .fcc-badge-pill {
+        background: #eff2fe;
+        color: var(--demo-primary);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 20px;
+        border: 1px solid var(--demo-primary-border);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .fcc-subtitle {
+        font-size: 13px;
         color: var(--demo-text-muted);
-        margin: 0;
+        margin: 3px 0 0 0;
     }
 
     .fcc-header-actions {
@@ -81,647 +111,411 @@
         gap: 10px;
     }
 
-    .fcc-btn-cancel {
+    .fcc-btn-outline {
         background: #ffffff;
         border: 1px solid var(--demo-border);
         color: #334155;
-        font-size: 13.5px;
+        font-size: 13px;
         font-weight: 600;
-        padding: 9px 20px;
-        border-radius: 10px;
+        padding: 8px 18px;
+        border-radius: 9px;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        gap: 6px;
         transition: all 0.18s ease;
     }
 
-    .fcc-btn-cancel:hover {
+    .fcc-btn-outline:hover {
         background: #f1f5f9;
         color: #0f172a;
     }
 
-    .fcc-btn-primary {
+    .fcc-btn-submit {
         background: var(--demo-primary);
         border: 1px solid var(--demo-primary);
         color: #ffffff !important;
-        font-size: 13.5px;
+        font-size: 13px;
         font-weight: 700;
-        padding: 9px 22px;
-        border-radius: 10px;
-        box-shadow: 0 4px 14px rgba(59, 70, 241, 0.28);
+        padding: 8px 20px;
+        border-radius: 9px;
+        box-shadow: 0 4px 12px rgba(59, 70, 241, 0.25);
         display: inline-flex;
         align-items: center;
-        justify-content: center;
         gap: 6px;
         transition: all 0.2s ease;
         cursor: pointer;
     }
 
-    .fcc-btn-primary:hover {
+    .fcc-btn-submit:hover {
         background: var(--demo-primary-hover);
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(59, 70, 241, 0.38);
+        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.35);
     }
 
-    /* Layout Grid */
-    .fcc-demo-grid {
+    /* Grid Layout */
+    .fcc-grid-layout {
         display: grid;
-        grid-template-columns: 1fr 370px;
-        gap: 24px;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
         align-items: start;
     }
 
     @media (max-width: 991px) {
-        .fcc-demo-grid {
+        .fcc-grid-layout {
             grid-template-columns: 1fr;
         }
     }
 
-    /* Cards */
+    /* Main Card */
     .fcc-card {
         background: #ffffff;
         border: 1px solid var(--demo-border);
-        border-radius: 16px;
-        padding: 24px;
+        border-radius: 14px;
+        padding: 22px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-        margin-bottom: 20px;
     }
 
-    /* Top Highlight Banner */
-    .fcc-quick-banner {
-        background: #ffffff;
-        border: 1px solid #e0e7ff;
-        border-radius: 16px;
-        padding: 16px 20px;
+    .fcc-card-header {
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 2px rgba(99, 102, 241, 0.04);
+        justify-content: space-between;
     }
 
-    .fcc-sparkle-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: #eff2fe;
-        color: #4f46e5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
-    }
-
-    .fcc-quick-banner h4 {
+    .fcc-card-title {
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 800;
         color: var(--demo-text-main);
         margin: 0 0 2px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .fcc-quick-banner p {
+    .fcc-card-title i {
+        color: var(--demo-primary);
+    }
+
+    .fcc-card-sub {
         font-size: 12.5px;
         color: var(--demo-text-muted);
         margin: 0;
     }
 
-    /* Section Header */
-    .fcc-sec-head {
-        margin-bottom: 22px;
-    }
-
-    .fcc-sec-title {
-        font-size: 17px;
-        font-weight: 800;
-        color: var(--demo-text-main);
-        margin: 0 0 4px 0;
-    }
-
-    .fcc-sec-sub {
-        font-size: 13px;
-        color: var(--demo-text-muted);
-        margin: 0;
-    }
-
-    /* Form Inputs */
-    .fcc-form-grid {
+    /* Form Fields */
+    .fcc-form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px 20px;
+        gap: 16px 18px;
     }
 
     @media (max-width: 640px) {
-        .fcc-form-grid {
+        .fcc-form-row {
             grid-template-columns: 1fr;
         }
     }
 
-    .fcc-field-group {
+    .fcc-field {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 5px;
     }
 
     .fcc-label {
-        font-size: 13px;
+        font-size: 12.5px;
         font-weight: 700;
         color: #1e293b;
     }
 
     .fcc-label .req {
         color: #ef4444;
-        margin-left: 2px;
     }
 
-    .fcc-input {
+    .fcc-input-control {
         background: #ffffff;
         border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        padding: 10px 14px;
+        border-radius: 9px;
+        padding: 9px 13px;
         font-size: 13.5px;
         color: #0f172a;
         transition: all 0.18s ease;
         outline: none;
         width: 100%;
+        box-sizing: border-box;
     }
 
-    .fcc-input:focus {
+    .fcc-input-control:focus {
         border-color: var(--demo-primary);
         box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
     }
 
-    .fcc-input::placeholder {
+    .fcc-input-control::placeholder {
         color: #94a3b8;
     }
 
-    /* Input with prepend (+91) */
-    .fcc-input-group {
+    /* Input Group (+91) */
+    .fcc-group-wrap {
         display: flex;
         border: 1px solid #cbd5e1;
-        border-radius: 10px;
+        border-radius: 9px;
         overflow: hidden;
         transition: all 0.18s ease;
     }
 
-    .fcc-input-group:focus-within {
+    .fcc-group-wrap:focus-within {
         border-color: var(--demo-primary);
         box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
     }
 
-    .fcc-input-prepend {
+    .fcc-prefix-box {
         background: #f8fafc;
         border-right: 1px solid #cbd5e1;
-        padding: 10px 14px;
+        padding: 9px 12px;
         font-size: 13px;
         font-weight: 700;
         color: #334155;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
         user-select: none;
     }
 
-    .fcc-input-group .fcc-input {
+    .fcc-group-wrap .fcc-input-control {
         border: none;
         border-radius: 0;
         box-shadow: none !important;
     }
 
-    /* Datepicker input */
-    .fcc-date-wrap {
+    /* Datepicker icon wrap */
+    .fcc-date-container {
         position: relative;
     }
 
-    .fcc-date-wrap i {
+    .fcc-date-container i {
         position: absolute;
-        right: 14px;
+        right: 13px;
         top: 50%;
         transform: translateY(-50%);
         color: #64748b;
         pointer-events: none;
-    }
-
-    /* Coach Preview Card */
-    .fcc-coach-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 14px 18px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 18px;
-        gap: 14px;
-    }
-
-    .fcc-coach-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .fcc-coach-avatar {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: #dbeafe;
-        color: #1d4ed8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        font-weight: 700;
-        flex-shrink: 0;
-        border: 2px solid #ffffff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-
-    .fcc-coach-name {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--demo-text-main);
-        line-height: 1.25;
-    }
-
-    .fcc-coach-status {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        color: var(--demo-text-muted);
-        margin-top: 2px;
-    }
-
-    .fcc-dot-avail {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #10b981;
-        display: inline-block;
-    }
-
-    .fcc-coach-change {
         font-size: 13px;
-        font-weight: 700;
-        color: var(--demo-primary);
-        text-decoration: none;
-        cursor: pointer;
     }
 
-    .fcc-coach-change:hover {
-        text-decoration: underline;
-    }
-
-    /* Expiry Notice Strip */
-    .fcc-notice-strip {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        border-radius: 12px;
-        padding: 14px 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 20px;
-        font-size: 13.5px;
-        font-weight: 600;
-        color: #1e40af;
-    }
-
-    .fcc-notice-strip i {
-        font-size: 18px;
-        color: #2563eb;
-        flex-shrink: 0;
-    }
-
-    /* RIGHT SIDEBAR */
-    .fcc-sidebar-card {
+    /* Sidebar Summary Card */
+    .fcc-preview-card {
         position: sticky;
         top: 20px;
     }
 
-    .fcc-summary-user {
+    .fcc-profile-snippet {
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #f1f5f9;
+        gap: 12px;
+        padding: 12px 14px;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 10px;
         margin-bottom: 16px;
     }
 
-    .fcc-summary-avatar {
-        width: 48px;
-        height: 48px;
+    .fcc-profile-avatar {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        background: #eff2fe;
-        color: #4f46e5;
+        background: #e0e7ff;
+        color: #3730a3;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
-    }
-
-    .fcc-summary-name {
         font-size: 15px;
-        font-weight: 800;
-        color: var(--demo-text-main);
-        line-height: 1.25;
-        margin-bottom: 3px;
-    }
-
-    .fcc-draft-badge {
-        background: #f1f5f9;
-        color: #475569;
-        font-size: 11px;
         font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 6px;
-        display: inline-block;
+        flex-shrink: 0;
     }
 
-    .fcc-progress-counter {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--demo-text-muted);
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    /* Checklist */
-    .fcc-chk-list {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        margin-bottom: 24px;
-    }
-
-    .fcc-chk-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .fcc-chk-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .fcc-profile-name {
         font-size: 14px;
-        flex-shrink: 0;
-    }
-
-    .fcc-chk-icon.user {
-        background: #eff2fe;
-        color: #4f46e5;
-    }
-
-    .fcc-chk-icon.coach {
-        background: #fff7ed;
-        color: #ea580c;
-    }
-
-    .fcc-chk-icon.lock {
-        background: #ecfdf5;
-        color: #059669;
-    }
-
-    .fcc-chk-body {
-        flex-grow: 1;
-    }
-
-    .fcc-chk-title {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--demo-text-main);
-        line-height: 1.2;
-    }
-
-    .fcc-chk-sub {
-        font-size: 11.5px;
-        color: var(--demo-text-muted);
-        line-height: 1.2;
-    }
-
-    .fcc-chk-circle {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: 2px solid #cbd5e1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        color: #ffffff;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-    }
-
-    .fcc-chk-circle.completed {
-        background: #10b981;
-        border-color: #10b981;
-    }
-
-    /* What happens next */
-    .fcc-next-sec {
-        border-top: 1px solid #f1f5f9;
-        padding-top: 18px;
-        margin-bottom: 20px;
-    }
-
-    .fcc-next-title {
-        font-size: 13.5px;
         font-weight: 800;
         color: var(--demo-text-main);
-        margin: 0 0 12px 0;
+        line-height: 1.2;
     }
 
-    .fcc-next-list {
+    .fcc-status-chip {
+        font-size: 10.5px;
+        color: #059669;
+        font-weight: 700;
+        background: #dcfce7;
+        padding: 2px 7px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 3px;
+    }
+
+    /* Info Checklist */
+    .fcc-info-timeline {
         display: flex;
         flex-direction: column;
         gap: 12px;
+        margin-bottom: 16px;
     }
 
-    .fcc-next-item {
+    .fcc-timeline-item {
         display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 12.5px;
-        color: #334155;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 12px;
     }
 
-    .fcc-next-dot {
+    .fcc-timeline-icon {
         width: 26px;
         height: 26px;
-        border-radius: 50%;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        border-radius: 7px;
+        background: #eff2fe;
+        color: var(--demo-primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11.5px;
-        color: #475569;
+        font-size: 11px;
         flex-shrink: 0;
+        margin-top: 1px;
     }
 
-    /* Green Safe Card */
-    .fcc-safe-card {
+    .fcc-timeline-title {
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 1px;
+    }
+
+    .fcc-timeline-desc {
+        color: #64748b;
+        font-size: 11.5px;
+    }
+
+    .fcc-shield-notice {
         background: #f0fdf4;
         border: 1px solid #bbf7d0;
-        border-radius: 12px;
-        padding: 12px 14px;
+        border-radius: 9px;
+        padding: 9px 12px;
         display: flex;
         align-items: center;
-        gap: 10px;
-        font-size: 12.5px;
+        gap: 8px;
+        font-size: 11.5px;
         font-weight: 600;
-        color: #15803d;
-        margin-bottom: 20px;
+        color: #166534;
+        margin-bottom: 16px;
     }
 
-    .fcc-safe-card i {
-        font-size: 15px;
-        color: #16a34a;
-    }
-
-    .fcc-btn-full {
+    .fcc-full-btn {
         width: 100%;
-        padding: 11px 20px;
-        font-size: 14px;
+        padding: 10px 18px;
+        font-size: 13.5px;
     }
 
-    /* Bottom Action Footer */
-    .fcc-bottom-footer {
+    .fcc-form-footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-top: 20px;
-        border-top: 1px solid #e2e8f0;
-        margin-top: 28px;
-    }
-
-    .fcc-btn-draft {
-        background: #ffffff;
-        border: 1px solid var(--demo-primary);
-        color: var(--demo-primary);
-        font-size: 13.5px;
-        font-weight: 700;
-        padding: 9px 20px;
-        border-radius: 10px;
-        transition: all 0.18s ease;
-        cursor: pointer;
-    }
-
-    .fcc-btn-draft:hover {
-        background: #eff2fe;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #f1f5f9;
     }
 </style>
 @endpush
 
 @section('content')
-<div class="fcc-demo-wrapper">
+<div class="fcc-demo-container">
 
     <!-- Validation errors if any -->
     @component('nutrition-panel.validation.errors') @endcomponent
 
-    <!-- Breadcrumbs -->
-    <div class="fcc-breadcrumb-nav">
-        <a href="{{ route('nutritionPanel.users.index') }}">Members</a>
-        <span class="fcc-breadcrumb-sep">/</span>
-        <a href="{{ route('nutritionPanel.users.index') }}/demo">Demo users</a>
-        <span class="fcc-breadcrumb-sep">/</span>
-        <span class="text-dark fw-semibold">Add demo user</span>
-    </div>
-
-    <!-- Header Bar -->
-    <div class="fcc-demo-header">
-        <div>
-            <h1 class="fcc-demo-title">Add demo user</h1>
-            <p class="fcc-demo-subtitle">Create a lightweight trial profile and assign a coach</p>
+    <!-- Page Header -->
+    <div class="fcc-page-header">
+        <div class="fcc-header-left">
+            <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-btn-back" title="Back to Demo Members">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <div class="fcc-title-area">
+                <div class="fcc-title-row">
+                    <h1 class="fcc-main-title">Add Demo User</h1>
+                    <span class="fcc-badge-pill"><i class="fa fa-clock-o"></i> 3-Day Trial</span>
+                </div>
+                <p class="fcc-subtitle">Create a 3-day complimentary trial profile and assign a nutrition coach</p>
+            </div>
         </div>
+
         <div class="fcc-header-actions">
-            <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-btn-cancel">Cancel</a>
-            <button type="button" class="fcc-btn-primary btn-submit-demo">Create demo user</button>
+            <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-btn-outline">Cancel</a>
+            <button type="button" class="fcc-btn-submit btn-submit-action">
+                <i class="fa fa-user-plus"></i> Create Demo User
+            </button>
         </div>
     </div>
 
-    <!-- Main Form -->
+    <!-- Form Section -->
     {!! Form::open(['class' => 'user-form', 'id' => 'demoUserForm', 'method' => 'post', 'url' => route('nutritionPanel.users.store'), 'autocomplete' => 'off' ]) !!}
         {!! Form::hidden('user_type', 'Demo User') !!}
         {!! Form::hidden('is_demo', '1') !!}
         {!! Form::hidden('days', '3') !!}
         {!! Form::hidden('country_code', '+91', ['id' => 'country_code']) !!}
 
-        <div class="fcc-demo-grid">
+        <div class="fcc-grid-layout">
 
-            <!-- LEFT COLUMN: Form Details -->
+            <!-- LEFT: Member Inputs Card -->
             <div>
-
-                <!-- Quick demo registration banner -->
-                <div class="fcc-quick-banner">
-                    <div class="fcc-sparkle-icon">
-                        <i class="fa fa-magic"></i>
-                    </div>
-                    <div>
-                        <h4>Quick demo registration</h4>
-                        <p>Only essential details are required</p>
-                    </div>
-                </div>
-
-                <!-- Main Card -->
                 <div class="fcc-card">
-                    <div class="fcc-sec-head">
-                        <h2 class="fcc-sec-title">Demo member details</h2>
-                        <p class="fcc-sec-sub">Basic information for a 3-day trial profile</p>
+                    <div class="fcc-card-header">
+                        <div>
+                            <h2 class="fcc-card-title">
+                                <i class="fa fa-address-card-o"></i> Trial Member Details
+                            </h2>
+                            <p class="fcc-card-sub">All essential details required to register the trial profile</p>
+                        </div>
                     </div>
 
-                    <div class="fcc-form-grid">
+                    <div class="fcc-form-row">
 
-                        <!-- User name -->
-                        <div class="fcc-field-group">
-                            <label class="fcc-label" for="user_name">User name <span class="req">*</span></label>
-                            <input type="text" name="name" id="user_name" class="fcc-input live-track" placeholder="Enter full name" required value="{{ old('name') }}" />
+                        <!-- Full Name -->
+                        <div class="fcc-field">
+                            <label class="fcc-label" for="user_name">Full Name <span class="req">*</span></label>
+                            <input type="text" name="name" id="user_name" class="fcc-input-control live-watcher" placeholder="e.g. Rahul Sharma" required value="{{ old('name') }}" />
                         </div>
 
-                        <!-- Mobile number -->
-                        <div class="fcc-field-group">
-                            <label class="fcc-label" for="mobile_number">Mobile number <span class="req">*</span></label>
-                            <div class="fcc-input-group">
-                                <div class="fcc-input-prepend">
+                        <!-- Mobile Number -->
+                        <div class="fcc-field">
+                            <label class="fcc-label" for="mobile_number">Mobile Number <span class="req">*</span></label>
+                            <div class="fcc-group-wrap">
+                                <div class="fcc-prefix-box">
                                     <span>+91</span>
-                                    <i class="fa fa-caret-down ms-1" style="font-size: 10px;"></i>
+                                    <i class="fa fa-caret-down" style="font-size: 10px;"></i>
                                 </div>
-                                <input type="text" name="mobile_number" id="mobile_number" class="fcc-input live-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" data-url="{{ route('nutritionPanel.users.checkMobile') }}" />
+                                <input type="text" name="mobile_number" id="mobile_number" class="fcc-input-control live-watcher numeric" placeholder="9876543210" required value="{{ old('mobile_number') }}" maxlength="10" data-url="{{ route('nutritionPanel.users.checkMobile') }}" />
                             </div>
-                            <div id="demo_mobile_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
+                            <div id="demo_mobile_error" class="text-danger mt-1" style="font-size: 11px; display: none;"></div>
                         </div>
 
-                        <!-- Email address -->
-                        <div class="fcc-field-group">
-                            <label class="fcc-label" for="email">Email address <span class="req">*</span></label>
-                            <input type="email" name="email" id="email" class="fcc-input live-track" placeholder="member@example.com" required value="{{ old('email') }}" data-url="{{ route('nutritionPanel.users.checkEmail') }}" />
-                            <div id="demo_email_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
+                        <!-- Email Address -->
+                        <div class="fcc-field">
+                            <label class="fcc-label" for="email">Email Address <span class="req">*</span></label>
+                            <input type="email" name="email" id="email" class="fcc-input-control live-watcher" placeholder="rahul@example.com" required value="{{ old('email') }}" data-url="{{ route('nutritionPanel.users.checkEmail') }}" />
+                            <div id="demo_email_error" class="text-danger mt-1" style="font-size: 11px; display: none;"></div>
                         </div>
 
-                        <!-- Current weight -->
-                        <div class="fcc-field-group">
-                            <label class="fcc-label" for="weight">Current weight (kg) <span class="req">*</span></label>
-                            <input type="number" step="0.1" name="weight" id="weight" class="fcc-input live-track" placeholder="Enter weight" required value="{{ old('weight') }}" />
+                        <!-- Current Weight -->
+                        <div class="fcc-field">
+                            <label class="fcc-label" for="weight">Current Weight (kg) <span class="req">*</span></label>
+                            <input type="number" step="0.1" name="weight" id="weight" class="fcc-input-control live-watcher" placeholder="e.g. 72.5" required value="{{ old('weight') }}" />
                         </div>
 
-                        <!-- Assign coach -->
-                        <div class="fcc-field-group">
-                            <label class="fcc-label" for="coach_name">Assign coach <span class="req">*</span></label>
-                            <select name="coach_name" id="coach_name" class="fcc-input live-track" required>
-                                <option value="">Search or select coach</option>
+                        <!-- Assign Coach -->
+                        <div class="fcc-field">
+                            <label class="fcc-label" for="coach_name">Assign Coach <span class="req">*</span></label>
+                            <select name="coach_name" id="coach_name" class="fcc-input-control live-watcher" required>
+                                <option value="">Select a coach</option>
                                 @if(isset($coachesList) && count($coachesList) > 0)
                                     @foreach($coachesList as $coachItem)
-                                        <option value="{{ $coachItem->coach_name }}" data-members="{{ $coachItem->total_members ?? 0 }}" {{ (old('coach_name') == $coachItem->coach_name || (count($coachesList) == 1 && $loop->first)) ? 'selected' : '' }}>
+                                        <option value="{{ $coachItem->coach_name }}" {{ (old('coach_name') == $coachItem->coach_name || (count($coachesList) == 1 && $loop->first)) ? 'selected' : '' }}>
                                             {{ $coachItem->coach_name }}
                                         </option>
                                     @endforeach
@@ -731,141 +525,88 @@
                             </select>
                         </div>
 
-                        <!-- Demo start date -->
-                        <div class="fcc-field-group">
-                            <label class="fcc-label" for="start_date">Demo start date <span class="req">*</span></label>
-                            <div class="fcc-date-wrap">
-                                <input type="text" name="start_date" id="start_date" class="fcc-input live-track datepicker" placeholder="Select start date" required value="{{ old('start_date', date('Y-m-d')) }}" />
-                                <i class="fa fa-calendar-o"></i>
+                        <!-- Start Date -->
+                        <div class="fcc-field">
+                            <label class="fcc-label" for="start_date">Trial Start Date <span class="req">*</span></label>
+                            <div class="fcc-date-container">
+                                <input type="text" name="start_date" id="start_date" class="fcc-input-control live-watcher datepicker" placeholder="Select start date" required value="{{ old('start_date', date('Y-m-d')) }}" />
+                                <i class="fa fa-calendar"></i>
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- Coach preview card -->
-                    <div class="fcc-coach-card" id="coachPreviewCard">
-                        <div class="fcc-coach-left">
-                            <div class="fcc-coach-avatar" id="coachAvatarLetter">
-                                <i class="fa fa-user"></i>
-                            </div>
-                            <div>
-                                <div class="fcc-coach-name" id="coachDisplayName">Coach Mokam</div>
-                                <div class="fcc-coach-status">
-                                    <span id="coachMembersCount">14 active members</span>
-                                    <span>•</span>
-                                    <span class="fcc-dot-avail"></span>
-                                    <span class="text-success fw-semibold">Available</span>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="javascript:void(0)" class="fcc-coach-change" onclick="$('#coach_name').focus();">Change</a>
+                    <!-- Footer Action Bar -->
+                    <div class="fcc-form-footer">
+                        <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-btn-outline">Cancel</a>
+                        <button type="button" class="fcc-btn-submit btn-submit-action">
+                            <i class="fa fa-user-plus"></i> Create Demo User
+                        </button>
                     </div>
 
                 </div>
-
             </div>
 
-            <!-- RIGHT COLUMN: Sticky Summary -->
+            <!-- RIGHT: Live Summary Card -->
             <div>
-                <div class="fcc-card fcc-sidebar-card">
-                    <h3 class="fcc-sec-title mb-3" style="font-size: 15px;">Demo access summary</h3>
+                <div class="fcc-card fcc-preview-card">
+                    <div class="fcc-card-header" style="margin-bottom: 12px; padding-bottom: 10px;">
+                        <h3 class="fcc-card-title" style="font-size: 14px;">
+                            <i class="fa fa-id-badge"></i> Trial Summary
+                        </h3>
+                    </div>
 
-                    <div class="fcc-summary-user">
-                        <div class="fcc-summary-avatar" id="summaryAvatar">
+                    <!-- Member Snippet -->
+                    <div class="fcc-profile-snippet">
+                        <div class="fcc-profile-avatar" id="liveAvatar">
                             <i class="fa fa-user"></i>
                         </div>
                         <div>
-                            <div class="fcc-summary-name" id="summaryUserName">New demo user</div>
-                            <span class="fcc-draft-badge">Draft</span>
+                            <div class="fcc-profile-name" id="liveName">New Demo User</div>
+                            <span class="fcc-status-chip"><i class="fa fa-check-circle"></i> 3-Day Pass</span>
                         </div>
                     </div>
 
-                    <div class="fcc-progress-counter">
-                        <span id="fieldCountTxt">0 of 6 fields completed</span>
-                    </div>
-
-                    <div class="fcc-chk-list">
-                        <!-- 1. Member details -->
-                        <div class="fcc-chk-item">
-                            <div class="fcc-chk-icon user">
-                                <i class="fa fa-user"></i>
-                            </div>
-                            <div class="fcc-chk-body">
-                                <div class="fcc-chk-title">Member details</div>
-                                <div class="fcc-chk-sub">4 required fields</div>
-                            </div>
-                            <div class="fcc-chk-circle" id="chkMemberDetails">
-                                <i class="fa fa-check"></i>
+                    <!-- Timeline details -->
+                    <div class="fcc-info-timeline">
+                        <div class="fcc-timeline-item">
+                            <div class="fcc-timeline-icon"><i class="fa fa-calendar"></i></div>
+                            <div>
+                                <div class="fcc-timeline-title">Duration</div>
+                                <div class="fcc-timeline-desc" id="liveDuration">3 Days Active Trial</div>
                             </div>
                         </div>
 
-                        <!-- 2. Coach assignment -->
-                        <div class="fcc-chk-item">
-                            <div class="fcc-chk-icon coach">
-                                <i class="fa fa-user-circle"></i>
-                            </div>
-                            <div class="fcc-chk-body">
-                                <div class="fcc-chk-title">Coach assignment</div>
-                                <div class="fcc-chk-sub">1 required field</div>
-                            </div>
-                            <div class="fcc-chk-circle" id="chkCoach">
-                                <i class="fa fa-check"></i>
+                        <div class="fcc-timeline-item">
+                            <div class="fcc-timeline-icon"><i class="fa fa-user-circle"></i></div>
+                            <div>
+                                <div class="fcc-timeline-title">Assigned Coach</div>
+                                <div class="fcc-timeline-desc" id="liveCoach">Select a coach</div>
                             </div>
                         </div>
 
-                        <!-- 3. Trial access -->
-                        <div class="fcc-chk-item">
-                            <div class="fcc-chk-icon lock">
-                                <i class="fa fa-unlock-alt"></i>
-                            </div>
-                            <div class="fcc-chk-body">
-                                <div class="fcc-chk-title">Trial access</div>
-                                <div class="fcc-chk-sub">Start date required • 3-day access</div>
-                            </div>
-                            <div class="fcc-chk-circle" id="chkTrialAccess">
-                                <i class="fa fa-check"></i>
+                        <div class="fcc-timeline-item">
+                            <div class="fcc-timeline-icon"><i class="fa fa-cutlery"></i></div>
+                            <div>
+                                <div class="fcc-timeline-title">Club Privileges</div>
+                                <div class="fcc-timeline-desc">Check-in, Nutrition Shake & Follow-up</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="fcc-next-sec">
-                        <h4 class="fcc-next-title">What happens next?</h4>
-                        <div class="fcc-next-list">
-                            <div class="fcc-next-item">
-                                <div class="fcc-next-dot"><i class="fa fa-user"></i></div>
-                                <span>Demo profile is created</span>
-                            </div>
-                            <div class="fcc-next-item">
-                                <div class="fcc-next-dot"><i class="fa fa-bell-o"></i></div>
-                                <span>Coach receives a notification</span>
-                            </div>
-                            <div class="fcc-next-item">
-                                <div class="fcc-next-dot"><i class="fa fa-hourglass-half"></i></div>
-                                <span>Access closes after 3 days</span>
-                            </div>
-                        </div>
+                    <!-- Shield info -->
+                    <div class="fcc-shield-notice">
+                        <i class="fa fa-shield"></i>
+                        <span>Member data is securely encrypted</span>
                     </div>
 
-                    <div class="fcc-safe-card">
-                        <i class="fa fa-lock"></i>
-                        <span>Member data is securely stored</span>
-                    </div>
-
-                    <button type="button" class="fcc-btn-primary fcc-btn-full btn-submit-demo">
-                        Create demo user
+                    <!-- Side Submit CTA -->
+                    <button type="button" class="fcc-btn-submit fcc-full-btn btn-submit-action">
+                        <i class="fa fa-user-plus"></i> Create Demo User
                     </button>
                 </div>
             </div>
 
-        </div>
-
-        <!-- Bottom Action Bar -->
-        <div class="fcc-bottom-footer">
-            <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-btn-cancel">Cancel</a>
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" class="fcc-btn-draft" onclick="window.history.back();">Save draft</button>
-                <button type="button" class="fcc-btn-primary btn-submit-demo">Create demo user</button>
-            </div>
         </div>
 
     {!! Form::close() !!}
@@ -877,82 +618,52 @@
 <script src="{{ asset('admin-assets/js/flatpickr.js') }}"></script>
 <script>
     $(document).ready(function() {
-        // Initialize datepicker
+        // Init flatpickr
         if (typeof flatpickr === "function") {
             $(".datepicker").flatpickr({
                 dateFormat: "Y-m-d",
-                defaultDate: "{{ date('Y-m-d') }}"
+                defaultDate: "{{ date('Y-m-d') }}",
+                onChange: function() {
+                    updatePreview();
+                }
             });
         }
 
-        // Live field completion tracker
-        function updateProgress() {
+        // Live preview sync
+        function updatePreview() {
             var name = $('#user_name').val().trim();
-            var mobile = $('#mobile_number').val().trim();
-            var email = $('#email').val().trim();
-            var weight = $('#weight').val().trim();
             var coach = $('#coach_name').val().trim();
-            var date = $('#start_date').val().trim();
+            var startDateVal = $('#start_date').val().trim();
 
-            // Member details group
-            var memberDetailsDone = (name !== '' && mobile !== '' && email !== '' && weight !== '');
-            if (memberDetailsDone) {
-                $('#chkMemberDetails').addClass('completed');
-            } else {
-                $('#chkMemberDetails').removeClass('completed');
-            }
-
-            // Coach group
-            if (coach !== '') {
-                $('#chkCoach').addClass('completed');
-            } else {
-                $('#chkCoach').removeClass('completed');
-            }
-
-            // Trial group
-            if (date !== '') {
-                $('#chkTrialAccess').addClass('completed');
-            } else {
-                $('#chkTrialAccess').removeClass('completed');
-            }
-
-            // Count fields
-            var count = 0;
-            if (name !== '') count++;
-            if (mobile !== '') count++;
-            if (email !== '') count++;
-            if (weight !== '') count++;
-            if (coach !== '') count++;
-            if (date !== '') count++;
-
-            $('#fieldCountTxt').text(count + ' of 6 fields completed');
-
-            // Name preview in summary card
             if (name !== '') {
-                $('#summaryUserName').text(name);
+                $('#liveName').text(name);
                 var initials = name.split(' ').map(function(s) { return s[0]; }).join('').substring(0, 2).toUpperCase();
-                $('#summaryAvatar').html('<span style="font-weight: 700; font-size: 16px;">' + initials + '</span>');
+                $('#liveAvatar').html('<span>' + initials + '</span>');
             } else {
-                $('#summaryUserName').text('New demo user');
-                $('#summaryAvatar').html('<i class="fa fa-user"></i>');
+                $('#liveName').text('New Demo User');
+                $('#liveAvatar').html('<i class="fa fa-user"></i>');
             }
 
-            // Coach preview update
             if (coach !== '') {
-                $('#coachDisplayName').text(coach);
-                var opt = $('#coach_name option:selected');
-                var members = opt.data('members') || 14;
-                $('#coachMembersCount').text(members + ' active members');
-                var coachLetter = coach.charAt(0).toUpperCase();
-                $('#coachAvatarLetter').text(coachLetter);
+                $('#liveCoach').text(coach);
             } else {
-                $('#coachDisplayName').text('Select a coach');
-                $('#coachMembersCount').text('No coach assigned');
-                $('#coachAvatarLetter').html('<i class="fa fa-user"></i>');
+                $('#liveCoach').text('Select a coach');
+            }
+
+            if (startDateVal) {
+                var d = new Date(startDateVal);
+                if (!isNaN(d.getTime())) {
+                    var endD = new Date(d);
+                    endD.setDate(endD.getDate() + 3);
+                    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    var formattedStart = months[d.getMonth()] + ' ' + d.getDate();
+                    var formattedEnd = months[endD.getMonth()] + ' ' + endD.getDate() + ', ' + endD.getFullYear();
+                    $('#liveDuration').text(formattedStart + ' → ' + formattedEnd + ' (3 Days)');
+                }
             }
         }
 
-        // Dynamic remote email duplicate check
+        // Email duplicate check
         $('#email').on('blur', function() {
             var email = $(this).val().trim();
             if (email) {
@@ -965,7 +676,7 @@
                     },
                     success: function(resp) {
                         if (resp === false || resp === 'false') {
-                            $('#demo_email_error').text('The email address you have entered is already registered.').show();
+                            $('#demo_email_error').text('This email address is already registered.').show();
                         } else {
                             $('#demo_email_error').text('').hide();
                         }
@@ -976,7 +687,7 @@
             }
         });
 
-        // Dynamic remote mobile duplicate check
+        // Mobile duplicate check
         $('#mobile_number').on('blur', function() {
             var mobile = $(this).val().trim();
             if (mobile) {
@@ -989,7 +700,7 @@
                     },
                     success: function(resp) {
                         if (resp === false || resp === 'false') {
-                            $('#demo_mobile_error').text('The mobile number you have entered is already registered.').show();
+                            $('#demo_mobile_error').text('This mobile number is already registered.').show();
                         } else {
                             $('#demo_mobile_error').text('').hide();
                         }
@@ -1000,22 +711,19 @@
             }
         });
 
-        // Attach listeners
-        $('.live-track').on('input change', updateProgress);
-        updateProgress();
+        // Input listeners
+        $('.live-watcher').on('input change', updatePreview);
+        updatePreview();
 
         // Submit form
-        $('.btn-submit-demo').on('click', function(e) {
+        $('.btn-submit-action').on('click', function(e) {
             e.preventDefault();
             var $form = $('#demoUserForm');
-
-            // HTML5 validation check
             var formEl = $form[0];
             if (!formEl.checkValidity()) {
                 formEl.reportValidity();
                 return;
             }
-
             $form.submit();
         });
     });

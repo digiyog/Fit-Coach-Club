@@ -21,9 +21,10 @@
     }
 
     .fcc-ums-wrapper {
+        width: 100%;
         max-width: 1260px;
-        margin: 0 auto;
-        padding: 24px 20px 80px 20px;
+        margin: 0;
+        padding: 20px 24px 80px 24px;
     }
 
     /* Header Bar */

@@ -76,8 +76,9 @@
 
     .fcc-main-container {
         padding: 4px 6px 12px 6px;
-        max-width: 1560px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: 1600px;
+        margin: 0;
     }
 
     /* 1. Header Bar */
