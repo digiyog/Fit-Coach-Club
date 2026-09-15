@@ -54,6 +54,8 @@ class DashboardController extends Controller
             $year = date('Y');
         }
 
+        $selectedMonth = $request->month_filter ? (int)$request->month_filter : (int)date('n');
+
         // 1. Total Members Breakdown
         $totalUsers = User::where('role_type', 'user')->where('created_by', $userId)->count();
         $offlineUsers = User::where('role_type', 'user')->where('user_state', 'Offline')->where('created_by', $userId)->count();
@@ -516,9 +518,11 @@ class DashboardController extends Controller
         $totalGrowthExpense = array_sum($transactionOrderPlacedChartData);
         $totalGrowthNet = $totalGrowthRevenue - $totalGrowthExpense;
 
-        $currentMonthShakesCount = $totalShakeChartData[now()->month - 1] ?? 560;
-        $prevMonthShakesCount = $totalShakeChartData[max(0, now()->month - 2)] ?? 312;
-        $shakeGrowthRate = $prevMonthShakesCount > 0 ? round((($currentMonthShakesCount - $prevMonthShakesCount) / $prevMonthShakesCount) * 100) : 79;
+        $currentMonthShakesCount = $totalShakeChartData[$selectedMonth - 1] ?? 0;
+        $prevMonthShakesCount = $totalShakeChartData[max(0, $selectedMonth - 2)] ?? 0;
+        $shakeGrowthRate = $prevMonthShakesCount > 0 ? round((($currentMonthShakesCount - $prevMonthShakesCount) / $prevMonthShakesCount) * 100) : ($currentMonthShakesCount > 0 ? 100 : 0);
+        $selectedMonthName = Carbon::createFromDate((int)$year, (int)$selectedMonth, 1)->format('F');
+        $prevMonthName = Carbon::createFromDate((int)$year, max(1, (int)$selectedMonth - 1), 1)->format('F');
 
         // 9. Coach List & Performance Analytics
         $coachesData = User::select(
@@ -682,6 +686,9 @@ class DashboardController extends Controller
         $this->viewData['recentTransactionsList'] = $recentTransactions;
 
         $this->viewData['year'] = $year;
+        $this->viewData['selectedMonth'] = $selectedMonth;
+        $this->viewData['selectedMonthName'] = $selectedMonthName;
+        $this->viewData['prevMonthName'] = $prevMonthName;
 
         return view('nutrition-panel.dashboard.index')->with($this->viewData);
     }

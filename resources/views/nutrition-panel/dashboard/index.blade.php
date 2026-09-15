@@ -2960,9 +2960,52 @@
         box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
-    .fcc-growth-date-pill:hover {
-        border-color: #cbd5e1;
+    .fcc-growth-date-pill:hover,
+    .fcc-growth-date-pill[aria-expanded="true"] {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .fcc-growth-picker-dropdown {
+        border-radius: 16px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12) !important;
+        z-index: 1050;
+    }
+
+    .fcc-growth-month-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    .fcc-month-btn {
         background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 7px 4px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #475569;
+        text-align: center;
+        transition: all 0.15s ease;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .fcc-month-btn:hover {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #2563eb;
+    }
+
+    .fcc-month-btn.active {
+        background: #2563eb !important;
+        border-color: #2563eb !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
     }
 
     .fcc-growth-3col-grid {
@@ -5157,10 +5200,38 @@
                         </div>
                     </div>
 
-                    <div class="fcc-growth-date-pill">
-                        <i class="fa fa-calendar-o" style="color: #64748b;"></i>
-                        <span>{{ date('F Y') }}</span>
-                        <i class="fa fa-chevron-down" style="font-size: 10px; color: #94a3b8;"></i>
+                    <div class="fcc-growth-date-dropdown-wrap position-relative">
+                        <button type="button" class="fcc-growth-date-pill" id="growthDatePillBtn" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-calendar-o" style="color: #64748b;"></i>
+                            <span id="growthSelectedDateLabel">{{ $selectedMonthName ?? date('F') }} {{ $year ?? date('Y') }}</span>
+                            <i class="fa fa-chevron-down" style="font-size: 10px; color: #94a3b8;"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end fcc-growth-picker-dropdown shadow-lg p-3" id="growthDatePickerMenu" style="min-width: 280px;">
+                            <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Year</span>
+                                <select id="growthYearSelect" class="form-select form-select-sm" style="width: auto; font-size: 12px; font-weight: 700; border-radius: 8px;">
+                                    @for($y = (int)date('Y') + 1; $y >= (int)date('Y') - 4; $y--)
+                                        <option value="{{ $y }}" {{ ($year ?? date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="mb-1" style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Select Month</div>
+                            <div class="fcc-growth-month-grid">
+                                @php
+                                    $monthsArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                                    $currM = (int)($selectedMonth ?? date('n'));
+                                @endphp
+                                @foreach($monthsArr as $mIdx => $mName)
+                                    @php
+                                        $mNum = $mIdx + 1;
+                                        $fullMName = DateTime::createFromFormat('!m', $mNum)->format('F');
+                                    @endphp
+                                    <button type="button" class="fcc-month-btn {{ $currM == $mNum ? 'active' : '' }}" data-month="{{ $mNum }}" data-month-name="{{ $fullMName }}">
+                                        {{ $mName }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -5171,11 +5242,11 @@
                     <div>
                         <!-- Gradient Hero Card -->
                         <div class="fcc-growth-hero-card">
-                            <div class="fcc-growth-hero-bignum">{{ $currentMonthShakesCount ?? 38 }}</div>
-                            <div class="fcc-growth-hero-sub">Shakes in {{ date('F') }}</div>
-                            <div class="fcc-growth-hero-badge">
-                                <i class="fa fa-arrow-up"></i>
-                                <span>+{{ $shakeGrowthRate ?? 94 }}% vs {{ date('F', strtotime('-1 month')) }}</span>
+                            <div class="fcc-growth-hero-bignum" id="growthHeroBigNum">{{ $currentMonthShakesCount ?? 0 }}</div>
+                            <div class="fcc-growth-hero-sub" id="growthHeroSubText">Shakes in {{ $selectedMonthName ?? date('F') }}</div>
+                            <div class="fcc-growth-hero-badge" id="growthHeroBadge">
+                                <i class="fa {{ ($shakeGrowthRate ?? 0) >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
+                                <span>{{ ($shakeGrowthRate ?? 0) >= 0 ? '+' : '' }}{{ $shakeGrowthRate ?? 0 }}% vs {{ $prevMonthName ?? date('F', strtotime('-1 month')) }}</span>
                             </div>
 
                             <!-- Glowing Wave Graphic -->
@@ -6139,8 +6210,9 @@
     });
 
     var shakeCanvasElem = document.querySelector("#shakeCountCanvasChart");
+    var shakeCanvasChart = null;
     if (shakeCanvasElem) {
-        new ApexCharts(shakeCanvasElem, {
+        shakeCanvasChart = new ApexCharts(shakeCanvasElem, {
             chart: {
                 height: 250,
                 type: 'bar',
@@ -6193,8 +6265,61 @@
                 theme: 'light',
                 y: { formatter: function(val) { return val + ' shakes'; } }
             }
-        }).render();
+        });
+        shakeCanvasChart.render();
     }
+
+    // Growth Canvas Date Changer Handlers
+    $('#growthDatePickerMenu').on('click', function(e) {
+        e.stopPropagation();
+    });
+
+    $('#growthYearSelect').on('change', function() {
+        var selectedYear = $(this).val();
+        var selectedMonth = $('.fcc-month-btn.active').data('month') || {{ $selectedMonth ?? date('n') }};
+        window.location.href = window.location.pathname + '?year_filter=' + selectedYear + '&month_filter=' + selectedMonth + '&tab=tab-growth';
+    });
+
+    $('.fcc-month-btn').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $('.fcc-month-btn').removeClass('active');
+        $(this).addClass('active');
+
+        var mNum = parseInt($(this).data('month'));
+        var mName = $(this).data('month-name');
+        var selectedYear = $('#growthYearSelect').val();
+
+        var currentVal = (rawShakeCount && rawShakeCount[mNum - 1] !== undefined) ? rawShakeCount[mNum - 1] : 0;
+        var prevVal = (mNum > 1 && rawShakeCount && rawShakeCount[mNum - 2] !== undefined) ? rawShakeCount[mNum - 2] : 0;
+        var prevMonthNames = ['December', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November'];
+        var prevMName = prevMonthNames[mNum - 1] || 'previous month';
+        var growthRate = prevVal > 0 ? Math.round(((currentVal - prevVal) / prevVal) * 100) : (currentVal > 0 ? 100 : 0);
+
+        // Update UI
+        $('#growthSelectedDateLabel').text(mName + ' ' + selectedYear);
+        $('#growthHeroBigNum').text(Number(currentVal).toLocaleString());
+        $('#growthHeroSubText').text('Shakes in ' + mName);
+        $('#growthHeroBadge').html((growthRate >= 0 ? '<i class="fa fa-arrow-up"></i> <span>+' : '<i class="fa fa-arrow-down"></i> <span>') + growthRate + '% vs ' + prevMName + '</span>');
+
+        // Re-highlight the selected month bar
+        var updatedBarColors = displayShakeCount.map(function(val, idx) {
+            if (idx === (mNum - 1)) return '#059669'; // Highlight active month green
+            if (val === 0) return '#e2e8f0';
+            return '#2563eb';
+        });
+
+        if (shakeCanvasChart) {
+            shakeCanvasChart.updateOptions({
+                colors: updatedBarColors
+            });
+        }
+
+        // Close dropdown
+        $('#growthDatePickerMenu').removeClass('show');
+        $('#growthDatePillBtn').attr('aria-expanded', 'false').removeClass('show');
+    });
 
     // Member Trajectories Spline Multi-Line Chart
     var rawReg = {!! json_encode($userRegualrChartData ?? []) !!};
