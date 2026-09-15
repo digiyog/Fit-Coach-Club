@@ -438,8 +438,8 @@ a:hover {
    ========================================================================== */
 .custom-breadcrumbs {
     background: transparent !important;
-    padding-top: 16px !important;
-    padding-bottom: 8px !important;
+    padding-top: 14px !important;
+    padding-bottom: 6px !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -451,48 +451,59 @@ a:hover {
     background: transparent !important;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 0;
     padding: 0;
+    list-style: none;
 }
 
 .custom-breadcrumbs .breadcrumb-item {
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
 }
 
 .custom-breadcrumbs .breadcrumb-item a {
-    color: var(--npc-text-muted) !important;
+    color: var(--npc-text-muted, #64748b) !important;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
-    border-radius: var(--npc-radius-sm);
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    text-decoration: none;
     transition: var(--npc-transition-fast);
 }
 
 .custom-breadcrumbs .breadcrumb-item a:hover {
-    color: var(--npc-primary) !important;
-    background: var(--npc-primary-light);
+    color: var(--npc-primary, #3b46f1) !important;
+    background: var(--npc-primary-light, #eff2fe);
 }
 
 .custom-breadcrumbs .breadcrumb-item.active,
 .custom-breadcrumbs .breadcrumb-item.active span {
-    color: var(--npc-text-heading) !important;
+    color: var(--npc-text-heading, #0f172a) !important;
     font-weight: 700 !important;
-    background: #ffffff;
-    padding: 4px 12px;
-    border-radius: var(--npc-radius-full);
-    border: 1px solid var(--npc-border-color);
-    box-shadow: var(--npc-shadow-xs);
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 2px 6px !important;
+    border-radius: 0 !important;
 }
 
 .custom-breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
     content: "›" !important;
-    color: var(--npc-text-light) !important;
-    font-size: 16px;
+    color: #94a3b8 !important;
+    font-size: 15px;
+    font-weight: 600;
     line-height: 1;
-    padding: 0 4px;
+    padding: 0 4px 0 0;
+    float: none;
 }
 
 /* Breadcrumb Action Buttons */
