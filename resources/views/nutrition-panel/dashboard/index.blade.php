@@ -61,6 +61,8 @@
     h1, h2, h3, h4, h5, h6,
     .fcc-greeting-title,
     .fcc-pulse-big-num,
+    .fcc-pulse-hero-num,
+    .fcc-pulse-chip-val,
     .fcc-stat-num,
     .fcc-metric-value,
     .fcc-card-title,
@@ -689,11 +691,12 @@
         }
     }
 
-    /* Club pulse */
+    /* Club pulse Modern Card (Original Signature Blue) */
     .fcc-pulse-card {
         background: linear-gradient(135deg, #1e266d 0%, #3042d6 50%, #4338ca 100%);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         border-radius: 20px;
-        padding: 24px 26px 18px 26px;
+        padding: 22px 24px 18px 24px;
         color: #ffffff;
         position: relative;
         overflow: hidden;
@@ -703,83 +706,310 @@
         justify-content: space-between;
     }
 
-    .fcc-pulse-top {
+    /* Top Bar */
+    .fcc-pulse-header {
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 16.5px;
-        font-weight: 700;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .fcc-pulse-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fcc-pulse-icon-chip {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: #ffffff;
-        margin-bottom: 14px;
     }
 
-    .fcc-pulse-stats-row {
-        display: flex;
-        align-items: baseline;
-        gap: 26px;
-        flex-wrap: wrap;
-        margin-bottom: 4px;
-    }
-
-    .fcc-pulse-big-num {
-        font-size: 46px;
+    .fcc-pulse-title-text {
+        font-size: 16.5px;
         font-weight: 800;
-        line-height: 1;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
+        color: #ffffff;
     }
 
-    .fcc-pulse-big-lbl {
-        font-size: 12.5px;
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 500;
-        margin-top: 4px;
-    }
-
-    .fcc-pulse-pills {
-        display: flex;
+    .fcc-pulse-status-pill {
+        display: inline-flex;
         align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .fcc-pulse-pill-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        color: rgba(255, 255, 255, 0.95);
-        font-size: 13.5px;
+        gap: 7px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11.5px;
         font-weight: 600;
-        border-left: 1px solid rgba(255, 255, 255, 0.22);
-        padding-left: 14px;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
     }
 
-    .fcc-pulse-pill-item:first-child {
-        border-left: none;
-        padding-left: 0;
-    }
-
-    .fcc-pulse-chart-box {
+    .fcc-pulse-ping-wrap {
         position: relative;
-        margin: 2px -10px 0 -10px;
+        width: 8px;
+        height: 8px;
+        display: inline-flex;
     }
 
-    .fcc-pulse-footer {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12.5px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.95);
-        padding-top: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.14);
+    .fcc-pulse-ping-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: #10b981;
+        opacity: 0.75;
+        animation: fccPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
 
-    .fcc-dot-live {
+    .fcc-pulse-ping-dot {
+        position: relative;
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: #10b981;
-        box-shadow: 0 0 8px #10b981;
+        box-shadow: 0 0 6px #10b981;
+    }
+
+    @keyframes fccPing {
+        75%, 100% {
+            transform: scale(2.3);
+            opacity: 0;
+        }
+    }
+
+    /* Stats Overview Row */
+    .fcc-pulse-stats-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .fcc-pulse-stats-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+    }
+
+    .fcc-pulse-hero-stat {
+        padding-right: 20px;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        min-width: 120px;
+    }
+
+    @media (max-width: 768px) {
+        .fcc-pulse-hero-stat {
+            padding-right: 0;
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 12px;
+        }
+    }
+
+    .fcc-pulse-hero-num {
+        font-size: 44px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: #ffffff;
+    }
+
+    .fcc-pulse-hero-lbl {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: capitalize;
+    }
+
+    .fcc-pulse-chips-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    @media (max-width: 540px) {
+        .fcc-pulse-chips-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .fcc-pulse-chip {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 9px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(6px);
+    }
+
+    .fcc-pulse-chip:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateY(-1px);
+    }
+
+    .fcc-pulse-chip-interactive {
+        cursor: pointer;
+    }
+
+    .fcc-pulse-chip-interactive:hover {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: #ffffff;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .fcc-pulse-chip-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #ffffff;
+        flex-shrink: 0;
+    }
+
+    .chip-icon-online {
+        background: rgba(16, 185, 129, 0.28);
+        border-color: rgba(52, 211, 153, 0.4);
+    }
+
+    .chip-icon-offline {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .chip-icon-revenue {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .fcc-pulse-chip-data {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .fcc-pulse-chip-val {
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 1.1;
+        color: #ffffff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .fcc-pulse-chip-lbl {
+        font-size: 10.5px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85);
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
+    }
+
+    /* Chart Box */
+    .fcc-pulse-chart-box {
+        position: relative;
+        margin: 2px -4px 0 -4px;
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 10px 12px 2px 12px;
+    }
+
+    .fcc-pulse-chart-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 4px 2px 4px;
+        margin-bottom: -4px;
+    }
+
+    .fcc-pulse-chart-title {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .fcc-pulse-chart-legend {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 10.5px;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 600;
+    }
+
+    .fcc-pulse-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .fcc-legend-line-actual {
+        width: 14px;
+        height: 3px;
+        background: #ffffff;
+        border-radius: 2px;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    }
+
+    .fcc-legend-line-target {
+        width: 14px;
+        height: 2px;
+        border-top: 2px dashed rgba(255, 255, 255, 0.55);
+    }
+
+    /* Footer */
+    .fcc-pulse-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.92);
+        padding-top: 10px;
+        margin-top: 6px;
+        border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .fcc-pulse-footer-left {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .fcc-pulse-footer-right {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.8);
     }
 
     /* Today card */
@@ -1558,6 +1788,7 @@
         grid-template-columns: 1fr 340px;
         gap: 20px;
         margin-bottom: 24px;
+        align-items: start;
     }
 
     @media (max-width: 1200px) {
@@ -1570,17 +1801,14 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 20px;
-        padding: 24px;
+        padding: 20px 22px;
         box-shadow: var(--fcc-card-shadow);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
     }
 
     .fcc-att-top-row {
         display: grid;
-        grid-template-columns: 240px 1fr 180px;
-        gap: 24px;
+        grid-template-columns: 240px 1fr 190px;
+        gap: 20px;
         align-items: start;
     }
 
@@ -1591,30 +1819,58 @@
     }
 
     /* Calendar Heatmap */
+    .fcc-cal-box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border-right: 1px solid #f1f5f9;
+        padding-right: 18px;
+    }
+
+    @media (max-width: 992px) {
+        .fcc-cal-box {
+            border-right: none;
+            padding-right: 0;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 18px;
+        }
+    }
+
     .fcc-cal-header {
-        font-size: 15px;
+        font-size: 13.5px;
         font-weight: 800;
         color: #0f172a;
-        margin-bottom: 14px;
+        margin-bottom: 4px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 6px;
+        white-space: nowrap;
+    }
+
+    .fcc-cal-header-badge {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 2px 7px;
+        border-radius: 6px;
     }
 
     .fcc-cal-days-header {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         text-align: center;
-        font-size: 11px;
+        font-size: 10.5px;
         font-weight: 700;
         color: #94a3b8;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
 
     .fcc-cal-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 6px;
+        gap: 4px;
     }
 
     .fcc-cal-cell {
@@ -1622,9 +1878,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11.5px;
+        font-size: 11px;
         font-weight: 600;
-        border-radius: 8px;
+        border-radius: 6px;
         color: #334155;
         background: #f8fafc;
         transition: all 0.15s ease;
@@ -1642,70 +1898,122 @@
     .fcc-cal-cell.heat-4 { background: #312e81; color: #ffffff; font-weight: 800; }
     .fcc-cal-cell.today { outline: 2px solid #3b82f6; outline-offset: 1px; font-weight: 900; }
 
-    /* Middle KPIs & Trend Chart */
-    .fcc-trend-kpi-row {
+    .fcc-cal-legend {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-        padding: 0 10px;
+        justify-content: flex-end;
+        gap: 4px;
+        font-size: 9.5px;
+        color: #94a3b8;
+        font-weight: 600;
+        margin-top: 6px;
+    }
+
+    .fcc-cal-legend-cell {
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+    }
+
+    /* Middle KPIs & Trend Chart */
+    .fcc-trend-box {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border-right: 1px solid #f1f5f9;
+        padding-right: 18px;
+        min-width: 0;
+    }
+
+    @media (max-width: 992px) {
+        .fcc-trend-box {
+            border-right: none;
+            padding-right: 0;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 18px;
+        }
+    }
+
+    .fcc-trend-kpi-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 2px;
     }
 
     .fcc-trend-kpi-item {
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 10px;
+        padding: 7px 6px;
         text-align: center;
+        transition: all 0.2s ease;
+    }
+
+    .fcc-trend-kpi-item:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
     }
 
     .fcc-trend-kpi-val {
-        font-size: 22px;
+        font-size: 19px;
         font-weight: 900;
-        color: #1e1b4b;
-        line-height: 1;
+        color: #0f172a;
+        line-height: 1.1;
         letter-spacing: -0.5px;
     }
 
     .fcc-trend-kpi-val.target {
-        color: #4338ca;
+        color: #3b46f1;
     }
 
     .fcc-trend-kpi-lbl {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 600;
         color: #64748b;
-        margin-top: 4px;
+        margin-top: 2px;
+        text-transform: capitalize;
     }
 
     /* Consistency Score Box */
     .fcc-consist-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
         text-align: center;
     }
 
     .fcc-consist-title {
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 13.5px;
+        font-weight: 800;
         color: #0f172a;
-        margin-bottom: 4px;
+        margin-bottom: 0px;
     }
 
     .fcc-consist-legend {
-        margin-top: 8px;
+        margin-top: 2px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 5px;
     }
 
     .fcc-consist-leg-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-size: 12.5px;
+        font-size: 11.5px;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        padding: 5px 8px;
+        border-radius: 7px;
     }
 
     .fcc-leg-dot {
-        width: 10px;
-        height: 10px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         display: inline-block;
-        margin-right: 6px;
+        margin-right: 5px;
     }
 
     /* Sidebar Live Attention & Audit */
@@ -3619,50 +3927,74 @@
                 <!-- Left: Club Pulse Card -->
                 <div class="fcc-pulse-card">
                     <div>
-                        <div class="fcc-pulse-top">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                            </svg>
-                            <span>Club pulse</span>
-                        </div>
-
-                        <div class="fcc-pulse-stats-row">
-                            <div>
-                                <div class="fcc-pulse-big-num">{{ $totalUsers ?? 0 }}</div>
-                                <div class="fcc-pulse-big-lbl">total users</div>
+                        <!-- Top Header -->
+                        <div class="fcc-pulse-header">
+                            <div class="fcc-pulse-title-wrap">
+                                <div class="fcc-pulse-icon-chip">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                </div>
+                                <span class="fcc-pulse-title-text">Club Pulse</span>
                             </div>
 
-                            <div class="fcc-pulse-pills">
-                                <div class="fcc-pulse-pill-item">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                        <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
-                                    </svg>
-                                    <div>
-                                        <div style="font-weight: 800; font-size: 16px; line-height: 1;">{{ $offlineUsers ?? 0 }}</div>
-                                        <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">offline</div>
+                            <div class="fcc-pulse-status-pill">
+                                <span class="fcc-pulse-ping-wrap">
+                                    <span class="fcc-pulse-ping-ring"></span>
+                                    <span class="fcc-pulse-ping-dot"></span>
+                                </span>
+                                <span>Operations Smooth</span>
+                            </div>
+                        </div>
+
+                        <!-- Stats Overview Row -->
+                        <div class="fcc-pulse-stats-grid">
+                            <div class="fcc-pulse-hero-stat">
+                                <div class="fcc-pulse-hero-num">{{ $totalUsers ?? 0 }}</div>
+                                <div class="fcc-pulse-hero-lbl">
+                                    <i class="fa fa-users" style="font-size: 11px; opacity: 0.8;"></i> Total Members
+                                </div>
+                            </div>
+
+                            <div class="fcc-pulse-chips-row">
+                                <!-- Online -->
+                                <div class="fcc-pulse-chip">
+                                    <div class="fcc-pulse-chip-icon chip-icon-online">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                                        </svg>
+                                    </div>
+                                    <div class="fcc-pulse-chip-data">
+                                        <span class="fcc-pulse-chip-val">{{ $onlineUsers ?? 0 }}</span>
+                                        <span class="fcc-pulse-chip-lbl">Online</span>
                                     </div>
                                 </div>
-                                <div class="fcc-pulse-pill-item">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
-                                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-                                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-                                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-                                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
-                                    </svg>
-                                    <div>
-                                        <div style="font-weight: 800; font-size: 16px; line-height: 1;">{{ $onlineUsers ?? 0 }}</div>
-                                        <div style="font-size: 11px; opacity: 0.8; font-weight: 500;">online</div>
+
+                                <!-- Offline -->
+                                <div class="fcc-pulse-chip">
+                                    <div class="fcc-pulse-chip-icon chip-icon-offline">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                            <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="fcc-pulse-chip-data">
+                                        <span class="fcc-pulse-chip-val">{{ $offlineUsers ?? 0 }}</span>
+                                        <span class="fcc-pulse-chip-lbl">Offline</span>
                                     </div>
                                 </div>
-                                <div class="fcc-pulse-pill-item" style="cursor: pointer; transition: all 0.2s ease;" onclick="$('.fcc-tab-btn[data-tab=\'tab-finance\']').trigger('click');" title="Click to view finance">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.85;">
-                                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                    </svg>
-                                    <div>
-                                        <div style="font-weight: 800; font-size: 16px; line-height: 1;">₹ {{ number_format($thisMonthRevenue ?? 0, 0) }}</div>
-                                        <div style="font-size: 11px; opacity: 0.85; font-weight: 600;">revenue <i class="fa fa-arrow-right" style="font-size: 9px; margin-left: 2px;"></i></div>
+
+                                <!-- Revenue -->
+                                <div class="fcc-pulse-chip fcc-pulse-chip-interactive" onclick="$('.fcc-tab-btn[data-tab=\'tab-finance\']').trigger('click');" title="Click to view full finance details">
+                                    <div class="fcc-pulse-chip-icon chip-icon-revenue">
+                                        <i class="fa fa-inr"></i>
+                                    </div>
+                                    <div class="fcc-pulse-chip-data">
+                                        <span class="fcc-pulse-chip-val">₹{{ number_format($thisMonthRevenue ?? 0, 0) }}</span>
+                                        <span class="fcc-pulse-chip-lbl">Revenue <i class="fa fa-arrow-right" style="font-size: 8.5px; opacity: 0.85;"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -3671,15 +4003,35 @@
 
                     <!-- Weekly Attendance ApexChart -->
                     <div class="fcc-pulse-chart-box">
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 12px; margin-bottom: -6px;">
-                            <span style="font-size: 11px; color: rgba(255,255,255,0.75); font-weight: 500;">Weekly attendance</span>
+                        <div class="fcc-pulse-chart-bar">
+                            <div class="fcc-pulse-chart-title">
+                                <i class="fa fa-line-chart" style="color: #38bdf8; font-size: 11px;"></i> Weekly Attendance Activity
+                            </div>
+                            <div class="fcc-pulse-chart-legend">
+                                <div class="fcc-pulse-legend-item">
+                                    <span class="fcc-legend-line-actual"></span>
+                                    <span>Actual</span>
+                                </div>
+                                <div class="fcc-pulse-legend-item">
+                                    <span class="fcc-legend-line-target"></span>
+                                    <span>Target (70)</span>
+                                </div>
+                            </div>
                         </div>
                         <div id="clubPulseChart"></div>
                     </div>
 
+                    <!-- Footer -->
                     <div class="fcc-pulse-footer">
-                        <span class="fcc-dot-live"></span>
-                        <span>Operations running smoothly</span>
+                        <div class="fcc-pulse-footer-left">
+                            <span class="fcc-pulse-ping-wrap" style="width: 7px; height: 7px;">
+                                <span class="fcc-pulse-ping-dot" style="width: 7px; height: 7px;"></span>
+                            </span>
+                            <span>All Club Activities Synchronized</span>
+                        </div>
+                        <div class="fcc-pulse-footer-right">
+                            <span><i class="fa fa-bolt" style="color: #fbbf24; margin-right: 3px;"></i> Live Updates</span>
+                        </div>
                     </div>
                 </div>
 
@@ -3960,8 +4312,8 @@
                         <!-- 1. Attendance Calendar Map -->
                         <div class="fcc-cal-box">
                             <div class="fcc-cal-header">
-                                <span>Attendance map</span>
-                                <span class="text-muted fw-normal">· {{ $currentMonthName ?? date('F') }}</span>
+                                <span>Attendance Map</span>
+                                <span class="fcc-cal-header-badge">{{ $currentMonthName ?? (date('F').' '.date('Y')) }}</span>
                             </div>
 
                             <div class="fcc-cal-days-header">
@@ -3996,6 +4348,16 @@
                                     </div>
                                 @endfor
                             </div>
+
+                            <div class="fcc-cal-legend">
+                                <span>Less</span>
+                                <span class="fcc-cal-legend-cell heat-0" style="background: #f8fafc; border: 1px solid #e2e8f0;"></span>
+                                <span class="fcc-cal-legend-cell heat-1" style="background: #e0e7ff;"></span>
+                                <span class="fcc-cal-legend-cell heat-2" style="background: #818cf8;"></span>
+                                <span class="fcc-cal-legend-cell heat-3" style="background: #4f46e5;"></span>
+                                <span class="fcc-cal-legend-cell heat-4" style="background: #312e81;"></span>
+                                <span>More</span>
+                            </div>
                         </div>
 
                         <!-- 2. Performance Trend Spline Chart -->
@@ -4019,13 +4381,13 @@
                                 </div>
                             </div>
 
-                            <div id="attendanceTrendChart" style="min-height: 140px;"></div>
+                            <div id="attendanceTrendChart"></div>
                         </div>
 
                         <!-- 3. Consistency Score Radial & Breakdown -->
                         <div class="fcc-consist-box">
-                            <div class="fcc-consist-title">Consistency score</div>
-                            <div id="consistencyRadialChart" style="min-height: 120px;"></div>
+                            <div class="fcc-consist-title">Consistency Score</div>
+                            <div id="consistencyRadialChart"></div>
 
                             <div class="fcc-consist-legend">
                                 <div class="fcc-consist-leg-item">
@@ -5365,13 +5727,17 @@
     var weeklyPulseAttendance = {!! json_encode($weeklyPulseAttendance ?? [0, 0, 0, 0, 0, 0, 0]) !!};
     var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
+    var maxValInAttendance = Math.max.apply(Math, weeklyPulseAttendance.concat([0]));
+    var dynamicYMax = Math.max(80, Math.ceil((maxValInAttendance + 15) / 10) * 10);
+
     var pulseOptions = {
         chart: {
             type: 'area',
-            height: 155,
+            height: 146,
             fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
-            parentHeightOffset: 0
+            parentHeightOffset: 0,
+            sparkline: { enabled: false }
         },
         dataLabels: {
             enabled: false
@@ -5384,9 +5750,10 @@
             categories: weeklyPulseLabels,
             labels: {
                 style: {
-                    colors: 'rgba(255, 255, 255, 0.8)',
+                    colors: 'rgba(255, 255, 255, 0.88)',
                     fontSize: '11px',
-                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                    fontWeight: 500
                 }
             },
             axisBorder: { show: false },
@@ -5394,30 +5761,34 @@
         },
         yaxis: {
             min: 0,
-            max: 100,
+            max: dynamicYMax,
             tickAmount: 4,
             labels: {
                 style: {
-                    colors: 'rgba(255, 255, 255, 0.75)',
+                    colors: 'rgba(255, 255, 255, 0.8)',
                     fontSize: '10px',
                     fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+                },
+                formatter: function(val) {
+                    return Math.round(val);
                 }
             }
         },
         annotations: {
             yaxis: [{
                 y: 70,
-                borderColor: 'rgba(255, 255, 255, 0.35)',
+                borderColor: 'rgba(255, 255, 255, 0.4)',
                 strokeDashArray: 4,
                 label: {
                     text: 'Target (70)',
-                    borderColor: 'transparent',
+                    borderColor: 'rgba(255, 255, 255, 0.25)',
                     style: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        background: 'transparent',
-                        fontSize: '10.5px',
+                        color: '#ffffff',
+                        background: 'rgba(30, 38, 109, 0.75)',
+                        fontSize: '10px',
                         fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
-                        fontWeight: 600
+                        fontWeight: 700,
+                        padding: { left: 6, right: 6, top: 2, bottom: 2 }
                     },
                     position: 'right',
                     textAnchor: 'end'
@@ -5442,15 +5813,19 @@
                 shade: 'dark',
                 type: 'vertical',
                 shadeIntensity: 0.5,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-                stops: [0, 100]
+                opacityFrom: 0.4,
+                opacityTo: 0.02,
+                stops: [0, 100],
+                colorStops: [
+                    { offset: 0, color: '#ffffff', opacity: 0.35 },
+                    { offset: 100, color: '#ffffff', opacity: 0.01 }
+                ]
             }
         },
         grid: {
-            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderColor: 'rgba(255, 255, 255, 0.12)',
             strokeDashArray: 3,
-            padding: { top: 0, right: 20, bottom: 0, left: 5 }
+            padding: { top: 4, right: 16, bottom: 0, left: 4 }
         },
         tooltip: {
             theme: 'dark',
@@ -5458,7 +5833,7 @@
                 fontSize: '12px',
                 fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
             },
-            y: { formatter: function(val) { return val + ' members'; } }
+            y: { formatter: function(val) { return val + ' members attended'; } }
         }
     };
     var pulseElem = document.querySelector("#clubPulseChart");
@@ -5868,10 +6243,13 @@
     var trendLabels = {!! json_encode($monthAttendanceTrendLabels ?? ['Aug 1', 'Aug 8', 'Aug 15', 'Aug 22', 'Aug 29']) !!};
     var trendData = {!! json_encode($monthAttendanceTrendData ?? [50, 68, 60, 52, 64]) !!};
 
+    var maxInTrend = Math.max.apply(Math, trendData.concat([0]));
+    var trendDynamicYMax = Math.max(80, Math.ceil((maxInTrend + 15) / 10) * 10);
+
     var trendOptions = {
         chart: {
             type: 'area',
-            height: 140,
+            height: 160,
             fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
             parentHeightOffset: 0
@@ -5888,9 +6266,10 @@
             categories: trendLabels,
             labels: {
                 style: {
-                    colors: '#94a3b8',
-                    fontSize: '10px',
-                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+                    colors: '#64748b',
+                    fontSize: '11px',
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                    fontWeight: 500
                 }
             },
             axisBorder: { show: false },
@@ -5898,10 +6277,10 @@
         },
         yaxis: {
             min: 0,
-            max: 100,
+            max: trendDynamicYMax,
             tickAmount: 4,
             labels: {
-                style: { colors: '#94a3b8', fontSize: '10px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
+                style: { colors: '#94a3b8', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                 formatter: function(val) { return Math.round(val); }
             }
         },
@@ -5911,14 +6290,15 @@
                 borderColor: '#3b82f6',
                 strokeDashArray: 4,
                 label: {
-                    text: 'Target 70',
-                    borderColor: 'transparent',
+                    text: 'Target (70)',
+                    borderColor: '#e2e8f0',
                     style: {
                         color: '#3b82f6',
-                        background: 'transparent',
+                        background: '#ffffff',
                         fontSize: '10px',
                         fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
-                        fontWeight: 600
+                        fontWeight: 700,
+                        padding: { left: 6, right: 6, top: 2, bottom: 2 }
                     },
                     position: 'right',
                     textAnchor: 'end'
@@ -5927,11 +6307,11 @@
         },
         stroke: { curve: 'smooth', width: 2.5, colors: ['#3b46f1'] },
         markers: {
-            size: 3.5,
+            size: 4,
             colors: ['#ffffff'],
             strokeColors: '#3b46f1',
             strokeWidth: 2,
-            hover: { size: 5.5 }
+            hover: { size: 6 }
         },
         fill: {
             type: 'gradient',
@@ -5947,7 +6327,7 @@
         grid: {
             borderColor: '#f1f5f9',
             strokeDashArray: 3,
-            padding: { top: 0, right: 10, bottom: 0, left: 5 }
+            padding: { top: 4, right: 10, bottom: 0, left: 5 }
         },
         tooltip: {
             theme: 'light',
@@ -5968,7 +6348,7 @@
     var consistencyScoreVal = {{ $consistencyScore ?? 76 }};
     var radialOptions = {
         chart: {
-            height: 135,
+            height: 110,
             type: 'radialBar',
             sparkline: { enabled: true }
         },
