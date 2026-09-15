@@ -218,9 +218,9 @@ class DashboardController extends Controller
             ->orderBy('days', 'ASC')
             ->get();
 
-        $expiresTodayMembers = $membershipExpires->filter(function($u) { return $u->days <= 0; });
-        $expiresTomorrowMembers = $membershipExpires->filter(function($u) { return $u->days == 1; });
-        $expiresNext23Members = $membershipExpires->filter(function($u) { return $u->days >= 2; });
+        $expiresTodayMembers = $membershipExpires->filter(function($u) { return $u->days <= 0; })->values();
+        $expiresTomorrowMembers = $membershipExpires->filter(function($u) { return $u->days == 1; })->values();
+        $expiresNext23Members = $membershipExpires->filter(function($u) { return $u->days >= 2; })->values();
 
         $totalDueSoonCount = count($membershipExpires);
         $totalExpireTodayCount = count($expiresTodayMembers);

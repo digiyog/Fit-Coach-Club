@@ -4267,9 +4267,9 @@
                     <div>
                         <h3 class="fcc-action-queue-title">Action queue</h3>
 
-                        <div class="fcc-action-timeline">
+                        <div class="fcc-action-timeline" id="actionQueueContainer">
                             @if(!empty($actionQueueItems) && count($actionQueueItems) > 0)
-                                @foreach(array_slice($actionQueueItems, 0, 3) as $action)
+                                @foreach($actionQueueItems as $idx => $action)
                                     @php
                                         $actName = is_array($action) ? ($action['name'] ?? 'Member') : ($action->name ?? 'Member');
                                         $nameParts = !empty($actName) ? explode(' ', trim($actName)) : ['M'];
@@ -4281,7 +4281,7 @@
                                         $subtextCls = str_contains($colorCls, 'red') ? 'subtext-red' : (str_contains($colorCls, 'orange') ? 'subtext-orange' : 'subtext-purple');
                                         $linkCls = str_contains($colorCls, 'red') ? 'link-renew' : (str_contains($colorCls, 'orange') ? 'link-remind' : 'link-review');
                                     @endphp
-                                    <div class="fcc-action-item">
+                                    <div class="fcc-action-item @if($idx >= 10) d-none fcc-action-extra-item @endif">
                                         <div class="fcc-action-left">
                                             <div class="fcc-avatar-circle {{ $colorCls }}">{{ $initials }}</div>
                                             <div class="fcc-action-details">
@@ -4292,6 +4292,14 @@
                                         <a href="{{ $actionUrl }}" class="fcc-action-chevron {{ $linkCls }}">{{ $actionLabel }} <i class="fa fa-chevron-right"></i></a>
                                     </div>
                                 @endforeach
+
+                                @if(count($actionQueueItems) > 10)
+                                    <div class="fcc-load-more-wrap text-center mt-2">
+                                        <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="actionQueueContainer" data-item-class="fcc-action-extra-item">
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($actionQueueItems) - 10 }} remaining)
+                                        </button>
+                                    </div>
+                                @endif
                             @else
                                 <div class="text-center py-3 text-muted" style="font-size: 12.5px;">
                                     <i class="fa fa-check-circle text-success me-1"></i> No urgent action required right now!
@@ -4303,15 +4311,15 @@
                     <!-- Recent Activity Feed -->
                     <div class="fcc-recent-activity-section">
                         <div class="fcc-recent-title">Recent activity</div>
-                        <div class="fcc-activity-list">
+                        <div class="fcc-activity-list" id="recentActivityContainer">
                             @if(isset($recentActivities) && count($recentActivities) > 0)
-                                @foreach($recentActivities->take(2) as $act)
+                                @foreach($recentActivities as $idx => $act)
                                     @php
                                         $actTitle = is_array($act) ? ($act['title'] ?? 'Activity') : ($act->title ?? 'Activity');
                                         $actTime = is_array($act) ? ($act['time'] ?? '') : ($act->time ?? '');
                                         $dotClass = is_array($act) ? ($act['dot_class'] ?? '') : ($act->dot_class ?? '');
                                     @endphp
-                                    <div class="fcc-activity-item">
+                                    <div class="fcc-activity-item @if($idx >= 10) d-none fcc-activity-extra-item @endif">
                                         <div class="fcc-activity-left">
                                             <span class="fcc-act-dot {{ str_contains($dotClass, 'green') ? 'green' : 'blue' }}"></span>
                                             <span>{{ $actTitle }}</span>
@@ -4319,6 +4327,14 @@
                                         <span class="fcc-activity-time">{{ $actTime }}</span>
                                     </div>
                                 @endforeach
+
+                                @if(count($recentActivities) > 10)
+                                    <div class="fcc-load-more-wrap text-center mt-2">
+                                        <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="recentActivityContainer" data-item-class="fcc-activity-extra-item">
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($recentActivities) - 10 }} remaining)
+                                        </button>
+                                    </div>
+                                @endif
                             @else
                                 <div class="text-center py-2 text-muted" style="font-size: 12px;">
                                     No check-in activity recorded yet today
@@ -4482,9 +4498,9 @@
                             <span>Audit timeline · Today</span>
                         </div>
 
-                        <div class="fcc-audit-list">
+                        <div class="fcc-audit-list" id="todayAuditContainer">
                             @if(isset($todayAttendences) && count($todayAttendences) > 0)
-                                @foreach($todayAttendences->take(5) as $tIndex => $tAtt)
+                                @foreach($todayAttendences as $tIndex => $tAtt)
                                     @php
                                         $tTime = $tAtt->created_at ? date('H:i', strtotime($tAtt->created_at)) : date('H:i');
                                         $daysCount = (int)($tAtt->days ?? 1);
@@ -4499,7 +4515,7 @@
                                             $nodeColor = '#16a34a';
                                         }
                                     @endphp
-                                    <div class="fcc-audit-item">
+                                    <div class="fcc-audit-item @if($tIndex >= 10) d-none fcc-audit-extra-item @endif">
                                         <span class="fcc-audit-node" style="border-color: {{ $nodeColor }};"></span>
                                         <div class="d-flex align-items-center flex-wrap">
                                             <span class="text-muted" style="font-size: 11.5px; font-weight: 600;">{{ $tTime }}</span>
@@ -4511,6 +4527,14 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                @if(count($todayAttendences) > 10)
+                                    <div class="fcc-load-more-wrap text-center mt-2">
+                                        <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="todayAuditContainer" data-item-class="fcc-audit-extra-item">
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($todayAttendences) - 10 }} remaining)
+                                        </button>
+                                    </div>
+                                @endif
                             @else
                                 <div class="fcc-audit-item">
                                     <span class="fcc-audit-node" style="border-color: #16a34a;"></span>
@@ -4549,18 +4573,18 @@
                 <!-- 3 Columns Board Layout -->
                 <div class="fcc-board-cols-grid">
 
-                    <!-- Column 1: Leaders (Top 1-4) -->
+                    <!-- Column 1: Leaders (Top 1-10) -->
                     <div class="fcc-board-col">
                         <div class="fcc-board-col-head">
                             <i class="fa fa-trophy text-primary"></i>
-                            <span>Leaders</span>
+                            <span>Leaders ({{ count($top20Attendance ?? []) }})</span>
                         </div>
 
-                        <div>
+                        <div id="leadersColContainer">
                             @if(isset($top20Attendance) && count($top20Attendance) > 0)
-                                @foreach($top20Attendance->slice(0, 4) as $idx => $leader)
+                                @foreach($top20Attendance as $idx => $leader)
                                     @php $pct = round($leader->attendance_percentage); @endphp
-                                    <div class="fcc-board-row-item">
+                                    <div class="fcc-board-row-item @if($idx >= 10) d-none fcc-leader-extra-item @endif">
                                         <div class="fcc-board-row-left">
                                             <span class="fcc-board-rank-num">{{ $idx + 1 }}</span>
                                             <div class="fcc-board-pct-circle">
@@ -4576,26 +4600,34 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                @if(count($top20Attendance) > 10)
+                                    <div class="fcc-load-more-wrap text-center mt-2">
+                                        <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="leadersColContainer" data-item-class="fcc-leader-extra-item">
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($top20Attendance) - 10 }} remaining)
+                                        </button>
+                                    </div>
+                                @endif
                             @else
                                 <div class="text-center py-4 text-muted" style="font-size: 12.5px;">No attendance logged yet.</div>
                             @endif
                         </div>
                     </div>
 
-                    <!-- Column 2: On track (Top 5-8) -->
+                    <!-- Column 2: On track (Next 10) -->
                     <div class="fcc-board-col">
                         <div class="fcc-board-col-head">
                             <i class="fa fa-line-chart text-primary"></i>
-                            <span>On track</span>
+                            <span>On track ({{ max(0, count($top20Attendance ?? []) - 10) }})</span>
                         </div>
 
-                        <div>
-                            @if(isset($top20Attendance) && count($top20Attendance) > 4)
-                                @foreach($top20Attendance->slice(4, 4) as $idx => $onTrack)
+                        <div id="onTrackColContainer">
+                            @if(isset($top20Attendance) && count($top20Attendance) > 10)
+                                @foreach($top20Attendance->slice(10) as $idx => $onTrack)
                                     @php $pct = round($onTrack->attendance_percentage); @endphp
-                                    <div class="fcc-board-row-item">
+                                    <div class="fcc-board-row-item @if($idx >= 10) d-none fcc-ontrack-extra-item @endif">
                                         <div class="fcc-board-row-left">
-                                            <span class="fcc-board-rank-num">{{ $idx + 5 }}</span>
+                                            <span class="fcc-board-rank-num">{{ $idx + 11 }}</span>
                                             <div style="min-width: 0;">
                                                 <div class="fcc-board-member-name">{{ ucfirst($onTrack->name) }}</div>
                                             </div>
@@ -4611,8 +4643,16 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                @if(count($top20Attendance->slice(10)) > 10)
+                                    <div class="fcc-load-more-wrap text-center mt-2">
+                                        <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="onTrackColContainer" data-item-class="fcc-ontrack-extra-item">
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($top20Attendance->slice(10)) - 10 }} remaining)
+                                        </button>
+                                    </div>
+                                @endif
                             @elseif(isset($top20Attendance) && count($top20Attendance) > 0)
-                                @foreach($top20Attendance->slice(0, 4) as $idx => $onTrack)
+                                @foreach($top20Attendance->slice(0, 10) as $idx => $onTrack)
                                     @php $pct = round($onTrack->attendance_percentage); @endphp
                                     <div class="fcc-board-row-item">
                                         <div class="fcc-board-row-left">
@@ -4638,18 +4678,18 @@
                         </div>
                     </div>
 
-                    <!-- Column 3: Needs a nudge (Least 1-4) -->
+                    <!-- Column 3: Needs a nudge (Least 1-10) -->
                     <div class="fcc-board-col">
                         <div class="fcc-board-col-head">
                             <i class="fa fa-exclamation-circle text-danger"></i>
-                            <span>Needs a nudge</span>
+                            <span>Needs a nudge ({{ count($least20Attendance ?? []) }})</span>
                         </div>
 
-                        <div>
+                        <div id="nudgeColContainer">
                             @if(isset($least20Attendance) && count($least20Attendance) > 0)
-                                @foreach($least20Attendance->slice(0, 4) as $idx => $nudge)
+                                @foreach($least20Attendance as $idx => $nudge)
                                     @php $pct = round($nudge->attendance_percentage); @endphp
-                                    <div class="fcc-board-row-item">
+                                    <div class="fcc-board-row-item @if($idx >= 10) d-none fcc-nudge-extra-item @endif">
                                         <div class="fcc-board-row-left">
                                             <span class="fcc-board-rank-num">{{ $idx + 1 }}</span>
                                             <div style="min-width: 0;">
@@ -4668,7 +4708,15 @@
                                     </div>
                                 @endforeach
 
-                                <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-members\']').trigger('click');" class="fcc-btn-message-nudge">
+                                @if(count($least20Attendance) > 10)
+                                    <div class="fcc-load-more-wrap text-center mt-2 mb-2">
+                                        <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="nudgeColContainer" data-item-class="fcc-nudge-extra-item">
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($least20Attendance) - 10 }} remaining)
+                                        </button>
+                                    </div>
+                                @endif
+
+                                <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-members\']').trigger('click');" class="fcc-btn-message-nudge mt-2">
                                     <i class="fa fa-commenting-o"></i>
                                     <span>Message {{ count($least20Attendance) }} members</span>
                                 </a>
@@ -4812,7 +4860,7 @@
 
                     <div class="fcc-renew-cards-stack" id="expiresTodayCardsContainer">
                         @if(isset($expiresTodayMembers) && count($expiresTodayMembers) > 0)
-                            @foreach($expiresTodayMembers as $idx => $m)
+                            @foreach($expiresTodayMembers as $m)
                                 @php
                                     $mName = ucfirst($m->name);
                                     $mInitials = strtoupper(substr($mName, 0, 1) . (str_contains($mName, ' ') ? substr(explode(' ', $mName)[1] ?? '', 0, 1) : ''));
@@ -4822,7 +4870,7 @@
                                     $userType = $m->user_type ?? 'Regular';
                                     $userState = $m->user_state ?? 'Offline';
                                 @endphp
-                                <div class="fcc-renew-card renew-card-item @if($idx >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
+                                <div class="fcc-renew-card renew-card-item @if($loop->index >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
                                     <div class="fcc-renew-card-top">
                                         <div class="fcc-renew-card-left">
                                             <span class="fcc-renew-drag-dots"><i class="fa fa-ellipsis-v me-0.5"></i><i class="fa fa-ellipsis-v"></i></span>
@@ -4886,7 +4934,7 @@
 
                     <div class="fcc-renew-cards-stack" id="expiresTomorrowCardsContainer">
                         @if(isset($expiresTomorrowMembers) && count($expiresTomorrowMembers) > 0)
-                            @foreach($expiresTomorrowMembers as $idx => $m)
+                            @foreach($expiresTomorrowMembers as $m)
                                 @php
                                     $mName = ucfirst($m->name);
                                     $mInitials = strtoupper(substr($mName, 0, 1) . (str_contains($mName, ' ') ? substr(explode(' ', $mName)[1] ?? '', 0, 1) : ''));
@@ -4896,7 +4944,7 @@
                                     $userType = $m->user_type ?? 'Regular';
                                     $userState = $m->user_state ?? 'Offline';
                                 @endphp
-                                <div class="fcc-renew-card renew-card-item @if($idx >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
+                                <div class="fcc-renew-card renew-card-item @if($loop->index >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
                                     <div class="fcc-renew-card-top">
                                         <div class="fcc-renew-card-left">
                                             <span class="fcc-renew-drag-dots"><i class="fa fa-ellipsis-v me-0.5"></i><i class="fa fa-ellipsis-v"></i></span>
@@ -4960,7 +5008,7 @@
 
                     <div class="fcc-renew-cards-stack" id="expiresNextCardsContainer">
                         @if(isset($expiresNext23Members) && count($expiresNext23Members) > 0)
-                            @foreach($expiresNext23Members as $idx => $m)
+                            @foreach($expiresNext23Members as $m)
                                 @php
                                     $mName = ucfirst($m->name);
                                     $mInitials = strtoupper(substr($mName, 0, 1) . (str_contains($mName, ' ') ? substr(explode(' ', $mName)[1] ?? '', 0, 1) : ''));
@@ -4970,7 +5018,7 @@
                                     $userType = $m->user_type ?? 'Regular';
                                     $userState = $m->user_state ?? 'Offline';
                                 @endphp
-                                <div class="fcc-renew-card renew-card-item @if($idx >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
+                                <div class="fcc-renew-card renew-card-item @if($loop->index >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
                                     <div class="fcc-renew-card-top">
                                         <div class="fcc-renew-card-left">
                                             <span class="fcc-renew-drag-dots"><i class="fa fa-ellipsis-v me-0.5"></i><i class="fa fa-ellipsis-v"></i></span>
@@ -6757,6 +6805,27 @@
     // Keep dropdown open when interacting with filter buttons inside
     $(document).on('click', '.fcc-notif-header, .fcc-notif-filter-tabs', function(e) {
         e.stopPropagation();
+    });
+
+    // Generic Load More Handler for all list items across tabs
+    $(document).on('click', '.btn-load-more-generic', function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var containerId = $btn.data('container');
+        var itemClass = $btn.data('item-class') || 'fcc-extra-item';
+        var $container = $('#' + containerId);
+        var $hiddenItems = $container.find('.' + itemClass + '.d-none');
+
+        // Show next 10 items
+        var $toShow = $hiddenItems.slice(0, 10);
+        $toShow.removeClass('d-none').hide().fadeIn(250);
+
+        var remaining = $container.find('.' + itemClass + '.d-none').length;
+        if (remaining > 0) {
+            $btn.html('<i class="fa fa-chevron-down me-1"></i> Load more (' + remaining + ' remaining)');
+        } else {
+            $btn.closest('.fcc-load-more-wrap').fadeOut(200, function() { $(this).remove(); });
+        }
     });
 
     // Renewal Columns Load More
