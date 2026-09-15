@@ -73,7 +73,7 @@
     }
 
     .fcc-main-container {
-        padding: 4px 6px 36px 6px;
+        padding: 4px 6px 12px 6px;
         max-width: 1560px;
         margin: 0 auto;
     }

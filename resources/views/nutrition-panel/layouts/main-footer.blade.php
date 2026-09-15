@@ -1,38 +1,38 @@
 <style>
     .fcc-modern-footer-container {
-        padding: 0 16px 28px 16px;
-        margin-top: 10px;
+        padding: 0 6px 14px 6px;
+        margin-top: 4px;
     }
 
     .fcc-modern-footer {
         background: #ffffff;
         border: 1px solid #edf2f7;
-        border-radius: 16px;
-        padding: 16px 24px;
+        border-radius: 12px;
+        padding: 8px 18px;
         max-width: 1560px;
         margin: 0 auto;
         font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         color: #64748b;
-        font-size: 12.5px;
+        font-size: 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 14px;
-        box-shadow: 0 2px 12px -2px rgba(15, 23, 42, 0.04);
+        gap: 10px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
     }
 
     .fcc-footer-left {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
         flex-wrap: wrap;
     }
 
     .fcc-footer-brand-title {
         font-weight: 700;
         color: #0f172a;
-        font-size: 13px;
+        font-size: 12.5px;
         letter-spacing: -0.01em;
     }
 
@@ -48,35 +48,35 @@
     .fcc-footer-right {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 12px;
         flex-wrap: wrap;
     }
 
     .fcc-footer-status-tag {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         background: #f8fafc;
         border: 1px solid #e2e8f0;
-        padding: 3px 9px;
-        border-radius: 8px;
-        font-size: 11.5px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 11px;
         font-weight: 600;
         color: #475569;
     }
 
     .fcc-footer-live-dot {
-        width: 6.5px;
-        height: 6.5px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
         background: #10b981;
-        box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
         display: inline-block;
     }
 
     .fcc-footer-made-with {
         color: #64748b;
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 500;
     }
 
@@ -85,13 +85,13 @@
         font-family: 'FontAwesome' !important;
         display: inline-block;
         animation: fccPulseHeart 1.8s ease infinite;
-        margin: 0 2px;
-        font-size: 12px;
+        margin: 0 1px;
+        font-size: 11px;
     }
 
     @keyframes fccPulseHeart {
         0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.25); }
+        50% { transform: scale(1.2); }
     }
 
     .fcc-footer-brand-link {
