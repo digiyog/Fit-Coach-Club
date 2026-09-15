@@ -3580,6 +3580,61 @@
         margin-bottom: 20px;
     }
 
+    .fcc-segmented-switcher {
+        display: inline-flex;
+        align-items: center;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 3px;
+        gap: 2px;
+    }
+
+    .fcc-segmented-btn {
+        border: none;
+        background: transparent;
+        padding: 6px 14px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        line-height: 1.2;
+    }
+
+    .fcc-segmented-btn:hover {
+        color: #1e293b;
+    }
+
+    .fcc-segmented-btn.active {
+        background: #ffffff;
+        color: #0f172a;
+        font-weight: 700;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .fcc-timeline-year-select {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        padding: 6px 28px 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #334155;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        transition: all 0.2s ease;
+        appearance: auto;
+    }
+
+    .fcc-timeline-year-select:hover,
+    .fcc-timeline-year-select:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
     .fcc-timeline-split-grid {
         display: grid;
         grid-template-columns: 1fr 200px;
@@ -5600,14 +5655,15 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-3">
-                        <div class="fcc-growth-pills-switcher">
-                            <button type="button" class="fcc-growth-pill-btn active" data-flow-toggle="monthly">Monthly</button>
-                            <button type="button" class="fcc-growth-pill-btn" data-flow-toggle="quarterly">Quarterly</button>
+                        <div class="fcc-segmented-switcher">
+                            <button type="button" class="fcc-segmented-btn active" data-flow-toggle="monthly">Monthly</button>
+                            <button type="button" class="fcc-segmented-btn" data-flow-toggle="quarterly">Quarterly</button>
                         </div>
 
-                        <select class="fcc-renew-select" style="padding: 5px 12px; font-size: 12px;">
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
+                        <select id="cashFlowYearSelect" class="fcc-timeline-year-select">
+                            @for($y = (int)date('Y') + 1; $y >= (int)date('Y') - 4; $y--)
+                                <option value="{{ $y }}" {{ ($year ?? date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
                         </select>
                     </div>
                 </div>
@@ -6732,8 +6788,9 @@
     }
 
     var financeTimelineElem = document.querySelector("#financeCashFlowTimelineChart");
+    var financeTimelineChart = null;
     if (financeTimelineElem) {
-        new ApexCharts(financeTimelineElem, {
+        financeTimelineChart = new ApexCharts(financeTimelineElem, {
             chart: {
                 height: 250,
                 type: 'bar',
@@ -6765,8 +6822,8 @@
                 }
             },
             series: [
-                { name: 'Ums revenue', data: rawRevenue },
-                { name: 'Product revenue', data: rawExpense }
+                { name: 'Ums revenue', data: displayRev },
+                { name: 'Product revenue', data: displayExp }
             ],
             legend: { show: false },
             xaxis: {
@@ -6795,8 +6852,60 @@
                 followCursor: true,
                 y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
             }
-        }).render();
+        });
+        financeTimelineChart.render();
     }
+
+    // Monthly / Quarterly Toggle for Cash Flow Timeline
+    $('.fcc-segmented-btn[data-flow-toggle]').on('click', function(e) {
+        e.preventDefault();
+        $('.fcc-segmented-btn[data-flow-toggle]').removeClass('active');
+        $(this).addClass('active');
+
+        var mode = $(this).data('flow-toggle');
+        if (!financeTimelineChart) return;
+
+        if (mode === 'quarterly') {
+            var qRev = [
+                (displayRev[0] || 0) + (displayRev[1] || 0) + (displayRev[2] || 0),
+                (displayRev[3] || 0) + (displayRev[4] || 0) + (displayRev[5] || 0),
+                (displayRev[6] || 0) + (displayRev[7] || 0) + (displayRev[8] || 0),
+                (displayRev[9] || 0) + (displayRev[10] || 0) + (displayRev[11] || 0)
+            ];
+            var qExp = [
+                (displayExp[0] || 0) + (displayExp[1] || 0) + (displayExp[2] || 0),
+                (displayExp[3] || 0) + (displayExp[4] || 0) + (displayExp[5] || 0),
+                (displayExp[6] || 0) + (displayExp[7] || 0) + (displayExp[8] || 0),
+                (displayExp[9] || 0) + (displayExp[10] || 0) + (displayExp[11] || 0)
+            ];
+
+            financeTimelineChart.updateOptions({
+                xaxis: {
+                    categories: ['Q1 (Jan-Mar)', 'Q2 (Apr-Jun)', 'Q3 (Jul-Sep)', 'Q4 (Oct-Dec)']
+                },
+                series: [
+                    { name: 'Ums revenue', data: qRev },
+                    { name: 'Product revenue', data: qExp }
+                ]
+            });
+        } else {
+            financeTimelineChart.updateOptions({
+                xaxis: {
+                    categories: monthsCategories
+                },
+                series: [
+                    { name: 'Ums revenue', data: displayRev },
+                    { name: 'Product revenue', data: displayExp }
+                ]
+            });
+        }
+    });
+
+    // Cash Flow Timeline Year Selector
+    $('#cashFlowYearSelect').on('change', function() {
+        var selectedYear = $(this).val();
+        window.location.href = window.location.pathname + '?year_filter=' + selectedYear + '&tab=tab-finance';
+    });
 
     // 5. Attendance QR Code Pass Logic
     const qrValue = "{{ $qr_code ?? '' }}";
