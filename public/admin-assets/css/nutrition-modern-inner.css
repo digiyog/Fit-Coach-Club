@@ -104,12 +104,15 @@ a:hover {
    ========================================================================== */
 #content,
 #content.main-content {
-    margin-left: 240px !important;
-    margin-top: 60px !important;
-    min-height: calc(100vh - 60px) !important;
-    padding-bottom: 36px;
-    background-color: var(--npc-bg-main) !important;
-    transition: margin-left 0.3s ease;
+    margin-left: 260px !important;
+    margin-top: 58px !important;
+    min-height: calc(100vh - 58px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding-bottom: 0 !important;
+    background-color: var(--fcc-bg, #f7f9fd) !important;
+    transition: margin-left 0.25s ease-in-out;
     position: relative;
 }
 

@@ -1,7 +1,8 @@
 <style>
     .fcc-modern-footer-container {
-        padding: 0 6px 14px 6px;
-        margin-top: 4px;
+        padding: 0 6px 16px 6px;
+        margin-top: auto !important;
+        width: 100%;
     }
 
     .fcc-modern-footer {

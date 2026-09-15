@@ -72,7 +72,7 @@
         <!--/ Include sidebar  -->
 
         <!-- Include Content  -->
-        <div id="content" class="main-content" style="margin-left: 240px;">
+        <div id="content" class="main-content">
             @if(isset($breadcrumb))
                 <!-- Include breadcrumb -->
                 @include('nutrition-panel.layouts.main-breadcrumb')
