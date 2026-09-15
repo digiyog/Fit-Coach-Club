@@ -2,69 +2,70 @@
 $company = get_company_profile();
 $headerLogo = (isset($company[0]) && isset($company[0]['header_logo_image'])) ? $company[0]['header_logo_image'] : '';
 $authUser = auth()->user();
+$userInitial = !empty($authUser->name) ? strtoupper(substr(trim($authUser->name), 0, 1)) : 'U';
 @endphp
 
 <!--  BEGIN NAVBAR  -->
-<div class="header-container fixed-top" style="background: #ffffff; border-bottom: 1px solid #eef2f7; height: 56px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-    <header class="header navbar navbar-expand-sm py-0 px-3" style="height: 56px;">
+<div class="header-container fixed-top" style="background: #ffffff; border-bottom: 1px solid #edf2f7; height: 58px; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04); z-index: 1040;">
+    <header class="header navbar navbar-expand-sm py-0 px-3 px-md-4 d-flex align-items-center justify-content-between" style="height: 58px;">
 
-        <ul class="navbar-item flex-row align-items-center">
-            <li class="nav-item theme-logo me-2">
+        <ul class="navbar-item flex-row align-items-center mb-0 ps-0 list-unstyled gap-2">
+            <li class="nav-item theme-logo">
                 <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link p-0 d-flex align-items-center text-decoration-none">
                     @if(!empty($headerLogo))
-                        <img src="{{get_image_url(config('constants.company_profile.image_path'), $headerLogo)}}" class="img-fluid brand-logo-img" alt="Logo" style="height: 38px; border-radius: 8px;" />
+                        <img src="{{get_image_url(config('constants.company_profile.image_path'), $headerLogo)}}" class="img-fluid brand-logo-img" alt="Logo" style="height: 38px; border-radius: 9px;" />
                     @else
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #3246d3 0%, #4361ee 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 2px 8px rgba(50, 70, 211, 0.28);">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #3246d3 0%, #4361ee 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 3px 10px rgba(50, 70, 211, 0.28); font-family: 'Outfit', sans-serif;">
                             FC
                         </div>
                     @endif
                 </a>
             </li>
             <li class="nav-item theme-text d-none d-sm-block ps-1">
-                <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link fw-bold text-dark fs-5 p-0 text-decoration-none" style="letter-spacing: -0.02em; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
+                <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link fw-bold text-dark fs-5 p-0 text-decoration-none" style="letter-spacing: -0.025em; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif; font-size: 18px !important; color: #0f172a !important;">
                     {{ config('app.name', 'Fit Coach Club') }}
                 </a>
             </li>
-            <li class="nav-item ms-3">
-                <a href="javascript:void(0);" class="sidebarCollapse btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 34px; height: 34px; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <li class="nav-item ms-2">
+                <a href="javascript:void(0);" class="sidebarCollapse btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 34px; height: 34px; background: #f8fafc; border: 1px solid #e2e8f0; transition: all 0.2s ease;">
                     <i data-feather="menu" style="width: 16px; height: 16px; color: #475569;"></i>
                 </a>
             </li>
         </ul>
 
-        <ul class="navbar-item flex-row ms-auto align-items-center gap-2">
+        <ul class="navbar-item flex-row ms-auto align-items-center gap-2 mb-0 list-unstyled">
             <li class="nav-item d-none d-md-flex align-items-center me-1">
-                <div class="user-greeting-pill" style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 5px 12px; border-radius: 20px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px;">
-                    <span class="user-status-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-                    <span class="fw-semibold text-dark">{{ $authUser->name }}</span>
-                    <span class="badge" style="background: #eff1fe; color: #3246d3; font-size: 11px; font-weight: 700; border-radius: 6px;">Nutrition Panel</span>
+                <div class="user-greeting-pill" style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 5px 12px; border-radius: 20px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 8px; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
+                    <span class="user-status-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.5); display: inline-block;"></span>
+                    <span class="fw-bold" style="color: #1e293b;">{{ $authUser->name }}</span>
+                    <span class="badge" style="background: #eff2fe; color: #3b46f1; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 3px 7px; border: 1px solid rgba(59, 70, 241, 0.15);">Nutrition Panel</span>
                 </div>
             </li>
 
             <li class="nav-item dropdown user-profile-dropdown">
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon shadow-sm" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 36px; height: 36px; border-radius: 50%; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #475569 !important;">
-                    <i data-feather="user" style="width: 17px; height: 17px; color: #475569;"></i>
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon shadow-sm p-0" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #eff2fe 0%, #e0e7ff 100%); border: 1.5px solid #c7d2fe; display: flex; align-items: center; justify-content: center; color: #3b46f1 !important; font-weight: 800; font-size: 14px; font-family: 'Outfit', sans-serif;">
+                    {{ $userInitial }}
                 </a>
-                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userProfileDropdown" style="border-radius: 14px; min-width: 200px; padding: 8px;">
-                    <div class="px-3 py-2 border-bottom d-md-none">
-                        <div class="fw-bold text-dark">{{ $authUser->name }}</div>
-                        <small class="text-muted">{{ $authUser->email ?? '' }}</small>
+                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userProfileDropdown" style="border-radius: 14px; min-width: 215px; padding: 8px; border: 1px solid #e2e8f0 !important; box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.14) !important; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
+                    <div class="px-3 py-2 border-bottom">
+                        <div class="fw-bold text-dark" style="font-size: 13.5px;">{{ $authUser->name }}</div>
+                        <small class="text-muted" style="font-size: 11.5px;">{{ $authUser->email ?? 'Club Coach' }}</small>
                     </div>
-                    <div class="p-1">
-                        <div class="dropdown-item">
-                            <a class="d-flex align-items-center py-2 text-dark" href="{{ route('nutritionPanel.profile') }}">
-                                <i data-feather="user" class="me-2 text-primary" style="width: 16px; height: 16px;"></i> My Profile
+                    <div class="pt-2">
+                        <div class="dropdown-item p-0">
+                            <a class="d-flex align-items-center px-3 py-2 text-dark text-decoration-none rounded-2" href="{{ route('nutritionPanel.profile') }}" style="font-size: 13px; font-weight: 600; transition: background 0.15s ease;">
+                                <i data-feather="user" class="me-2 text-primary" style="width: 15px; height: 15px;"></i> My Profile
                             </a>
                         </div>
-                        <div class="dropdown-item">
-                            <a class="d-flex align-items-center py-2 text-dark" href="{{ route('nutritionPanel.change-password.index') }}">
-                                <i data-feather="lock" class="me-2 text-warning" style="width: 16px; height: 16px;"></i> Change Password
+                        <div class="dropdown-item p-0">
+                            <a class="d-flex align-items-center px-3 py-2 text-dark text-decoration-none rounded-2" href="{{ route('nutritionPanel.change-password.index') }}" style="font-size: 13px; font-weight: 600; transition: background 0.15s ease;">
+                                <i data-feather="lock" class="me-2 text-warning" style="width: 15px; height: 15px;"></i> Change Password
                             </a>
                         </div>
                         <div class="dropdown-divider my-1"></div>
-                        <div class="dropdown-item">
-                            <a class="d-flex align-items-center py-2 text-danger" href="{{ route('nutritionPanel.logout') }}">
-                                <i data-feather="log-out" class="me-2 text-danger" style="width: 16px; height: 16px;"></i> Sign Out
+                        <div class="dropdown-item p-0">
+                            <a class="d-flex align-items-center px-3 py-2 text-danger text-decoration-none rounded-2" href="{{ route('nutritionPanel.logout') }}" style="font-size: 13px; font-weight: 700; transition: background 0.15s ease;">
+                                <i data-feather="log-out" class="me-2 text-danger" style="width: 15px; height: 15px;"></i> Sign Out
                             </a>
                         </div>
                     </div>
