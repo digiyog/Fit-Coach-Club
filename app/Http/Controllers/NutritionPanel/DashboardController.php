@@ -425,15 +425,31 @@ class DashboardController extends Controller
             $monthlyDailyAttendance[$d] = $monthlyDailyAttendanceRaw[$d] ?? 0;
         }
 
+        $isCurrentMonth = (Carbon::now()->year == $currYear && Carbon::now()->month == $month);
+        $maxTrendDay = $isCurrentMonth ? min(Carbon::now()->day, $currentMonthDaysCount) : $currentMonthDaysCount;
+
         $monthAttendanceTrendLabels = [];
         $monthAttendanceTrendData = [];
-        for ($d = 1; $d <= $currentMonthDaysCount; $d += ($currentMonthDaysCount > 28 ? 7 : 5)) {
+
+        if ($maxTrendDay <= 7) {
+            $step = 1;
+        } elseif ($maxTrendDay <= 14) {
+            $step = 2;
+        } elseif ($maxTrendDay <= 21) {
+            $step = 3;
+        } else {
+            $step = 4;
+        }
+
+        for ($d = 1; $d <= $maxTrendDay; $d += $step) {
             $monthAttendanceTrendLabels[] = $currentMonthCarbon->format('M') . ' ' . $d;
             $monthAttendanceTrendData[] = $monthlyDailyAttendance[$d] ?? 0;
         }
-        if (!in_array($currentMonthCarbon->format('M') . ' ' . $currentMonthDaysCount, $monthAttendanceTrendLabels)) {
-            $monthAttendanceTrendLabels[] = $currentMonthCarbon->format('M') . ' ' . $currentMonthDaysCount;
-            $monthAttendanceTrendData[] = $monthlyDailyAttendance[$currentMonthDaysCount] ?? 0;
+
+        $lastRecordedLabel = $currentMonthCarbon->format('M') . ' ' . $maxTrendDay;
+        if (!in_array($lastRecordedLabel, $monthAttendanceTrendLabels)) {
+            $monthAttendanceTrendLabels[] = $lastRecordedLabel;
+            $monthAttendanceTrendData[] = $monthlyDailyAttendance[$maxTrendDay] ?? 0;
         }
 
         $regularUsersCount = User::where('created_by', $userId)->where('role_type', 'user')->where('user_type', 'Regular User')->count();
