@@ -1211,6 +1211,7 @@
         grid-template-columns: 1.45fr 1fr;
         gap: 20px;
         margin-bottom: 24px;
+        align-items: start;
     }
 
     @media (max-width: 1100px) {
@@ -1223,18 +1224,20 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 20px;
-        padding: 22px 24px;
+        padding: 20px 22px;
         box-shadow: var(--fcc-card-shadow);
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        gap: 12px;
+        height: auto !important;
+        align-self: start;
     }
 
     .fcc-story-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
 
     .fcc-story-title {
@@ -1275,10 +1278,10 @@
     .fcc-story-stats-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        padding-top: 16px;
+        gap: 12px;
+        padding-top: 14px;
         border-top: 1px solid #f1f5f9;
-        margin-top: 6px;
+        margin-top: 2px;
     }
 
     .fcc-story-stat-item {
@@ -4348,7 +4351,7 @@
                         </div>
 
                         <!-- Performance Story Spline Chart -->
-                        <div id="performanceStoryChart" style="min-height: 195px;"></div>
+                        <div id="performanceStoryChart" style="min-height: 220px;"></div>
                     </div>
 
                     <!-- 3 Bottom Metrics -->
@@ -6133,7 +6136,7 @@
     var storyOptions = {
         chart: {
             type: 'area',
-            height: 195,
+            height: 220,
             fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
             parentHeightOffset: 0
