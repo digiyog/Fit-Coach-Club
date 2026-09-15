@@ -27,11 +27,29 @@
     }
 
     body,
-    .fcc-main-container,
-    .fcc-main-container * {
+    .fcc-main-container {
         font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Preserve Font Awesome & icon glyphs */
+    .fa,
+    .fas,
+    .far,
+    .fal,
+    .fab,
+    [class^="fa-"],
+    [class*=" fa-"],
+    i.fa,
+    i[class*="fa-"],
+    .fcc-story-stat-icon i,
+    .fcc-main-container i.fa {
+        font-family: 'FontAwesome' !important;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        display: inline-block;
     }
 
     body {
@@ -48,7 +66,9 @@
     .fcc-card-title,
     .fcc-tab-btn,
     .fcc-story-title,
-    .fcc-story-stat-num {
+    .fcc-story-stat-num,
+    .fcc-story-stat-lbl,
+    .fcc-pill-btn {
         font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
     }
 
@@ -1043,6 +1063,13 @@
         align-items: center;
         justify-content: center;
         font-size: 15px;
+    }
+
+    .fcc-story-stat-icon i {
+        font-family: 'FontAwesome' !important;
+        font-style: normal;
+        font-size: 15px;
+        display: inline-block;
     }
 
     .fcc-story-stat-num {
