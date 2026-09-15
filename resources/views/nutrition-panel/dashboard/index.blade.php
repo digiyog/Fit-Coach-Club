@@ -3,6 +3,9 @@
 @section('page-title', ' '.__('language.dashboard_page_title').' | '.__('language.page_main_title').'')
 
 @push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/datatables.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet">
@@ -10,6 +13,8 @@
 <link href="{{ asset('admin-assets/css/components/tabs-accordian/custom-tabs.css') }}" rel="stylesheet" type="text/css" />
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
     :root {
         --fcc-primary: #3b46f1;
         --fcc-primary-gradient: linear-gradient(135deg, #3246d3 0%, #4361ee 100%);
@@ -21,11 +26,16 @@
         --fcc-card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
     }
 
-    body {
-        background-color: var(--fcc-bg) !important;
+    body,
+    .fcc-main-container,
+    .fcc-main-container * {
         font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        background-color: var(--fcc-bg) !important;
         letter-spacing: -0.01em;
     }
 
@@ -36,7 +46,9 @@
     .fcc-stat-num,
     .fcc-metric-value,
     .fcc-card-title,
-    .fcc-tab-btn {
+    .fcc-tab-btn,
+    .fcc-story-title,
+    .fcc-story-stat-num {
         font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
     }
 
@@ -3819,12 +3831,18 @@
                             </div>
                         </div>
 
+                        @php
+                            $isGrowthNegative = isset($weeklyGrowthPct) && (float)$weeklyGrowthPct < 0;
+                            $growthIconClass = $isGrowthNegative ? 'fa-arrow-down' : 'fa-arrow-up';
+                            $growthBgColor = $isGrowthNegative ? '#fef2f2' : '#ecfdf5';
+                            $growthTextColor = $isGrowthNegative ? '#dc2626' : '#059669';
+                        @endphp
                         <div class="fcc-story-stat-item">
-                            <div class="fcc-story-stat-icon" style="background: #ecfdf5; color: #059669;">
-                                <i class="fa fa-arrow-up"></i>
+                            <div class="fcc-story-stat-icon" style="background: {{ $growthBgColor }}; color: {{ $growthTextColor }};">
+                                <i class="fa {{ $growthIconClass }}"></i>
                             </div>
                             <div>
-                                <div class="fcc-story-stat-num" style="color: #059669;">{{ ($weeklyGrowthPct >= 0 ? '+' : '') . $weeklyGrowthPct }}%</div>
+                                <div class="fcc-story-stat-num" style="color: {{ $growthTextColor }};">{{ ($weeklyGrowthPct >= 0 ? '+' : '') . $weeklyGrowthPct }}%</div>
                                 <div class="fcc-story-stat-lbl">this week</div>
                             </div>
                         </div>
@@ -5324,8 +5342,12 @@
         chart: {
             type: 'area',
             height: 155,
+            fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
             parentHeightOffset: 0
+        },
+        dataLabels: {
+            enabled: false
         },
         series: [{
             name: 'Attendance',
@@ -5350,7 +5372,8 @@
             labels: {
                 style: {
                     colors: 'rgba(255, 255, 255, 0.75)',
-                    fontSize: '10px'
+                    fontSize: '10px',
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
                 }
             }
         },
@@ -5366,6 +5389,7 @@
                         color: 'rgba(255, 255, 255, 0.8)',
                         background: 'transparent',
                         fontSize: '10.5px',
+                        fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                         fontWeight: 600
                     },
                     position: 'right',
@@ -5403,6 +5427,10 @@
         },
         tooltip: {
             theme: 'dark',
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+            },
             y: { formatter: function(val) { return val + ' members'; } }
         }
     };
@@ -5416,8 +5444,12 @@
         chart: {
             type: 'area',
             height: 195,
+            fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
             parentHeightOffset: 0
+        },
+        dataLabels: {
+            enabled: false
         },
         series: [{
             name: 'Attendance',
@@ -5430,7 +5462,8 @@
                 style: {
                     colors: '#94a3b8',
                     fontSize: '11px',
-                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                    fontWeight: 500
                 }
             },
             axisBorder: { show: false },
@@ -5443,7 +5476,8 @@
             labels: {
                 style: {
                     colors: '#94a3b8',
-                    fontSize: '10px'
+                    fontSize: '10.5px',
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
                 },
                 formatter: function(val) {
                     return Math.round(val);
@@ -5462,6 +5496,7 @@
                         color: '#3b82f6',
                         background: 'transparent',
                         fontSize: '10.5px',
+                        fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                         fontWeight: 600
                     },
                     position: 'right',
@@ -5475,11 +5510,11 @@
             colors: ['#3b46f1']
         },
         markers: {
-            size: 4,
+            size: 4.5,
             colors: ['#ffffff'],
             strokeColors: '#3b46f1',
             strokeWidth: 2.5,
-            hover: { size: 6 }
+            hover: { size: 6.5 }
         },
         fill: {
             type: 'gradient',
@@ -5487,8 +5522,8 @@
                 shade: 'light',
                 type: 'vertical',
                 shadeIntensity: 0.4,
-                opacityFrom: 0.4,
-                opacityTo: 0.03,
+                opacityFrom: 0.35,
+                opacityTo: 0.02,
                 stops: [0, 100]
             }
         },
@@ -5499,6 +5534,10 @@
         },
         tooltip: {
             theme: 'light',
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+            },
             y: { formatter: function(val) { return val + ' members'; } }
         }
     };
@@ -5516,12 +5555,13 @@
         if (performanceStoryChart) {
             performanceStoryChart.updateOptions({
                 series: [{ name: 'Attendance', data: weeklyPulseAttendance }],
+                dataLabels: { enabled: false },
                 yaxis: {
                     min: 0,
                     max: 100,
                     tickAmount: 4,
                     labels: {
-                        style: { colors: '#94a3b8', fontSize: '10px' },
+                        style: { colors: '#94a3b8', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                         formatter: function(val) { return Math.round(val); }
                     }
                 },
@@ -5533,13 +5573,14 @@
                         label: {
                             text: 'Target (70)',
                             borderColor: 'transparent',
-                            style: { color: '#3b82f6', background: 'transparent', fontSize: '10.5px', fontWeight: 600 },
+                            style: { color: '#3b82f6', background: 'transparent', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif', fontWeight: 600 },
                             position: 'right',
                             textAnchor: 'end'
                         }
                     }]
                 },
                 tooltip: {
+                    style: { fontSize: '12px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                     y: { formatter: function(val) { return val + ' members'; } }
                 }
             });
@@ -5552,11 +5593,12 @@
         if (performanceStoryChart) {
             performanceStoryChart.updateOptions({
                 series: [{ name: 'Revenue', data: weeklyPulseRevenue }],
+                dataLabels: { enabled: false },
                 yaxis: {
                     min: 0,
                     tickAmount: 4,
                     labels: {
-                        style: { colors: '#94a3b8', fontSize: '10px' },
+                        style: { colors: '#94a3b8', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                         formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); }
                     }
                 },
@@ -5564,6 +5606,7 @@
                     yaxis: []
                 },
                 tooltip: {
+                    style: { fontSize: '12px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                     y: { formatter: function(val) { return '₹' + Number(val).toLocaleString('en-IN'); } }
                 }
             });
@@ -5802,8 +5845,12 @@
         chart: {
             type: 'area',
             height: 140,
+            fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
             parentHeightOffset: 0
+        },
+        dataLabels: {
+            enabled: false
         },
         series: [{
             name: 'Attendance',
@@ -5827,7 +5874,7 @@
             max: 100,
             tickAmount: 4,
             labels: {
-                style: { colors: '#94a3b8', fontSize: '10px' },
+                style: { colors: '#94a3b8', fontSize: '10px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                 formatter: function(val) { return Math.round(val); }
             }
         },
@@ -5843,6 +5890,7 @@
                         color: '#3b82f6',
                         background: 'transparent',
                         fontSize: '10px',
+                        fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                         fontWeight: 600
                     },
                     position: 'right',
@@ -5876,6 +5924,10 @@
         },
         tooltip: {
             theme: 'light',
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+            },
             y: { formatter: function(val) { return val + ' members'; } }
         }
     };
@@ -5974,8 +6026,12 @@
             chart: {
                 type: 'area',
                 height: 140,
+                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                 toolbar: { show: false },
                 parentHeightOffset: 0
+            },
+            dataLabels: {
+                enabled: false
             },
             series: [{
                 name: 'Revenue',
@@ -5996,7 +6052,7 @@
             },
             yaxis: {
                 labels: {
-                    style: { colors: 'rgba(255, 255, 255, 0.75)', fontSize: '10px' },
+                    style: { colors: 'rgba(255, 255, 255, 0.75)', fontSize: '10px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                     formatter: function(val) {
                         return val >= 1000 ? Math.round(val / 1000) + 'K' : val;
                     }
