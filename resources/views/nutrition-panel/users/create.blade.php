@@ -1158,7 +1158,7 @@
                             </div>
                             <div class="fcc-chk-body">
                                 <div class="fcc-chk-title">Personal details</div>
-                                <div class="fcc-chk-sub">7 fields</div>
+                                <div class="fcc-chk-sub" id="subPersonal">0 of 3 required fields</div>
                             </div>
                             <div class="fcc-chk-circle" id="chkPersonal">
                                 <i class="fa fa-check"></i>
@@ -1172,7 +1172,7 @@
                             </div>
                             <div class="fcc-chk-body">
                                 <div class="fcc-chk-title">Health & goals</div>
-                                <div class="fcc-chk-sub">3 fields</div>
+                                <div class="fcc-chk-sub" id="subHealth">0 of 3 required fields</div>
                             </div>
                             <div class="fcc-chk-circle" id="chkHealth">
                                 <i class="fa fa-check"></i>
@@ -1186,7 +1186,7 @@
                             </div>
                             <div class="fcc-chk-body">
                                 <div class="fcc-chk-title">Plan & coach</div>
-                                <div class="fcc-chk-sub">4 fields</div>
+                                <div class="fcc-chk-sub" id="subPlan">Coach required</div>
                             </div>
                             <div class="fcc-chk-circle" id="chkPlan">
                                 <i class="fa fa-check"></i>
@@ -1200,7 +1200,7 @@
                             </div>
                             <div class="fcc-chk-body">
                                 <div class="fcc-chk-title">Account access</div>
-                                <div class="fcc-chk-sub">2 fields</div>
+                                <div class="fcc-chk-sub" id="subAccess">Optional (Auto-generated)</div>
                             </div>
                             <div class="fcc-chk-circle" id="chkAccess">
                                 <i class="fa fa-check"></i>
@@ -1369,68 +1369,70 @@
             var pass = $('#new_pass').val().trim();
             var confirmPass = $('#confirm_pass').val().trim();
 
-            // Sections check
-            var personalDone = (name !== '' && mobile !== '' && age !== '');
-            var healthDone = (weight !== '' && weightGoal !== '' && height !== '');
-            var planDone = (coach !== '' || meal !== '' || product !== '' || userType !== '');
-            var accessDone = (pass !== '' && confirmPass !== '');
+            // 1. Personal Details Progress (3 required: name, mobile, age)
+            var pReqCount = (name !== '' ? 1 : 0) + (mobile !== '' ? 1 : 0) + (age !== '' ? 1 : 0);
+            var personalDone = (pReqCount === 3);
 
             if (personalDone) {
                 $('#chkPersonal').addClass('completed');
                 $('#stepNode1').addClass('completed');
+                $('#subPersonal').html('<span style="color:#10b981; font-weight:700;">Completed</span>');
             } else {
                 $('#chkPersonal').removeClass('completed');
                 $('#stepNode1').removeClass('completed');
+                $('#subPersonal').text(pReqCount + ' of 3 required fields');
             }
+
+            // 2. Health & Goals Progress (3 required: weight, weight_goal, height)
+            var hReqCount = (weight !== '' ? 1 : 0) + (weightGoal !== '' ? 1 : 0) + (height !== '' ? 1 : 0);
+            var healthDone = (hReqCount === 3);
 
             if (healthDone) {
                 $('#chkHealth').addClass('completed');
-                $('#stepNode2').addClass('completed active');
+                $('#stepNode2').addClass('completed');
+                $('#subHealth').html('<span style="color:#10b981; font-weight:700;">Completed</span>');
             } else {
                 $('#chkHealth').removeClass('completed');
-                $('#stepNode2').removeClass('completed active');
+                $('#stepNode2').removeClass('completed');
+                $('#subHealth').text(hReqCount + ' of 3 required fields');
             }
+
+            // 3. Plan & Coach Progress (Required: Coach assignment)
+            var planDone = (coach !== '' && coach !== null && coach !== undefined);
 
             if (planDone) {
                 $('#chkPlan').addClass('completed');
-                $('#stepNode3').addClass('completed active');
+                $('#stepNode3').addClass('completed');
+                $('#subPlan').html('<span style="color:#10b981; font-weight:700;">Coach Assigned</span>');
             } else {
                 $('#chkPlan').removeClass('completed');
-                $('#stepNode3').removeClass('completed active');
+                $('#stepNode3').removeClass('completed');
+                $('#subPlan').text('Coach assignment required');
             }
+
+            // 4. Account Access Progress (Optional or Password match)
+            var accessDone = (pass !== '' && confirmPass !== '' && pass === confirmPass);
 
             if (accessDone) {
                 $('#chkAccess').addClass('completed');
-                $('#stepNode4').addClass('completed active');
+                $('#stepNode4').addClass('completed');
+                $('#subAccess').html('<span style="color:#10b981; font-weight:700;">Password Configured</span>');
+            } else if (pass !== '' || confirmPass !== '') {
+                $('#chkAccess').removeClass('completed');
+                $('#stepNode4').removeClass('completed');
+                $('#subAccess').html('<span style="color:#f59e0b; font-weight:600;">Confirm password match</span>');
             } else {
                 $('#chkAccess').removeClass('completed');
-                $('#stepNode4').removeClass('completed active');
+                $('#stepNode4').removeClass('completed');
+                $('#subAccess').text('Optional (Auto-generated)');
             }
 
-            // Total fields counter (16 possible fields)
-            var count = 0;
-            if (name !== '') count++;
-            if (mobile !== '') count++;
-            if (email !== '') count++;
-            if (dob !== '') count++;
-            if (age !== '') count++;
-            if (gender !== '') count++;
-            if (userState !== '') count++;
+            // Overall Progress calculation (7 total required fields)
+            var totalRequired = 7;
+            var completedRequired = pReqCount + hReqCount + (planDone ? 1 : 0);
 
-            if (weight !== '') count++;
-            if (weightGoal !== '') count++;
-            if (height !== '') count++;
-
-            if (coach !== '') count++;
-            if (meal !== '') count++;
-            if (product !== '') count++;
-            if (userType !== '') count++;
-
-            if (pass !== '') count++;
-            if (confirmPass !== '') count++;
-
-            $('#umsProgressTxt').text(count + ' of 16 fields completed');
-            var pct = Math.round((count / 16) * 100);
+            $('#umsProgressTxt').text(completedRequired + ' of ' + totalRequired + ' required fields completed');
+            var pct = Math.round((completedRequired / totalRequired) * 100);
             $('#stepPctText').text(pct + '% complete');
 
             // Summary Name update
