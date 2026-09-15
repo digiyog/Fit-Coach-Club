@@ -2707,6 +2707,39 @@
         border-color: #3b46f1;
     }
 
+    .fcc-load-more-wrap {
+        padding-top: 8px;
+        padding-bottom: 2px;
+        width: 100%;
+    }
+
+    .fcc-btn-load-more {
+        width: 100%;
+        background: #ffffff;
+        border: 1.5px dashed #cbd5e1;
+        color: #3b46f1;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 9px 16px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .fcc-btn-load-more:hover {
+        background: #eff2fe;
+        border-color: #3b46f1;
+        border-style: solid;
+        color: #2d37e2;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 70, 241, 0.18);
+    }
+
     /* Follow-up Assistant Card */
     .fcc-assistant-card {
         background: #ffffff;
@@ -4779,7 +4812,7 @@
 
                     <div class="fcc-renew-cards-stack" id="expiresTodayCardsContainer">
                         @if(isset($expiresTodayMembers) && count($expiresTodayMembers) > 0)
-                            @foreach($expiresTodayMembers as $m)
+                            @foreach($expiresTodayMembers as $idx => $m)
                                 @php
                                     $mName = ucfirst($m->name);
                                     $mInitials = strtoupper(substr($mName, 0, 1) . (str_contains($mName, ' ') ? substr(explode(' ', $mName)[1] ?? '', 0, 1) : ''));
@@ -4789,7 +4822,7 @@
                                     $userType = $m->user_type ?? 'Regular';
                                     $userState = $m->user_state ?? 'Offline';
                                 @endphp
-                                <div class="fcc-renew-card renew-card-item" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
+                                <div class="fcc-renew-card renew-card-item @if($idx >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
                                     <div class="fcc-renew-card-top">
                                         <div class="fcc-renew-card-left">
                                             <span class="fcc-renew-drag-dots"><i class="fa fa-ellipsis-v me-0.5"></i><i class="fa fa-ellipsis-v"></i></span>
@@ -4824,6 +4857,14 @@
                                     </div>
                                 </div>
                             @endforeach
+
+                            @if(count($expiresTodayMembers) > 10)
+                                <div class="fcc-load-more-wrap text-center">
+                                    <button type="button" class="fcc-btn-load-more btn-load-more-renew" data-container="expiresTodayCardsContainer">
+                                        <i class="fa fa-chevron-down"></i> Load more ({{ count($expiresTodayMembers) - 10 }} remaining)
+                                    </button>
+                                </div>
+                            @endif
                         @else
                             <div class="text-center py-5 text-muted">
                                 <i class="fa fa-check-circle fa-2x text-success mb-2 d-block opacity-50"></i>
@@ -4845,7 +4886,7 @@
 
                     <div class="fcc-renew-cards-stack" id="expiresTomorrowCardsContainer">
                         @if(isset($expiresTomorrowMembers) && count($expiresTomorrowMembers) > 0)
-                            @foreach($expiresTomorrowMembers as $m)
+                            @foreach($expiresTomorrowMembers as $idx => $m)
                                 @php
                                     $mName = ucfirst($m->name);
                                     $mInitials = strtoupper(substr($mName, 0, 1) . (str_contains($mName, ' ') ? substr(explode(' ', $mName)[1] ?? '', 0, 1) : ''));
@@ -4855,7 +4896,7 @@
                                     $userType = $m->user_type ?? 'Regular';
                                     $userState = $m->user_state ?? 'Offline';
                                 @endphp
-                                <div class="fcc-renew-card renew-card-item" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
+                                <div class="fcc-renew-card renew-card-item @if($idx >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
                                     <div class="fcc-renew-card-top">
                                         <div class="fcc-renew-card-left">
                                             <span class="fcc-renew-drag-dots"><i class="fa fa-ellipsis-v me-0.5"></i><i class="fa fa-ellipsis-v"></i></span>
@@ -4890,6 +4931,14 @@
                                     </div>
                                 </div>
                             @endforeach
+
+                            @if(count($expiresTomorrowMembers) > 10)
+                                <div class="fcc-load-more-wrap text-center">
+                                    <button type="button" class="fcc-btn-load-more btn-load-more-renew" data-container="expiresTomorrowCardsContainer">
+                                        <i class="fa fa-chevron-down"></i> Load more ({{ count($expiresTomorrowMembers) - 10 }} remaining)
+                                    </button>
+                                </div>
+                            @endif
                         @else
                             <div class="text-center py-5 text-muted">
                                 <i class="fa fa-check-circle fa-2x text-success mb-2 d-block opacity-50"></i>
@@ -4911,7 +4960,7 @@
 
                     <div class="fcc-renew-cards-stack" id="expiresNextCardsContainer">
                         @if(isset($expiresNext23Members) && count($expiresNext23Members) > 0)
-                            @foreach($expiresNext23Members as $m)
+                            @foreach($expiresNext23Members as $idx => $m)
                                 @php
                                     $mName = ucfirst($m->name);
                                     $mInitials = strtoupper(substr($mName, 0, 1) . (str_contains($mName, ' ') ? substr(explode(' ', $mName)[1] ?? '', 0, 1) : ''));
@@ -4921,7 +4970,7 @@
                                     $userType = $m->user_type ?? 'Regular';
                                     $userState = $m->user_state ?? 'Offline';
                                 @endphp
-                                <div class="fcc-renew-card renew-card-item" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
+                                <div class="fcc-renew-card renew-card-item @if($idx >= 10) d-none renew-extra-item @endif" data-name="{{ strtolower($mName) }}" data-coach="{{ strtolower($coach) }}">
                                     <div class="fcc-renew-card-top">
                                         <div class="fcc-renew-card-left">
                                             <span class="fcc-renew-drag-dots"><i class="fa fa-ellipsis-v me-0.5"></i><i class="fa fa-ellipsis-v"></i></span>
@@ -4956,6 +5005,14 @@
                                     </div>
                                 </div>
                             @endforeach
+
+                            @if(count($expiresNext23Members) > 10)
+                                <div class="fcc-load-more-wrap text-center">
+                                    <button type="button" class="fcc-btn-load-more btn-load-more-renew" data-container="expiresNextCardsContainer">
+                                        <i class="fa fa-chevron-down"></i> Load more ({{ count($expiresNext23Members) - 10 }} remaining)
+                                    </button>
+                                </div>
+                            @endif
                         @else
                             <div class="text-center py-5 text-muted">
                                 <i class="fa fa-check-circle fa-2x text-success mb-2 d-block opacity-50"></i>
@@ -6702,13 +6759,22 @@
         e.stopPropagation();
     });
 
-    // Search Box Enter Key redirect to member search
-    $('.fcc-search-input-box input').on('keypress', function(e) {
-        if (e.which === 13) {
-            var query = $(this).val().trim();
-            if (query.length > 0) {
-                window.location.href = "{{ route('nutritionPanel.users.index') }}?search=" + encodeURIComponent(query);
-            }
+    // Renewal Columns Load More
+    $(document).on('click', '.btn-load-more-renew', function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var containerId = $btn.data('container');
+        var $hiddenCards = $('#' + containerId).find('.renew-extra-item.d-none');
+
+        // Show next 10 items
+        var $toShow = $hiddenCards.slice(0, 10);
+        $toShow.removeClass('d-none').hide().fadeIn(250);
+
+        var remaining = $('#' + containerId).find('.renew-extra-item.d-none').length;
+        if (remaining > 0) {
+            $btn.html('<i class="fa fa-chevron-down me-1"></i> Load more (' + remaining + ' remaining)');
+        } else {
+            $btn.closest('.fcc-load-more-wrap').fadeOut(200, function() { $(this).remove(); });
         }
     });
 </script>
