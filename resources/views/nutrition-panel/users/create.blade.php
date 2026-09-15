@@ -22,9 +22,10 @@
 
     .fcc-ums-wrapper {
         width: 100%;
-        max-width: 1260px;
+        max-width: 100%;
         margin: 0;
-        padding: 20px 24px 80px 24px;
+        padding: 18px 28px 80px 28px;
+        box-sizing: border-box;
     }
 
     /* Header Bar */
@@ -250,50 +251,45 @@
         margin: 0 0 20px 34px;
     }
 
-    /* Personal Details Section Layout */
-    .fcc-personal-layout {
-        display: grid;
-        grid-template-columns: 180px 1fr;
-        gap: 24px;
-    }
-
-    @media (max-width: 768px) {
-        .fcc-personal-layout {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* Photo Upload Box */
-    .fcc-photo-box {
-        border: 1px dashed #cbd5e1;
-        border-radius: 14px;
-        padding: 20px 14px;
+    /* Photo Upload Horizontal Strip */
+    .fcc-photo-row {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        text-align: center;
+        gap: 20px;
+        padding: 16px 20px;
         background: #f8fafc;
-        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
     }
 
-    .fcc-photo-box:hover {
-        border-color: var(--ums-primary);
-        background: #f1f5f9;
+    .fcc-avatar-wrap {
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
     }
 
     .fcc-avatar-circle {
-        width: 76px;
-        height: 76px;
+        width: 72px;
+        height: 72px;
         border-radius: 50%;
-        background: #e2e8f0;
-        color: #94a3b8;
+        background: #e0e7ff;
+        color: var(--ums-primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 32px;
-        margin-bottom: 12px;
+        font-size: 26px;
         position: relative;
         overflow: hidden;
+        border: 3px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+    }
+
+    .fcc-avatar-wrap:hover .fcc-avatar-circle {
+        transform: scale(1.03);
+        box-shadow: 0 4px 14px rgba(59, 70, 241, 0.25);
     }
 
     .fcc-avatar-circle img {
@@ -304,10 +300,10 @@
 
     .fcc-avatar-badge {
         position: absolute;
-        bottom: 2px;
-        right: 2px;
-        width: 22px;
-        height: 22px;
+        bottom: 0;
+        right: 0;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         background: var(--ums-primary);
         color: #ffffff;
@@ -316,40 +312,82 @@
         justify-content: center;
         font-size: 11px;
         border: 2px solid #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .fcc-photo-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex-grow: 1;
     }
 
     .fcc-photo-title {
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 800;
         color: var(--ums-text-main);
-        margin-bottom: 3px;
     }
 
     .fcc-photo-hint {
-        font-size: 11px;
+        font-size: 12px;
         color: var(--ums-text-muted);
-        margin-bottom: 14px;
+        margin-bottom: 6px;
     }
 
-    .fcc-btn-choose {
+    .fcc-photo-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fcc-btn-upload-photo {
         background: #ffffff;
-        border: 1px solid var(--ums-border);
-        color: #334155;
-        font-size: 12px;
+        border: 1px solid #cbd5e1;
+        color: #1e293b;
+        font-size: 12.5px;
         font-weight: 700;
-        padding: 6px 14px;
+        padding: 7px 16px;
         border-radius: 8px;
         cursor: pointer;
-        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.18s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
 
-    .fcc-btn-choose:hover {
+    .fcc-btn-upload-photo:hover {
         background: #eff2fe;
         border-color: var(--ums-primary);
         color: var(--ums-primary);
     }
 
+    .fcc-btn-remove-photo {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #ef4444;
+        font-size: 12.5px;
+        font-weight: 700;
+        padding: 7px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.18s ease;
+    }
+
+    .fcc-btn-remove-photo:hover {
+        background: #fee2e2;
+    }
+
     /* Form Fields Grid */
+    .fcc-grid-3-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px 20px;
+    }
+
     .fcc-grid-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -362,8 +400,14 @@
         gap: 16px 18px;
     }
 
+    @media (max-width: 991px) {
+        .fcc-grid-3-col {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
     @media (max-width: 768px) {
-        .fcc-grid-2, .fcc-grid-3 {
+        .fcc-grid-3-col, .fcc-grid-2, .fcc-grid-3 {
             grid-template-columns: 1fr;
         }
     }
@@ -823,84 +867,93 @@
                     </div>
                     <p class="fcc-sec-sub">Basic information used across the member profile</p>
 
-                    <div class="fcc-personal-layout">
-                        <!-- Photo Upload Box -->
-                        <div class="fcc-photo-box">
+                    <!-- Photo Upload Row -->
+                    <div class="fcc-photo-row">
+                        <div class="fcc-avatar-wrap" onclick="$('#imageInput').click();" title="Click to upload profile photo">
                             <div class="fcc-avatar-circle" id="avatarPreviewBox">
                                 <i class="fa fa-user"></i>
-                                <div class="fcc-avatar-badge"><i class="fa fa-cloud-upload"></i></div>
                             </div>
-                            <div class="fcc-photo-title">Upload profile photo</div>
-                            <div class="fcc-photo-hint">PNG or JPG • Max 5 MB</div>
-                            <button type="button" class="fcc-btn-choose" onclick="$('#imageInput').click();">Choose photo</button>
+                            <div class="fcc-avatar-badge"><i class="fa fa-camera"></i></div>
+                        </div>
+                        <div class="fcc-photo-meta">
+                            <div class="fcc-photo-title">Member Profile Photo</div>
+                            <div class="fcc-photo-hint">Upload a JPG, PNG or WEBP photo (Max: 5 MB). Click avatar or choose file.</div>
+                            <div class="fcc-photo-actions">
+                                <button type="button" class="fcc-btn-upload-photo" onclick="$('#imageInput').click();">
+                                    <i class="fa fa-cloud-upload"></i> Upload Photo
+                                </button>
+                                <button type="button" class="fcc-btn-remove-photo" id="btnRemovePhoto" style="display: none;" onclick="removeUploadedPhoto();">
+                                    <i class="fa fa-trash-o"></i> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Fields 3-Column Grid -->
+                    <div class="fcc-grid-3-col">
+                        <!-- Full name -->
+                        <div class="fcc-field-group">
+                            <label class="fcc-label" for="full_name">Full name <span class="req">*</span></label>
+                            <input type="text" name="name" id="full_name" class="fcc-input ums-track" placeholder="Enter member name" required value="{{ old('name') }}" />
                         </div>
 
-                        <!-- Personal Fields Grid -->
-                        <div class="fcc-grid-2">
-                            <!-- Full name -->
-                            <div class="fcc-field-group">
-                                <label class="fcc-label" for="full_name">Full name <span class="req">*</span></label>
-                                <input type="text" name="name" id="full_name" class="fcc-input ums-track" placeholder="Enter member name" required value="{{ old('name') }}" />
-                            </div>
-
-                            <!-- Mobile number -->
-                            <div class="fcc-field-group">
-                                <label class="fcc-label" for="mobile_number">Mobile number <span class="req">*</span></label>
-                                <div class="fcc-input-group">
-                                    <div class="fcc-input-prepend">
-                                        <span>+91</span>
-                                        <i class="fa fa-caret-down ms-1" style="font-size: 10px;"></i>
-                                    </div>
-                                    <input type="text" name="mobile_number" id="mobile_number" class="fcc-input ums-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" data-url="{{ route('nutritionPanel.users.checkMobile') }}" />
+                        <!-- Mobile number -->
+                        <div class="fcc-field-group">
+                            <label class="fcc-label" for="mobile_number">Mobile number <span class="req">*</span></label>
+                            <div class="fcc-input-group">
+                                <div class="fcc-input-prepend">
+                                    <span>+91</span>
+                                    <i class="fa fa-caret-down ms-1" style="font-size: 10px;"></i>
                                 </div>
-                                <div id="mobile_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
+                                <input type="text" name="mobile_number" id="mobile_number" class="fcc-input ums-track numeric" placeholder="Enter mobile number" required value="{{ old('mobile_number') }}" maxlength="10" data-url="{{ route('nutritionPanel.users.checkMobile') }}" />
                             </div>
+                            <div id="mobile_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
+                        </div>
 
-                            <!-- Email address -->
-                            <div class="fcc-field-group">
-                                <label class="fcc-label" for="email">Email address</label>
-                                <input type="email" name="email" id="email" class="fcc-input ums-track" placeholder="member@example.com" value="{{ old('email') }}" data-url="{{ route('nutritionPanel.users.checkEmail') }}" />
-                                <div id="email_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
-                            </div>
+                        <!-- Email address -->
+                        <div class="fcc-field-group">
+                            <label class="fcc-label" for="email">Email address</label>
+                            <input type="email" name="email" id="email" class="fcc-input ums-track" placeholder="member@example.com" value="{{ old('email') }}" data-url="{{ route('nutritionPanel.users.checkEmail') }}" />
+                            <div id="email_error" class="text-danger mt-1" style="font-size: 11.5px; display: none;"></div>
+                        </div>
 
-                            <!-- Date of birth -->
-                            <div class="fcc-field-group">
-                                <label class="fcc-label" for="date_of_birth">Date of birth</label>
-                                <div class="fcc-icon-wrap">
-                                    <input type="text" name="date_of_birth" id="date_of_birth" class="fcc-input ums-track datepicker" placeholder="Select date" value="{{ old('date_of_birth') }}" />
-                                    <i class="fa fa-calendar-o"></i>
-                                </div>
+                        <!-- Date of birth -->
+                        <div class="fcc-field-group">
+                            <label class="fcc-label" for="date_of_birth">Date of birth</label>
+                            <div class="fcc-icon-wrap">
+                                <input type="text" name="date_of_birth" id="date_of_birth" class="fcc-input ums-track datepicker" placeholder="Select date" value="{{ old('date_of_birth') }}" />
+                                <i class="fa fa-calendar-o"></i>
                             </div>
+                        </div>
 
-                            <!-- Age -->
-                            <div class="fcc-field-group">
-                                <label class="fcc-label" for="age">Age <span class="req">*</span></label>
-                                <input type="number" min="5" max="120" name="age" id="age" class="fcc-input ums-track" placeholder="Enter age" required value="{{ old('age') }}" />
-                            </div>
+                        <!-- Age -->
+                        <div class="fcc-field-group">
+                            <label class="fcc-label" for="age">Age <span class="req">*</span></label>
+                            <input type="number" min="5" max="120" name="age" id="age" class="fcc-input ums-track" placeholder="Enter age" required value="{{ old('age') }}" />
+                        </div>
 
-                            <!-- Gender -->
-                            <div class="fcc-field-group">
-                                <label class="fcc-label" for="gender">Gender</label>
-                                <select name="gender" id="gender" class="fcc-input ums-track">
-                                    <option value="">Select gender</option>
-                                    <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>Male</option>
-                                    <option value="2" {{ old('gender') == '2' ? 'selected' : '' }}>Female</option>
-                                    <option value="3" {{ old('gender') == '3' ? 'selected' : '' }}>Other</option>
-                                </select>
-                            </div>
+                        <!-- Gender -->
+                        <div class="fcc-field-group">
+                            <label class="fcc-label" for="gender">Gender</label>
+                            <select name="gender" id="gender" class="fcc-input ums-track">
+                                <option value="">Select gender</option>
+                                <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>Male</option>
+                                <option value="2" {{ old('gender') == '2' ? 'selected' : '' }}>Female</option>
+                                <option value="3" {{ old('gender') == '3' ? 'selected' : '' }}>Other</option>
+                            </select>
+                        </div>
 
-                            <!-- User state -->
-                            <div class="fcc-field-group" style="grid-column: 1 / -1;">
-                                <label class="fcc-label" for="user_state">User state</label>
-                                <select name="user_state" id="user_state" class="fcc-input ums-track">
-                                    <option value="">Select user state</option>
-                                    @foreach(config('constants.user_state') as $stateItem)
-                                        <option value="{{ $stateItem['value'] }}" {{ (old('user_state') == $stateItem['value'] || $loop->first) ? 'selected' : '' }}>
-                                            {{ $stateItem['display'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <!-- User state -->
+                        <div class="fcc-field-group" style="grid-column: 1 / -1;">
+                            <label class="fcc-label" for="user_state">User state</label>
+                            <select name="user_state" id="user_state" class="fcc-input ums-track">
+                                <option value="">Select user state</option>
+                                @foreach(config('constants.user_state') as $stateItem)
+                                    <option value="{{ $stateItem['value'] }}" {{ (old('user_state') == $stateItem['value'] || $loop->first) ? 'selected' : '' }}>
+                                        {{ $stateItem['display'] }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -1231,11 +1284,26 @@
             if (this.files && this.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(evt) {
-                    $('#avatarPreviewBox').html('<img src="' + evt.target.result + '" alt="Avatar" /><div class="fcc-avatar-badge"><i class="fa fa-check"></i></div>');
+                    $('#avatarPreviewBox').html('<img src="' + evt.target.result + '" alt="Avatar" />');
+                    $('#umsSummaryAvatar').html('<img src="' + evt.target.result + '" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />');
+                    $('#btnRemovePhoto').show();
                 };
                 reader.readAsDataURL(this.files[0]);
             }
         });
+
+        window.removeUploadedPhoto = function() {
+            $('#imageInput').val('');
+            $('#avatarPreviewBox').html('<i class="fa fa-user"></i>');
+            var name = $('#full_name').val().trim();
+            if (name !== '') {
+                var initials = name.split(' ').map(function(s) { return s[0]; }).join('').substring(0, 2).toUpperCase();
+                $('#umsSummaryAvatar').html('<span style="font-weight: 700; font-size: 16px;">' + initials + '</span>');
+            } else {
+                $('#umsSummaryAvatar').html('<i class="fa fa-user"></i>');
+            }
+            $('#btnRemovePhoto').hide();
+        };
 
         // Live BMI calculation
         function calculateBmi() {
