@@ -482,14 +482,15 @@
         gap: 8px;
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        padding: 0 14px;
+        padding: 0 16px;
         height: 38px;
         border-radius: 11px;
-        font-size: 12.5px;
+        font-size: 13px;
         font-weight: 600;
         color: #334155;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
         white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .fcc-btn-add {
@@ -3702,14 +3703,34 @@
         box-shadow: var(--fcc-card-shadow);
     }
 
-    .fcc-collect-row-item {
-        display: flex;
+    .fcc-collect-header-row {
+        display: grid;
+        grid-template-columns: 2.2fr 1.1fr 1.2fr 1.4fr 0.9fr;
+        gap: 12px;
+        padding: 8px 12px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #f1f5f9;
         align-items: center;
-        justify-content: space-between;
-        padding: 12px 0;
+    }
+
+    .fcc-collect-row-item {
+        display: grid;
+        grid-template-columns: 2.2fr 1.1fr 1.2fr 1.4fr 0.9fr;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
         border-bottom: 1px solid #f1f5f9;
         font-size: 13px;
-        gap: 10px;
+        border-radius: 10px;
+        transition: background 0.15s ease;
+    }
+
+    .fcc-collect-row-item:hover {
+        background: #f8fafc;
     }
 
     .fcc-collect-row-item:last-child {
@@ -3720,7 +3741,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        min-width: 140px;
+        min-width: 0;
     }
 
     .fcc-collect-avatar {
@@ -3734,6 +3755,16 @@
         font-weight: 800;
         color: #ffffff;
         flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .fcc-collect-header-row {
+            display: none;
+        }
+        .fcc-collect-row-item {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
     }
 
     .fcc-stream-list {
@@ -4003,8 +4034,8 @@
                 </div>
 
                 <div class="fcc-plan-pill">
-                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-                    <span>Active until {{ $endDate->format('d M') }}</span>
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block; flex-shrink: 0;"></span>
+                    <span>Active until {{ $endDate->format('d M Y') }}</span>
                 </div>
 
                 <div class="dropdown fcc-add-dropdown d-inline-block">
@@ -5711,9 +5742,17 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div id="paymentPendingsContainer">
                         @if(isset($paymentPendings) && count($paymentPendings) > 0)
-                            @foreach($paymentPendings->take(4) as $idx => $p)
+                            <div class="fcc-collect-header-row">
+                                <div>Member</div>
+                                <div>Due Amount</div>
+                                <div>Status</div>
+                                <div>Coach</div>
+                                <div class="text-end">Action</div>
+                            </div>
+
+                            @foreach($paymentPendings as $idx => $p)
                                 @php
                                     $pName = ucfirst($p->name);
                                     $inits = strtoupper(substr($pName, 0, 1) . (str_contains($pName, ' ') ? substr(explode(' ', $pName)[1] ?? '', 0, 1) : ''));
@@ -5725,27 +5764,27 @@
                                         $cleanMobile = substr($cleanMobile, 2);
                                     }
                                 @endphp
-                                <div class="fcc-collect-row-item">
+                                <div class="fcc-collect-row-item @if($loop->index >= 10) d-none fcc-collect-extra-item @endif">
                                     <div class="fcc-collect-left">
                                         <div class="fcc-collect-avatar" style="background: {{ $colorBg }};">
                                             {{ $inits ?: 'P' }}
                                         </div>
-                                        <div style="font-weight: 700; color: #0f172a;">{{ $pName }}</div>
+                                        <div style="font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $pName }}</div>
                                     </div>
                                     <div style="font-weight: 800; color: #0f172a;">₹{{ number_format((float)$p->due_amount, 0) }}</div>
-                                    <div style="font-size: 11.5px; font-weight: 600; color: #ef4444;">
+                                    <div style="font-size: 11.5px; font-weight: 600; color: #ef4444; white-space: nowrap;">
                                         <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444; display: inline-block; margin-right: 4px;"></span>
                                         Due today
                                     </div>
-                                    <div class="text-muted" style="font-size: 11.5px;">{{ $p->coach_name ?? 'Assigned Coach' }}</div>
-                                    <div>
+                                    <div class="text-muted" style="font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $p->coach_name ?? 'Assigned Coach' }}</div>
+                                    <div class="text-end">
                                         @if(!empty($cleanMobile))
-                                            <a href="https://wa.me/91{{ $cleanMobile }}?text=Hi%20{{ urlencode($pName) }},%20this%20is%20a%20reminder%20regarding%20your%20pending%20balance%20of%20INR%20{{ $p->due_amount }}%20at%20Fit%20Coach%20Club." target="_blank" class="text-success fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;" title="Send WhatsApp Reminder">
+                                            <a href="https://wa.me/91{{ $cleanMobile }}?text=Hi%20{{ urlencode($pName) }},%20this%20is%20a%20reminder%20regarding%20your%20pending%20balance%20of%20INR%20{{ $p->due_amount }}%20at%20Fit%20Coach%20Club." target="_blank" class="text-success fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12px; text-decoration: none;" title="Send WhatsApp Reminder">
                                                 <span>Remind</span>
                                                 <i class="fa fa-whatsapp"></i>
                                             </a>
                                         @else
-                                            <a href="{{ route('nutritionPanel.users.details', ['id' => ev($p->id)]) }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; text-decoration: none;">
+                                            <a href="{{ route('nutritionPanel.users.details', ['id' => ev($p->id)]) }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12px; text-decoration: none;">
                                                 <span>View</span>
                                                 <i class="fa fa-eye"></i>
                                             </a>
@@ -5753,6 +5792,14 @@
                                     </div>
                                 </div>
                             @endforeach
+
+                            @if(count($paymentPendings) > 10)
+                                <div class="fcc-load-more-wrap text-center mt-2">
+                                    <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="paymentPendingsContainer" data-item-class="fcc-collect-extra-item">
+                                        <i class="fa fa-chevron-down"></i> Load more ({{ count($paymentPendings) - 10 }} remaining)
+                                    </button>
+                                </div>
+                            @endif
                         @else
                             <div class="text-center py-4 text-muted">
                                 <i class="fa fa-check-circle text-success fa-2x mb-2 d-block opacity-75"></i>
@@ -5775,9 +5822,9 @@
                         <h4 class="fw-bold mb-0" style="color: #0f172a; font-size: 15px;">Transaction stream</h4>
                     </div>
 
-                    <div class="fcc-stream-list">
+                    <div class="fcc-stream-list" id="transactionStreamContainer">
                         @if(isset($recentTransactions) && count($recentTransactions) > 0)
-                            @foreach($recentTransactions->take(5) as $trx)
+                            @foreach($recentTransactions as $trx)
                                 @php
                                     $isProduct = ($trx->title == 'Order Placed' || $trx->type == 1);
                                     $tAmt = (float)($trx->received_amount ?: $trx->total_amount);
@@ -5785,7 +5832,7 @@
                                     $tType = !empty($trx->payment_type) ? $trx->payment_type : ($isProduct ? 'Product' : 'Membership');
                                     $tTime = $trx->created_at ? $trx->created_at->diffForHumans() : 'Today';
                                 @endphp
-                                <div class="fcc-stream-item">
+                                <div class="fcc-stream-item @if($loop->index >= 10) d-none fcc-stream-extra-item @endif">
                                     <div class="fcc-stream-left">
                                         <div class="fcc-stream-icon green">
                                             <i class="fa {{ $isProduct ? 'fa-shopping-bag' : 'fa-arrow-down' }}"></i>
@@ -5798,6 +5845,14 @@
                                     <div class="text-muted" style="font-size: 11px;">{{ $tTime }}</div>
                                 </div>
                             @endforeach
+
+                            @if(count($recentTransactions) > 10)
+                                <div class="fcc-load-more-wrap text-center mt-2">
+                                    <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="transactionStreamContainer" data-item-class="fcc-stream-extra-item">
+                                        <i class="fa fa-chevron-down"></i> Load more ({{ count($recentTransactions) - 10 }} remaining)
+                                    </button>
+                                </div>
+                            @endif
                         @else
                             <div class="text-center py-4 text-muted">
                                 <i class="fa fa-credit-card fa-2x mb-2 opacity-40 d-block"></i>
