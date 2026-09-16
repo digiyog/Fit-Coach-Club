@@ -173,7 +173,7 @@ class User extends Authenticatable
         $authUser = auth()->user();
         //----------
 
-        $users = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
+        $users = User::select('users.id', 'users.profile_image', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
         ->where("users.role_type", 'user')->where("users.created_by", $authUser->id);
 
         $users = $users->with('meal_type', function($qry) use($search, $filter, $sort){

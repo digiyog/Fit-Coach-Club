@@ -184,9 +184,23 @@ class UserController extends Controller
                 $cIdx = abs(crc32($name)) % count($colors);
                 $avatarCol = $colors[$cIdx];
 
+                $profileImageUrl = null;
+                if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                    $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                    $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                }
+
+                if ($profileImageUrl) {
+                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 30px; height: 30px; min-width: 30px; object-fit: cover;" alt="'.e($name).'" />';
+                } else {
+                    $avatarInner = '<div class="fcc-member-avatar" style="width: 30px; height: 30px; min-width: 30px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                }
+
                 $memberHtml = '<div class="d-flex align-items-center gap-2">
-                    <div class="fcc-member-avatar" style="width: 36px; height: 36px; min-width: 36px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">
-                        '.$initials.'
+                    <div class="fcc-avatar-wrapper" style="position: relative; width: 38px; height: 38px; min-width: 38px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <div class="fcc-avatar-ring" style="position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid #cbd5e1; border-top-color: transparent; border-bottom-color: transparent; pointer-events: none;"></div>
+                        '.$avatarInner.'
                     </div>
                     <div>
                         <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 13.5px; line-height: 1.25;">'.e($name).'</div>

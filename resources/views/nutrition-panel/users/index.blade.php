@@ -446,6 +446,14 @@
         max-width: 40px !important;
     }
 
+    table.dataTable tbody:before,
+    .table>tbody:before {
+        display: none !important;
+        content: none !important;
+        height: 0 !important;
+        line-height: 0 !important;
+    }
+
     table.dataTable tbody td {
         padding: 13px 14px !important;
         vertical-align: middle !important;
@@ -462,6 +470,27 @@
     }
     table.dataTable tbody tr:last-child td {
         border-bottom: none !important;
+    }
+
+    /* Avatar Ring with two gaps */
+    .fcc-avatar-wrapper {
+        position: relative;
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .fcc-avatar-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 1.5px solid #cbd5e1;
+        border-top-color: transparent !important;
+        border-bottom-color: transparent !important;
+        pointer-events: none;
     }
 
     /* Hide default DataTable elements replaced by custom UI */
