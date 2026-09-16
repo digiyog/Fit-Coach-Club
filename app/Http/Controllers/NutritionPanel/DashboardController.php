@@ -57,6 +57,7 @@ class DashboardController extends Controller
         $selectedMonth = $request->month_filter ? (int)$request->month_filter : (int)date('n');
 
         // 1. Total Members Breakdown
+        $franchiseUserIds = User::where('role_type', 'user')->where('created_by', $userId)->pluck('id')->push($userId);
         $totalUsers = User::where('role_type', 'user')->where('created_by', $userId)->count();
         $offlineUsers = User::where('role_type', 'user')->where('user_state', 'Offline')->where('created_by', $userId)->count();
         $onlineUsers = User::where('role_type', 'user')->where('user_state', 'Online')->where('created_by', $userId)->count();
@@ -79,25 +80,41 @@ class DashboardController extends Controller
             $dayStr = $dayDate->format('Y-m-d');
             $weeklyPulseLabels[] = $dayDate->format('M d');
 
-            $attendCount = Attendance::where('franchise_id', $userId)
+            $attendCount = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                })
                 ->where('type', 2)
-                ->whereDate('date', $dayStr)
+                ->where(function($q) use ($dayStr) {
+                    $q->whereDate('date', $dayStr)->orWhereDate('created_at', $dayStr);
+                })
                 ->count();
+
+            if ($attendCount == 0) {
+                $attendCount = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
+                        $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                    })
+                    ->where(function($q) use ($dayStr) {
+                        $q->whereDate('date', $dayStr)->orWhereDate('created_at', $dayStr);
+                    })
+                    ->count();
+            }
+
             $weeklyPulseAttendance[] = (int)$attendCount;
 
-            $revSum = Transaction::where('created_by', $userId)
+            $revSum = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                })
                 ->whereDate('created_at', $dayStr)
+                ->whereNotNull('received_amount')
                 ->sum('received_amount');
-            if ($revSum == 0) {
-                $revSum = Transaction::where('created_by', $userId)
-                    ->whereDate('created_at', $dayStr)
-                    ->sum('total_amount');
-            }
+
             $weeklyPulseRevenue[] = (float)$revSum;
         }
 
         // Previous 7 days vs current 7 days attendance for growth %
-        $prev7DaysAttendance = Attendance::where('franchise_id', $userId)
+        $prev7DaysAttendance = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->where('type', 2)
             ->whereBetween('date', [Carbon::today()->subDays(13)->format('Y-m-d'), Carbon::today()->subDays(7)->format('Y-m-d')])
             ->count();
@@ -114,79 +131,129 @@ class DashboardController extends Controller
 
         // 3. Today Stats
         $todayDate = date('Y-m-d');
-        $todayCounsellingCount = Attendance::where('franchise_id', $userId)
+        $todayCounsellingCount = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->where('type', 2)
-            ->whereDate('date', $todayDate)
+            ->where(function($q) use ($todayDate) {
+                $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+            })
             ->distinct('user_id')
             ->count('user_id');
 
-        $todayNewMemberships = User::where('role_id', 3)
+        if ($todayCounsellingCount == 0) {
+            $todayCounsellingCount = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                })
+                ->where(function($q) use ($todayDate) {
+                    $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+                })
+                ->distinct('user_id')
+                ->count('user_id');
+        }
+
+        $todayNewMemberships = User::where('role_type', 'user')
             ->where('created_by', $userId)
             ->whereDate('created_at', $todayDate)
             ->count();
 
-        $thisMonthNewMembers = User::where('role_id', 3)
+        $thisMonthNewMembers = User::where('role_type', 'user')
             ->where('created_by', $userId)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
-        $todayRenewalsDue = User::where('role_id', 3)
+        $todayRenewalsDue = User::where('role_type', 'user')
             ->where('created_by', $userId)
             ->where('days', '<=', 10)
             ->where('days', '>', 0)
             ->count();
 
-        $todayUrgentRenewals = User::where('role_id', 3)
+        $todayUrgentRenewals = User::where('role_type', 'user')
             ->where('created_by', $userId)
             ->where('days', '<=', 3)
             ->where('days', '>', 0)
             ->count();
 
-        $thisMonthBirthdayUsers = User::where('role_id', 3)
+        $thisMonthBirthdayUsers = User::where('role_type', 'user')
             ->where('created_by', $userId)
-            ->whereDay('date_of_birth', now()->day)
-            ->whereMonth('date_of_birth', now()->month)
+            ->where(function($q) {
+                $q->where(function($sub) {
+                    $sub->whereDay('date_of_birth', now()->day)->whereMonth('date_of_birth', now()->month);
+                })->orWhere(function($sub) {
+                    $sub->whereDay('dob', now()->day)->whereMonth('dob', now()->month);
+                });
+            })
             ->get();
 
         // 4. Metric Cards
-        $thisMonthShake = Attendance::where('franchise_id', $userId)
+        $thisMonthShake = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->where('type', 2)
-            ->whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
+            ->where(function($q) {
+                $q->whereMonth('date', now()->month)->whereYear('date', now()->year)
+                  ->orWhere(function($sub) {
+                      $sub->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+                  });
+            })
             ->count();
 
-        $thisMonthRevenue = Transaction::where('created_by', $userId)
+        if ($thisMonthShake == 0) {
+            $thisMonthShake = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                })
+                ->where(function($q) {
+                    $q->whereMonth('date', now()->month)->whereYear('date', now()->year)
+                      ->orWhere(function($sub) {
+                          $sub->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+                      });
+                })
+                ->count();
+        }
+
+        $thisMonthRevenue = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
+            ->whereNotNull('received_amount')
             ->sum('received_amount');
-        if ($thisMonthRevenue == 0) {
-            $thisMonthRevenue = Transaction::where('created_by', $userId)
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('total_amount');
-        }
 
-        $todayCollected = Transaction::where('created_by', $userId)
+        $todayCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->whereDate('created_at', $todayDate)
+            ->whereNotNull('received_amount')
             ->sum('received_amount');
-        if ($todayCollected == 0) {
-            $todayCollected = Transaction::where('created_by', $userId)
-                ->whereDate('created_at', $todayDate)
-                ->sum('total_amount');
-        }
 
-        $todayCheckedIn = Attendance::where('franchise_id', $userId)
+        $todayCheckedIn = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->where('type', 2)
-            ->whereDate('date', $todayDate)
+            ->where(function($q) use ($todayDate) {
+                $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+            })
             ->count();
+
+        if ($todayCheckedIn == 0) {
+            $todayCheckedIn = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                })
+                ->where(function($q) use ($todayDate) {
+                    $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+                })
+                ->count();
+        }
 
         $todayAttendences = AttendanceLogs::select('attendance_logs.*', 'users.name', 'users.coach_name')
             ->leftJoin('users', function($join) use ($authUser){
                 $join->on('attendance_logs.user_id', '=', 'users.id');
             })
             ->where('users.created_by', $userId)
-            ->where('attendance_logs.date', $todayDate)
+            ->where(function($q) use ($todayDate) {
+                $q->whereDate('attendance_logs.date', $todayDate)->orWhereDate('attendance_logs.created_at', $todayDate);
+            })
             ->orderBy('attendance_logs.id', 'DESC')
             ->get();
 
@@ -198,9 +265,13 @@ class DashboardController extends Controller
                 DB::raw('COUNT(attendances.id) as total_attendance')
             )
             ->join('users', 'attendances.user_id', '=', 'users.id')
-            ->where('attendances.franchise_id', $userId)
+            ->where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('attendances.franchise_id', $userId)->orWhereIn('attendances.user_id', $franchiseUserIds);
+            })
             ->where('attendances.type', 2)
-            ->whereDate('attendances.date', $todayDate)
+            ->where(function($q) use ($todayDate) {
+                $q->whereDate('attendances.date', $todayDate)->orWhereDate('attendances.created_at', $todayDate);
+            })
             ->groupBy('attendances.user_id', 'attendances.date', 'users.name', 'users.coach_name')
             ->having('total_attendance', '>', 1)
             ->get();
@@ -292,23 +363,45 @@ class DashboardController extends Controller
 
         // 6.5 Finance Tab Specific Metrics
         $todayCollectionsTotal = (float)$todayCollected;
-        $todayOnlineCollected = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('payment_type', 'Online')->sum('received_amount');
+        $todayOnlineCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->whereDate('created_at', $todayDate)
+            ->where('payment_type', 'Online')
+            ->sum('received_amount');
+
         if ($todayOnlineCollected == 0 && $todayCollectionsTotal > 0) {
-            $todayOnlineCollected = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('payment_type', 'Received')->sum('received_amount');
+            $todayOnlineCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+                })
+                ->whereDate('created_at', $todayDate)
+                ->where('payment_type', 'Received')
+                ->sum('received_amount');
         }
         $todayCashCollected = max(0, $todayCollectionsTotal - $todayOnlineCollected);
 
-        $todayProductSales = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('title', 'Order Placed')->sum('received_amount');
-        if ($todayProductSales == 0) {
-            $todayProductSales = (float)Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->where('title', 'Order Placed')->sum('total_amount');
-        }
-        $todayMembershipSales = max(0, $todayCollectionsTotal - $todayProductSales);
-        $todayTransactionsCount = Transaction::where('created_by', $userId)->whereDate('created_at', $todayDate)->count();
+        $todayProductSales = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->whereDate('created_at', $todayDate)
+            ->where('title', 'Order Placed')
+            ->sum('received_amount');
 
-        $thisMonthExpenses = (float)Transaction::where('created_by', $userId)->where('title', 'Order Placed')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->sum('received_amount');
-        if ($thisMonthExpenses == 0) {
-            $thisMonthExpenses = (float)Transaction::where('created_by', $userId)->where('title', 'Order Placed')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->sum('total_amount');
-        }
+        $todayMembershipSales = max(0, $todayCollectionsTotal - $todayProductSales);
+        $todayTransactionsCount = Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->whereDate('created_at', $todayDate)
+            ->count();
+
+        $thisMonthExpenses = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->where('title', 'Order Placed')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('received_amount');
+
         $totalMonthExpense = $thisMonthExpenses;
         $currentMonthRevenueDisplay = (float)$thisMonthRevenue;
         $totalMonthNet = $currentMonthRevenueDisplay - $totalMonthExpense;
@@ -319,10 +412,12 @@ class DashboardController extends Controller
         $monthRevenueTrendData = [];
         $runningTotal = 0;
 
-        $monthlyDailyRev = Transaction::where('created_by', $userId)
+        $monthlyDailyRev = Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
-            ->selectRaw('DAY(created_at) as day_num, SUM(COALESCE(received_amount, total_amount)) as daily_total')
+            ->selectRaw('DAY(created_at) as day_num, SUM(COALESCE(received_amount, 0)) as daily_total')
             ->groupBy('day_num')
             ->pluck('daily_total', 'day_num')
             ->toArray();
