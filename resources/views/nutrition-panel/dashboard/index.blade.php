@@ -5635,48 +5635,57 @@
                     <div>
                         <div class="fcc-today-coll-head">Today's collections</div>
                         <div class="fcc-today-coll-num-row">
-                            <div class="fcc-today-coll-bignum">₹{{ number_format($todayCollectionsTotal ?? 8780, 0) }}</div>
-                            <div class="fcc-growth-pct-badge" style="font-size: 13px;">
-                                <i class="fa fa-arrow-up"></i>
-                                <span>+14.2%</span>
+                            <div class="fcc-today-coll-bignum">₹{{ number_format($todayCollectionsTotal ?? 0, 0) }}</div>
+                            @php
+                                $growthVal = (float)($todayGrowthPct ?? 0);
+                                $isPositiveGrowth = $growthVal >= 0;
+                            @endphp
+                            <div class="fcc-growth-pct-badge" style="font-size: 13px; color: {{ $isPositiveGrowth ? '#16a34a' : '#dc2626' }}; background: {{ $isPositiveGrowth ? '#f0fdf4' : '#fef2f2' }};">
+                                <i class="fa {{ $isPositiveGrowth ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
+                                <span>{{ $isPositiveGrowth ? '+' : '' }}{{ $growthVal }}%</span>
                                 <span class="text-muted fw-normal" style="font-size: 11px; margin-left: 2px;">vs yesterday</span>
                             </div>
                         </div>
 
+                        @php
+                            $currTotalColl = (float)($todayCollectionsTotal ?? 0);
+                            $onlinePct = $currTotalColl > 0 ? round((($todayOnlineCollected ?? 0) / $currTotalColl) * 100, 1) : 0;
+                            $cashPct = $currTotalColl > 0 ? round((($todayCashCollected ?? 0) / $currTotalColl) * 100, 1) : 0;
+                        @endphp
                         <div class="fcc-coll-split-box">
                             <div>
                                 <div class="text-muted" style="font-size: 11.5px; font-weight: 600;"><i class="fa fa-globe text-primary me-1"></i>Online</div>
-                                <div class="fw-bold text-dark" style="font-size: 15px;">₹{{ number_format($todayOnlineCollected ?? 5580, 0) }}</div>
-                                <div class="text-muted" style="font-size: 11px;">63.5%</div>
+                                <div class="fw-bold text-dark" style="font-size: 15px;">₹{{ number_format($todayOnlineCollected ?? 0, 0) }}</div>
+                                <div class="text-muted" style="font-size: 11px;">{{ $onlinePct }}%</div>
                             </div>
 
-                            <div class="fcc-coll-meter-bar"></div>
+                            <div class="fcc-coll-meter-bar" style="background: {{ $currTotalColl > 0 ? '#10b981' : '#e2e8f0' }};"></div>
 
                             <div class="text-end">
                                 <div class="text-muted" style="font-size: 11.5px; font-weight: 600;"><i class="fa fa-money text-success me-1"></i>Cash</div>
-                                <div class="fw-bold text-dark" style="font-size: 15px;">₹{{ number_format($todayCashCollected ?? 3200, 0) }}</div>
-                                <div class="text-muted" style="font-size: 11px;">36.5%</div>
+                                <div class="fw-bold text-dark" style="font-size: 15px;">₹{{ number_format($todayCashCollected ?? 0, 0) }}</div>
+                                <div class="text-muted" style="font-size: 11px;">{{ $cashPct }}%</div>
                             </div>
                         </div>
 
                         <div class="fcc-coll-itemized-list">
                             <div class="fcc-coll-item-row">
                                 <span><i class="fa fa-shopping-bag text-primary me-2"></i>Product &amp; service sales</span>
-                                <strong>₹{{ number_format($todayProductSales ?? 780, 0) }}</strong>
+                                <strong>₹{{ number_format($todayProductSales ?? 0, 0) }}</strong>
                             </div>
                             <div class="fcc-coll-item-row">
                                 <span><i class="fa fa-user-circle text-primary me-2"></i>Membership payments</span>
-                                <strong>₹{{ number_format($todayMembershipSales ?? 8000, 0) }}</strong>
+                                <strong>₹{{ number_format($todayMembershipSales ?? 0, 0) }}</strong>
                             </div>
                             <div class="fcc-coll-item-row">
                                 <span><i class="fa fa-credit-card text-primary me-2"></i>Transactions</span>
-                                <strong>{{ $todayTransactionsCount ?? 7 }}</strong>
+                                <strong>{{ $todayTransactionsCount ?? 0 }}</strong>
                             </div>
                         </div>
                     </div>
 
                     <div class="text-end pt-2 border-top">
-                        <a href="javascript:void(0)" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
+                        <a href="{{ route('nutritionPanel.transactions.index', ['date_range' => date('Y-m-d') . '/' . date('Y-m-d')]) }}" class="text-primary fw-bold d-inline-flex align-items-center gap-1" style="font-size: 12.5px; text-decoration: none;">
                             <span>Open collection details</span>
                             <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
                         </a>

@@ -373,38 +373,67 @@ class DashboardController extends Controller
         }
         $recentActivities = $recentActivities->sortByDesc('raw_time')->take(5)->values();
 
-        // 6.5 Finance Tab Specific Metrics
+        // 6.5 Finance Tab Specific Metrics (Strictly Received Amount - Exclude Pending Dues)
         $todayCollectionsTotal = (float)$todayCollected;
+        
         $todayOnlineCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
                 $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
             })
             ->whereDate('created_at', $todayDate)
-            ->where('payment_type', 'Online')
+            ->whereIn('payment_type', ['Online', 'UPI', 'Net Banking', 'Card', 'Cheque'])
+            ->whereNotNull('received_amount')
             ->sum('received_amount');
 
-        if ($todayOnlineCollected == 0 && $todayCollectionsTotal > 0) {
-            $todayOnlineCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
-                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
-                })
-                ->whereDate('created_at', $todayDate)
-                ->where('payment_type', 'Received')
-                ->sum('received_amount');
+        $todayCashCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->whereDate('created_at', $todayDate)
+            ->whereIn('payment_type', ['Cash', 'Received'])
+            ->whereNotNull('received_amount')
+            ->sum('received_amount');
+
+        if (($todayOnlineCollected + $todayCashCollected) < $todayCollectionsTotal) {
+            $todayCashCollected = max(0, $todayCollectionsTotal - $todayOnlineCollected);
         }
-        $todayCashCollected = max(0, $todayCollectionsTotal - $todayOnlineCollected);
 
         $todayProductSales = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
                 $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
             })
             ->whereDate('created_at', $todayDate)
             ->where('title', 'Order Placed')
+            ->whereNotNull('received_amount')
             ->sum('received_amount');
 
-        $todayMembershipSales = max(0, $todayCollectionsTotal - $todayProductSales);
+        $todayMembershipSales = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->whereDate('created_at', $todayDate)
+            ->whereIn('title', ['Add User Days', 'Subscription', 'Membership'])
+            ->whereNotNull('received_amount')
+            ->sum('received_amount');
+
+        if (($todayProductSales + $todayMembershipSales) < $todayCollectionsTotal) {
+            $todayMembershipSales = max(0, $todayCollectionsTotal - $todayProductSales);
+        }
+
         $todayTransactionsCount = Transaction::where(function($q) use ($userId, $franchiseUserIds) {
                 $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
             })
             ->whereDate('created_at', $todayDate)
+            ->whereNotNull('received_amount')
+            ->where('received_amount', '>', 0)
             ->count();
+
+        $yesterdayCollected = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
+            })
+            ->whereDate('created_at', now()->subDay()->toDateString())
+            ->whereNotNull('received_amount')
+            ->sum('received_amount');
+
+        $todayGrowthPct = $yesterdayCollected > 0 
+            ? round((($todayCollectionsTotal - $yesterdayCollected) / $yesterdayCollected) * 100, 1) 
+            : ($todayCollectionsTotal > 0 ? 100 : 0);
 
         $thisMonthExpenses = (float)Transaction::where(function($q) use ($userId, $franchiseUserIds) {
                 $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
@@ -667,7 +696,7 @@ class DashboardController extends Controller
             ->whereNotNull('users.coach_name')
             ->where('users.coach_name', '!=', '')
             ->groupBy('users.coach_name')
-            ->selectRaw('users.coach_name, SUM(COALESCE(transactions.received_amount, transactions.total_amount)) as total_revenue')
+            ->selectRaw('users.coach_name, SUM(COALESCE(transactions.received_amount, 0)) as total_revenue')
             ->pluck('total_revenue', 'coach_name');
 
         $coachMembers = User::select('id', 'name', 'email', 'mobile_number', 'coach_name', 'user_type', 'user_state', 'days', 'due_amount', 'status', 'created_at')
@@ -784,6 +813,7 @@ class DashboardController extends Controller
         $this->viewData['todayProductSales'] = $todayProductSales;
         $this->viewData['todayMembershipSales'] = $todayMembershipSales;
         $this->viewData['todayTransactionsCount'] = $todayTransactionsCount;
+        $this->viewData['todayGrowthPct'] = $todayGrowthPct;
         $this->viewData['totalMonthExpense'] = $totalMonthExpense;
         $this->viewData['recentTransactions'] = $recentTransactions;
         $this->viewData['currentMonthRevenueDisplay'] = $currentMonthRevenueDisplay;
