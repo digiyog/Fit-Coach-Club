@@ -42,7 +42,7 @@
         gap: 6px;
         font-size: 13px;
         color: #94a3b8;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         font-weight: 500;
     }
     .fcc-breadcrumb-nav a {
@@ -58,8 +58,8 @@
         font-size: 11px;
     }
     .fcc-breadcrumb-active {
-        color: #0f172a;
-        font-weight: 600;
+        color: #64748b;
+        font-weight: 500;
     }
 
     /* 2. Top Header */
@@ -93,10 +93,10 @@
     .fcc-btn-export {
         background: #ffffff;
         border: 1.5px solid #e2e8f0;
-        color: #334155;
+        color: #1e293b;
         font-weight: 600;
         font-size: 13.5px;
-        padding: 9px 16px;
+        padding: 9px 18px;
         border-radius: 10px;
         display: inline-flex;
         align-items: center;
@@ -110,21 +110,20 @@
     .fcc-btn-export i {
         width: 15px;
         height: 15px;
-        color: #475569;
+        color: #3b46f1;
     }
     .fcc-btn-export:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #0f172a;
-        transform: translateY(-1px);
     }
     .fcc-btn-register-member {
-        background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%);
-        border: 1.5px solid var(--fcc-primary);
+        background: #3b46f1;
+        border: 1.5px solid #3b46f1;
         color: #ffffff !important;
         font-weight: 600;
         font-size: 13.5px;
-        padding: 9px 18px;
+        padding: 9px 20px;
         border-radius: 10px;
         display: inline-flex;
         align-items: center;
@@ -141,16 +140,16 @@
         color: #ffffff;
     }
     .fcc-btn-register-member:hover {
-        background: linear-gradient(135deg, #2d38db 0%, #3651db 100%);
+        background: #2d38db;
+        border-color: #2d38db;
         box-shadow: 0 6px 16px rgba(59, 70, 241, 0.38);
-        transform: translateY(-1px);
     }
 
     /* 3. Navigation Tabs */
     .fcc-users-nav-tabs {
         display: flex;
         align-items: center;
-        gap: 22px;
+        gap: 28px;
         border-bottom: 1.5px solid #e2e8f0;
         margin-bottom: 22px;
         padding-bottom: 0;
@@ -158,10 +157,10 @@
     }
     .fcc-tab-item-link {
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         color: #64748b;
         text-decoration: none;
-        padding: 0 2px 12px 2px;
+        padding: 0 2px 14px 2px;
         position: relative;
         transition: color 0.15s ease;
         white-space: nowrap;
@@ -184,20 +183,6 @@
         height: 2.5px;
         background: var(--fcc-primary);
         border-radius: 3px 3px 0 0;
-    }
-    .fcc-tab-count {
-        background: #f1f5f9;
-        color: #64748b;
-        font-size: 11.5px;
-        font-weight: 700;
-        padding: 2px 7.5px;
-        border-radius: 20px;
-        margin-left: 7px;
-        transition: all 0.15s ease;
-    }
-    .fcc-tab-item-link.active .fcc-tab-count {
-        background: #eff2fe;
-        color: var(--fcc-primary);
     }
 
     /* 4. White Card Container */
@@ -712,17 +697,15 @@
 
     <!-- 1. Breadcrumbs -->
     <div class="fcc-breadcrumb-nav">
-        <a href="{{ route('nutritionPanel.dashboard') }}">Dashboard</a>
-        <span class="fcc-breadcrumb-sep">/</span>
         <a href="{{ route('nutritionPanel.users.index') }}">User management</a>
         <span class="fcc-breadcrumb-sep">/</span>
-        <span class="fcc-breadcrumb-active">{{ $currentTabTitle ?? 'All users' }}</span>
+        <span class="fcc-breadcrumb-active">{{ $currentTabTitle ?? 'Offline users' }}</span>
     </div>
 
     <!-- 2. Header & Action Buttons -->
     <div class="fcc-page-header">
         <div>
-            <h1 class="fcc-page-title">{{ $currentTabTitle ?? 'Users' }}</h1>
+            <h1 class="fcc-page-title">{{ $currentTabTitle ?? 'Offline users' }}</h1>
             <p class="fcc-page-subtitle">{{ $currentTabSubtitle ?? 'Manage in-club members, coach assignments, plans and collections' }}</p>
         </div>
         <div class="fcc-header-btns">
@@ -741,19 +724,15 @@
     <div class="fcc-users-nav-tabs">
         <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-tab-item-link {{ empty($userType) ? 'active' : '' }}">
             <span>All users</span>
-            <span class="fcc-tab-count">{{ $totalAllCount ?? 0 }}</span>
         </a>
         <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-tab-item-link {{ $userType == 'demo' ? 'active' : '' }}">
             <span>Demo users</span>
-            <span class="fcc-tab-count">{{ $totalDemoCount ?? 0 }}</span>
         </a>
         <a href="{{ route('nutritionPanel.users.index') }}/offline" class="fcc-tab-item-link {{ $userType == 'offline' ? 'active' : '' }}">
             <span>Offline users</span>
-            <span class="fcc-tab-count">{{ $totalOfflineCount ?? 0 }}</span>
         </a>
         <a href="{{ route('nutritionPanel.users.index') }}/online" class="fcc-tab-item-link {{ $userType == 'online' ? 'active' : '' }}">
             <span>Online users</span>
-            <span class="fcc-tab-count">{{ $totalOnlineCount ?? 0 }}</span>
         </a>
     </div>
 

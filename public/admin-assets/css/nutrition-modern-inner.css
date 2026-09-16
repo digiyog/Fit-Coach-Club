@@ -1724,13 +1724,13 @@ textarea.form-control:focus {
     text-transform: uppercase !important;
     letter-spacing: 0.07em !important;
     color: #94a3b8 !important;
-    padding: 16px 12px 6px 12px !important;
+    padding: 14px 12px 5px 12px !important;
     margin: 0 !important;
     list-style: none !important;
 }
 
 #sidebar ul.menu-categories {
-    padding: 8px 12px 60px 12px !important;
+    padding: 6px 12px 60px 12px !important;
     margin: 0 !important;
     height: auto !important;
 }
@@ -1743,10 +1743,10 @@ textarea.form-control:focus {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 8px 12px !important;
-    border-radius: 9px !important;
+    padding: 7px 11px !important;
+    border-radius: 8px !important;
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
-    font-size: 13.5px !important;
+    font-size: 12px !important;
     font-weight: 500 !important;
     color: #334155 !important;
     background: transparent !important;
@@ -1760,15 +1760,15 @@ textarea.form-control:focus {
 #sidebar ul.menu-categories li.menu > .dropdown-toggle div:first-child {
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 9px !important;
     flex-grow: 1 !important;
     min-width: 0 !important;
 }
 
 #sidebar ul.menu-categories li.menu > .dropdown-toggle svg,
 #sidebar ul.menu-categories li.menu > .dropdown-toggle i {
-    width: 17px !important;
-    height: 17px !important;
+    width: 15px !important;
+    height: 15px !important;
     color: #64748b !important;
     flex-shrink: 0 !important;
     transition: color 0.15s ease !important;
@@ -1777,7 +1777,7 @@ textarea.form-control:focus {
 #sidebar ul.menu-categories li.menu > .dropdown-toggle span {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
     color: #334155 !important;
-    font-size: 13.5px !important;
+    font-size: 12px !important;
     font-weight: 500 !important;
     white-space: nowrap !important;
     line-height: 1.3 !important;
@@ -1801,13 +1801,14 @@ textarea.form-control:focus {
     background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%) !important;
     color: #ffffff !important;
     box-shadow: 0 4px 12px rgba(59, 70, 241, 0.28) !important;
-    border-radius: 9px !important;
+    border-radius: 8px !important;
     transform: none !important;
 }
 
 #sidebar ul.menu-categories li.menu > .dropdown-toggle[data-active="true"] span {
     color: #ffffff !important;
     font-weight: 600 !important;
+    font-size: 12px !important;
 }
 
 #sidebar ul.menu-categories li.menu > .dropdown-toggle[data-active="true"] svg,
@@ -1825,13 +1826,14 @@ textarea.form-control:focus {
 #sidebar ul.menu-categories li.menu > .dropdown-toggle[aria-expanded="true"]:not(.collapsed) i {
     color: #3b46f1 !important;
     font-weight: 600 !important;
+    font-size: 12px !important;
 }
 
 /* Chevron indicator */
 #sidebar ul.menu-categories li.menu > .dropdown-toggle .feather-chevron-right,
 #sidebar ul.menu-categories li.menu > .dropdown-toggle [data-feather="chevron-right"] {
-    width: 13px !important;
-    height: 13px !important;
+    width: 12px !important;
+    height: 12px !important;
     color: #94a3b8 !important;
     flex-shrink: 0 !important;
     transition: transform 0.2s ease !important;
@@ -1845,8 +1847,8 @@ textarea.form-control:focus {
 
 /* Submenu Styling */
 #sidebar ul.menu-categories ul.submenu {
-    padding: 3px 0 5px 12px !important;
-    margin: 3px 0 6px 18px !important;
+    padding: 2px 0 4px 10px !important;
+    margin: 2px 0 5px 16px !important;
     border-left: 1.5px solid #e2e8f0 !important;
 }
 
@@ -1857,12 +1859,12 @@ textarea.form-control:focus {
 #sidebar ul.menu-categories ul.submenu > li a {
     display: flex !important;
     align-items: center !important;
-    padding: 6px 10px !important;
+    padding: 5px 9px !important;
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
-    font-size: 13px !important;
+    font-size: 12px !important;
     font-weight: 500 !important;
     color: #64748b !important;
-    border-radius: 7px !important;
+    border-radius: 6px !important;
     margin: 0 !important;
     white-space: nowrap !important;
     transition: all 0.15s ease !important;
@@ -1872,12 +1874,13 @@ textarea.form-control:focus {
 #sidebar ul.menu-categories ul.submenu > li a:hover {
     color: #3b46f1 !important;
     background: #f8fafc !important;
-    padding-left: 13px !important;
+    padding-left: 11px !important;
 }
 
 #sidebar ul.menu-categories ul.submenu > li.active a {
     color: #3b46f1 !important;
     font-weight: 600 !important;
     background: #eff2fe !important;
+    font-size: 12px !important;
 }
 

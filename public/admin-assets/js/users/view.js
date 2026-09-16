@@ -234,12 +234,12 @@ var User = (function() {
                 oLanguage: {
                     oPaginate: {
                         sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: -1px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Previous',
                         sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>'
+                            'Next <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px; vertical-align: -1px;"><polyline points="9 18 15 12 9 6"></polyline></svg>'
                     },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sInfoEmpty: "Showing 0 to 0 of 0 entries",
+                    sInfo: "Showing _START_–_END_ of _TOTAL_ users",
+                    sInfoEmpty: "Showing 0 to 0 of 0 users",
                     sInfoFiltered: "(filtered from _MAX_ total entries)",
                     sEmptyTable: "No users found matching the criteria",
                     sSearch: '<i data-feather="search"></i>',
