@@ -335,6 +335,52 @@
         border-top: none !important;
         white-space: nowrap !important;
     }
+
+    /* Disable sort arrows on checkbox and action columns */
+    table.dataTable thead th.checkbox-column,
+    table.dataTable thead th.no-sort,
+    table.dataTable thead th.no-content,
+    table.dataTable thead th:first-child,
+    table.dataTable thead th:last-child {
+        background-image: none !important;
+        cursor: default !important;
+    }
+
+    table.dataTable thead th.checkbox-column:before,
+    table.dataTable thead th.checkbox-column:after,
+    table.dataTable thead th.no-sort:before,
+    table.dataTable thead th.no-sort:after,
+    table.dataTable thead th.no-content:before,
+    table.dataTable thead th.no-content:after,
+    table.dataTable thead th:first-child:before,
+    table.dataTable thead th:first-child:after,
+    table.dataTable thead th:last-child:before,
+    table.dataTable thead th:last-child:after {
+        display: none !important;
+        content: "" !important;
+        opacity: 0 !important;
+    }
+
+    table.dataTable thead th.checkbox-column,
+    table.dataTable thead th:first-child {
+        padding-right: 10px !important;
+        padding-left: 12px !important;
+        text-align: center !important;
+        width: 38px !important;
+        min-width: 38px !important;
+        max-width: 38px !important;
+    }
+
+    table.dataTable tbody td:first-child,
+    table.dataTable tbody td.checkbox-column {
+        padding-right: 10px !important;
+        padding-left: 12px !important;
+        text-align: center !important;
+        width: 38px !important;
+        min-width: 38px !important;
+        max-width: 38px !important;
+    }
+
     table.dataTable tbody td {
         padding: 12px 14px !important;
         vertical-align: middle !important;
@@ -360,43 +406,221 @@
         display: none !important;
     }
 
-    /* Pagination Footer Polish */
-    .dataTables_wrapper .dataTables_info {
-        color: #64748b !important;
-        font-size: 13px !important;
+    /* 8. Modern DataTables Footer & Pagination */
+    .fcc-dt-footer {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
+        gap: 14px !important;
+        padding-top: 16px !important;
+        padding-bottom: 2px !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_info {
+        border: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 13.5px !important;
         font-weight: 500 !important;
-        padding-top: 14px !important;
+        color: #64748b !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+        line-height: 1.4 !important;
     }
-    .dataTables_wrapper .dataTables_paginate {
-        padding-top: 10px !important;
+
+    div.dataTables_wrapper div.dataTables_paginate {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        float: none !important;
     }
-    .dataTables_wrapper .dataTables_paginate ul.pagination {
-        gap: 4px;
-        margin-bottom: 0;
+
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
     }
-    .dataTables_wrapper .dataTables_paginate .paginate_button a,
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        border-radius: 7px !important;
+
+    div.dataTables_wrapper div.dataTables_paginate .page-item,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate .page-link,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button a,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+        min-width: 36px !important;
+        height: 36px !important;
+        padding: 0 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 9px !important;
         border: 1px solid #e2e8f0 !important;
         background: #ffffff !important;
         color: #475569 !important;
         font-size: 13px !important;
         font-weight: 600 !important;
-        padding: 5px 11px !important;
-        transition: all 0.15s ease;
+        cursor: pointer !important;
+        transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+        text-decoration: none !important;
+        user-select: none !important;
     }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.active a,
-    .dataTables_wrapper .dataTables_paginate .paginate_button.active {
+
+    div.dataTables_wrapper div.dataTables_paginate .page-item.active .page-link,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button.active a,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button.active {
         background: var(--fcc-primary) !important;
         border-color: var(--fcc-primary) !important;
         color: #ffffff !important;
-        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.25) !important;
+        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.3) !important;
+        font-weight: 700 !important;
     }
-    .dataTables_wrapper .dataTables_paginate .paginate_button:not(.active):not(.disabled):hover a,
-    .dataTables_wrapper .dataTables_paginate .paginate_button:not(.active):not(.disabled):hover {
-        background: #f1f5f9 !important;
+
+    div.dataTables_wrapper div.dataTables_paginate .page-item:not(.active):not(.disabled) .page-link:hover,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button:not(.active):not(.disabled):hover a,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button:not(.active):not(.disabled):hover {
+        background: #f8fafc !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate .page-item.disabled .page-link,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled a,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled {
+        background: #f8fafc !important;
+        border-color: #f1f5f9 !important;
+        color: #cbd5e1 !important;
+        cursor: not-allowed !important;
+        opacity: 0.65 !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate .page-item:first-child .page-link,
+    div.dataTables_wrapper div.dataTables_paginate .page-item:last-child .page-link {
+        border-radius: 9px !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate .page-link svg,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button svg {
+        width: 15px !important;
+        height: 15px !important;
+        stroke-width: 2.2 !important;
+        color: #64748b !important;
+        vertical-align: middle !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate .page-item.disabled .page-link svg,
+    div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled svg {
+        color: #cbd5e1 !important;
+        stroke: #cbd5e1 !important;
+    }
+
+    /* 8. Unique Modern Custom Checkbox */
+    .fcc-custom-checkbox {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin: 0 !important;
+        user-select: none;
+        vertical-align: middle;
+    }
+
+    .fcc-custom-checkbox input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .fcc-checkbox-control {
+        width: 19px;
+        height: 19px;
+        border: 1.8px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        position: relative;
+    }
+
+    .fcc-custom-checkbox:hover .fcc-checkbox-control {
+        border-color: var(--fcc-primary);
+        background: #f8faff;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
+    }
+
+    .fcc-custom-checkbox input[type="checkbox"]:focus + .fcc-checkbox-control {
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.18);
+        border-color: var(--fcc-primary);
+    }
+
+    .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control {
+        background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%) !important;
+        border-color: #3b46f1 !important;
+        box-shadow: 0 2px 8px rgba(59, 70, 241, 0.32);
+    }
+
+    .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control .fcc-check-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .fcc-check-icon {
+        width: 11px;
+        height: 11px;
+        stroke: #ffffff;
+        stroke-width: 2.4;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0;
+        transform: scale(0.6);
+        transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Indeterminate state */
+    .fcc-custom-checkbox input[type="checkbox"]:indeterminate + .fcc-checkbox-control {
+        background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%) !important;
+        border-color: #3b46f1 !important;
+        box-shadow: 0 2px 8px rgba(59, 70, 241, 0.32);
+    }
+
+    .fcc-indeterminate-bar {
+        width: 9px;
+        height: 2.2px;
+        background: #ffffff;
+        border-radius: 2px;
+        display: none;
+    }
+
+    .fcc-custom-checkbox input[type="checkbox"]:indeterminate + .fcc-checkbox-control .fcc-indeterminate-bar {
+        display: block;
+    }
+
+    .fcc-custom-checkbox input[type="checkbox"]:indeterminate + .fcc-checkbox-control .fcc-check-icon {
+        display: none;
     }
 </style>
 @endpush
@@ -569,11 +793,11 @@
         </div>
 
         <!-- 7. Table Container -->
-        <div class="fcc-modern-table-wrap data-table-container">
+        <div class="data-table-container">
             <table id="dataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.users.getUsers') }}" data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" data-destroy-url="{{ route('nutritionPanel.users.destroy') }}">
                 <thead>
                     <tr>
-                        <th class="checkbox-column" style="width: 36px;"></th>
+                        <th class="checkbox-column no-sort no-content text-center" style="width: 38px;"></th>
                         <th>Member</th>
                         <th>User type</th>
                         <th>Contact</th>
@@ -582,7 +806,7 @@
                         <th>Renewal</th>
                         <th>Due amount</th>
                         <th>Status</th>
-                        <th class="text-end" style="width: 60px;">Action</th>
+                        <th class="text-end no-sort no-content" style="width: 60px;">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

@@ -172,19 +172,31 @@ var User = (function() {
                     );
                 },
                 headerCallback: function(e, a, t, n, s) {
-                    e.getElementsByTagName("th")[0].innerHTML =
-                            '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                    var th0 = $(e).find("th").eq(0);
+                    th0.removeClass("sorting sorting_asc sorting_desc sorting_asc_disabled sorting_desc_disabled");
+                    th0.addClass("no-content no-sort checkbox-column text-center");
+                    th0.html(
+                        '<label class="fcc-custom-checkbox m-0">\n<input type="checkbox" name="select_all" class="fcc-checkbox-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="fcc-checkbox-control"><svg viewBox="0 0 12 10" class="fcc-check-icon"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg><span class="fcc-indeterminate-bar"></span></span>\n</label>'
+                    );
                 },
+                order: [],
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "30px",
-                        className: "",
-                        orderable: !1,
+                        width: "38px",
+                        className: "checkbox-column no-sort no-content text-center",
+                        orderable: false,
+                        searchable: false,
                         visible: true,
                         render: function(e, a, t, n) {
-                            return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                            return '<label class="fcc-custom-checkbox m-0">\n<input type="checkbox" class="fcc-checkbox-input child-chk select-customers-primary">\n<span class="fcc-checkbox-control"><svg viewBox="0 0 12 10" class="fcc-check-icon"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg><span class="fcc-indeterminate-bar"></span></span>\n</label>';
                         }
+                    },
+                    {
+                        targets: 9,
+                        orderable: false,
+                        searchable: false,
+                        className: "no-sort no-content text-end"
                     }
                 ],
                 buttons: {
@@ -216,11 +228,14 @@ var User = (function() {
                 oLanguage: {
                     oPaginate: {
                         sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>',
                         sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>'
                     },
                     sInfo: "Showing records _START_ to _END_ of _TOTAL_",
+                    sInfoEmpty: "Showing 0 to 0 of 0 entries",
+                    sInfoFiltered: "(filtered from _MAX_ total entries)",
+                    sEmptyTable: "No users found matching the criteria",
                     sSearch: '<i data-feather="search"></i>',
                     sSearchPlaceholder: "Search...",
                     sLengthMenu: "Results :  _MENU_"
@@ -232,8 +247,7 @@ var User = (function() {
                     [20, 50, 75, 100]
                 ],
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: '<"fcc-modern-table-wrap"rt><"fcc-dt-footer"ip>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
