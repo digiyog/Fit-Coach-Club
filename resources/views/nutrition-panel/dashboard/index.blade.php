@@ -3868,7 +3868,7 @@
                     <button class="fcc-icon-btn dropdown-toggle" type="button" id="fccNotificationDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Notifications & Alerts">
                         <i class="fa fa-bell"></i>
                         @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
-                            <span class="badge-dot">{{ $totalAlertsCount }}</span>
+                            <span class="badge-dot" id="fccNotifBadge">{{ $totalAlertsCount }}</span>
                         @endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-end fcc-notif-menu shadow-lg border-0" aria-labelledby="fccNotificationDropdown">
@@ -3877,7 +3877,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="fcc-notif-title">Alerts & Notifications</span>
                                     @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
-                                        <span class="badge rounded-pill bg-danger" style="font-size: 11px; padding: 3px 8px;">{{ $totalAlertsCount }} new</span>
+                                        <span class="badge rounded-pill bg-danger" id="fccNotifNewBadge" style="font-size: 11px; padding: 3px 8px;">{{ $totalAlertsCount }} new</span>
                                     @endif
                                 </div>
                                 @if(isset($totalAlertsCount) && $totalAlertsCount > 0)
@@ -7097,6 +7097,41 @@
     // Keep dropdown open when interacting with filter buttons inside
     $(document).on('click', '.fcc-notif-header, .fcc-notif-filter-tabs', function(e) {
         e.stopPropagation();
+    });
+
+    // Reset unread count to zero on click
+    var notifTotalCount = {{ (int)($totalAlertsCount ?? 0) }};
+
+    function resetUnreadNotifications() {
+        $('#fccNotifBadge, .fcc-notif-dropdown .badge-dot').fadeOut(200, function() {
+            $(this).remove();
+        });
+        $('#fccNotifNewBadge').fadeOut(200, function() {
+            $(this).remove();
+        });
+        try {
+            localStorage.setItem('fcc_notifications_read_count', notifTotalCount);
+            sessionStorage.setItem('fcc_notifications_read', '1');
+        } catch(e) {}
+    }
+
+    // Check on page load if user already marked this count as read
+    try {
+        var lastReadCount = parseInt(localStorage.getItem('fcc_notifications_read_count') || '0', 10);
+        var isSessionRead = sessionStorage.getItem('fcc_notifications_read') === '1';
+        if (isSessionRead || (notifTotalCount > 0 && lastReadCount >= notifTotalCount)) {
+            $('#fccNotifBadge, .fcc-notif-dropdown .badge-dot').remove();
+            $('#fccNotifNewBadge').remove();
+        }
+    } catch(e) {}
+
+    // When clicking the bell icon button or opening dropdown
+    $(document).on('click', '#fccNotificationDropdown', function() {
+        resetUnreadNotifications();
+    });
+
+    $('#fccNotificationDropdown').on('show.bs.dropdown shown.bs.dropdown', function() {
+        resetUnreadNotifications();
     });
 
     // Generic Load More Handler for all list items across tabs
