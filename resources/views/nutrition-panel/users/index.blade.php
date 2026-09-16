@@ -219,16 +219,17 @@
         margin-bottom: 18px;
     }
     .fcc-search-wrap {
-        position: relative;
+        position: relative !important;
         flex-grow: 1;
-        max-width: 340px;
-        min-width: 240px;
-        display: flex;
-        align-items: center;
+        max-width: 330px !important;
+        min-width: 240px !important;
+        display: flex !important;
+        align-items: center !important;
     }
     .fcc-search-wrap svg,
     .fcc-search-wrap i,
-    .fcc-search-wrap .feather {
+    .fcc-search-wrap .feather,
+    .fcc-search-wrap .feather-search {
         position: absolute !important;
         left: 14px !important;
         top: 50% !important;
@@ -238,25 +239,35 @@
         height: 16px !important;
         pointer-events: none !important;
         margin: 0 !important;
-        z-index: 2 !important;
+        padding: 0 !important;
+        z-index: 5 !important;
     }
-    .fcc-search-input {
+    input.fcc-search-input,
+    #fccSearchInput {
         width: 100% !important;
         height: 40px !important;
-        background: #f8fafc !important;
+        background-color: #f8fafc !important;
         border: 1.5px solid #e2e8f0 !important;
         border-radius: 10px !important;
-        padding-left: 40px !important;
+        padding-left: 44px !important;
         padding-right: 14px !important;
         font-size: 13.5px !important;
         color: #0f172a !important;
         transition: all 0.18s ease !important;
+        box-shadow: none !important;
     }
-    .fcc-search-input:focus {
-        background: #ffffff !important;
+    input.fcc-search-input:focus,
+    #fccSearchInput:focus {
+        background-color: #ffffff !important;
         border-color: var(--fcc-primary) !important;
         box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
         outline: none !important;
+    }
+    input.fcc-search-input::placeholder,
+    #fccSearchInput::placeholder {
+        color: #94a3b8 !important;
+        font-size: 13.5px !important;
+        opacity: 1 !important;
     }
     .fcc-filters-group {
         display: flex;
@@ -514,21 +525,30 @@
     div.dataTables_wrapper div.dataTables_paginate ul.pagination {
         display: flex !important;
         align-items: center !important;
-        gap: 5px !important;
+        gap: 6px !important;
         margin: 0 !important;
         padding: 0 !important;
         list-style: none !important;
     }
 
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button,
     div.dataTables_wrapper div.dataTables_paginate .page-item,
     div.dataTables_wrapper div.dataTables_paginate .paginate_button {
         margin: 0 !important;
         padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        min-width: 0 !important;
+        height: auto !important;
+        display: inline-flex !important;
+        align-items: center !important;
     }
 
-    div.dataTables_wrapper div.dataTables_paginate .page-link,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button a,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li a,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li .page-link {
         min-width: 36px !important;
         height: 36px !important;
         padding: 0 10px !important;
@@ -548,9 +568,8 @@
         user-select: none !important;
     }
 
-    div.dataTables_wrapper div.dataTables_paginate .page-item.active .page-link,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button.active a,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button.active {
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.active a,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.active .page-link {
         background: var(--fcc-primary) !important;
         border-color: var(--fcc-primary) !important;
         color: #ffffff !important;
@@ -558,9 +577,8 @@
         font-weight: 700 !important;
     }
 
-    div.dataTables_wrapper div.dataTables_paginate .page-item:not(.active):not(.disabled) .page-link:hover,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button:not(.active):not(.disabled):hover a,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button:not(.active):not(.disabled):hover {
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li:not(.active):not(.disabled) a:hover,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li:not(.active):not(.disabled) .page-link:hover {
         background: #f8fafc !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
@@ -568,9 +586,8 @@
         box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08) !important;
     }
 
-    div.dataTables_wrapper div.dataTables_paginate .page-item.disabled .page-link,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled a,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled {
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.disabled a,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.disabled .page-link {
         background: #f8fafc !important;
         border-color: #f1f5f9 !important;
         color: #cbd5e1 !important;
@@ -580,22 +597,17 @@
         transform: none !important;
     }
 
-    div.dataTables_wrapper div.dataTables_paginate .page-item:first-child .page-link,
-    div.dataTables_wrapper div.dataTables_paginate .page-item:last-child .page-link {
-        border-radius: 9px !important;
-    }
-
-    div.dataTables_wrapper div.dataTables_paginate .page-link svg,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button svg {
-        width: 15px !important;
-        height: 15px !important;
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li a svg,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li .page-link svg {
+        width: 14px !important;
+        height: 14px !important;
         stroke-width: 2.2 !important;
         color: #64748b !important;
         vertical-align: middle !important;
     }
 
-    div.dataTables_wrapper div.dataTables_paginate .page-item.disabled .page-link svg,
-    div.dataTables_wrapper div.dataTables_paginate .paginate_button.disabled svg {
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.disabled a svg,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.disabled .page-link svg {
         color: #cbd5e1 !important;
         stroke: #cbd5e1 !important;
     }
@@ -759,7 +771,7 @@
             <!-- Search Box -->
             <div class="fcc-search-wrap">
                 <i data-feather="search"></i>
-                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search name, email or mobile..." autocomplete="off" />
+                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search name, email or mobile..." autocomplete="off" style="padding-left: 44px !important;" />
             </div>
 
             <!-- Filter Dropdowns Group -->
