@@ -237,9 +237,12 @@ var User = (function() {
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
-                        d.name = $("#name").val();
+                        d.name = $("#fccSearchInput").val() || $("#name").val();
                         d.email = $("#email").val();
                         d.mobile_number = $("#mobile_number").val();
+                        d.coach_name = $("#coach_name").val();
+                        d.plan_id = $("#plan_id").val();
+                        d.payment_status = $("#payment_status").val();
                         d.date_range = $("#date_range").val();
                         d.user_type = $("input[name=user_type]").val();
                     }
@@ -249,25 +252,23 @@ var User = (function() {
                         data: null,
                         name: "",
                         searchable: false,
-                        sortable: false
+                        sortable: false,
+                        width: "36px"
                     },
+                    { data: "member", name: "name" },
                     { data: "user_type", name: "user_type" },
-                    { data: "name", name: "name" },
-                    { data: "email", name: "email" },
-                    { data: "mobile_number", name: "mobile_number" },
+                    { data: "contact", name: "mobile_number" },
                     { data: "coach_name", name: "coach_name" },
-                    { data: "meal_type", name: "meal_type" },
-                    { data: "product_type", name: "product_type" },
+                    { data: "plan", name: "meal_type" },
                     { data: "days", name: "days" },
                     { data: "due_amount", name: "due_amount" },
-                    { data: "status", name: "status" , width:80 },
+                    { data: "status", name: "status" },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
                         sortable: false,
-                        width:50,
-                        className: "text-right"
+                        className: "text-end"
                     }
                 ],
                 rowCallback: function(row, data, dataIndex) {

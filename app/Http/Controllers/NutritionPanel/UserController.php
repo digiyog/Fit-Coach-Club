@@ -56,31 +56,56 @@ class UserController extends Controller
             'Users' => '',
         ];
 
-        // Breadcrumb Button
-        $breadcrumbButton = [];
-        // Add Button
+        // Counts for tabs
+        $totalAllCount = User::getUsers(null, null, null, ['user_type' => false]);
+        $totalDemoCount = User::getUsers(null, null, null, ['user_type' => 'demo']);
+        $totalOfflineCount = User::getUsers(null, null, null, ['user_type' => 'offline']);
+        $totalOnlineCount = User::getUsers(null, null, null, ['user_type' => 'online']);
 
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
-            'btn_link' => 'javascript:;',
-            'btn_icon' => 'filter',
-            'btn_text' => __('language.filter'),
-            'attributes' => []
-        ];
-      
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-primary mt-2 rounded-circle',
-            'btn_link' => route('nutritionPanel.users.create'),
-            'btn_icon' => 'plus',
-            'btn_text' => __('language.add_button'),
-            'attributes' => []
-        ];
+        // Coaches list
+        $coachesList = User::where('created_by', $authUser->id)
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->groupBy('coach_name')
+            ->pluck('coach_name');
+
+        // Meal and Product types
+        $mealTypes = MealType::where('status', 1)->orderBy('name')->get();
+        $productTypes = ProductType::where('status', 1)->orderBy('name')->get();
+
+        // Titles and counts for current selected tab
+        if ($userType == 'offline') {
+            $currentTabTitle = 'Offline users';
+            $currentTabSubtitle = 'Manage in-club members, coach assignments, plans and collections';
+            $currentTabCount = $totalOfflineCount;
+        } elseif ($userType == 'online') {
+            $currentTabTitle = 'Online users';
+            $currentTabSubtitle = 'Manage remote online members, coach assignments, and plans';
+            $currentTabCount = $totalOnlineCount;
+        } elseif ($userType == 'demo') {
+            $currentTabTitle = 'Demo users';
+            $currentTabSubtitle = 'Manage trial & demo members, coach assignments, and plans';
+            $currentTabCount = $totalDemoCount;
+        } else {
+            $currentTabTitle = 'All users';
+            $currentTabSubtitle = 'Manage all registered members, coach assignments, plans and collections';
+            $currentTabCount = $totalAllCount;
+        }
 
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
-        $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
         $this->viewData['userType'] = $userType;
+        $this->viewData['coachesList'] = $coachesList;
+        $this->viewData['mealTypes'] = $mealTypes;
+        $this->viewData['productTypes'] = $productTypes;
+        $this->viewData['totalAllCount'] = $totalAllCount;
+        $this->viewData['totalDemoCount'] = $totalDemoCount;
+        $this->viewData['totalOfflineCount'] = $totalOfflineCount;
+        $this->viewData['totalOnlineCount'] = $totalOnlineCount;
+        $this->viewData['currentTabTitle'] = $currentTabTitle;
+        $this->viewData['currentTabSubtitle'] = $currentTabSubtitle;
+        $this->viewData['currentTabCount'] = $currentTabCount;
         
         return view('nutrition-panel.users.index')->with($this->viewData);
     }
@@ -101,14 +126,17 @@ class UserController extends Controller
         $draw   = $request->get('draw');
         $start  = $request->get('start');
         $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $sort   = $request->get('order')[0] ?? null;
+        $search = $request->get('search')['value'] ?? null;
         
         // Filter Parameters
         $filter = array(
             "name" => $request->name,
             "email" => $request->email,
             "mobile_number" => $request->mobile_number,
+            "coach_name" => $request->coach_name,
+            "plan_id" => $request->plan_id,
+            "payment_status" => $request->payment_status,
             "date_range" => $request->date_range,
             'user_type' => $request['user_type']
         );
@@ -121,98 +149,130 @@ class UserController extends Controller
 
         if(count($records) > 0)
         {
+            $colors = [
+                ['bg' => '#eff6ff', 'color' => '#2563eb'], // Blue
+                ['bg' => '#f3e8ff', 'color' => '#9333ea'], // Purple
+                ['bg' => '#dcfce7', 'color' => '#16a34a'], // Green
+                ['bg' => '#ffedd5', 'color' => '#ea580c'], // Orange
+                ['bg' => '#fef3c7', 'color' => '#d97706'], // Amber
+                ['bg' => '#fce7f3', 'color' => '#db2777'], // Pink
+                ['bg' => '#e0e7ff', 'color' => '#4f46e5'], // Indigo
+            ];
+
             foreach($records as $key => $value)
             {
-                $user_type      = 'N/A';
-                $name           = 'N/A';
-                $email          = 'N/A';
-                $mobile_number  = 'N/A';
-                $coach_name     = 'N/A';
-                $meal_type      = 'N/A';
-                $product_type   = 'N/A';
-                $due_amount     = 'N/A';
-                $status         = '';
-                $action         = '';
+                $name           = !empty($value->name) ? $value->name : 'N/A';
+                $email          = !empty($value->email) ? $value->email : '';
+                $mobile_number  = !empty($value->mobile_number) ? $value->mobile_number : 'N/A';
+                $coach_name     = !empty($value->coach_name) ? $value->coach_name : 'N/A';
+                $meal_type      = !empty($value->meal_type->name) ? $value->meal_type->name : '';
+                $product_type   = !empty($value->product_type->name) ? $value->product_type->name : '';
+                $due_amount     = !empty($value->due_amount) ? (float)$value->due_amount : 0;
+                $days           = $value->days ?? 0;
 
-                // Preparing Data
-                if(!empty($value->name)){
-                    $name = $value->name;
+                // 1. Initials and Avatar
+                $initials = '';
+                $nameWords = explode(' ', trim($name));
+                foreach ($nameWords as $w) {
+                    if (!empty($w)) {
+                        $initials .= strtoupper(substr($w, 0, 1));
+                    }
                 }
+                $initials = substr($initials, 0, 2);
+                if (empty($initials)) $initials = 'U';
 
-                if($value->user_type == 'Regular User'){
-                    $user_type = $value->user_type.' ('.$value->user_state.')';
+                $cIdx = abs(crc32($name)) % count($colors);
+                $avatarCol = $colors[$cIdx];
+
+                $memberHtml = '<div class="d-flex align-items-center gap-2">
+                    <div class="fcc-member-avatar" style="width: 36px; height: 36px; min-width: 36px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">
+                        '.$initials.'
+                    </div>
+                    <div>
+                        <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 13.5px; line-height: 1.25;">'.e($name).'</div>
+                        <div class="fcc-member-email text-muted" style="font-size: 11.5px; margin-top: 1px;">'.e($email).'</div>
+                    </div>
+                </div>';
+
+                // 2. User Type
+                $userState = !empty($value->user_state) ? $value->user_state : (($request->user_type == 'offline') ? 'Offline' : (($request->user_type == 'online') ? 'Online' : 'Offline'));
+                $userTypeTitle = ($value->user_type == 'Demo User' || $value->user_type == '3 Days Trial') ? 'Demo' : 'Regular';
+                $userTypeHtml = '<div>
+                    <div style="font-size: 13px; font-weight: 500; color: #334155;">'.$userTypeTitle.'</div>
+                    <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-top: 2px;">'.$userState.'</span>
+                </div>';
+
+                // 3. Contact
+                $contactHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">'.e($mobile_number).'</span>';
+
+                // 4. Coach
+                $coachHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">'.e($coach_name).'</span>';
+
+                // 5. Plan
+                $planTitle = !empty($meal_type) ? $meal_type : (!empty($product_type) ? $product_type : 'Basic Plan');
+                $tierBadge = !empty($product_type) ? $product_type : 'General';
+                $tierStyle = match($tierBadge) {
+                    'Silver' => ['bg' => '#e0e7ff', 'color' => '#3730a3'],
+                    'Gold' => ['bg' => '#fef3c7', 'color' => '#b45309'],
+                    'Bronze' => ['bg' => '#ffedd5', 'color' => '#c2410c'],
+                    default => ['bg' => '#eff6ff', 'color' => '#1d4ed8'],
+                };
+                $planHtml = '<div>
+                    <div style="font-size: 13px; color: #334155; font-weight: 500;">'.e($planTitle).'</div>
+                    <span class="badge" style="background: '.$tierStyle['bg'].'; color: '.$tierStyle['color'].'; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-top: 2px;">'.e($tierBadge).'</span>
+                </div>';
+
+                // 6. Renewal
+                $daysLeft = (int)$days;
+                if ($daysLeft <= 3 && $daysLeft >= 0) {
+                    $renewalHtml = '<span class="badge" style="background: #fef3c7; color: #d97706; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">'.$daysLeft.' days</span>';
+                } elseif ($daysLeft < 0) {
+                    $renewalHtml = '<span class="badge" style="background: #fee2e2; color: #ef4444; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">Expired</span>';
                 } else {
-                    $user_type = $value->user_type;
+                    $renewalHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">'.$daysLeft.' days</span>';
                 }
 
-                if(!empty($value->email)){
-                    $email = $value->email;
-                }
+                // 7. Due Amount
+                $dueHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">₹'.number_format($dueAmount = abs($due_amount), 0).'</span>';
 
-                if(!empty($value->mobile_number)){
-                    $mobile_number = $value->mobile_number;
-                }
-
-                if(!empty($value->coach_name)){
-                    $coach_name = $value->coach_name;
-                }
-
-                if(!empty($value->meal_type->name)){
-                    $meal_type = $value->meal_type->name;
-                }
-
-                if(!empty($value->product_type->name)){
-                    $product_type = $value->product_type->name;
-                }
-
-                $days = $value->days;
-
-                if (!empty($value->due_amount)) {
-                    $due_amount = $value->due_amount; // abs() se positive value milti hai
+                // 8. Status
+                if ($value->status == 0) {
+                    $statusHtml = '<span class="badge" style="background: #fee2e2; color: #991b1b; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;">Inactive</span>';
                 } else {
-                    $due_amount = 0;
+                    $statusHtml = '<span class="badge" style="background: #dcfce7; color: #166534; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;">Active</span>';
                 }
 
-
-                if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
-                } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
-                }
-
-                // $action = '<a href="' . route('nutritionPanel.users.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
-
-                $action = '<div class="dropdown custom-dropdown">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                // 9. Actions
+                $action = '<div class="dropdown custom-dropdown d-inline-block">
+                    <a class="dropdown-toggle fcc-action-dots-btn" href="#" role="button" id="dropdownMenuLink_'.$value->id.'" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #2563eb; font-size: 16px; text-decoration: none; padding: 4px 8px; cursor: pointer;">
+                        <i class="fa fa-ellipsis-h" style="font-size: 17px; letter-spacing: 2px;"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                        <a class="dropdown-item" href="'.route('nutritionPanel.users.edit', ['id' => ev($value->id)]).'">Edit</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.users.viewWeights', ['id' => ev($value->id)]).'">View Weight</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.users.viewAttendance', ['id' => ev($value->id)]).'">View Attendance</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($value->id)]).'">Manual Attendance</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.track-shake.index', ['id' => ev($value->id)]).'">Track Shake</a>
-                        <a class="dropdown-item edit-user-quick cursor-pointer" data-url="' . route('nutritionPanel.users.editUserQuick', ['id' => ev($value->id)]) . '">Edit User Quick</a>
-                        <a class="dropdown-item add-user-days cursor-pointer" data-url="' . route('nutritionPanel.users.addUserDays', ['id' => ev($value->id)]) . '">Add User Days</a>
-                        <a class="dropdown-item subtract-user-days cursor-pointer" data-url="' . route('nutritionPanel.users.subtractUserDays', ['id' => ev($value->id)]) . '">Subtract User Days</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.orders.index', ['id' => ev($value->id)]).'">Purchase Products</a>
-                        <a class="dropdown-item" href="'.route('nutritionPanel.users.details', ['id' => ev($value->id)]).'">View Details</a>
+                    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="dropdownMenuLink_'.$value->id.'" style="border-radius: 12px; min-width: 195px; padding: 6px; border: 1px solid #edf2f7 !important; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important; font-family: \'Outfit\', sans-serif;">
+                        <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.users.edit', ['id' => ev($value->id)]).'"><i class="fa fa-pencil me-2 text-muted"></i> Edit</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.users.viewWeights', ['id' => ev($value->id)]).'"><i class="fa fa-balance-scale me-2 text-muted"></i> View Weight</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.users.viewAttendance', ['id' => ev($value->id)]).'"><i class="fa fa-calendar-check-o me-2 text-muted"></i> View Attendance</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.manual-attendances.manual-attendance', ['id' => ev($value->id)]).'"><i class="fa fa-clock-o me-2 text-muted"></i> Manual Attendance</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.track-shake.index', ['id' => ev($value->id)]).'"><i class="fa fa-coffee me-2 text-muted"></i> Track Shake</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2 edit-user-quick cursor-pointer" data-url="' . route('nutritionPanel.users.editUserQuick', ['id' => ev($value->id)]) . '"><i class="fa fa-bolt me-2 text-muted"></i> Edit User Quick</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2 add-user-days cursor-pointer" data-url="' . route('nutritionPanel.users.addUserDays', ['id' => ev($value->id)]) . '"><i class="fa fa-plus-circle me-2 text-muted"></i> Add User Days</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2 subtract-user-days cursor-pointer" data-url="' . route('nutritionPanel.users.subtractUserDays', ['id' => ev($value->id)]) . '"><i class="fa fa-minus-circle me-2 text-muted"></i> Subtract User Days</a>
+                        <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.orders.index', ['id' => ev($value->id)]).'"><i class="fa fa-shopping-cart me-2 text-muted"></i> Purchase Products</a>
+                        <div class="dropdown-divider my-1"></div>
+                        <a class="dropdown-item py-2 px-3 rounded-2 text-primary fw-bold" href="'.route('nutritionPanel.users.details', ['id' => ev($value->id)]).'"><i class="fa fa-id-card-o me-2 text-primary"></i> View Details</a>
                     </div>
                 </div>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"                => $value->id,
-                    "user_type"         => $user_type,
-                    "name"              => $name,
-                    "email"             => $email,
-                    "mobile_number"     => $mobile_number,
-                    "coach_name"        => $coach_name,
-                    "meal_type"         => $meal_type,
-                    "product_type"      => $product_type,
-                    "days"              => $days,
-                    "due_amount"        => $due_amount,
-                    "status"            => $status,
+                    "member"            => $memberHtml,
+                    "user_type"         => $userTypeHtml,
+                    "contact"           => $contactHtml,
+                    "coach_name"        => $coachHtml,
+                    "plan"              => $planHtml,
+                    "days"              => $renewalHtml,
+                    "due_amount"        => $dueHtml,
+                    "status"            => $statusHtml,
                     "action"            => $action,
                 );
             }

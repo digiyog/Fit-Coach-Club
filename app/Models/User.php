@@ -214,6 +214,27 @@ class User extends Authenticatable
                 $query->whereRaw('(lower(users.mobile_number) LIKE \'%'.trim(strtolower($filter['mobile_number'])).'%\')');
             }
 
+            if (!empty($filter) && !empty($filter['coach_name'])) {
+                $query->where('users.coach_name', $filter['coach_name']);
+            }
+
+            if (!empty($filter) && !empty($filter['plan_id'])) {
+                $pId = $filter['plan_id'];
+                $query->where(function($q) use ($pId) {
+                    $q->where('users.meal_type_id', $pId)->orWhere('users.product_type_id', $pId);
+                });
+            }
+
+            if (!empty($filter) && !empty($filter['payment_status'])) {
+                if ($filter['payment_status'] == 'paid') {
+                    $query->where(function($q) {
+                        $q->whereNull('users.due_amount')->orWhere('users.due_amount', '<=', 0);
+                    });
+                } elseif ($filter['payment_status'] == 'pending') {
+                    $query->where('users.due_amount', '>', 0);
+                }
+            }
+
             if (!empty($filter) && !empty($filter['date_range'])) {
                 $date_range = explode('/', $filter['date_range']);
                 $last_30_days = [
@@ -230,13 +251,13 @@ class User extends Authenticatable
         if(!(empty($search)))
         {
             $search = strtolower($search);
-            $users = $users->whereRaw('((lower(users.name) LIKE \'%'.$search.'%\')  OR lower(users.email) LIKE \'%'.$search.'%\'  OR lower(users.mobile_number) LIKE \'%'.$search.'%\' )');
+            $users = $users->whereRaw('((lower(users.name) LIKE \'%'.$search.'%\')  OR lower(users.email) LIKE \'%'.$search.'%\'  OR lower(users.mobile_number) LIKE \'%'.$search.'%\'  OR lower(users.coach_name) LIKE \'%'.$search.'%\' )');
         }
         
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("", "user_type", "name", "email", "mobile_number", "coach_name", "", "", "days", "due_amount", "status");
+            $arr_fields = array("", "name", "user_type", "mobile_number", "coach_name", "meal_type_id", "days", "due_amount", "status", "");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")

@@ -1,114 +1,596 @@
 @extends('nutrition-panel.layouts.main-layout')
 
-@section('page-title', 'Users | '.__('language.page_main_title').'')
+@section('page-title', ($currentTabTitle ?? 'Users') . ' | ' . __('language.page_main_title'))
 
 @push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <link href="{{ asset('admin-assets/css/forms/theme-checkbox-radio.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/datatables.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<style>
+    :root {
+        --fcc-primary: #3b46f1;
+        --fcc-primary-hover: #2d38db;
+        --fcc-dark: #0f172a;
+        --fcc-muted: #64748b;
+        --fcc-border: #edf2f7;
+        --fcc-bg-card: #ffffff;
+        --fcc-page-bg: #f8fafc;
+    }
+
+    body {
+        background-color: var(--fcc-page-bg) !important;
+        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+    }
+
+    .fcc-users-page-wrapper {
+        padding: 16px 20px 40px 20px;
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* 1. Breadcrumbs */
+    .fcc-breadcrumb-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .fcc-breadcrumb-nav a {
+        color: #64748b;
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+    .fcc-breadcrumb-nav a:hover {
+        color: var(--fcc-primary);
+    }
+    .fcc-breadcrumb-sep {
+        color: #cbd5e1;
+        font-size: 11px;
+    }
+    .fcc-breadcrumb-active {
+        color: #0f172a;
+        font-weight: 600;
+    }
+
+    /* 2. Top Header */
+    .fcc-page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    .fcc-page-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--fcc-dark);
+        letter-spacing: -0.025em;
+        margin-bottom: 3px;
+        line-height: 1.2;
+    }
+    .fcc-page-subtitle {
+        font-size: 13.5px;
+        color: var(--fcc-muted);
+        margin-bottom: 0;
+        font-weight: 400;
+    }
+    .fcc-header-btns {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .fcc-btn-export {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        font-weight: 600;
+        font-size: 13.5px;
+        padding: 8px 16px;
+        border-radius: 9px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: all 0.15s ease;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        text-decoration: none;
+    }
+    .fcc-btn-export:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+    .fcc-btn-register-member {
+        background: var(--fcc-primary);
+        border: 1px solid var(--fcc-primary);
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 13.5px;
+        padding: 8px 18px;
+        border-radius: 9px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: all 0.15s ease;
+        box-shadow: 0 4px 12px rgba(59, 70, 241, 0.28);
+        text-decoration: none;
+    }
+    .fcc-btn-register-member:hover {
+        background: var(--fcc-primary-hover);
+        border-color: var(--fcc-primary-hover);
+        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.35);
+        transform: translateY(-1px);
+    }
+
+    /* 3. Navigation Tabs */
+    .fcc-users-nav-tabs {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 20px;
+        padding-bottom: 0;
+        overflow-x: auto;
+    }
+    .fcc-tab-item-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: #64748b;
+        text-decoration: none;
+        padding: 0 4px 12px 4px;
+        position: relative;
+        transition: color 0.15s ease;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+    }
+    .fcc-tab-item-link:hover {
+        color: var(--fcc-primary);
+    }
+    .fcc-tab-item-link.active {
+        color: var(--fcc-primary);
+        font-weight: 700;
+    }
+    .fcc-tab-item-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2.5px;
+        background: var(--fcc-primary);
+        border-radius: 3px 3px 0 0;
+    }
+
+    /* 4. White Card Container */
+    .fcc-users-card {
+        background: #ffffff;
+        border: 1px solid #edf2f7;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+        padding: 20px;
+    }
+
+    /* 5. Filter & Search Bar */
+    .fcc-filter-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+    .fcc-search-wrap {
+        position: relative;
+        flex-grow: 1;
+        max-width: 380px;
+        min-width: 250px;
+    }
+    .fcc-search-wrap i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        width: 15px;
+        height: 15px;
+        pointer-events: none;
+    }
+    .fcc-search-input {
+        width: 100%;
+        height: 38px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        padding-left: 36px;
+        padding-right: 12px;
+        font-size: 13.5px;
+        color: #0f172a;
+        transition: all 0.15s ease;
+    }
+    .fcc-search-input:focus {
+        border-color: var(--fcc-primary);
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
+        outline: none;
+    }
+    .fcc-filters-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .fcc-dropdown-pill {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        padding: 7px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #334155;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.15s ease;
+        cursor: pointer;
+    }
+    .fcc-dropdown-pill:hover,
+    .fcc-dropdown-pill[aria-expanded="true"] {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+        color: #0f172a;
+    }
+    .fcc-dropdown-pill i.fcc-chevron {
+        width: 13px;
+        height: 13px;
+        color: #94a3b8;
+    }
+
+    /* 6. Table Controls Toolbar */
+    .fcc-table-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+        padding-top: 2px;
+    }
+    .fcc-count-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .fcc-page-len-btn {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 7px;
+        padding: 4px 9px;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .fcc-page-len-btn:hover {
+        background: #f8fafc;
+    }
+    .fcc-btn-batch {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 6px 13px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #64748b;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.15s ease;
+    }
+    .fcc-btn-batch:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: #f8fafc;
+        color: #94a3b8;
+    }
+    .fcc-btn-batch:not(:disabled):hover {
+        background: #eff2fe;
+        border-color: var(--fcc-primary);
+        color: var(--fcc-primary);
+    }
+
+    /* 7. Modern DataTables Override */
+    .fcc-modern-table-wrap {
+        overflow-x: auto;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+    table.dataTable {
+        margin: 0 !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        width: 100% !important;
+    }
+    table.dataTable thead th {
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        padding: 12px 14px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-top: none !important;
+        white-space: nowrap !important;
+    }
+    table.dataTable tbody td {
+        padding: 12px 14px !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        color: #334155;
+        font-size: 13px;
+        background: transparent !important;
+    }
+    table.dataTable tbody tr:hover td {
+        background: #f8faff !important;
+    }
+    table.dataTable tbody tr.selected td {
+        background: #f0f5ff !important;
+    }
+    table.dataTable tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    /* Hide default DataTable elements replaced by custom UI */
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dt-buttons {
+        display: none !important;
+    }
+
+    /* Pagination Footer Polish */
+    .dataTables_wrapper .dataTables_info {
+        color: #64748b !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        padding-top: 14px !important;
+    }
+    .dataTables_wrapper .dataTables_paginate {
+        padding-top: 10px !important;
+    }
+    .dataTables_wrapper .dataTables_paginate ul.pagination {
+        gap: 4px;
+        margin-bottom: 0;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button a,
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border-radius: 7px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        color: #475569 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 5px 11px !important;
+        transition: all 0.15s ease;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.active a,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.active {
+        background: var(--fcc-primary) !important;
+        border-color: var(--fcc-primary) !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.25) !important;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:not(.active):not(.disabled):hover a,
+    .dataTables_wrapper .dataTables_paginate .paginate_button:not(.active):not(.disabled):hover {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-color: #cbd5e1 !important;
+    }
+</style>
 @endpush
 
 @section('content')
-    @if(isset($breadcrumbFilter))
-        <!-- Include breadcrumb -->
-        @include('nutrition-panel.layouts.breadcrumb-filter')
-        <!--/ Include breadcrumb -->
-    @endif
-    <div class="layout-px-spacing">
+<div class="fcc-users-page-wrapper">
 
-        <div class="row layout-top-spacing custom-datatable-filters hide">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-12 _layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="container-fluid mt2">
-                        <div class="custom-datatable-filter _hide">
-                            {!! Form::open(['class' => 'custom-datatable-filter-form', 'autoComplete' => 'off']) !!}
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h6 class="text-primary"> {{ __('language.filters') }} </h6>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 col-sm-12 col-xs-12">
-                                    <div class="form-group">
-                                        <label> Name </label>
-                                        {!! Form::text('name', '', ['class' => 'form-control filter-field', 'id' => 'name', 'placeholder' => 'Name' ]) !!}
-                                    </div>
-                                </div>
+    <!-- 1. Breadcrumbs -->
+    <div class="fcc-breadcrumb-nav">
+        <a href="{{ route('nutritionPanel.dashboard') }}">Dashboard</a>
+        <span class="fcc-breadcrumb-sep">/</span>
+        <a href="{{ route('nutritionPanel.users.index') }}">User management</a>
+        <span class="fcc-breadcrumb-sep">/</span>
+        <span class="fcc-breadcrumb-active">{{ $currentTabTitle ?? 'All users' }}</span>
+    </div>
 
-                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
-                                    <div class="form-group">
-                                        <label> Email </label>
-                                        {!! Form::text('email', '', ['class' => 'form-control filter-field', 'id' => 'email', 'placeholder' => 'Email' ]) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 col-sm-12 col-xs-12 ps-0">
-                                    <div class="form-group">
-                                        <label> Mobile Number </label>
-                                        {!! Form::text('mobile_number', '', ['class' => 'form-control filter-field', 'id' => 'mobile_number', 'placeholder' => 'Mobile Number' ]) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 col-sm-12 col-xs-12">
-                                    <div class="form-group">
-                                        <label> Date </label>
-                                        {!! Form::text('date_range', request('date_range', ''), ['class' => 'form-control date_range filter-field date-picker', 'id' => 'date_range', 'autocomplete' => 'off', 'placeholder' => 'Date Range', ]) !!}    
-                                    </div>
-                                </div>
-                            </div>
-                            {!! Form::hidden('user_type', $userType, ['class' => 'form-control filter-field', 'id' => 'user_type' ]) !!}
-
-                            <div class="row">
-                                <div class="col-md-4 mb2">
-                                    {{ Form::button( __('language.filter_apply'), ['class' => 'btn btn-primary apply-filter', 'type' => 'button', 'title' => __('language.filter_apply'), 'name' => 'filter'] )}}
-                                    {{ Form::button( __('language.filter_clear'), ['class' => 'btn btn-dark clear-filter', 'type' => 'button', 'title' => __('language.filter_clear'), 'name' => 'clear'] )}}
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- 2. Header & Action Buttons -->
+    <div class="fcc-page-header">
+        <div>
+            <h1 class="fcc-page-title">{{ $currentTabTitle ?? 'Users' }}</h1>
+            <p class="fcc-page-subtitle">{{ $currentTabSubtitle ?? 'Manage in-club members, coach assignments, plans and collections' }}</p>
         </div>
-
-        <div class="row layout-top-spacing">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-                    <div class="container-fluid mt2">
-                        <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8">
-                                <h4>Users </h4>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="table-responsive data-table-container mb-4 mt-2">
-                        <div class="table-responsive _mb-4">
-                            <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.users.getUsers') }}"  data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" data-destroy-url="{{ route('nutritionPanel.users.destroy') }}">
-                                <thead>
-                                    <tr>
-                                        <th class="checkbox-column"> # </th>
-                                        <th>User Type</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Mobile Number</th>
-                                        <th>Coach Name</th>
-                                        <th>Meal Type</th>
-                                        <th>Product Type</th>
-                                        <th>Days Pending</th>
-                                        <th>Due Amount</th>
-                                        <th> {{ __('language.table_status') }} </th>
-                                        <th class="text-end"> {{ __('language.table_action') }} </th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="fcc-header-btns">
+            <button type="button" class="btn fcc-btn-export" id="fccExportBtn" title="Export users data to Excel">
+                <i data-feather="download" style="width: 15px; height: 15px;"></i>
+                <span>Export</span>
+            </button>
+            <a href="{{ route('nutritionPanel.users.create') }}" class="btn fcc-btn-register-member">
+                <i data-feather="plus" style="width: 16px; height: 16px;"></i>
+                <span>Register member</span>
+            </a>
         </div>
     </div>
+
+    <!-- 3. Navigation Tabs -->
+    <div class="fcc-users-nav-tabs">
+        <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-tab-item-link {{ empty($userType) ? 'active' : '' }}">
+            All users
+        </a>
+        <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-tab-item-link {{ $userType == 'demo' ? 'active' : '' }}">
+            Demo users
+        </a>
+        <a href="{{ route('nutritionPanel.users.index') }}/offline" class="fcc-tab-item-link {{ $userType == 'offline' ? 'active' : '' }}">
+            Offline users
+        </a>
+        <a href="{{ route('nutritionPanel.users.index') }}/online" class="fcc-tab-item-link {{ $userType == 'online' ? 'active' : '' }}">
+            Online users
+        </a>
+    </div>
+
+    <!-- 4. Main White Card Container -->
+    <div class="fcc-users-card">
+        
+        <!-- Hidden Inputs for Filtering -->
+        <input type="hidden" name="user_type" id="user_type" value="{{ $userType }}" />
+        <input type="hidden" name="coach_name" id="coach_name" value="" />
+        <input type="hidden" name="plan_id" id="plan_id" value="" />
+        <input type="hidden" name="payment_status" id="payment_status" value="" />
+
+        <!-- 5. Filter & Search Bar -->
+        <div class="fcc-filter-bar">
+            <!-- Search Box -->
+            <div class="fcc-search-wrap">
+                <i data-feather="search"></i>
+                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search name, email or mobile..." autocomplete="off" />
+            </div>
+
+            <!-- Filter Dropdowns Group -->
+            <div class="fcc-filters-group">
+                <!-- Coach Filter -->
+                <div class="dropdown">
+                    <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="coachFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="coachFilterLabel">All coaches</span>
+                        <i data-feather="chevron-down" class="fcc-chevron"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="coachFilterDropdown" style="border-radius: 12px; min-width: 170px; padding: 6px; border: 1px solid #edf2f7 !important;">
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="coach" data-value="">All coaches</a></li>
+                        @foreach($coachesList ?? [] as $coach)
+                            @if(!empty($coach))
+                                <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="coach" data-value="{{ $coach }}">{{ $coach }}</a></li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+
+                <!-- Plan Filter -->
+                <div class="dropdown">
+                    <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="planFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="planFilterLabel">All plans</span>
+                        <i data-feather="chevron-down" class="fcc-chevron"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="planFilterDropdown" style="border-radius: 12px; min-width: 200px; padding: 6px; border: 1px solid #edf2f7 !important;">
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="plan" data-value="">All plans</a></li>
+                        @foreach($mealTypes ?? [] as $mt)
+                            <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="plan" data-value="{{ $mt->id }}">{{ $mt->name }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                <!-- Payment Status Filter -->
+                <div class="dropdown">
+                    <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="paymentFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="paymentFilterLabel">Payment status</span>
+                        <i data-feather="chevron-down" class="fcc-chevron"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="paymentFilterDropdown" style="border-radius: 12px; min-width: 160px; padding: 6px; border: 1px solid #edf2f7 !important;">
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="payment" data-value="">All payments</a></li>
+                        <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="payment" data-value="paid">Paid</a></li>
+                        <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="payment" data-value="pending">Pending Due</a></li>
+                    </ul>
+                </div>
+
+                <!-- More Filters Toggle -->
+                <button type="button" class="btn fcc-dropdown-pill" id="fccMoreFiltersToggle">
+                    <i data-feather="filter" style="width: 14px; height: 14px; color: var(--fcc-primary);"></i>
+                    <span>More filters</span>
+                    <i data-feather="chevron-down" class="fcc-chevron"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Collapsible More Filters (Date Range, etc.) -->
+        <div class="collapse mb-3" id="fccMoreFiltersCollapse">
+            <div class="p-3 bg-light rounded-3 border" style="border-color: #e2e8f0 !important;">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-4">
+                        <label class="form-label text-muted" style="font-size: 12px; font-weight: 600;">Registration Date Range</label>
+                        <input type="text" name="date_range" id="date_range" class="form-control form-control-sm date-picker" placeholder="Select Date Range..." autocomplete="off" />
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end gap-2 mt-3 mt-md-0 pt-md-3">
+                        <button type="button" class="btn btn-sm btn-primary apply-filter px-3">Apply Date</button>
+                        <button type="button" class="btn btn-sm btn-light clear-filter px-3 border" id="fccResetDateBtn">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Toolbar Row (Count, Page Size & Batch Actions) -->
+        <div class="fcc-table-toolbar">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fcc-count-text" id="fccTableCountDisplay">
+                    {{ $currentTabCount ?? 0 }} {{ strtolower($currentTabTitle ?? 'users') }}
+                </span>
+                
+                <!-- Page Size Selector -->
+                <div class="dropdown">
+                    <button class="btn fcc-page-len-btn dropdown-toggle" type="button" id="pageSizeDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="pageSizeLabel">20 per page</span>
+                        <i data-feather="chevron-down" style="width: 12px; height: 12px;"></i>
+                    </button>
+                    <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="pageSizeDropdown" style="border-radius: 10px; min-width: 140px; padding: 4px; border: 1px solid #edf2f7 !important;">
+                        <li><a class="dropdown-item py-1 px-3 rounded-2 active" href="javascript:;" data-page-size="20">20 per page</a></li>
+                        <li><a class="dropdown-item py-1 px-3 rounded-2" href="javascript:;" data-page-size="50">50 per page</a></li>
+                        <li><a class="dropdown-item py-1 px-3 rounded-2" href="javascript:;" data-page-size="75">75 per page</a></li>
+                        <li><a class="dropdown-item py-1 px-3 rounded-2" href="javascript:;" data-page-size="100">100 per page</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 data-table-container">
+                <button type="button" class="btn fcc-btn-batch change-status" disabled title="Change Status of selected users">
+                    <i data-feather="refresh-cw" style="width: 13px; height: 13px;"></i>
+                    <span>Change status</span>
+                </button>
+                <button type="button" class="btn fcc-btn-batch dt-delete" disabled title="Delete selected users">
+                    <i data-feather="trash-2" style="width: 13px; height: 13px;"></i>
+                    <span>Delete</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 7. Table Container -->
+        <div class="fcc-modern-table-wrap data-table-container">
+            <table id="dataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.users.getUsers') }}" data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" data-destroy-url="{{ route('nutritionPanel.users.destroy') }}">
+                <thead>
+                    <tr>
+                        <th class="checkbox-column" style="width: 36px;"></th>
+                        <th>Member</th>
+                        <th>User type</th>
+                        <th>Contact</th>
+                        <th>Coach</th>
+                        <th>Plan</th>
+                        <th>Renewal</th>
+                        <th>Due amount</th>
+                        <th>Status</th>
+                        <th class="text-end" style="width: 60px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -120,4 +602,132 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
 <script src="{{ asset('admin-assets/js/users/view.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    feather.replace();
+
+    // Toggle More Filters
+    $('#fccMoreFiltersToggle').on('click', function() {
+        $('#fccMoreFiltersCollapse').collapse('toggle');
+    });
+
+    // Live search input with debounce
+    var searchTimer;
+    $('#fccSearchInput').on('keyup input', function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function() {
+            if (typeof data_table !== 'undefined') {
+                data_table.ajax.reload();
+            }
+        }, 300);
+    });
+
+    // Coach filter selection
+    $(document).on('click', '[data-filter-type="coach"]', function(e) {
+        e.preventDefault();
+        var val = $(this).data('value');
+        var text = $(this).text();
+        $('#coach_name').val(val);
+        $('#coachFilterLabel').text(text);
+        $('[data-filter-type="coach"]').removeClass('active');
+        $(this).addClass('active');
+        if (typeof data_table !== 'undefined') {
+            data_table.ajax.reload();
+        }
+    });
+
+    // Plan filter selection
+    $(document).on('click', '[data-filter-type="plan"]', function(e) {
+        e.preventDefault();
+        var val = $(this).data('value');
+        var text = $(this).text();
+        $('#plan_id').val(val);
+        $('#planFilterLabel').text(text);
+        $('[data-filter-type="plan"]').removeClass('active');
+        $(this).addClass('active');
+        if (typeof data_table !== 'undefined') {
+            data_table.ajax.reload();
+        }
+    });
+
+    // Payment status filter selection
+    $(document).on('click', '[data-filter-type="payment"]', function(e) {
+        e.preventDefault();
+        var val = $(this).data('value');
+        var text = $(this).text();
+        $('#payment_status').val(val);
+        $('#paymentFilterLabel').text(text);
+        $('[data-filter-type="payment"]').removeClass('active');
+        $(this).addClass('active');
+        if (typeof data_table !== 'undefined') {
+            data_table.ajax.reload();
+        }
+    });
+
+    // Page size dropdown
+    $(document).on('click', '[data-page-size]', function(e) {
+        e.preventDefault();
+        var size = parseInt($(this).data('page-size'), 10);
+        var text = $(this).text();
+        $('#pageSizeLabel').text(text);
+        $('[data-page-size]').removeClass('active');
+        $(this).addClass('active');
+        if (typeof data_table !== 'undefined') {
+            data_table.page.len(size).draw();
+        }
+    });
+
+    // Reset date filter
+    $('#fccResetDateBtn').on('click', function() {
+        $('#date_range').val('');
+        if (typeof data_table !== 'undefined') {
+            data_table.ajax.reload();
+        }
+    });
+
+    // Export button click handler
+    $('#fccExportBtn').on('click', function(e) {
+        e.preventDefault();
+        if (typeof data_table !== 'undefined') {
+            // Trigger DataTable buttons excel if available
+            var btn = data_table.buttons('.buttons-excel');
+            if (btn.length) {
+                btn.trigger();
+            } else {
+                // Export current filtered table data to CSV
+                var csv = [];
+                var rows = document.querySelectorAll("#dataTable tr");
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [], cols = rows[i].querySelectorAll("td, th");
+                    for (var j = 1; j < cols.length - 1; j++) {
+                        var text = cols[j].innerText.replace(/"/g, '""').replace(/\n/g, ' ');
+                        row.push('"' + text + '"');
+                    }
+                    if (row.length > 0) csv.push(row.join(","));
+                }
+                var csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+                var downloadLink = document.createElement("a");
+                downloadLink.download = "{{ strtolower($currentTabTitle ?? 'users') }}_export.csv";
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        }
+    });
+
+    // Update dynamic count on table draw
+    $('#dataTable').on('draw.dt', function() {
+        feather.replace();
+        if (typeof data_table !== 'undefined') {
+            var info = data_table.page.info();
+            if (info) {
+                $('#fccTableCountDisplay').text(info.recordsDisplay + ' {{ strtolower($currentTabTitle ?? "users") }}');
+            }
+        }
+    });
+});
+</script>
 @endpush
