@@ -1,17 +1,19 @@
 <style>
     .fcc-modern-footer-container {
-        padding: 0 6px 16px 6px;
+        padding: 0;
         margin-top: auto !important;
         width: 100%;
     }
 
     .fcc-modern-footer {
         background: #ffffff;
-        border: 1px solid #edf2f7;
-        border-radius: 12px;
-        padding: 8px 18px;
-        max-width: 1560px;
-        margin: 0 auto;
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        border-radius: 0;
+        padding: 10px 20px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
         font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         color: #64748b;
         font-size: 12px;
@@ -20,7 +22,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 10px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+        box-shadow: none;
     }
 
     .fcc-footer-left {
@@ -51,28 +53,6 @@
         align-items: center;
         gap: 12px;
         flex-wrap: wrap;
-    }
-
-    .fcc-footer-status-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 600;
-        color: #475569;
-    }
-
-    .fcc-footer-live-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #10b981;
-        box-shadow: 0 0 5px rgba(16, 185, 129, 0.6);
-        display: inline-block;
     }
 
     .fcc-footer-made-with {
@@ -117,10 +97,6 @@
         </div>
 
         <div class="fcc-footer-right">
-            <span class="fcc-footer-status-tag">
-                <span class="fcc-footer-live-dot"></span>
-                <span>Cloud Active</span>
-            </span>
             <span class="fcc-footer-made-with">
                 Made in India with <i class="fa fa-heart fcc-footer-heart-anim"></i> by 
                 <a href="https://digiyog.com" target="_blank" class="fcc-footer-brand-link">Digiyog Technosoft</a>
