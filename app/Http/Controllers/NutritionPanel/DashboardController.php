@@ -363,12 +363,26 @@ class DashboardController extends Controller
             ]);
         }
         foreach ($recentTransactions as $trx) {
-            $amt = $trx->received_amount ?: $trx->total_amount;
+            $recAmt = (float)($trx->received_amount ?? 0);
+            $dueAmt = (float)($trx->due_amount ?? 0);
+            $totAmt = (float)($trx->total_amount ?? 0);
+
+            if ($recAmt > 0 && $dueAmt > 0) {
+                $title = ($trx->user_name ? ucfirst($trx->user_name) : 'Member') . ' paid ₹' . number_format($recAmt, 0) . ' (₹' . number_format($dueAmt, 0) . ' due)';
+                $dotClass = 'fcc-dot-blue';
+            } elseif ($recAmt > 0) {
+                $title = ($trx->user_name ? ucfirst($trx->user_name) : 'Member') . ' payment of ₹' . number_format($recAmt, 0) . ' received';
+                $dotClass = 'fcc-dot-green';
+            } else {
+                $title = ($trx->user_name ? ucfirst($trx->user_name) : 'Member') . ' pending payment ₹' . number_format($dueAmt ?: $totAmt, 0);
+                $dotClass = 'fcc-dot-amber';
+            }
+
             $recentActivities->push([
-                'title' => ($trx->user_name ? ucfirst($trx->user_name) : 'Member') . ' payment of ₹' . number_format($amt, 0) . ' recorded',
+                'title' => $title,
                 'time' => $trx->created_at ? $trx->created_at->diffForHumans() : 'Recent',
                 'raw_time' => $trx->created_at ? $trx->created_at->timestamp : 0,
-                'dot_class' => 'fcc-dot-blue'
+                'dot_class' => $dotClass
             ]);
         }
         $recentActivities = $recentActivities->sortByDesc('raw_time')->take(5)->values();

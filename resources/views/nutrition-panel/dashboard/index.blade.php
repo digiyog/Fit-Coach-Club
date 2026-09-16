@@ -1463,6 +1463,8 @@
     }
     .fcc-act-dot.green { background: #10b981; }
     .fcc-act-dot.blue { background: #3b82f6; }
+    .fcc-act-dot.amber { background: #f59e0b; }
+    .fcc-act-dot.red { background: #ef4444; }
 
     .fcc-activity-time {
         color: #94a3b8;
@@ -4467,7 +4469,7 @@
                                     @endphp
                                     <div class="fcc-activity-item @if($idx >= 10) d-none fcc-activity-extra-item @endif">
                                         <div class="fcc-activity-left">
-                                            <span class="fcc-act-dot {{ str_contains($dotClass, 'green') ? 'green' : 'blue' }}"></span>
+                                            <span class="fcc-act-dot {{ str_contains($dotClass, 'green') ? 'green' : (str_contains($dotClass, 'amber') ? 'amber' : (str_contains($dotClass, 'red') ? 'red' : 'blue')) }}"></span>
                                             <span>{{ $actTitle }}</span>
                                         </div>
                                         <span class="fcc-activity-time">{{ $actTime }}</span>
@@ -5853,20 +5855,43 @@
                             @foreach($recentTransactions as $trx)
                                 @php
                                     $isProduct = ($trx->title == 'Order Placed' || $trx->type == 1);
-                                    $tAmt = (float)($trx->received_amount ?: $trx->total_amount);
+                                    $recAmt = (float)($trx->received_amount ?? 0);
+                                    $dueAmt = (float)($trx->due_amount ?? 0);
+                                    $totAmt = (float)($trx->total_amount ?? 0);
                                     $tName = ucfirst($trx->user_name ?? ($isProduct ? 'Walk-in' : 'Member'));
                                     $tType = !empty($trx->payment_type) ? $trx->payment_type : ($isProduct ? 'Product' : 'Membership');
                                     $tTime = $trx->created_at ? $trx->created_at->diffForHumans() : 'Today';
+
+                                    $isPending = ($trx->payment_type == 'Pending' || ($recAmt == 0 && ($dueAmt > 0 || $totAmt > 0)));
+                                    $isPartial = ($recAmt > 0 && $dueAmt > 0);
                                 @endphp
                                 <div class="fcc-stream-item @if($loop->index >= 10) d-none fcc-stream-extra-item @endif">
                                     <div class="fcc-stream-left">
-                                        <div class="fcc-stream-icon green">
-                                            <i class="fa {{ $isProduct ? 'fa-shopping-bag' : 'fa-arrow-down' }}"></i>
-                                        </div>
-                                        <div>
-                                            <span class="fw-bold text-dark">₹{{ number_format($tAmt, 0) }} {{ $isProduct ? 'product sale' : 'received' }}</span>
-                                            <span class="text-muted">· {{ $tName }} · {{ $tType }}</span>
-                                        </div>
+                                        @if($isPending)
+                                            <div class="fcc-stream-icon amber" style="background: #fef3c7; color: #d97706;">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold text-dark">₹{{ number_format($dueAmt ?: $totAmt, 0) }} pending</span>
+                                                <span class="text-muted">· {{ $tName }} · Pending</span>
+                                            </div>
+                                        @elseif($isPartial)
+                                            <div class="fcc-stream-icon blue" style="background: #e0f2fe; color: #0284c7;">
+                                                <i class="fa fa-adjust"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold text-dark">₹{{ number_format($recAmt, 0) }} received <small class="text-danger fw-semibold">(₹{{ number_format($dueAmt, 0) }} due)</small></span>
+                                                <span class="text-muted">· {{ $tName }} · Partial {{ $tType }}</span>
+                                            </div>
+                                        @else
+                                            <div class="fcc-stream-icon green" style="background: #dcfce7; color: #16a34a;">
+                                                <i class="fa {{ $isProduct ? 'fa-shopping-bag' : 'fa-arrow-down' }}"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold text-dark">₹{{ number_format($recAmt ?: $totAmt, 0) }} {{ $isProduct ? 'product sale' : 'received' }}</span>
+                                                <span class="text-muted">· {{ $tName }} · {{ $tType }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="text-muted" style="font-size: 11px;">{{ $tTime }}</div>
                                 </div>
