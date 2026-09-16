@@ -28,7 +28,7 @@
     }
 
     .fcc-users-page-wrapper {
-        padding: 16px 20px 40px 20px;
+        padding: 20px 24px 40px 24px;
         width: 100%;
         max-width: 1600px;
         margin: 0 auto;
@@ -42,7 +42,7 @@
         gap: 6px;
         font-size: 13px;
         color: #94a3b8;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         font-weight: 500;
     }
     .fcc-breadcrumb-nav a {
@@ -69,14 +69,14 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
     .fcc-page-title {
         font-size: 26px;
         font-weight: 800;
         color: var(--fcc-dark);
         letter-spacing: -0.025em;
-        margin-bottom: 3px;
+        margin-bottom: 4px;
         line-height: 1.2;
     }
     .fcc-page-subtitle {
@@ -92,43 +92,57 @@
     }
     .fcc-btn-export {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1.5px solid #e2e8f0;
         color: #334155;
         font-weight: 600;
         font-size: 13.5px;
-        padding: 8px 16px;
-        border-radius: 9px;
+        padding: 9px 16px;
+        border-radius: 10px;
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        transition: all 0.15s ease;
+        transition: all 0.16s ease;
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         text-decoration: none;
+        cursor: pointer;
+    }
+    .fcc-btn-export svg,
+    .fcc-btn-export i {
+        width: 15px;
+        height: 15px;
+        color: #475569;
     }
     .fcc-btn-export:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #0f172a;
+        transform: translateY(-1px);
     }
     .fcc-btn-register-member {
-        background: var(--fcc-primary);
-        border: 1px solid var(--fcc-primary);
+        background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%);
+        border: 1.5px solid var(--fcc-primary);
         color: #ffffff !important;
         font-weight: 600;
         font-size: 13.5px;
-        padding: 8px 18px;
-        border-radius: 9px;
+        padding: 9px 18px;
+        border-radius: 10px;
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        transition: all 0.15s ease;
+        transition: all 0.16s ease;
         box-shadow: 0 4px 12px rgba(59, 70, 241, 0.28);
         text-decoration: none;
+        cursor: pointer;
+    }
+    .fcc-btn-register-member svg,
+    .fcc-btn-register-member i {
+        width: 16px;
+        height: 16px;
+        color: #ffffff;
     }
     .fcc-btn-register-member:hover {
-        background: var(--fcc-primary-hover);
-        border-color: var(--fcc-primary-hover);
-        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.35);
+        background: linear-gradient(135deg, #2d38db 0%, #3651db 100%);
+        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.38);
         transform: translateY(-1px);
     }
 
@@ -136,9 +150,9 @@
     .fcc-users-nav-tabs {
         display: flex;
         align-items: center;
-        gap: 24px;
-        border-bottom: 1px solid #e2e8f0;
-        margin-bottom: 20px;
+        gap: 22px;
+        border-bottom: 1.5px solid #e2e8f0;
+        margin-bottom: 22px;
         padding-bottom: 0;
         overflow-x: auto;
     }
@@ -147,7 +161,7 @@
         font-weight: 600;
         color: #64748b;
         text-decoration: none;
-        padding: 0 4px 12px 4px;
+        padding: 0 2px 12px 2px;
         position: relative;
         transition: color 0.15s ease;
         white-space: nowrap;
@@ -164,12 +178,26 @@
     .fcc-tab-item-link.active::after {
         content: '';
         position: absolute;
-        bottom: -1px;
+        bottom: -1.5px;
         left: 0;
         right: 0;
         height: 2.5px;
         background: var(--fcc-primary);
         border-radius: 3px 3px 0 0;
+    }
+    .fcc-tab-count {
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 2px 7.5px;
+        border-radius: 20px;
+        margin-left: 7px;
+        transition: all 0.15s ease;
+    }
+    .fcc-tab-item-link.active .fcc-tab-count {
+        background: #eff2fe;
+        color: var(--fcc-primary);
     }
 
     /* 4. White Card Container */
@@ -177,8 +205,8 @@
         background: #ffffff;
         border: 1px solid #edf2f7;
         border-radius: 16px;
-        box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
-        padding: 20px;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+        padding: 22px;
     }
 
     /* 5. Filter & Search Bar */
@@ -187,72 +215,89 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 16px;
+        gap: 12px;
+        margin-bottom: 18px;
     }
     .fcc-search-wrap {
         position: relative;
         flex-grow: 1;
-        max-width: 380px;
-        min-width: 250px;
+        max-width: 340px;
+        min-width: 240px;
+        display: flex;
+        align-items: center;
     }
-    .fcc-search-wrap i {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #94a3b8;
-        width: 15px;
-        height: 15px;
-        pointer-events: none;
+    .fcc-search-wrap svg,
+    .fcc-search-wrap i,
+    .fcc-search-wrap .feather {
+        position: absolute !important;
+        left: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #94a3b8 !important;
+        width: 16px !important;
+        height: 16px !important;
+        pointer-events: none !important;
+        margin: 0 !important;
+        z-index: 2 !important;
     }
     .fcc-search-input {
-        width: 100%;
-        height: 38px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 9px;
-        padding-left: 36px;
-        padding-right: 12px;
-        font-size: 13.5px;
-        color: #0f172a;
-        transition: all 0.15s ease;
+        width: 100% !important;
+        height: 40px !important;
+        background: #f8fafc !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding-left: 40px !important;
+        padding-right: 14px !important;
+        font-size: 13.5px !important;
+        color: #0f172a !important;
+        transition: all 0.18s ease !important;
     }
     .fcc-search-input:focus {
-        border-color: var(--fcc-primary);
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
-        outline: none;
+        background: #ffffff !important;
+        border-color: var(--fcc-primary) !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
+        outline: none !important;
     }
     .fcc-filters-group {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 9px;
     }
     .fcc-dropdown-pill {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 9px;
-        padding: 7px 12px;
-        font-size: 13px;
-        font-weight: 500;
-        color: #334155;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.15s ease;
-        cursor: pointer;
+        background: #ffffff !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 0 14px !important;
+        height: 40px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: all 0.16s ease !important;
+        cursor: pointer !important;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
     }
     .fcc-dropdown-pill:hover,
     .fcc-dropdown-pill[aria-expanded="true"] {
-        border-color: #cbd5e1;
-        background: #f8fafc;
-        color: #0f172a;
+        border-color: #cbd5e1 !important;
+        background: #f8fafc !important;
+        color: #0f172a !important;
     }
+    .fcc-dropdown-pill svg,
+    .fcc-dropdown-pill i {
+        width: 14px !important;
+        height: 14px !important;
+        color: #64748b !important;
+        vertical-align: middle !important;
+    }
+    .fcc-dropdown-pill svg.fcc-chevron,
     .fcc-dropdown-pill i.fcc-chevron {
-        width: 13px;
-        height: 13px;
-        color: #94a3b8;
+        width: 13px !important;
+        height: 13px !important;
+        color: #94a3b8 !important;
     }
 
     /* 6. Table Controls Toolbar */
@@ -272,42 +317,65 @@
     }
     .fcc-page-len-btn {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 7px;
-        padding: 4px 9px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 4px 10px;
         font-size: 12.5px;
-        font-weight: 500;
+        font-weight: 600;
         color: #475569;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
+        height: 32px;
+        cursor: pointer;
     }
     .fcc-page-len-btn:hover {
         background: #f8fafc;
+        border-color: #cbd5e1;
     }
-    .fcc-btn-batch {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 6px 13px;
-        font-size: 12.5px;
-        font-weight: 600;
-        color: #64748b;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.15s ease;
-    }
-    .fcc-btn-batch:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        background: #f8fafc;
+    .fcc-page-len-btn svg,
+    .fcc-page-len-btn i {
+        width: 12px;
+        height: 12px;
         color: #94a3b8;
     }
+    .fcc-btn-batch {
+        background: #ffffff !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 9px !important;
+        padding: 0 13px !important;
+        height: 34px !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        transition: all 0.16s ease !important;
+        cursor: pointer !important;
+    }
+    .fcc-btn-batch svg,
+    .fcc-btn-batch i {
+        width: 13px !important;
+        height: 13px !important;
+    }
+    .fcc-btn-batch:disabled {
+        opacity: 0.55 !important;
+        cursor: not-allowed !important;
+        background: #f8fafc !important;
+        color: #94a3b8 !important;
+    }
     .fcc-btn-batch:not(:disabled):hover {
-        background: #eff2fe;
-        border-color: var(--fcc-primary);
-        color: var(--fcc-primary);
+        background: #eff2fe !important;
+        border-color: var(--fcc-primary) !important;
+        color: var(--fcc-primary) !important;
+        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.15) !important;
+    }
+    .fcc-btn-batch.dt-delete:not(:disabled):hover {
+        background: #fef2f2 !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15) !important;
     }
 
     /* 7. Modern DataTables Override */
@@ -316,6 +384,7 @@
         border: 1px solid #edf2f7;
         border-radius: 12px;
         background: #ffffff;
+        margin-bottom: 0 !important;
     }
     table.dataTable {
         margin: 0 !important;
@@ -326,11 +395,11 @@
     table.dataTable thead th {
         background: #f8fafc !important;
         color: #475569 !important;
-        font-size: 12px !important;
+        font-size: 11.5px !important;
         font-weight: 700 !important;
-        text-transform: none !important;
-        letter-spacing: normal !important;
-        padding: 12px 14px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        padding: 13px 14px !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-top: none !important;
         white-space: nowrap !important;
@@ -366,9 +435,9 @@
         padding-right: 10px !important;
         padding-left: 12px !important;
         text-align: center !important;
-        width: 38px !important;
-        min-width: 38px !important;
-        max-width: 38px !important;
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
     }
 
     table.dataTable tbody td:first-child,
@@ -376,13 +445,13 @@
         padding-right: 10px !important;
         padding-left: 12px !important;
         text-align: center !important;
-        width: 38px !important;
-        min-width: 38px !important;
-        max-width: 38px !important;
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
     }
 
     table.dataTable tbody td {
-        padding: 12px 14px !important;
+        padding: 13px 14px !important;
         vertical-align: middle !important;
         border-bottom: 1px solid #f1f5f9 !important;
         color: #334155;
@@ -413,8 +482,9 @@
         justify-content: space-between !important;
         flex-wrap: wrap !important;
         gap: 14px !important;
-        padding-top: 16px !important;
-        padding-bottom: 2px !important;
+        padding-top: 18px !important;
+        border-top: 1px solid #f1f5f9 !important;
+        margin-top: 14px !important;
     }
 
     div.dataTables_wrapper div.dataTables_info {
@@ -530,7 +600,7 @@
         stroke: #cbd5e1 !important;
     }
 
-    /* 8. Unique Modern Custom Checkbox */
+    /* 9. Unique Modern Custom Checkbox */
     .fcc-custom-checkbox {
         position: relative;
         display: inline-flex;
@@ -658,16 +728,20 @@
     <!-- 3. Navigation Tabs -->
     <div class="fcc-users-nav-tabs">
         <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-tab-item-link {{ empty($userType) ? 'active' : '' }}">
-            All users
+            <span>All users</span>
+            <span class="fcc-tab-count">{{ $totalAllCount ?? 0 }}</span>
         </a>
         <a href="{{ route('nutritionPanel.users.index') }}/demo" class="fcc-tab-item-link {{ $userType == 'demo' ? 'active' : '' }}">
-            Demo users
+            <span>Demo users</span>
+            <span class="fcc-tab-count">{{ $totalDemoCount ?? 0 }}</span>
         </a>
         <a href="{{ route('nutritionPanel.users.index') }}/offline" class="fcc-tab-item-link {{ $userType == 'offline' ? 'active' : '' }}">
-            Offline users
+            <span>Offline users</span>
+            <span class="fcc-tab-count">{{ $totalOfflineCount ?? 0 }}</span>
         </a>
         <a href="{{ route('nutritionPanel.users.index') }}/online" class="fcc-tab-item-link {{ $userType == 'online' ? 'active' : '' }}">
-            Online users
+            <span>Online users</span>
+            <span class="fcc-tab-count">{{ $totalOnlineCount ?? 0 }}</span>
         </a>
     </div>
 

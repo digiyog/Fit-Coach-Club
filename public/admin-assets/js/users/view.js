@@ -183,7 +183,7 @@ var User = (function() {
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "38px",
+                        width: "40px",
                         className: "checkbox-column no-sort no-content text-center",
                         orderable: false,
                         searchable: false,
@@ -194,11 +194,17 @@ var User = (function() {
                     },
                     {
                         targets: 9,
+                        width: "60px",
                         orderable: false,
                         searchable: false,
                         className: "no-sort no-content text-end"
                     }
                 ],
+                drawCallback: function(settings) {
+                    if (typeof feather !== "undefined") {
+                        feather.replace();
+                    }
+                },
                 buttons: {
                     buttons: [
                         // {
