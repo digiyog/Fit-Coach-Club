@@ -1210,17 +1210,17 @@
     <div class="fcc-users-card">
         
         <!-- Hidden Inputs for Filtering -->
-        <input type="hidden" name="user_type" id="user_type" value="{{ $userType }}" />
-        <input type="hidden" name="coach_name" id="coach_name" value="" />
-        <input type="hidden" name="plan_id" id="plan_id" value="" />
-        <input type="hidden" name="payment_status" id="payment_status" value="" />
+        <input type="hidden" name="user_type" id="user_type" value="{{ request('user_type', $userType) }}" />
+        <input type="hidden" name="coach_name" id="coach_name" value="{{ request('coach_name', '') }}" />
+        <input type="hidden" name="plan_id" id="plan_id" value="{{ request('plan_id', '') }}" />
+        <input type="hidden" name="payment_status" id="payment_status" value="{{ request('payment_status', '') }}" />
 
         <!-- 5. Filter & Search Bar -->
         <div class="fcc-filter-bar">
             <!-- Search Box -->
             <div class="fcc-search-wrap">
                 <i data-feather="search"></i>
-                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search name, email or mobile..." autocomplete="off" style="padding-left: 44px !important;" />
+                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search name, email or mobile..." autocomplete="off" style="padding-left: 44px !important;" value="{{ request('search', '') }}" />
             </div>
 
             <!-- Filter Dropdowns Group -->
@@ -1228,14 +1228,14 @@
                 <!-- Coach Filter -->
                 <div class="dropdown">
                     <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="coachFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="coachFilterLabel">All coaches</span>
+                        <span id="coachFilterLabel">{{ !empty(request('coach_name')) ? request('coach_name') : 'All coaches' }}</span>
                         <i data-feather="chevron-down" class="fcc-chevron"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="coachFilterDropdown" style="border-radius: 12px; min-width: 170px; padding: 6px; border: 1px solid #edf2f7 !important;">
-                        <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="coach" data-value="">All coaches</a></li>
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 {{ empty(request('coach_name')) ? 'active' : '' }}" href="javascript:;" data-filter-type="coach" data-value="">All coaches</a></li>
                         @foreach($coachesList ?? [] as $coach)
                             @if(!empty($coach))
-                                <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="coach" data-value="{{ $coach }}">{{ $coach }}</a></li>
+                                <li><a class="dropdown-item py-2 px-3 rounded-2 {{ request('coach_name') == $coach ? 'active' : '' }}" href="javascript:;" data-filter-type="coach" data-value="{{ $coach }}">{{ $coach }}</a></li>
                             @endif
                         @endforeach
                     </ul>
@@ -1258,13 +1258,13 @@
                 <!-- Payment Status Filter -->
                 <div class="dropdown">
                     <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="paymentFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span id="paymentFilterLabel">Payment status</span>
+                        <span id="paymentFilterLabel">{{ request('payment_status') == 'paid' ? 'Paid' : (request('payment_status') == 'pending' ? 'Pending Due' : 'Payment status') }}</span>
                         <i data-feather="chevron-down" class="fcc-chevron"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="paymentFilterDropdown" style="border-radius: 12px; min-width: 160px; padding: 6px; border: 1px solid #edf2f7 !important;">
-                        <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="payment" data-value="">All payments</a></li>
-                        <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="payment" data-value="paid">Paid</a></li>
-                        <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" data-filter-type="payment" data-value="pending">Pending Due</a></li>
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 {{ empty(request('payment_status')) ? 'active' : '' }}" href="javascript:;" data-filter-type="payment" data-value="">All payments</a></li>
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 {{ request('payment_status') == 'paid' ? 'active' : '' }}" href="javascript:;" data-filter-type="payment" data-value="paid">Paid</a></li>
+                        <li><a class="dropdown-item py-2 px-3 rounded-2 {{ request('payment_status') == 'pending' ? 'active' : '' }}" href="javascript:;" data-filter-type="payment" data-value="pending">Pending Due</a></li>
                     </ul>
                 </div>
 
@@ -1278,12 +1278,12 @@
         </div>
 
         <!-- Collapsible More Filters (Date Range, etc.) -->
-        <div class="collapse mb-3" id="fccMoreFiltersCollapse">
+        <div class="collapse mb-3 {{ !empty(request('date_range')) ? 'show' : '' }}" id="fccMoreFiltersCollapse">
             <div class="p-3 bg-light rounded-3 border" style="border-color: #e2e8f0 !important;">
                 <div class="row g-2 align-items-end">
                     <div class="col-12 col-md-6 col-lg-4">
                         <label class="form-label text-muted" style="font-size: 12px; font-weight: 600;">Registration Date Range</label>
-                        <input type="text" name="date_range" id="date_range" class="form-control form-control-sm date-picker" placeholder="Select Date Range..." autocomplete="off" />
+                        <input type="text" name="date_range" id="date_range" class="form-control form-control-sm date-picker" placeholder="Select Date Range..." autocomplete="off" value="{{ request('date_range', '') }}" />
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 d-flex align-items-center gap-2 mt-2 mt-md-0">
                         <button type="button" class="btn btn-sm btn-primary apply-filter px-3" style="height: 36px;">Apply Date</button>

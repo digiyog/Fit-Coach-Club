@@ -4215,7 +4215,7 @@
                                     <strong>{{ $todayCounsellingCount ?? 0 }}</strong> counselling sessions
                                 </div>
                             </div>
-                            <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                            <a href="{{ route('nutritionPanel.counsellings.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
 
                         <div class="fcc-today-item">
@@ -4227,7 +4227,7 @@
                                     <strong>{{ $todayNewMemberships ?? 0 }}</strong> new memberships
                                 </div>
                             </div>
-                            <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-action-chevron">Follow up <i class="fa fa-chevron-right"></i></a>
+                            <a href="{{ route('nutritionPanel.users.index', ['date_range' => date('Y-m-d') . '/' . date('Y-m-d')]) }}" class="fcc-action-chevron">Follow up <i class="fa fa-chevron-right"></i></a>
                         </div>
 
                         <div class="fcc-today-item">
@@ -4239,7 +4239,7 @@
                                     <strong>{{ $todayRenewalsDue ?? 0 }}</strong> renewals due @if(($todayUrgentRenewals ?? 0) > 0)· <span class="fcc-urgent-badge">{{ $todayUrgentRenewals }} urgent</span>@endif
                                 </div>
                             </div>
-                            <a href="{{ route('nutritionPanel.users.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                            <a href="javascript:void(0)" onclick="$('.fcc-tab-btn[data-tab=\'tab-members\']').trigger('click'); document.getElementById('tab-members').scrollIntoView({behavior: 'smooth'});" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
 
                         <div class="fcc-today-item">
