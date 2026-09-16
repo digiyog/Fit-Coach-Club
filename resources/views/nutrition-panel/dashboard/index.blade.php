@@ -4661,7 +4661,7 @@
                                             $nodeColor = '#16a34a';
                                         }
                                     @endphp
-                                    <div class="fcc-audit-item @if($tIndex >= 10) d-none fcc-audit-extra-item @endif">
+                                    <div class="fcc-audit-item @if($tIndex >= 5) d-none fcc-audit-extra-item @endif">
                                         <span class="fcc-audit-node" style="border-color: {{ $nodeColor }};"></span>
                                         <div class="d-flex align-items-center flex-wrap">
                                             <span class="text-muted" style="font-size: 11.5px; font-weight: 600;">{{ $tTime }}</span>
@@ -4669,15 +4669,15 @@
                                             <strong class="text-dark">{{ $tAtt->remark ?? ($isDouble ? 'Double Attendance' : 'QR Attendance') }}</strong>
                                         </div>
                                         <div class="text-muted" style="font-size: 11px; margin-top: 1px;">
-                                            {{ ucfirst($tAtt->name) }} · {{ $tAtt->coach_name ?? 'Club' }}
+                                            {{ ucfirst($tAtt->name ?? 'Member') }} · {{ $tAtt->coach_name ?? 'Club' }}
                                         </div>
                                     </div>
                                 @endforeach
 
-                                @if(count($todayAttendences) > 10)
+                                @if(count($todayAttendences) > 5)
                                     <div class="fcc-load-more-wrap text-center mt-2">
                                         <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="todayAuditContainer" data-item-class="fcc-audit-extra-item">
-                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($todayAttendences) - 10 }} remaining)
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($todayAttendences) - 5 }} remaining)
                                         </button>
                                     </div>
                                 @endif

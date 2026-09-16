@@ -242,16 +242,32 @@ class DashboardController extends Controller
                 ->count();
         }
 
-        $todayAttendences = AttendanceLogs::select('attendance_logs.*', 'users.name', 'users.coach_name')
-            ->leftJoin('users', function($join) use ($authUser){
-                $join->on('attendance_logs.user_id', '=', 'users.id');
+        $todayAttendences = Attendance::select('attendances.*', 'users.name', 'users.coach_name', 'users.days')
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->where(function($q) use ($userId, $franchiseUserIds) {
+                $q->where('attendances.franchise_id', $userId)->orWhereIn('attendances.user_id', $franchiseUserIds);
             })
-            ->where('users.created_by', $userId)
+            ->where('attendances.type', 2)
             ->where(function($q) use ($todayDate) {
-                $q->whereDate('attendance_logs.date', $todayDate)->orWhereDate('attendance_logs.created_at', $todayDate);
+                $q->whereDate('attendances.date', $todayDate)->orWhereDate('attendances.created_at', $todayDate);
             })
-            ->orderBy('attendance_logs.id', 'DESC')
+            ->orderBy('attendances.id', 'DESC')
             ->get();
+
+        if ($todayAttendences->isEmpty()) {
+            $todayAttendences = AttendanceLogs::select('attendance_logs.*', 'users.name', 'users.coach_name')
+                ->leftJoin('users', function($join) use ($authUser){
+                    $join->on('attendance_logs.user_id', '=', 'users.id');
+                })
+                ->where(function($q) use ($userId, $franchiseUserIds) {
+                    $q->where('users.created_by', $userId)->orWhereIn('attendance_logs.user_id', $franchiseUserIds);
+                })
+                ->where(function($q) use ($todayDate) {
+                    $q->whereDate('attendance_logs.date', $todayDate)->orWhereDate('attendance_logs.created_at', $todayDate);
+                })
+                ->orderBy('attendance_logs.id', 'DESC')
+                ->get();
+        }
 
         $today2Attendences = Attendance::select(
                 'attendances.user_id',
