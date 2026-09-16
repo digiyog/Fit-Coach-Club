@@ -1064,6 +1064,8 @@
     }
 
     .icon-orange { background: #fff7ed; color: #ea580c; }
+    .icon-blue { background: #eff6ff; color: #2563eb; }
+    .icon-amber { background: #fffbeb; color: #d97706; }
     .icon-coral { background: #fef2f2; color: #ef4444; }
     .icon-rose { background: #fff1f2; color: #e11d48; }
     .icon-purple { background: #faf5ff; color: #9333ea; }
@@ -4216,6 +4218,18 @@
                                 </div>
                             </div>
                             <a href="{{ route('nutritionPanel.counsellings.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                        </div>
+
+                        <div class="fcc-today-item">
+                            <div class="fcc-today-left">
+                                <div class="fcc-today-icon icon-amber">
+                                    <i class="fa fa-calendar-check-o"></i>
+                                </div>
+                                <div class="fcc-today-text">
+                                    <strong>{{ count($today2Attendences ?? []) }}</strong> multiple attendances
+                                </div>
+                            </div>
+                            <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
 
                         <div class="fcc-today-item">
