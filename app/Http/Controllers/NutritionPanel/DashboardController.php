@@ -177,13 +177,9 @@ class DashboardController extends Controller
 
         $thisMonthBirthdayUsers = User::where('role_type', 'user')
             ->where('created_by', $userId)
-            ->where(function($q) {
-                $q->where(function($sub) {
-                    $sub->whereDay('date_of_birth', now()->day)->whereMonth('date_of_birth', now()->month);
-                })->orWhere(function($sub) {
-                    $sub->whereDay('dob', now()->day)->whereMonth('dob', now()->month);
-                });
-            })
+            ->whereNotNull('date_of_birth')
+            ->whereDay('date_of_birth', now()->day)
+            ->whereMonth('date_of_birth', now()->month)
             ->get();
 
         // 4. Metric Cards
