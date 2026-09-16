@@ -374,31 +374,84 @@
         box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15) !important;
     }
 
-    /* 7. Modern DataTables Override */
+    /* 7. Modern DataTables Override & Perfect Column Formatting */
     .fcc-modern-table-wrap {
         overflow-x: auto;
         border: 1px solid #edf2f7;
         border-radius: 12px;
         background: #ffffff;
         margin-bottom: 0 !important;
+        width: 100%;
     }
     table.dataTable {
         margin: 0 !important;
         border-collapse: separate !important;
         border-spacing: 0 !important;
         width: 100% !important;
+        min-width: 1060px !important;
     }
     table.dataTable thead th {
+        position: relative !important;
         background: #f8fafc !important;
         color: #475569 !important;
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
-        padding: 13px 14px !important;
+        letter-spacing: 0.05em !important;
+        padding: 13px 26px 13px 14px !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-top: none !important;
         white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+
+    /* Beautiful Modern Sorting Indicators */
+    table.dataTable thead th.sorting:before,
+    table.dataTable thead th.sorting_asc:before,
+    table.dataTable thead th.sorting_desc:before {
+        position: absolute !important;
+        right: 10px !important;
+        top: 42% !important;
+        transform: translateY(-50%) !important;
+        content: "▲" !important;
+        font-size: 8px !important;
+        color: #94a3b8 !important;
+        opacity: 0.4 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    table.dataTable thead th.sorting:after,
+    table.dataTable thead th.sorting_asc:after,
+    table.dataTable thead th.sorting_desc:after {
+        position: absolute !important;
+        right: 10px !important;
+        top: 58% !important;
+        transform: translateY(-50%) !important;
+        content: "▼" !important;
+        font-size: 8px !important;
+        color: #94a3b8 !important;
+        opacity: 0.4 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    table.dataTable thead th.sorting_asc:before {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    table.dataTable thead th.sorting_asc:after {
+        opacity: 0.15 !important;
+    }
+
+    table.dataTable thead th.sorting_desc:after {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    table.dataTable thead th.sorting_desc:before {
+        opacity: 0.15 !important;
     }
 
     /* Disable sort arrows on checkbox and action columns */
@@ -409,6 +462,8 @@
     table.dataTable thead th:last-child {
         background-image: none !important;
         cursor: default !important;
+        padding-right: 14px !important;
+        padding-left: 14px !important;
     }
 
     table.dataTable thead th.checkbox-column:before,
@@ -426,24 +481,74 @@
         opacity: 0 !important;
     }
 
+    /* Column Widths & Alignments */
     table.dataTable thead th.checkbox-column,
-    table.dataTable thead th:first-child {
+    table.dataTable thead th:first-child,
+    table.dataTable tbody td.checkbox-column,
+    table.dataTable tbody td:first-child {
         padding-right: 10px !important;
-        padding-left: 12px !important;
+        padding-left: 14px !important;
         text-align: center !important;
-        width: 40px !important;
-        min-width: 40px !important;
-        max-width: 40px !important;
+        width: 44px !important;
+        min-width: 44px !important;
+        max-width: 44px !important;
     }
 
-    table.dataTable tbody td:first-child,
-    table.dataTable tbody td.checkbox-column {
-        padding-right: 10px !important;
-        padding-left: 12px !important;
-        text-align: center !important;
-        width: 40px !important;
-        min-width: 40px !important;
-        max-width: 40px !important;
+    /* Member */
+    table.dataTable thead th:nth-child(2),
+    table.dataTable tbody td:nth-child(2) {
+        min-width: 220px !important;
+    }
+
+    /* User Type */
+    table.dataTable thead th:nth-child(3),
+    table.dataTable tbody td:nth-child(3) {
+        min-width: 110px !important;
+    }
+
+    /* Contact */
+    table.dataTable thead th:nth-child(4),
+    table.dataTable tbody td:nth-child(4) {
+        min-width: 130px !important;
+    }
+
+    /* Coach */
+    table.dataTable thead th:nth-child(5),
+    table.dataTable tbody td:nth-child(5) {
+        min-width: 115px !important;
+    }
+
+    /* Plan */
+    table.dataTable thead th:nth-child(6),
+    table.dataTable tbody td:nth-child(6) {
+        min-width: 180px !important;
+    }
+
+    /* Renewal */
+    table.dataTable thead th:nth-child(7),
+    table.dataTable tbody td:nth-child(7) {
+        min-width: 105px !important;
+    }
+
+    /* Due Amount */
+    table.dataTable thead th:nth-child(8),
+    table.dataTable tbody td:nth-child(8) {
+        min-width: 110px !important;
+    }
+
+    /* Status */
+    table.dataTable thead th:nth-child(9),
+    table.dataTable tbody td:nth-child(9) {
+        min-width: 100px !important;
+    }
+
+    /* Action */
+    table.dataTable thead th:last-child,
+    table.dataTable tbody td:last-child {
+        width: 70px !important;
+        min-width: 70px !important;
+        text-align: right !important;
+        padding-right: 16px !important;
     }
 
     table.dataTable tbody:before,
@@ -455,12 +560,13 @@
     }
 
     table.dataTable tbody td {
-        padding: 13px 14px !important;
+        padding: 12px 14px !important;
         vertical-align: middle !important;
         border-bottom: 1px solid #f1f5f9 !important;
         color: #334155;
         font-size: 13px;
         background: transparent !important;
+        white-space: nowrap !important;
     }
     table.dataTable tbody tr:hover td {
         background: #f8faff !important;
@@ -470,6 +576,25 @@
     }
     table.dataTable tbody tr:last-child td {
         border-bottom: none !important;
+    }
+
+    /* Action 3-dots button */
+    .fcc-action-dots-btn {
+        width: 32px;
+        height: 32px;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #64748b !important;
+        transition: all 0.16s ease;
+        background: transparent;
+        text-decoration: none !important;
+    }
+    .fcc-action-dots-btn:hover,
+    .fcc-action-dots-btn[aria-expanded="true"] {
+        background: #eff2fe !important;
+        color: var(--fcc-primary) !important;
     }
 
     /* Avatar Ring with two gaps */
@@ -718,6 +843,322 @@
     .fcc-custom-checkbox input[type="checkbox"]:indeterminate + .fcc-checkbox-control .fcc-check-icon {
         display: none;
     }
+    /* 10. Responsive Breakpoints & Enhancements (Desktop, Tablet, Mobile) */
+    
+    /* Scrollbar for modern table */
+    .fcc-modern-table-wrap::-webkit-scrollbar {
+        height: 7px;
+        width: 7px;
+    }
+    .fcc-modern-table-wrap::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    .fcc-modern-table-wrap::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .fcc-modern-table-wrap::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Tablet and Medium Screens (max-width: 1024px) */
+    @media (max-width: 1024px) {
+        .fcc-users-page-wrapper {
+            padding: 16px 16px 36px 16px;
+        }
+        .fcc-page-title {
+            font-size: 23px;
+        }
+        .fcc-users-card {
+            padding: 18px;
+            border-radius: 14px;
+        }
+        .fcc-filter-bar {
+            gap: 10px;
+        }
+        .fcc-search-wrap {
+            max-width: 280px !important;
+            min-width: 200px !important;
+        }
+        .fcc-dropdown-pill {
+            padding: 0 11px !important;
+            font-size: 12.5px !important;
+        }
+    }
+
+    /* Tablet Portrait and Large Mobile (max-width: 991px) */
+    @media (max-width: 991px) {
+        .fcc-filter-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .fcc-search-wrap {
+            max-width: 100% !important;
+            min-width: 100% !important;
+            width: 100% !important;
+        }
+        .fcc-filters-group {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .fcc-filters-group > div,
+        .fcc-filters-group > button {
+            flex: 1 1 auto;
+        }
+        .fcc-dropdown-pill {
+            width: 100% !important;
+            justify-content: space-between !important;
+        }
+    }
+
+    /* Mobile Screens (max-width: 767px) */
+    @media (max-width: 767px) {
+        .fcc-users-page-wrapper {
+            padding: 12px 10px 30px 10px;
+        }
+        
+        .fcc-breadcrumb-nav {
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .fcc-page-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .fcc-page-title {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        .fcc-page-subtitle {
+            font-size: 12.5px;
+            line-height: 1.35;
+        }
+        .fcc-header-btns {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .fcc-btn-export,
+        .fcc-btn-register-member {
+            width: 100%;
+            justify-content: center;
+            padding: 8px 10px;
+            font-size: 12.5px;
+            height: 38px;
+        }
+        .fcc-btn-export svg,
+        .fcc-btn-export i,
+        .fcc-btn-register-member svg,
+        .fcc-btn-register-member i {
+            width: 14px !important;
+            height: 14px !important;
+        }
+
+        /* Navigation tabs on mobile */
+        .fcc-users-nav-tabs {
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .fcc-users-nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .fcc-tab-item-link {
+            font-size: 13px;
+            padding: 0 4px 10px 4px;
+        }
+
+        /* Card Container on mobile */
+        .fcc-users-card {
+            padding: 14px 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        /* Filter bar on mobile */
+        .fcc-filter-bar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .fcc-search-wrap {
+            max-width: 100% !important;
+            min-width: 100% !important;
+            width: 100% !important;
+        }
+        input.fcc-search-input,
+        #fccSearchInput {
+            height: 38px !important;
+            font-size: 13px !important;
+            padding-left: 40px !important;
+        }
+        .fcc-search-wrap svg,
+        .fcc-search-wrap i {
+            left: 12px !important;
+            width: 15px !important;
+            height: 15px !important;
+        }
+
+        .fcc-filters-group {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+        }
+        .fcc-filters-group .dropdown {
+            width: 100%;
+        }
+        .fcc-dropdown-pill {
+            width: 100% !important;
+            height: 38px !important;
+            padding: 0 10px !important;
+            font-size: 12px !important;
+            justify-content: space-between !important;
+        }
+        .fcc-dropdown-pill span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: calc(100% - 20px);
+            text-align: left;
+        }
+        .fcc-dropdown-pill svg,
+        .fcc-dropdown-pill i {
+            flex-shrink: 0;
+        }
+        .dropdown-menu {
+            max-width: calc(100vw - 30px) !important;
+            z-index: 1060 !important;
+        }
+
+        /* Toolbar on mobile */
+        .fcc-table-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 9px;
+            margin-bottom: 12px;
+        }
+        .fcc-toolbar-left {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .fcc-count-text {
+            font-size: 13px;
+        }
+        .fcc-page-len-btn {
+            height: 30px;
+            font-size: 12px;
+            padding: 2px 8px;
+        }
+        .fcc-toolbar-right {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 7px;
+        }
+        .fcc-btn-batch {
+            flex: 1;
+            justify-content: center;
+            height: 35px !important;
+            font-size: 12px !important;
+            padding: 0 8px !important;
+        }
+
+        /* Table on mobile */
+        .fcc-modern-table-wrap {
+            border-radius: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        table.dataTable {
+            min-width: 1040px !important;
+        }
+        table.dataTable thead th {
+            padding: 10px 24px 10px 10px !important;
+            font-size: 11px !important;
+        }
+        table.dataTable thead th.checkbox-column,
+        table.dataTable thead th.no-sort,
+        table.dataTable thead th:first-child,
+        table.dataTable thead th:last-child {
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+        }
+        table.dataTable tbody td {
+            padding: 10px 10px !important;
+            font-size: 12px !important;
+        }
+
+        /* Footer & Pagination on mobile */
+        .fcc-dt-footer {
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 10px !important;
+            text-align: center !important;
+            padding-top: 14px !important;
+        }
+        div.dataTables_wrapper div.dataTables_info {
+            justify-content: center !important;
+            text-align: center !important;
+            width: 100% !important;
+            font-size: 12px !important;
+            white-space: normal !important;
+        }
+        div.dataTables_wrapper div.dataTables_paginate {
+            justify-content: center !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            padding-bottom: 3px !important;
+            -webkit-overflow-scrolling: touch;
+        }
+        div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+            flex-wrap: nowrap !important;
+            gap: 4px !important;
+            justify-content: center !important;
+        }
+        div.dataTables_wrapper div.dataTables_paginate ul.pagination li a,
+        div.dataTables_wrapper div.dataTables_paginate ul.pagination li .page-link {
+            min-width: 32px !important;
+            height: 32px !important;
+            font-size: 12px !important;
+            padding: 0 6px !important;
+            border-radius: 7px !important;
+        }
+    }
+
+    /* Extra Small Screen (< 420px) */
+    @media (max-width: 420px) {
+        .fcc-page-title {
+            font-size: 18px;
+        }
+        .fcc-header-btns {
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        .fcc-filters-group {
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        .fcc-count-text {
+            font-size: 12.5px;
+        }
+    }
 </style>
 @endpush
 
@@ -733,7 +1174,7 @@
 
     <!-- 2. Header & Action Buttons -->
     <div class="fcc-page-header">
-        <div>
+        <div class="fcc-header-title-box">
             <h1 class="fcc-page-title">{{ $currentTabTitle ?? 'Offline users' }}</h1>
             <p class="fcc-page-subtitle">{{ $currentTabSubtitle ?? 'Manage in-club members, coach assignments, plans and collections' }}</p>
         </div>
@@ -839,14 +1280,14 @@
         <!-- Collapsible More Filters (Date Range, etc.) -->
         <div class="collapse mb-3" id="fccMoreFiltersCollapse">
             <div class="p-3 bg-light rounded-3 border" style="border-color: #e2e8f0 !important;">
-                <div class="row g-2 align-items-center">
-                    <div class="col-md-4">
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label class="form-label text-muted" style="font-size: 12px; font-weight: 600;">Registration Date Range</label>
                         <input type="text" name="date_range" id="date_range" class="form-control form-control-sm date-picker" placeholder="Select Date Range..." autocomplete="off" />
                     </div>
-                    <div class="col-md-4 d-flex align-items-end gap-2 mt-3 mt-md-0 pt-md-3">
-                        <button type="button" class="btn btn-sm btn-primary apply-filter px-3">Apply Date</button>
-                        <button type="button" class="btn btn-sm btn-light clear-filter px-3 border" id="fccResetDateBtn">Reset</button>
+                    <div class="col-12 col-md-6 col-lg-4 d-flex align-items-center gap-2 mt-2 mt-md-0">
+                        <button type="button" class="btn btn-sm btn-primary apply-filter px-3" style="height: 36px;">Apply Date</button>
+                        <button type="button" class="btn btn-sm btn-light clear-filter px-3 border" id="fccResetDateBtn" style="height: 36px;">Reset</button>
                     </div>
                 </div>
             </div>
@@ -854,7 +1295,7 @@
 
         <!-- 6. Toolbar Row (Count, Page Size & Batch Actions) -->
         <div class="fcc-table-toolbar">
-            <div class="d-flex align-items-center gap-2">
+            <div class="fcc-toolbar-left d-flex align-items-center gap-2">
                 <span class="fcc-count-text" id="fccTableCountDisplay">
                     {{ $currentTabCount ?? 0 }} {{ strtolower($currentTabTitle ?? 'users') }}
                 </span>
@@ -874,7 +1315,7 @@
                 </div>
             </div>
 
-            <div class="d-flex align-items-center gap-2 data-table-container">
+            <div class="fcc-toolbar-right d-flex align-items-center gap-2 data-table-container">
                 <button type="button" class="btn fcc-btn-batch change-status" disabled title="Change Status of selected users">
                     <i data-feather="refresh-cw" style="width: 13px; height: 13px;"></i>
                     <span>Change status</span>
