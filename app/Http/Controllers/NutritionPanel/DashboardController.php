@@ -80,23 +80,25 @@ class DashboardController extends Controller
             $dayStr = $dayDate->format('Y-m-d');
             $weeklyPulseLabels[] = $dayDate->format('M d');
 
-            $attendCount = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
-                    $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
-                })
+            $attendCount = Attendance::where('franchise_id', $userId)
                 ->where('type', 2)
                 ->where(function($q) use ($dayStr) {
-                    $q->whereDate('date', $dayStr)->orWhereDate('created_at', $dayStr);
+                    $q->where('date', $dayStr)->orWhere(function($sub) use ($dayStr) {
+                        $sub->whereNull('date')->whereDate('created_at', $dayStr);
+                    });
                 })
-                ->count();
+                ->distinct('user_id')
+                ->count('user_id');
 
             if ($attendCount == 0) {
-                $attendCount = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
-                        $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
-                    })
+                $attendCount = AttendanceLogs::where('created_by', $userId)
                     ->where(function($q) use ($dayStr) {
-                        $q->whereDate('date', $dayStr)->orWhereDate('created_at', $dayStr);
+                        $q->where('date', $dayStr)->orWhere(function($sub) use ($dayStr) {
+                            $sub->whereNull('date')->whereDate('created_at', $dayStr);
+                        });
                     })
-                    ->count();
+                    ->distinct('user_id')
+                    ->count('user_id');
             }
 
             $weeklyPulseAttendance[] = (int)$attendCount;
@@ -112,12 +114,11 @@ class DashboardController extends Controller
         }
 
         // Previous 7 days vs current 7 days attendance for growth %
-        $prev7DaysAttendance = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
-                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
-            })
+        $prev7DaysAttendance = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->whereBetween('date', [Carbon::today()->subDays(13)->format('Y-m-d'), Carbon::today()->subDays(7)->format('Y-m-d')])
-            ->count();
+            ->distinct('user_id')
+            ->count('user_id');
         $curr7DaysAttendance = array_sum($weeklyPulseAttendance);
 
         if ($prev7DaysAttendance > 0) {
@@ -131,22 +132,22 @@ class DashboardController extends Controller
 
         // 3. Today Stats
         $todayDate = date('Y-m-d');
-        $todayCounsellingCount = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
-                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
-            })
+        $todayCounsellingCount = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->where(function($q) use ($todayDate) {
-                $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+                $q->where('date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                    $sub->whereNull('date')->whereDate('created_at', $todayDate);
+                });
             })
             ->distinct('user_id')
             ->count('user_id');
 
         if ($todayCounsellingCount == 0) {
-            $todayCounsellingCount = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
-                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
-                })
+            $todayCounsellingCount = AttendanceLogs::where('created_by', $userId)
                 ->where(function($q) use ($todayDate) {
-                    $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+                    $q->where('date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                        $sub->whereNull('date')->whereDate('created_at', $todayDate);
+                    });
                 })
                 ->distinct('user_id')
                 ->count('user_id');
@@ -183,26 +184,22 @@ class DashboardController extends Controller
             ->get();
 
         // 4. Metric Cards
-        $thisMonthShake = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
-                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
-            })
+        $thisMonthShake = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->where(function($q) {
                 $q->whereMonth('date', now()->month)->whereYear('date', now()->year)
                   ->orWhere(function($sub) {
-                      $sub->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+                      $sub->whereNull('date')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
                   });
             })
             ->count();
 
         if ($thisMonthShake == 0) {
-            $thisMonthShake = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
-                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
-                })
+            $thisMonthShake = AttendanceLogs::where('created_by', $userId)
                 ->where(function($q) {
                     $q->whereMonth('date', now()->month)->whereYear('date', now()->year)
                       ->orWhere(function($sub) {
-                          $sub->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+                          $sub->whereNull('date')->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
                       });
                 })
                 ->count();
@@ -223,33 +220,35 @@ class DashboardController extends Controller
             ->whereNotNull('received_amount')
             ->sum('received_amount');
 
-        $todayCheckedIn = Attendance::where(function($q) use ($userId, $franchiseUserIds) {
-                $q->where('franchise_id', $userId)->orWhereIn('user_id', $franchiseUserIds);
-            })
+        $todayCheckedIn = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->where(function($q) use ($todayDate) {
-                $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+                $q->where('date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                    $sub->whereNull('date')->whereDate('created_at', $todayDate);
+                });
             })
-            ->count();
+            ->distinct('user_id')
+            ->count('user_id');
 
         if ($todayCheckedIn == 0) {
-            $todayCheckedIn = AttendanceLogs::where(function($q) use ($userId, $franchiseUserIds) {
-                    $q->where('created_by', $userId)->orWhereIn('user_id', $franchiseUserIds);
-                })
+            $todayCheckedIn = AttendanceLogs::where('created_by', $userId)
                 ->where(function($q) use ($todayDate) {
-                    $q->whereDate('date', $todayDate)->orWhereDate('created_at', $todayDate);
+                    $q->where('date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                        $sub->whereNull('date')->whereDate('created_at', $todayDate);
+                    });
                 })
-                ->count();
+                ->distinct('user_id')
+                ->count('user_id');
         }
 
         $todayAttendences = Attendance::select('attendances.*', 'users.name', 'users.coach_name', 'users.days')
             ->join('users', 'attendances.user_id', '=', 'users.id')
-            ->where(function($q) use ($userId, $franchiseUserIds) {
-                $q->where('attendances.franchise_id', $userId)->orWhereIn('attendances.user_id', $franchiseUserIds);
-            })
+            ->where('attendances.franchise_id', $userId)
             ->where('attendances.type', 2)
             ->where(function($q) use ($todayDate) {
-                $q->whereDate('attendances.date', $todayDate)->orWhereDate('attendances.created_at', $todayDate);
+                $q->where('attendances.date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                    $sub->whereNull('attendances.date')->whereDate('attendances.created_at', $todayDate);
+                });
             })
             ->orderBy('attendances.id', 'DESC')
             ->get();
@@ -259,11 +258,11 @@ class DashboardController extends Controller
                 ->leftJoin('users', function($join) use ($authUser){
                     $join->on('attendance_logs.user_id', '=', 'users.id');
                 })
-                ->where(function($q) use ($userId, $franchiseUserIds) {
-                    $q->where('users.created_by', $userId)->orWhereIn('attendance_logs.user_id', $franchiseUserIds);
-                })
+                ->where('users.created_by', $userId)
                 ->where(function($q) use ($todayDate) {
-                    $q->whereDate('attendance_logs.date', $todayDate)->orWhereDate('attendance_logs.created_at', $todayDate);
+                    $q->where('attendance_logs.date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                        $sub->whereNull('attendance_logs.date')->whereDate('attendance_logs.created_at', $todayDate);
+                    });
                 })
                 ->orderBy('attendance_logs.id', 'DESC')
                 ->get();
@@ -277,12 +276,12 @@ class DashboardController extends Controller
                 DB::raw('COUNT(attendances.id) as total_attendance')
             )
             ->join('users', 'attendances.user_id', '=', 'users.id')
-            ->where(function($q) use ($userId, $franchiseUserIds) {
-                $q->where('attendances.franchise_id', $userId)->orWhereIn('attendances.user_id', $franchiseUserIds);
-            })
+            ->where('attendances.franchise_id', $userId)
             ->where('attendances.type', 2)
             ->where(function($q) use ($todayDate) {
-                $q->whereDate('attendances.date', $todayDate)->orWhereDate('attendances.created_at', $todayDate);
+                $q->where('attendances.date', $todayDate)->orWhere(function($sub) use ($todayDate) {
+                    $sub->whereNull('attendances.date')->whereDate('attendances.created_at', $todayDate);
+                });
             })
             ->groupBy('attendances.user_id', 'attendances.date', 'users.name', 'users.coach_name')
             ->having('total_attendance', '>', 1)

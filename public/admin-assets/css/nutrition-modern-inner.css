@@ -1847,21 +1847,24 @@ textarea.form-control:focus {
 
 /* Submenu Styling */
 #sidebar ul.menu-categories ul.submenu {
-    padding: 2px 0 4px 10px !important;
-    margin: 2px 0 5px 16px !important;
+    padding: 3px 0 5px 8px !important;
+    margin: 2px 0 6px 14px !important;
     border-left: 1.5px solid #e2e8f0 !important;
+    list-style: none !important;
 }
 
 #sidebar ul.menu-categories ul.submenu > li {
     margin-bottom: 2px !important;
+    list-style: none !important;
 }
 
 #sidebar ul.menu-categories ul.submenu > li a {
     display: flex !important;
     align-items: center !important;
-    padding: 5px 9px !important;
+    position: relative !important;
+    padding: 6px 12px 6px 22px !important;
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
-    font-size: 12px !important;
+    font-size: 12.5px !important;
     font-weight: 500 !important;
     color: #64748b !important;
     border-radius: 6px !important;
@@ -1871,16 +1874,39 @@ textarea.form-control:focus {
     text-decoration: none !important;
 }
 
+#sidebar ul.menu-categories li.menu ul.submenu > li a:before,
+#sidebar ul.menu-categories ul.submenu > li a:before {
+    content: '' !important;
+    position: absolute !important;
+    left: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 5px !important;
+    height: 5px !important;
+    border-radius: 50% !important;
+    background-color: #cbd5e1 !important;
+    transition: all 0.15s ease !important;
+}
+
 #sidebar ul.menu-categories ul.submenu > li a:hover {
     color: #3b46f1 !important;
     background: #f8fafc !important;
-    padding-left: 11px !important;
+    padding-left: 22px !important;
+}
+
+#sidebar ul.menu-categories ul.submenu > li a:hover:before,
+#sidebar ul.menu-categories ul.submenu > li.active a:before,
+#sidebar ul.menu-categories li.menu ul.submenu > li.active a:before {
+    background-color: #3b46f1 !important;
+    width: 6px !important;
+    height: 6px !important;
 }
 
 #sidebar ul.menu-categories ul.submenu > li.active a {
     color: #3b46f1 !important;
     font-weight: 600 !important;
     background: #eff2fe !important;
-    font-size: 12px !important;
+    font-size: 12.5px !important;
+    padding-left: 22px !important;
 }
 

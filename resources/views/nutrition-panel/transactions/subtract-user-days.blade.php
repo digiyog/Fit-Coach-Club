@@ -88,44 +88,54 @@
             align-items: center;
         }
         .fcc-sd-field-icon {
-            position: absolute;
-            left: 14px;
-            color: #ef4444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 2;
+            position: absolute !important;
+            left: 16px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #ef4444 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 5 !important;
         }
-        .fcc-sd-select {
-            width: 100%;
-            height: 48px;
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 0 38px 0 44px;
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #0f172a;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            outline: none;
-            transition: all 0.15s ease;
-            cursor: pointer;
+        .fcc-sd-select,
+        select.fcc-sd-select {
+            width: 100% !important;
+            height: 48px !important;
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding-left: 48px !important;
+            padding-right: 38px !important;
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #0f172a !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
+            cursor: pointer !important;
         }
-        .fcc-sd-select:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+        .fcc-sd-select:focus,
+        select.fcc-sd-select:focus {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
         }
         .fcc-sd-select-chevron {
-            position: absolute;
-            right: 14px;
-            color: #64748b;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute !important;
+            right: 14px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #64748b !important;
+            pointer-events: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 5 !important;
         }
         .fcc-sd-hint {
             font-size: 12px;
@@ -133,35 +143,50 @@
             margin-top: 2px;
         }
         .fcc-sd-textarea-wrap {
-            position: relative;
+            position: relative !important;
         }
         .fcc-sd-textarea-wrap .fcc-sd-field-icon {
-            top: 14px;
-            color: #3b46f1;
-            align-items: flex-start;
+            position: absolute !important;
+            top: 14px !important;
+            left: 16px !important;
+            transform: none !important;
+            color: #3b46f1 !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 5 !important;
         }
-        .fcc-sd-textarea {
-            width: 100%;
-            min-height: 80px;
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px 14px 12px 42px;
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #0f172a;
-            outline: none;
-            resize: vertical;
-            transition: all 0.15s ease;
-            font-family: inherit;
+        .fcc-sd-textarea,
+        textarea.fcc-sd-textarea {
+            width: 100% !important;
+            min-height: 80px !important;
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding-top: 14px !important;
+            padding-bottom: 12px !important;
+            padding-right: 14px !important;
+            padding-left: 48px !important;
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #0f172a !important;
+            outline: none !important;
+            box-shadow: none !important;
+            resize: vertical !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
+            font-family: inherit !important;
         }
-        .fcc-sd-textarea:focus {
-            border-color: #3b46f1;
-            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
+        .fcc-sd-textarea:focus,
+        textarea.fcc-sd-textarea:focus {
+            border-color: #3b46f1 !important;
+            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
         }
-        .fcc-sd-textarea::placeholder {
-            color: #94a3b8;
-            font-size: 13px;
+        .fcc-sd-textarea::placeholder,
+        textarea.fcc-sd-textarea::placeholder {
+            color: #94a3b8 !important;
+            font-size: 13px !important;
         }
         .fcc-sd-warning-note {
             background: #fef2f2;

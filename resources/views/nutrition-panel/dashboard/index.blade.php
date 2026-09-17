@@ -6066,16 +6066,31 @@
     var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
     var maxValInAttendance = Math.max.apply(Math, weeklyPulseAttendance.concat([0]));
-    var dynamicYMax = Math.max(80, Math.ceil((maxValInAttendance + 15) / 10) * 10);
+    var dynamicTarget = Math.max(30, Math.ceil(maxValInAttendance > 40 ? 70 : (maxValInAttendance * 1.35)));
+    var dynamicYMax = Math.max(dynamicTarget + 10, Math.ceil((maxValInAttendance + 15) / 10) * 10);
 
     var pulseOptions = {
         chart: {
             type: 'area',
-            height: 146,
+            height: 155,
             fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
             toolbar: { show: false },
             parentHeightOffset: 0,
-            sparkline: { enabled: false }
+            sparkline: { enabled: false },
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 600,
+                animateGradually: { enabled: true, delay: 150 }
+            },
+            dropShadow: {
+                enabled: true,
+                top: 4,
+                left: 0,
+                blur: 8,
+                color: '#38bdf8',
+                opacity: 0.35
+            }
         },
         dataLabels: {
             enabled: false
@@ -6084,6 +6099,7 @@
             name: 'Attendance',
             data: weeklyPulseAttendance
         }],
+        colors: ['#38bdf8'],
         xaxis: {
             categories: weeklyPulseLabels,
             labels: {
@@ -6091,11 +6107,12 @@
                     colors: 'rgba(255, 255, 255, 0.88)',
                     fontSize: '11px',
                     fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
-                    fontWeight: 500
+                    fontWeight: 600
                 }
             },
             axisBorder: { show: false },
-            axisTicks: { show: false }
+            axisTicks: { show: false },
+            tooltip: { enabled: false }
         },
         yaxis: {
             min: 0,
@@ -6103,9 +6120,10 @@
             tickAmount: 4,
             labels: {
                 style: {
-                    colors: 'rgba(255, 255, 255, 0.8)',
+                    colors: 'rgba(255, 255, 255, 0.75)',
                     fontSize: '10px',
-                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
+                    fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                    fontWeight: 500
                 },
                 formatter: function(val) {
                     return Math.round(val);
@@ -6114,16 +6132,16 @@
         },
         annotations: {
             yaxis: [{
-                y: 70,
-                borderColor: 'rgba(255, 255, 255, 0.4)',
+                y: dynamicTarget,
+                borderColor: 'rgba(255, 255, 255, 0.45)',
                 strokeDashArray: 4,
                 label: {
-                    text: 'Target (70)',
+                    text: 'Target (' + dynamicTarget + ')',
                     borderColor: 'rgba(255, 255, 255, 0.25)',
                     style: {
                         color: '#ffffff',
-                        background: 'rgba(30, 38, 109, 0.75)',
-                        fontSize: '10px',
+                        background: 'rgba(30, 38, 109, 0.85)',
+                        fontSize: '9.5px',
                         fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
                         fontWeight: 700,
                         padding: { left: 6, right: 6, top: 2, bottom: 2 }
@@ -6136,14 +6154,17 @@
         stroke: {
             curve: 'smooth',
             width: 3,
-            colors: ['#ffffff']
+            colors: ['#38bdf8']
         },
         markers: {
-            size: 4,
-            colors: ['#ffffff'],
-            strokeColors: '#3042d6',
+            size: 4.5,
+            colors: ['#38bdf8'],
+            strokeColors: '#ffffff',
             strokeWidth: 2,
-            hover: { size: 6 }
+            hover: {
+                size: 7,
+                strokeWidth: 3
+            }
         },
         fill: {
             type: 'gradient',
@@ -6151,12 +6172,12 @@
                 shade: 'dark',
                 type: 'vertical',
                 shadeIntensity: 0.5,
-                opacityFrom: 0.4,
-                opacityTo: 0.02,
+                opacityFrom: 0.45,
+                opacityTo: 0.03,
                 stops: [0, 100],
                 colorStops: [
-                    { offset: 0, color: '#ffffff', opacity: 0.35 },
-                    { offset: 100, color: '#ffffff', opacity: 0.01 }
+                    { offset: 0, color: '#38bdf8', opacity: 0.45 },
+                    { offset: 100, color: '#4338ca', opacity: 0.02 }
                 ]
             }
         },
@@ -6171,7 +6192,18 @@
                 fontSize: '12px',
                 fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
             },
-            y: { formatter: function(val) { return val + ' members attended'; } }
+            custom: function({series, seriesIndex, dataPointIndex, w}) {
+                var count = series[seriesIndex][dataPointIndex];
+                var day = w.globals.categoryLabels[dataPointIndex] || w.globals.labels[dataPointIndex];
+                return '<div style="background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); color: #fff; font-family: Outfit, sans-serif;">' +
+                    '<div style="font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">' + day + '</div>' +
+                    '<div style="display: flex; align-items: center; gap: 8px;">' +
+                        '<span style="width: 9px; height: 9px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 8px #38bdf8;"></span>' +
+                        '<span style="font-size: 14px; font-weight: 800; color: #ffffff;">' + count + '</span>' +
+                        '<span style="font-size: 12px; color: #cbd5e1; font-weight: 500;">members attended</span>' +
+                    '</div>' +
+                '</div>';
+            }
         }
     };
     var pulseElem = document.querySelector("#clubPulseChart");

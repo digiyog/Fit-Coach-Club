@@ -37,32 +37,11 @@
                 $showUserManagement = 'false';
                 $activeUserManagement = '';
                 $activeAllUserList = '';
-                $activeDemoUserList = '';
-                $activeOfflineUserList = '';
-                $activeOnlineUserList = '';
 
                 if(request()->is(Request::segment(1).'/users*')){
                     $showUserManagement = 'true';
                     $activeUserManagement = 'show';
                     $activeAllUserList = 'active';
-                }
-
-                if(request()->is(Request::segment(2).'/demo*')){
-                    $showUserManagement = 'true';
-                    $activeUserManagement = 'show';
-                    $activeDemoUserList = 'active';
-                }
-
-                if(request()->is(Request::segment(2).'/offline*')){
-                    $showUserManagement = 'true';
-                    $activeUserManagement = 'show';
-                    $activeOfflineUserList = 'active';
-                }
-
-                if(request()->is(Request::segment(2).'/online*')){
-                    $showUserManagement = 'true';
-                    $activeUserManagement = 'show';
-                    $activeOnlineUserList = 'active';
                 }
             @endphp
 
@@ -79,15 +58,6 @@
                 <ul class="submenu list-unstyled collapse {{ $activeUserManagement }}" id="userManagement" data-bs-parent="#accordionExample">
                     <li class="{{ $activeAllUserList }}">
                         <a href="{{ route('nutritionPanel.users.index') }}">All Users</a>
-                    </li>
-                    <li class="{{ $activeDemoUserList }}">
-                        <a href="{{ route('nutritionPanel.users.index') }}/demo">Demo Users</a>
-                    </li>
-                    <li class="{{ $activeOfflineUserList }}">
-                        <a href="{{ route('nutritionPanel.users.index') }}/offline">Offline Users</a>
-                    </li>
-                    <li class="{{ $activeOnlineUserList }}">
-                        <a href="{{ route('nutritionPanel.users.index') }}/online">Online Users</a>
                     </li>
                 </ul>
             </li>

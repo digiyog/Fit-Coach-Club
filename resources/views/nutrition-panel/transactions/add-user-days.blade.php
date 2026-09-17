@@ -88,74 +88,98 @@
             align-items: center;
         }
         .fcc-ad-field-icon {
-            position: absolute;
-            left: 14px;
-            color: #3b46f1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 2;
+            position: absolute !important;
+            left: 16px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #3b46f1 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 5 !important;
         }
         .fcc-ad-field-currency {
-            position: absolute;
-            left: 15px;
-            color: #334155;
-            font-weight: 700;
-            font-size: 15px;
-            pointer-events: none;
-            z-index: 2;
+            position: absolute !important;
+            left: 16px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #334155 !important;
+            font-weight: 700 !important;
+            font-size: 16px !important;
+            pointer-events: none !important;
+            z-index: 5 !important;
+            line-height: 1 !important;
         }
-        .fcc-ad-select {
-            width: 100%;
-            height: 48px;
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 0 38px 0 44px;
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #0f172a;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            outline: none;
-            transition: all 0.15s ease;
-            cursor: pointer;
+        .fcc-ad-select,
+        select.fcc-ad-select {
+            width: 100% !important;
+            height: 48px !important;
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding-left: 48px !important;
+            padding-right: 38px !important;
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #0f172a !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
+            cursor: pointer !important;
         }
-        .fcc-ad-select:focus {
-            border-color: #3b46f1;
-            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
+        .fcc-ad-select:focus,
+        select.fcc-ad-select:focus {
+            border-color: #3b46f1 !important;
+            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
         }
         .fcc-ad-select-chevron {
-            position: absolute;
-            right: 14px;
-            color: #64748b;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute !important;
+            right: 14px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #64748b !important;
+            pointer-events: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 5 !important;
         }
-        .fcc-ad-input {
-            width: 100%;
-            height: 48px;
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 0 14px 0 38px;
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #0f172a;
-            outline: none;
-            transition: all 0.15s ease;
+        .fcc-ad-input,
+        input.fcc-ad-input,
+        input[type="number"].fcc-ad-input {
+            width: 100% !important;
+            height: 48px !important;
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding-left: 46px !important;
+            padding-right: 14px !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #0f172a !important;
+            outline: none !important;
+            box-shadow: none !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
         }
-        .fcc-ad-input:focus {
-            border-color: #3b46f1;
-            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
+        .fcc-ad-input:focus,
+        input.fcc-ad-input:focus,
+        input[type="number"].fcc-ad-input:focus {
+            border-color: #3b46f1 !important;
+            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
         }
-        .fcc-ad-input::placeholder {
-            color: #94a3b8;
-            font-size: 13px;
+        .fcc-ad-input::placeholder,
+        input.fcc-ad-input::placeholder,
+        input[type="number"].fcc-ad-input::placeholder {
+            color: #94a3b8 !important;
+            font-size: 13px !important;
         }
         .fcc-ad-hint {
             font-size: 12px;
@@ -173,34 +197,50 @@
             }
         }
         .fcc-ad-textarea-wrap {
-            position: relative;
+            position: relative !important;
         }
         .fcc-ad-textarea-wrap .fcc-ad-field-icon {
-            top: 14px;
-            align-items: flex-start;
+            position: absolute !important;
+            top: 14px !important;
+            left: 16px !important;
+            transform: none !important;
+            color: #3b46f1 !important;
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 5 !important;
         }
-        .fcc-ad-textarea {
-            width: 100%;
-            min-height: 80px;
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px 14px 12px 42px;
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #0f172a;
-            outline: none;
-            resize: vertical;
-            transition: all 0.15s ease;
-            font-family: inherit;
+        .fcc-ad-textarea,
+        textarea.fcc-ad-textarea {
+            width: 100% !important;
+            min-height: 80px !important;
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding-top: 14px !important;
+            padding-bottom: 12px !important;
+            padding-right: 14px !important;
+            padding-left: 48px !important;
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #0f172a !important;
+            outline: none !important;
+            box-shadow: none !important;
+            resize: vertical !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
+            font-family: inherit !important;
         }
-        .fcc-ad-textarea:focus {
-            border-color: #3b46f1;
-            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12);
+        .fcc-ad-textarea:focus,
+        textarea.fcc-ad-textarea:focus {
+            border-color: #3b46f1 !important;
+            box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
         }
-        .fcc-ad-textarea::placeholder {
-            color: #94a3b8;
-            font-size: 13px;
+        .fcc-ad-textarea::placeholder,
+        textarea.fcc-ad-textarea::placeholder {
+            color: #94a3b8 !important;
+            font-size: 13px !important;
         }
         .fcc-ad-info-note {
             background: #eff6ff;
