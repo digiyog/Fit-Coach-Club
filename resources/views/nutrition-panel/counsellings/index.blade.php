@@ -517,6 +517,9 @@
         text-decoration: none;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
+        white-space: nowrap !important;
+        word-break: keep-all;
         transition: all 0.16s ease;
     }
     .fcc-btn-view-meal:hover {

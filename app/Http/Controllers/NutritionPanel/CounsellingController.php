@@ -235,7 +235,7 @@ class CounsellingController extends Controller
                         $recentDiffHtml = '<span class="fcc-progress-pill fcc-pill-neutral">0 g</span>';
                     }
 
-                    $progressHtml = '<div class="d-flex align-items-center gap-1">
+                    $progressHtml = '<div class="d-flex align-items-center gap-1 flex-nowrap text-nowrap" style="white-space: nowrap;">
                         <span class="fcc-weight-val">'.$weightDisplay.'</span>
                         '.$recentDiffHtml.'
                         '.$totalDiffHtml.'
@@ -243,9 +243,9 @@ class CounsellingController extends Controller
 
                     // 7. Dues
                     if ($due_amount > 0) {
-                        $duesHtml = '<span class="fcc-dues-flagged">₹'.number_format($due_amount, 0).'</span>';
+                        $duesHtml = '<span class="fcc-dues-flagged text-nowrap">₹'.number_format($due_amount, 0).'</span>';
                     } else {
-                        $duesHtml = '<span class="text-muted" style="font-size: 13px;">₹0</span>';
+                        $duesHtml = '<span class="text-muted text-nowrap" style="font-size: 13px;">₹0</span>';
                     }
 
                     // Encrypted ID for URLs
@@ -253,9 +253,9 @@ class CounsellingController extends Controller
 
                     // 8. Meal Button
                     if (!empty($current_meals) && $userId) {
-                        $mealHtml = '<a href="'.route('nutritionPanel.users.details', ['id' => $encryptedId]).'" class="btn fcc-btn-view-meal">View meal</a>';
+                        $mealHtml = '<a href="'.route('nutritionPanel.users.details', ['id' => $encryptedId]).'" class="btn fcc-btn-view-meal text-nowrap" style="white-space: nowrap;">View meal</a>';
                     } else {
-                        $mealHtml = '<span class="text-muted" style="font-size: 13px;">No meal</span>';
+                        $mealHtml = '<span class="text-muted text-nowrap" style="font-size: 13px; white-space: nowrap;">No meal</span>';
                     }
 
                     // 9. Completed At
