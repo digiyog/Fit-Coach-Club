@@ -31,39 +31,51 @@ class AttendanceLogs extends Model
     // Get Attendence list records
     public function scopeGetAttendences($model, $limit = null, $offset = null, $search = null, $filter = array(), $sort = array())
     {
-        // Get user
-        $authUser = auth()->user();
-        //----------
-
-        // p($filter);
-
-        $attendences = AttendanceLogs::select('id','remark', 'date', 'days', 'total_days', 'message');
-        $attendences->where("user_id", $filter['user_id']);
+        $attendences = AttendanceLogs::select('id', 'remark', 'date', 'days', 'total_days', 'message');
+        if (!empty($filter['user_id'])) {
+            $attendences->where("user_id", $filter['user_id']);
+        }
         
+        if (!empty($search)) {
+            $searchStr = trim(strtolower($search));
+            $attendences->where(function($q) use ($searchStr) {
+                $q->whereRaw('lower(remark) LIKE ?', ["%{$searchStr}%"])
+                  ->orWhereRaw('lower(message) LIKE ?', ["%{$searchStr}%"])
+                  ->orWhereRaw('lower(date) LIKE ?', ["%{$searchStr}%"]);
+            });
+        }
+
+        if (!empty($filter['activity'])) {
+            $attendences->where('remark', $filter['activity']);
+        }
+
+        if (!empty($filter['source'])) {
+            if ($filter['source'] === 'App Side') {
+                $attendences->where('remark', 'QR Attendance Add');
+            } elseif ($filter['source'] === 'Admin Panel') {
+                $attendences->where('remark', '!=', 'QR Attendance Add');
+            }
+        }
+
         // Table columns sort conditions
-        if(!(empty($sort)) && $sort['column'] > 0)
+        if(!(empty($sort)) && isset($sort['column']) && $sort['column'] > 0)
         {
-            $arr_fields = array("", 'total_days', "days", "remark", "", 'message', '');
-            for($field = 0; $field < count($arr_fields); $field++)
-            {
-                if($sort['column'] == $field && $arr_fields[$field] != "")
-                {
-                    $attendences = $attendences->orderBy($arr_fields[$field], $sort['dir']);
-                }
+            $arr_fields = array("", "id", "date", 'total_days', "days", "remark", "message");
+            if (isset($arr_fields[$sort['column']]) && $arr_fields[$sort['column']] != "") {
+                $attendences = $attendences->orderBy($arr_fields[$sort['column']], $sort['dir'] ?? 'DESC');
             }
         } else {
-            $attendences = $attendences->orderBy('id', 'DESC');
+            $attendences = $attendences->orderBy('date', 'DESC')->orderBy('id', 'DESC');
         }
 
         // Set final limit and records
         if(!empty($limit))
         {
-            $attendences = $attendences->skip($offset)->take($limit);
-            return $attendences->get();
+            return $attendences->skip($offset)->take($limit)->get();
         }
         else
         {
-            return $attendences->get()->count();
+            return $attendences->count();
         }
     }
 }
