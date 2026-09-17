@@ -1364,6 +1364,7 @@ class UserController extends Controller
 
         $chartData = $weights->map(function($w) {
             return [
+                'raw_date' => date('Y-m-d', strtotime($w->date)),
                 'date' => date('d M Y', strtotime($w->date)),
                 'short_date' => date('d M', strtotime($w->date)),
                 'weight' => round((float)$w->weight, 1),
