@@ -903,19 +903,17 @@
         <input type="hidden" name="year" id="year" value="" />
 
         <!-- Modern Data Table -->
-        <div class="fcc-modern-table-wrap">
-            <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.users.getViewWeights') }}">
-                <thead>
-                    <tr>
-                        <th class="no-sort text-start" style="width: 70px;">Entry</th>
-                        <th class="text-start" style="width: 25%;">Date</th>
-                        <th class="text-start" style="width: 25%;">Weight</th>
-                        <th class="text-start" style="width: 30%;">Evidence</th>
-                        <th class="no-sort no-content text-end" style="width: 90px; text-align: right;">Action</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+        <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.users.getViewWeights') }}">
+            <thead>
+                <tr>
+                    <th class="no-sort text-start" style="width: 70px;">Entry</th>
+                    <th class="text-start" style="width: 25%;">Date</th>
+                    <th class="text-start" style="width: 25%;">Weight</th>
+                    <th class="text-start" style="width: 30%;">Evidence</th>
+                    <th class="no-sort no-content text-end" style="width: 90px; text-align: right;">Action</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 
 </div>

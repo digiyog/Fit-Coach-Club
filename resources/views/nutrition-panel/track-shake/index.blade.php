@@ -754,21 +754,19 @@
         <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}" />
 
         <!-- Modern Data Table -->
-        <div class="fcc-modern-table-wrap">
-            <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.track-shake.getTrackShake') }}">
-                <thead>
-                    <tr>
-                        <th style="width: 70px;">Entry</th>
-                        <th>Date</th>
-                        <th>Balance</th>
-                        <th>Change</th>
-                        <th>Activity</th>
-                        <th>Source</th>
-                        <th>Remark</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+        <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.track-shake.getTrackShake') }}">
+            <thead>
+                <tr>
+                    <th style="width: 70px;">Entry</th>
+                    <th>Date</th>
+                    <th>Balance</th>
+                    <th>Change</th>
+                    <th>Activity</th>
+                    <th>Source</th>
+                    <th>Remark</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 
 </div>
