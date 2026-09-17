@@ -907,12 +907,15 @@
         }
 
         var numericValues = rawValues.map(function(v) { return parseFloat(v) || 0; });
-        var minVal = numericValues.length ? Math.floor(Math.min(...numericValues) - 2) : 50;
-        var maxVal = numericValues.length ? Math.ceil(Math.max(...numericValues) + 2) : 100;
-        if (minVal === maxVal) {
-            minVal = Math.max(0, minVal - 5);
-            maxVal += 5;
-        }
+        
+        // Dynamically compute min/max based on data spread so weight variations are clearly visible
+        var minRaw = numericValues.length ? Math.min(...numericValues) : 50;
+        var maxRaw = numericValues.length ? Math.max(...numericValues) : 100;
+        var spread = maxRaw - minRaw;
+
+        var pad = spread > 4 ? 1.5 : (spread > 1 ? 0.8 : (spread > 0 ? 0.4 : 1.0));
+        var minVal = Number(Math.max(0, minRaw - pad).toFixed(1));
+        var maxVal = Number((maxRaw + pad).toFixed(1));
 
         var chartOptions = {
             chart: {
@@ -951,23 +954,11 @@
                 }
             },
             yaxis: {
-                title: {
-                    text: 'Weight (kg)',
-                    rotate: -90,
-                    offsetX: -10,
-                    style: {
-                        color: '#64748b',
-                        fontSize: '11px',
-                        fontFamily: "'Outfit', sans-serif",
-                        fontWeight: 600
-                    }
-                },
                 labels: {
                     show: true,
                     align: 'right',
-                    minWidth: 40,
-                    maxWidth: 60,
-                    offsetX: -4,
+                    minWidth: 45,
+                    offsetX: -5,
                     style: {
                         colors: '#94a3b8',
                         fontSize: '11.5px',
@@ -975,7 +966,7 @@
                         fontWeight: 500
                     },
                     formatter: function(val) {
-                        return val !== undefined && val !== null ? parseFloat(val).toFixed(1) : '';
+                        return val !== undefined && val !== null ? parseFloat(val).toFixed(1) + ' kg' : '';
                     }
                 },
                 tickAmount: 5,
@@ -1002,16 +993,16 @@
                 colors: ['#3b46f1'],
                 strokeColors: '#ffffff',
                 strokeWidth: 2,
-                hover: { size: 6.5 }
+                hover: { size: 7 }
             },
             grid: {
                 borderColor: '#f1f5f9',
                 strokeDashArray: 4,
                 padding: {
-                    top: 10,
-                    right: 25,
+                    top: 15,
+                    right: 35,
                     bottom: 10,
-                    left: 15
+                    left: 20
                 },
                 yaxis: { lines: { show: true } },
                 xaxis: { lines: { show: false } }
