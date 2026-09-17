@@ -1,6 +1,4 @@
 var Counsellings = (function() {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
     return {
         /**
@@ -9,103 +7,17 @@ var Counsellings = (function() {
         init: function() {
             Counsellings.getCounsellings();
             Counsellings.initializeComponents();
-            Counsellings.dataTableCustomFilter();
         },
 
         /**
          * Initialize components.
          */
         initializeComponents: function() {
-            // Initialize Components
             var $filter_form = $(".custom-datatable-filter-form");
-
-            // Bootstrap Select on filter form dropdowns
-            Components.bootstrapSelect($filter_form);
-            //------------
-
-            // Date Picker
-            Components.datePicker($filter_form);
-            //-------------------
-
-            // Enable Button on change filter form elements
-            // Components.enableButton($filter_form);
-            //------------
-
-            // $('input[name="date_range"]').daterangepicker({
-            //     autoUpdateInput: false,
-            //     locale: {
-            //         cancelLabel: 'Clear'
-            //     }
-            // });
-
-            // $('input[name="date_range"]').on(
-            //     "apply.daterangepicker",
-            //     function (ev, picker) {
-            //         $(this).val(
-            //             picker.startDate.format("YYYY-MM-DD") +
-            //             "/" +
-            //             picker.endDate.format("YYYY-MM-DD")
-            //         );
-            //         $(':input[type="submit"]').prop("disabled", false);
-            //         $(':input[name="Clear"]').prop("disabled", false);
-            //     }
-            // );
-
-            // $('input[name="date_range"]').on(
-            //     "cancel.daterangepicker",
-            //     function (ev, picker) {
-            //         $(this).val("");
-            //     }
-            // );
-        },
-
-        /**
-         * Datatable custom filter.
-         */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
-            });
-        },
-
-        /**
-         * Updates "Select all" control in a data table
-         */
-        updateDataTableSelectAllCtrl: function(table) {
-            var $table = table.table().node();
-            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-            var $chkbox_checked = $(
-                'tbody input[type="checkbox"]:checked',
-                $table
-            );
-            var chkbox_select_all = $(
-                'thead input[name="select_all"]',
-                $table
-            ).get(0);
-
-            // // If none of the checkboxes are checked
-            // if ($chkbox_checked.length === 0) {
-            //     chkbox_select_all.checked = false;
-
-            //     if ("indeterminate" in chkbox_select_all) {
-            //         chkbox_select_all.indeterminate = false;
-            //     }
-
-            //     // If all of the checkboxes are checked
-            // } else if ($chkbox_checked.length === $chkbox_all.length) {
-            //     chkbox_select_all.checked = true;
-
-            //     if ("indeterminate" in chkbox_select_all) {
-            //         chkbox_select_all.indeterminate = false;
-            //     }
-
-            //     // If some of the checkboxes are checked
-            // } else {
-            //     chkbox_select_all.checked = true;
-            //     if ("indeterminate" in chkbox_select_all) {
-            //         chkbox_select_all.indeterminate = true;
-            //     }
-            // }
+            if ($filter_form.length && typeof Components !== "undefined") {
+                Components.bootstrapSelect($filter_form);
+                Components.datePicker($filter_form);
+            }
         },
 
         /**
@@ -114,89 +26,76 @@ var Counsellings = (function() {
         getCounsellings: function() {
             var $dataTable = $("#dataTable");
 
-            data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-                },
-                // headerCallback: function(e, a, t, n, s) {
-                //     e.getElementsByTagName("th")[0].innerHTML =
-                //             '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                // },
+            window.data_table = data_table = $dataTable.DataTable({
+                order: [],
                 columnDefs: [
                     {
-                //         targets: 0,
-                //         width: "30px",
-                //         className: "",
-                //         orderable: !1,
-                //         visible: true,
-                //         render: function(e, a, t, n) {
-                //             return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                //         }
+                        targets: 0,
+                        width: "36px",
+                        className: "no-sort no-content text-center",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        targets: 10,
+                        width: "50px",
+                        orderable: false,
+                        searchable: false,
+                        className: "no-sort no-content text-end"
                     }
                 ],
+                drawCallback: function(settings) {
+                    if (typeof feather !== "undefined") {
+                        feather.replace();
+                    }
+                    if (settings.json) {
+                        var totalRecords = settings.json.recordsFiltered !== undefined ? settings.json.recordsFiltered : (settings.json.iTotalDisplayRecords !== undefined ? settings.json.iTotalDisplayRecords : (settings.json.iTotalRecords || 0));
+                        
+                        var activeTab = $('#active_tab').val() || 'completed';
+                        var tabText = 'completed sessions';
+                        if (activeTab === 'today') {
+                            tabText = "today's sessions";
+                        } else if (activeTab === 'pending') {
+                            tabText = "pending follow-ups";
+                        } else {
+                            tabText = "completed sessions";
+                        }
+
+                        var coachFilter = $('#coach_name').val();
+                        var displayText = totalRecords + ' ' + tabText;
+                        if (coachFilter) {
+                            displayText += ' (' + coachFilter + ')';
+                        }
+
+                        $('#fccTableCountDisplay').text(displayText);
+                    }
+                },
                 buttons: {
                     buttons: [
-                        // {
-                        //     extend: "excel",
-                        //     className: "current-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "current",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2]
-                        //     }
-                        // },
-                        // {
-                        //     extend: "excel",
-                        //     className: "all-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "all",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2, 3, 4]
-                        //     }
-                        // }
+                        {
+                            extend: "excel",
+                            className: "buttons-excel",
+                            exportOptions: {
+                                modifier: {
+                                    page: "all",
+                                    search: "none"
+                                },
+                                columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            }
+                        }
                     ]
                 },
                 oLanguage: {
                     oPaginate: {
                         sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: -1px;"><polyline points="15 18 9 12 15 6"></polyline></svg> Previous',
                         sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                            'Next <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px; vertical-align: -1px;"><polyline points="9 18 15 12 9 6"></polyline></svg>'
                     },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
+                    sInfo: "Showing _START_–_END_ of _TOTAL_ completed sessions",
+                    sInfoEmpty: "Showing 0 to 0 of 0 sessions",
+                    sInfoFiltered: "(filtered from _MAX_ total entries)",
+                    sEmptyTable: "No counselling sessions found matching the criteria",
                     sSearch: '<i data-feather="search"></i>',
                     sSearchPlaceholder: "Search...",
                     sLengthMenu: "Results :  _MENU_"
@@ -204,158 +103,53 @@ var Counsellings = (function() {
                 processing: true,
                 serverSide: true,
                 lengthMenu: [
-                    [20, 50, 75, 100],
-                    [20, 50, 75, 100]
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
                 ],
-                pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                pageLength: 25,
+                dom: '<"fcc-modern-table-wrap"rt><"fcc-dt-footer"ip>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
-                        d.month = $("#month").val();
-                        d.year = $("#year").val();
+                        d.name = $("#fccSearchInput").val();
+                        d.coach_name = $("#coach_name").val();
+                        d.plan_id = $("#plan_id").val();
                         d.date = $("#date").val();
+                        d.tab = $("#active_tab").val();
                     }
                 },
                 columns: [
                     {
-                        data: null,
-                        name: "serial_no",
+                        data: "checkbox",
+                        name: "checkbox",
                         searchable: false,
                         sortable: false,
-                        width:80,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
+                        width: "36px",
+                        className: "no-sort no-content text-center"
                     },
                     { data: "name", name: "name" },
+                    { data: "att", name: "att", width: "50px" },
                     { data: "coach_name", name: "coach_name" },
-                    { data: "attendance", name: "attendance", width:150 },
-                    { data: "days", name: "days", width:150 },
-                    { data: "current_meals", name: "current_meals", width:150 },
-                    { data: "date", name: "date", width:150 },
+                    { data: "plan", name: "plan" },
+                    { data: "days", name: "days", width: "65px" },
+                    { data: "progress", name: "progress" },
+                    { data: "dues", name: "dues", width: "75px" },
+                    { data: "meal", name: "meal", width: "90px" },
+                    { data: "completed_at", name: "completed_at" },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
                         sortable: false,
-                        width:50,
-                        className: "text-right"
+                        className: "no-sort no-content text-end",
+                        width: "50px"
                     }
-                ],
-                rowCallback: function(row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
-
-                    // If row ID is in the list of selected row IDs
-                    if ($.inArray(rowId, rows_selected) !== -1) {
-                        $(row)
-                            .find('input[type="checkbox"]')
-                            .prop("checked", true);
-                        $(row).addClass("selected");
-                    }
-                }
+                ]
             });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function(e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
-
-                    // Get row ID
-                    var rowId = data;
-
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    Counsellings.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function(e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle table draw event
-            table.on("draw", function() {
-                // Update state of "Select all" control
-                Counsellings.updateDataTableSelectAllCtrl(table);
-
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-               //----------
-            });
-        },
+        }
     };
 })();
 
-Counsellings.init();
+$(document).ready(function() {
+    Counsellings.init();
+});

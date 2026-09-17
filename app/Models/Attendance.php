@@ -183,7 +183,28 @@ class Attendance extends Model
         $authUser = auth()->user();
         //----------
 
-        $counsellings = Attendance::select('users.id', 'users.name', 'users.coach_name','users.days', 'attendances.date', 'meal_types.name as meal_type_name', 'attendances.created_at', DB::raw('COUNT(attendances.id) as total_attendance'))->groupBy('attendances.user_id');
+        $counsellings = Attendance::select(
+            'users.id',
+            'users.name',
+            'users.email',
+            'users.mobile_number',
+            'users.profile_image',
+            'users.coach_name',
+            'users.days',
+            'users.user_type',
+            'users.status',
+            'users.due_amount',
+            'users.starting_weight',
+            'users.current_weight',
+            'users.created_at as user_created_at',
+            'attendances.id as attendance_id',
+            'attendances.weight as attendance_weight',
+            'attendances.date',
+            'meal_types.id as meal_type_id',
+            'meal_types.name as meal_type_name',
+            'attendances.created_at as attendance_time',
+            DB::raw('COUNT(attendances.id) as total_attendance')
+        )->groupBy('attendances.user_id');
 
         $counsellings->leftJoin('users', function($join){
             $join->on('attendances.user_id', '=', 'users.id');
@@ -193,62 +214,64 @@ class Attendance extends Model
             $join->on('users.meal_type_id', '=', 'meal_types.id');
         });
 
-        $counsellings->where("users.role_type", 'user')->where('type', 2)->where("attendances.franchise_id", $authUser->id);
+        $counsellings->where("users.role_type", 'user')->where('attendances.type', 2)->where("attendances.franchise_id", $authUser->id);
 
-        // $counsellings = $counsellings->withCount(['user_attendence as total_absent' => function ($query) use ($filter) {
-        //     $query->where('type', 1)->whereMonth('date', $filter['month'])->whereYear('date', $filter['year']);
-        // }]);
-
-        // $counsellings = $counsellings->withCount(['user_attendence as total_present' => function ($query) use ($filter) {
-        //     $query->where('type', 2)->whereMonth('date', $filter['month'])->whereYear('date', $filter['year']);
-        // }]);
-         
         // Record filter conditions
         $counsellings->where(function ($query) use ($filter) {
-            // Filter
             if (!empty($filter) && !empty($filter['name'])) 
             {
-                $query->whereRaw('(lower(users.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.coach_name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.days) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(attendances.date) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(meal_types.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' )');
+                $nameFilter = trim(strtolower($filter['name']));
+                $query->whereRaw('(lower(users.name) LIKE \'%'.$nameFilter.'%\' || lower(users.coach_name) LIKE \'%'.$nameFilter.'%\' || lower(users.days) LIKE \'%'.$nameFilter.'%\' || lower(attendances.date) LIKE \'%'.$nameFilter.'%\' || lower(meal_types.name) LIKE \'%'.$nameFilter.'%\' )');
             }
 
-            if (!empty($filter) && !empty($filter['date'])) {
-                // $date_range = explode('/', $filter['date_range']);
-                // $last_30_days = [
-                //     'start_date' => trim($date_range[0]) . ' 00:00:00',
-                //     'end_date' => trim($date_range[1]) . ' 00:00:00',
-                // ];
-                // $query->whereDate('date', '>=', $last_30_days['start_date']);
-                // $query->whereDate('date', '<=', $last_30_days['end_date']);
-
-                $query->whereDate('date', '=', date('Y-m-d', strtotime($filter['date'])));
-            } else {
-                $query->whereDate('date', '=', date('Y-m-d'));
+            if (!empty($filter) && !empty($filter['coach_name'])) {
+                $query->where('users.coach_name', $filter['coach_name']);
             }
 
+            if (!empty($filter) && !empty($filter['plan_id'])) {
+                $query->where('users.meal_type_id', $filter['plan_id']);
+            }
+
+            $tab = $filter['tab'] ?? 'completed';
+
+            if ($tab == 'today') {
+                $query->whereDate('attendances.date', '=', date('Y-m-d'));
+            } elseif ($tab == 'pending') {
+                $query->where(function($q) {
+                    $q->where('users.days', '<=', 5)
+                      ->orWhere('users.due_amount', '>', 0);
+                });
+                if (!empty($filter['date'])) {
+                    $query->whereDate('attendances.date', '<=', date('Y-m-d', strtotime($filter['date'])));
+                }
+            } else { // 'completed'
+                if (!empty($filter['date'])) {
+                    $query->whereDate('attendances.date', '=', date('Y-m-d', strtotime($filter['date'])));
+                } else {
+                    $query->whereDate('attendances.date', '=', date('Y-m-d'));
+                }
+            }
         });
         
         // Table list Search conditions
         if(!(empty($search)))
         {
-            $search = strtolower($search);
-            $counsellings = $counsellings->whereRaw('(lower(users.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.coach_name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.days) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(attendances.date) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(meal_types.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' )');
+            $searchStr = trim(strtolower($search));
+            $counsellings = $counsellings->whereRaw('(lower(users.name) LIKE \'%'.$searchStr.'%\' || lower(users.coach_name) LIKE \'%'.$searchStr.'%\' || lower(meal_types.name) LIKE \'%'.$searchStr.'%\' || lower(users.mobile_number) LIKE \'%'.$searchStr.'%\' )');
         }
         
         // Table columns sort conditions
-        if(!(empty($sort)) && $sort['column'] > 0)
+        if(!(empty($sort)) && isset($sort['column']) && $sort['column'] > 0)
         {
-            $arr_fields = array("", "name", "coach_name", "", "days", "meal_type_name", "date");
-            for($field = 0; $field < count($arr_fields); $field++)
+            $arr_fields = array("", "", "users.name", "total_attendance", "users.coach_name", "meal_types.name", "users.days", "attendances.weight", "users.due_amount", "meal_types.name", "attendances.created_at", "");
+            if(isset($arr_fields[$sort['column']]) && $arr_fields[$sort['column']] != "")
             {
-                if($sort['column'] == $field && $arr_fields[$field] != "")
-                {
-                    $counsellings = $counsellings->orderBy($arr_fields[$field], $sort['dir']);
-                }
+                $counsellings = $counsellings->orderBy($arr_fields[$sort['column']], $sort['dir'] ?? 'ASC');
             }
         }
         else
         {
-            $counsellings = $counsellings->orderBy('date', 'DESC');
+            $counsellings = $counsellings->orderBy('attendances.created_at', 'DESC');
         }
 
         // Set final limit and records
