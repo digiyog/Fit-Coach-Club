@@ -1474,19 +1474,13 @@ class UserController extends Controller
             'View Attendance' => '',
         ];
 
-        // Breadcrumb Button
         $breadcrumbButton = [];
-        // Add Button
-      
-        // $breadcrumbButton[] = [
-        //     'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
-        //     'btn_link' => 'javascript:;',
-        //     'btn_icon' => 'filter',
-        //     'btn_text' => __('language.filter'),
-        //     'attributes' => []
-        // ];
 
         $user = User::where('id', dv($id))->first();
+
+        if (!$user) {
+            return redirect()->route('nutritionPanel.users.index');
+        }
 
         $year = $request->year ?? date('Y'); 
 
@@ -1499,7 +1493,7 @@ class UserController extends Controller
             })
             ->where("users.role_type", 'user')
             ->where('type', 2)
-            ->where('user_id', $user['id'])
+            ->where('user_id', $user->id)
             ->whereBetween('attendances.date', [$startDate, $endDate])
             ->orderBy('attendances.date','ASC')
             ->get()
@@ -1507,13 +1501,72 @@ class UserController extends Controller
                 return Carbon::parse($item->date)->format('Y-m-d');
             });
 
+        // 1. Total Check-ins
+        $totalCheckIns = $attendances->count();
+
+        // 2. Last Check-in
+        $lastAttendance = $attendances->last();
+        $lastCheckInDate = $lastAttendance ? date('d M Y', strtotime($lastAttendance->date)) : null;
+
+        // 3. Recent Check-ins (last 6 dates)
+        $recentCheckIns = $attendances->take(-8)->map(function($a) {
+            return (object)[
+                'date' => $a->date,
+                'formatted' => date('d M', strtotime($a->date)),
+                'full' => date('d M Y', strtotime($a->date)),
+                'weight' => $a->weight
+            ];
+        })->values();
+
+        // 4. Calculate Longest Streak
+        $longestStreakDays = 0;
+        $longestStreakRange = '';
+        $currentStreakDays = 0;
+        $currentStreakStart = null;
+        $longestStreakStart = null;
+        $longestStreakEnd = null;
+        $prevDate = null;
+
+        foreach ($attendances as $att) {
+            $attDate = Carbon::parse($att->date);
+            if ($prevDate && $prevDate->copy()->addDay()->isSameDay($attDate)) {
+                $currentStreakDays++;
+            } else {
+                $currentStreakDays = 1;
+                $currentStreakStart = $attDate;
+            }
+
+            if ($currentStreakDays >= $longestStreakDays) {
+                $longestStreakDays = $currentStreakDays;
+                $longestStreakStart = $currentStreakStart;
+                $longestStreakEnd = $attDate;
+            }
+
+            $prevDate = $attDate;
+        }
+
+        if ($longestStreakDays > 0 && $longestStreakStart && $longestStreakEnd) {
+            if ($longestStreakStart->isSameDay($longestStreakEnd)) {
+                $longestStreakRange = $longestStreakStart->format('d M');
+            } elseif ($longestStreakStart->month === $longestStreakEnd->month) {
+                $longestStreakRange = $longestStreakStart->format('d') . '–' . $longestStreakEnd->format('d M');
+            } else {
+                $longestStreakRange = $longestStreakStart->format('d M') . ' – ' . $longestStreakEnd->format('d M');
+            }
+        }
+
         // View Data
-        $this->viewData['breadcrumbFilter'] = $breadcrumb;
-        $this->viewData['breadcrumbButton'] = $breadcrumbButton;
-        $this->viewData['authUser'] = $authUser;
-        $this->viewData['user'] = $user;
-        $this->viewData['year'] = $year;
-        $this->viewData['attendances'] = $attendances;
+        $this->viewData['breadcrumbFilter']     = $breadcrumb;
+        $this->viewData['breadcrumbButton']     = $breadcrumbButton;
+        $this->viewData['authUser']             = $authUser;
+        $this->viewData['user']                 = $user;
+        $this->viewData['year']                 = $year;
+        $this->viewData['attendances']          = $attendances;
+        $this->viewData['totalCheckIns']        = $totalCheckIns;
+        $this->viewData['longestStreakDays']    = $longestStreakDays;
+        $this->viewData['longestStreakRange']   = $longestStreakRange;
+        $this->viewData['lastCheckInDate']      = $lastCheckInDate;
+        $this->viewData['recentCheckIns']       = $recentCheckIns;
         
         return view('nutrition-panel.users.view-attendence')->with($this->viewData);
     }
