@@ -367,6 +367,29 @@
         background: #3b46f1;
     }
 
+    /* ApexChart Text & Alignment Fixes */
+    .apexcharts-canvas {
+        font-family: 'Outfit', sans-serif !important;
+    }
+    .apexcharts-text, .apexcharts-text tspan {
+        font-family: 'Outfit', sans-serif !important;
+    }
+    .apexcharts-yaxis-title text {
+        fill: #64748b !important;
+        font-weight: 600 !important;
+        font-size: 11px !important;
+    }
+    .apexcharts-yaxis-label {
+        fill: #94a3b8 !important;
+        font-weight: 500 !important;
+        font-size: 11.5px !important;
+    }
+    .apexcharts-xaxis-label {
+        fill: #94a3b8 !important;
+        font-weight: 500 !important;
+        font-size: 11.5px !important;
+    }
+
     /* 7. Table Header & Search */
     .fcc-table-controls-group {
         display: flex;
@@ -884,17 +907,22 @@
         }
 
         var numericValues = rawValues.map(function(v) { return parseFloat(v) || 0; });
-        var minVal = numericValues.length ? Math.max(0, Math.floor(Math.min(...numericValues) - 2)) : 50;
+        var minVal = numericValues.length ? Math.floor(Math.min(...numericValues) - 2) : 50;
         var maxVal = numericValues.length ? Math.ceil(Math.max(...numericValues) + 2) : 100;
+        if (minVal === maxVal) {
+            minVal = Math.max(0, minVal - 5);
+            maxVal += 5;
+        }
 
         var chartOptions = {
             chart: {
                 type: 'area',
-                height: 270,
+                height: 280,
                 toolbar: { show: false },
                 fontFamily: "'Outfit', sans-serif",
                 sparkline: { enabled: false },
-                zoom: { enabled: false }
+                zoom: { enabled: false },
+                parentHeightOffset: 0
             },
             dataLabels: {
                 enabled: false
@@ -906,6 +934,7 @@
             xaxis: {
                 categories: rawDates,
                 labels: {
+                    offsetY: 4,
                     style: {
                         colors: '#94a3b8',
                         fontSize: '11.5px',
@@ -924,22 +953,32 @@
             yaxis: {
                 title: {
                     text: 'Weight (kg)',
+                    rotate: -90,
+                    offsetX: -10,
                     style: {
                         color: '#64748b',
-                        fontSize: '11.5px',
+                        fontSize: '11px',
+                        fontFamily: "'Outfit', sans-serif",
                         fontWeight: 600
                     }
                 },
                 labels: {
+                    show: true,
+                    align: 'right',
+                    minWidth: 40,
+                    maxWidth: 60,
+                    offsetX: -4,
                     style: {
                         colors: '#94a3b8',
                         fontSize: '11.5px',
+                        fontFamily: "'Outfit', sans-serif",
                         fontWeight: 500
                     },
                     formatter: function(val) {
                         return val !== undefined && val !== null ? parseFloat(val).toFixed(1) : '';
                     }
                 },
+                tickAmount: 5,
                 min: minVal,
                 max: maxVal,
                 forceNiceScale: true
@@ -971,8 +1010,8 @@
                 padding: {
                     top: 10,
                     right: 25,
-                    bottom: 0,
-                    left: 20
+                    bottom: 10,
+                    left: 15
                 },
                 yaxis: { lines: { show: true } },
                 xaxis: { lines: { show: false } }
