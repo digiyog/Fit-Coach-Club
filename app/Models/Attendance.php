@@ -181,7 +181,9 @@ class Attendance extends Model
     {
         // Get user
         $authUser = auth()->user();
-        //----------
+        if (!$authUser) {
+            return !empty($limit) ? collect([]) : 0;
+        }
 
         $counsellings = Attendance::select(
             'users.id',
@@ -200,11 +202,12 @@ class Attendance extends Model
             'attendances.id as attendance_id',
             'attendances.weight as attendance_weight',
             'attendances.date',
+            'attendances.created_at as attendance_time',
             'meal_types.id as meal_type_id',
             'meal_types.name as meal_type_name',
-            'attendances.created_at as attendance_time',
-            DB::raw('COUNT(attendances.id) as total_attendance')
-        )->groupBy('attendances.user_id');
+            DB::raw('(SELECT COUNT(a2.id) FROM attendances AS a2 WHERE a2.user_id = users.id AND a2.type = 2 AND a2.deleted_at IS NULL) as total_attendance'),
+            DB::raw('(SELECT a_prev.weight FROM attendances AS a_prev WHERE a_prev.user_id = users.id AND a_prev.type = 2 AND a_prev.deleted_at IS NULL AND a_prev.weight > 0 AND (a_prev.date < attendances.date OR (a_prev.date = attendances.date AND a_prev.id < attendances.id)) ORDER BY a_prev.date DESC, a_prev.id DESC LIMIT 1) as previous_weight')
+        );
 
         $counsellings->leftJoin('users', function($join){
             $join->on('attendances.user_id', '=', 'users.id');
@@ -214,7 +217,9 @@ class Attendance extends Model
             $join->on('users.meal_type_id', '=', 'meal_types.id');
         });
 
-        $counsellings->where("users.role_type", 'user')->where('attendances.type', 2)->where("attendances.franchise_id", $authUser->id);
+        $counsellings->where("users.role_type", 'user')
+            ->where('attendances.type', 2)
+            ->where("attendances.franchise_id", $authUser->id);
 
         // Record filter conditions
         $counsellings->where(function ($query) use ($filter) {
@@ -242,11 +247,13 @@ class Attendance extends Model
                       ->orWhere('users.due_amount', '>', 0);
                 });
                 if (!empty($filter['date'])) {
-                    $query->whereDate('attendances.date', '<=', date('Y-m-d', strtotime($filter['date'])));
+                    $dateVal = date('Y-m-d', strtotime(str_replace('/', '-', $filter['date'])));
+                    $query->whereDate('attendances.date', '<=', $dateVal);
                 }
             } else { // 'completed'
                 if (!empty($filter['date'])) {
-                    $query->whereDate('attendances.date', '=', date('Y-m-d', strtotime($filter['date'])));
+                    $dateVal = date('Y-m-d', strtotime(str_replace('/', '-', $filter['date'])));
+                    $query->whereDate('attendances.date', '=', $dateVal);
                 } else {
                     $query->whereDate('attendances.date', '=', date('Y-m-d'));
                 }
@@ -282,7 +289,7 @@ class Attendance extends Model
         }
         else
         {
-            return $counsellings->get()->count();
+            return $counsellings->count();
         }
     }
 
