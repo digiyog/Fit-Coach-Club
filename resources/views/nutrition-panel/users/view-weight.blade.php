@@ -1080,50 +1080,114 @@
             startWeightVal = 104.0;
         }
 
-        function getDailySeries(data) {
-            return data.map(function(item) {
-                return [item.timestamp, item.weight];
-            });
+        // Global active dataset and state
+        var currentFilteredData = rawData.slice().sort(function(a, b) { return a.timestamp - b.timestamp; });
+        var currentView = 'daily';
+        var activeMetaList = [];
+
+        // Aggregate functions
+        function processViewData(view, dataset) {
+            if (!dataset || dataset.length === 0) {
+                return { seriesData: [], metaList: [] };
+            }
+
+            var sorted = dataset.slice().sort(function(a, b) { return a.timestamp - b.timestamp; });
+            var seriesData = [];
+            var metaList = [];
+
+            if (view === 'weekly') {
+                var weeks = {};
+                sorted.forEach(function(item) {
+                    var m = moment(item.timestamp);
+                    var weekKey = m.format('GGGG-[W]WW');
+                    if (!weeks[weekKey]) {
+                        weeks[weekKey] = {
+                            start: m.clone().startOf('isoWeek'),
+                            end: m.clone().endOf('isoWeek'),
+                            items: []
+                        };
+                    }
+                    weeks[weekKey].items.push(item);
+                });
+
+                Object.keys(weeks).sort().forEach(function(key) {
+                    var group = weeks[key];
+                    var weights = group.items.map(function(it) { return it.weight; });
+                    var sum = weights.reduce(function(a, b) { return a + b; }, 0);
+                    var avg = parseFloat((sum / weights.length).toFixed(1));
+                    var minW = Math.min(...weights).toFixed(1);
+                    var maxW = Math.max(...weights).toFixed(1);
+                    var midTimestamp = group.start.valueOf();
+
+                    seriesData.push([midTimestamp, avg]);
+                    metaList.push({
+                        title: group.start.format('DD MMM') + ' – ' + group.end.format('DD MMM YYYY'),
+                        label: 'Week ' + group.start.isoWeek(),
+                        type: 'Weekly average',
+                        weight: avg.toFixed(1) + ' kg',
+                        sub: startWeightVal > 0 ? (avg - startWeightVal) : null,
+                        detail: weights.length > 1 ? (weights.length + ' weigh-ins · ' + minW + '–' + maxW + ' kg range') : '1 check-in recorded'
+                    });
+                });
+            } else if (view === 'monthly') {
+                var months = {};
+                sorted.forEach(function(item) {
+                    var m = moment(item.timestamp);
+                    var monthKey = m.format('YYYY-MM');
+                    if (!months[monthKey]) {
+                        months[monthKey] = {
+                            start: m.clone().startOf('month'),
+                            items: []
+                        };
+                    }
+                    months[monthKey].items.push(item);
+                });
+
+                Object.keys(months).sort().forEach(function(key) {
+                    var group = months[key];
+                    var weights = group.items.map(function(it) { return it.weight; });
+                    var sum = weights.reduce(function(a, b) { return a + b; }, 0);
+                    var avg = parseFloat((sum / weights.length).toFixed(1));
+                    var minW = Math.min(...weights).toFixed(1);
+                    var maxW = Math.max(...weights).toFixed(1);
+                    var firstW = weights[0];
+                    var lastW = weights[weights.length - 1];
+                    var change = (lastW - firstW).toFixed(1);
+                    var timestamp = group.start.valueOf();
+
+                    seriesData.push([timestamp, avg]);
+                    metaList.push({
+                        title: group.start.format('MMMM YYYY'),
+                        label: group.start.format('MMM YYYY'),
+                        type: 'Monthly average',
+                        weight: avg.toFixed(1) + ' kg',
+                        sub: startWeightVal > 0 ? (avg - startWeightVal) : null,
+                        detail: weights.length + ' weigh-ins · Δ ' + (change > 0 ? '+' : '') + change + ' kg in month'
+                    });
+                });
+            } else {
+                // Daily view
+                sorted.forEach(function(item) {
+                    seriesData.push([item.timestamp, item.weight]);
+                    metaList.push({
+                        title: moment(item.timestamp).format('DD MMM YYYY'),
+                        label: moment(item.timestamp).format('DD MMM'),
+                        type: 'Daily check-in',
+                        weight: item.weight.toFixed(1) + ' kg',
+                        sub: startWeightVal > 0 ? (item.weight - startWeightVal) : null,
+                        detail: ''
+                    });
+                });
+            }
+
+            return { seriesData: seriesData, metaList: metaList };
         }
 
-        function getWeeklySeries(data) {
-            if (data.length <= 4) return getDailySeries(data);
-            var weeks = {};
-            data.forEach(function(item) {
-                var weekKey = moment(item.timestamp).startOf('isoWeek').valueOf();
-                if (!weeks[weekKey]) weeks[weekKey] = [];
-                weeks[weekKey].push(item.weight);
-            });
-            var series = [];
-            Object.keys(weeks).sort().forEach(function(key) {
-                var vals = weeks[key];
-                var avg = vals.reduce(function(a, b) { return a + b; }, 0) / vals.length;
-                series.push([parseInt(key, 10), parseFloat(avg.toFixed(1))]);
-            });
-            return series;
-        }
-
-        function getMonthlySeries(data) {
-            if (data.length <= 4) return getDailySeries(data);
-            var months = {};
-            data.forEach(function(item) {
-                var monthKey = moment(item.timestamp).startOf('month').valueOf();
-                if (!months[monthKey]) months[monthKey] = [];
-                months[monthKey].push(item.weight);
-            });
-            var series = [];
-            Object.keys(months).sort().forEach(function(key) {
-                var vals = months[key];
-                var avg = vals.reduce(function(a, b) { return a + b; }, 0) / vals.length;
-                series.push([parseInt(key, 10), parseFloat(avg.toFixed(1))]);
-            });
-            return series;
-        }
-
-        var dailyData = getDailySeries(rawData);
-        var allValues = rawData.map(function(d) { return d.weight; });
-        var minVal = Math.max(0, Math.floor(Math.min(...allValues) - 0.8));
-        var maxVal = Math.ceil(Math.max(...allValues) + 0.8);
+        var initialProcessed = processViewData('daily', currentFilteredData);
+        activeMetaList = initialProcessed.metaList;
+        var initialValues = initialProcessed.seriesData.map(function(pt) { return pt[1]; });
+        var minVal = initialValues.length ? Math.max(0, Math.floor(Math.min(...initialValues) - 1.0)) : 0;
+        var maxVal = initialValues.length ? Math.ceil(Math.max(...initialValues) + 1.0) : 100;
 
         var chartOptions = {
             chart: {
@@ -1146,7 +1210,7 @@
                 animations: {
                     enabled: true,
                     easing: 'easeinout',
-                    speed: 600
+                    speed: 500
                 },
                 dropShadow: {
                     enabled: true,
@@ -1159,8 +1223,8 @@
             },
             dataLabels: { enabled: false },
             series: [{
-                name: 'Weight',
-                data: dailyData
+                name: 'Recorded weight',
+                data: initialProcessed.seriesData
             }],
             xaxis: {
                 type: 'datetime',
@@ -1231,7 +1295,7 @@
                 }
             },
             markers: {
-                size: dailyData.length > 35 ? 0 : 3.5,
+                size: initialProcessed.seriesData.length > 35 ? 0 : 3.5,
                 colors: ['#3b46f1'],
                 strokeColors: '#ffffff',
                 strokeWidth: 2,
@@ -1255,24 +1319,35 @@
             tooltip: {
                 theme: 'dark',
                 custom: function({series, seriesIndex, dataPointIndex, w}) {
+                    var meta = activeMetaList && activeMetaList[dataPointIndex] ? activeMetaList[dataPointIndex] : null;
                     var val = series[seriesIndex][dataPointIndex];
                     var time = w.globals.seriesX[seriesIndex][dataPointIndex];
-                    var dateStr = moment(time).format('DD MMM YYYY');
+                    var titleStr = meta ? meta.title : moment(time).format('DD MMM YYYY');
+                    var typeStr = meta ? meta.type : 'Recorded weight';
+                    var weightStr = meta ? meta.weight : (parseFloat(val).toFixed(1) + ' kg');
                     var diffHtml = '';
-                    if (startWeightVal > 0) {
-                        var diff = (val - startWeightVal).toFixed(1);
+
+                    if (meta && meta.sub !== null && meta.sub !== undefined) {
+                        var diff = parseFloat(meta.sub);
                         if (diff < 0) {
-                            diffHtml = '<span style="color: #34d399; font-size: 11.5px; font-weight: 600;"><i class="fa fa-arrow-down me-1"></i> ' + Math.abs(diff) + ' kg total</span>';
+                            diffHtml = '<span style="color: #34d399; font-size: 11.5px; font-weight: 600; background: rgba(52, 211, 153, 0.15); padding: 2px 8px; border-radius: 6px;"><i class="fa fa-arrow-down me-1"></i> ' + Math.abs(diff).toFixed(1) + ' kg</span>';
                         } else if (diff > 0) {
-                            diffHtml = '<span style="color: #f87171; font-size: 11.5px; font-weight: 600;"><i class="fa fa-arrow-up me-1"></i> +' + diff + ' kg total</span>';
+                            diffHtml = '<span style="color: #f87171; font-size: 11.5px; font-weight: 600; background: rgba(248, 113, 113, 0.15); padding: 2px 8px; border-radius: 6px;"><i class="fa fa-arrow-up me-1"></i> +' + diff.toFixed(1) + ' kg</span>';
                         }
                     }
-                    return '<div style="background: #0f172a; color: #ffffff; padding: 9px 14px; border-radius: 10px; font-family: \'Outfit\', sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid #334155; min-width: 140px;">' +
-                           '<div style="color: #94a3b8; font-size: 11.5px; font-weight: 500; margin-bottom: 3px;">' + dateStr + '</div>' +
-                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">' +
-                           '<span style="font-size: 16px; font-weight: 800; color: #ffffff;">' + parseFloat(val).toFixed(1) + ' kg</span>' +
+
+                    var detailHtml = (meta && meta.detail) ? '<div style="color: #94a3b8; font-size: 11px; margin-top: 6px; border-top: 1px solid #334155; padding-top: 6px;">' + meta.detail + '</div>' : '';
+
+                    return '<div style="background: #0f172a; color: #ffffff; padding: 10px 14px; border-radius: 10px; font-family: \'Outfit\', sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.35); border: 1px solid #334155; min-width: 165px;">' +
+                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">' +
+                           '<span style="color: #94a3b8; font-size: 11.5px; font-weight: 500;">' + titleStr + '</span>' +
+                           '<span style="font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.4px;">' + typeStr + '</span>' +
+                           '</div>' +
+                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px;">' +
+                           '<span style="font-size: 16px; font-weight: 800; color: #ffffff;">' + weightStr + '</span>' +
                            diffHtml +
                            '</div>' +
+                           detailHtml +
                            '</div>';
                 }
             }
@@ -1281,6 +1356,61 @@
         var weightChart = new ApexCharts(document.querySelector("#weightJourneyApexChart"), chartOptions);
         weightChart.render();
 
+        // Switch Chart View (Daily / Weekly / Monthly)
+        function renderChartView(view) {
+            currentView = view;
+            var processed = processViewData(view, currentFilteredData);
+            activeMetaList = processed.metaList;
+
+            var values = processed.seriesData.map(function(pt) { return pt[1]; });
+            var yMin = values.length ? Math.max(0, Math.floor(Math.min(...values) - 1.0)) : 0;
+            var yMax = values.length ? Math.ceil(Math.max(...values) + 1.0) : 100;
+
+            var markerSize = 3.5;
+            if (view === 'monthly') {
+                markerSize = 6.5;
+            } else if (view === 'weekly') {
+                markerSize = 5.5;
+            } else if (processed.seriesData.length > 35) {
+                markerSize = 0;
+            }
+
+            var xAxisFormat = 'dd MMM';
+            if (view === 'monthly') {
+                xAxisFormat = 'MMM yyyy';
+            }
+
+            var seriesName = view === 'daily' ? 'Recorded weight' : (view === 'weekly' ? 'Weekly average' : 'Monthly average');
+
+            $('.fcc-chart-legend span:last-child').text(
+                view === 'daily' ? 'Recorded weight (kg)' : (view === 'weekly' ? 'Weekly average weight (kg)' : 'Monthly average weight (kg)')
+            );
+
+            weightChart.updateOptions({
+                xaxis: {
+                    labels: {
+                        format: xAxisFormat
+                    }
+                },
+                yaxis: {
+                    min: yMin,
+                    max: yMax,
+                    tickAmount: 5
+                },
+                markers: {
+                    size: markerSize,
+                    hover: {
+                        size: markerSize > 0 ? markerSize + 3 : 5.5
+                    }
+                }
+            }, false, true);
+
+            weightChart.updateSeries([{
+                name: seriesName,
+                data: processed.seriesData
+            }], true);
+        }
+
         // Toggle daily / weekly / monthly buttons
         $('[data-chart-view]').on('click', function(e) {
             e.preventDefault();
@@ -1288,19 +1418,7 @@
             $(this).addClass('active');
 
             var view = $(this).data('chart-view');
-            var seriesData = [];
-            if (view === 'weekly') {
-                seriesData = getWeeklySeries(rawData);
-            } else if (view === 'monthly') {
-                seriesData = getMonthlySeries(rawData);
-            } else {
-                seriesData = getDailySeries(rawData);
-            }
-
-            weightChart.updateSeries([{
-                name: 'Weight',
-                data: seriesData
-            }]);
+            renderChartView(view);
         });
 
         // Date Range Picker on Chart trigger
@@ -1320,24 +1438,16 @@
                 // Filter chart client-side
                 var startTime = start.startOf('day').valueOf();
                 var endTime = end.endOf('day').valueOf();
-                var filteredData = rawData.filter(function(d) {
+                currentFilteredData = rawData.filter(function(d) {
                     return d.timestamp >= startTime && d.timestamp <= endTime;
                 });
-                if (filteredData.length > 0) {
-                    var activeView = $('[data-chart-view].active').data('chart-view') || 'daily';
-                    var sData = activeView === 'weekly' ? getWeeklySeries(filteredData) : (activeView === 'monthly' ? getMonthlySeries(filteredData) : getDailySeries(filteredData));
-                    var fValues = filteredData.map(function(d) { return d.weight; });
-                    var fMin = Math.max(0, Math.floor(Math.min(...fValues) - 0.8));
-                    var fMax = Math.ceil(Math.max(...fValues) + 0.8);
 
-                    weightChart.updateOptions({
-                        yaxis: { min: fMin, max: fMax, tickAmount: 5 }
-                    });
-                    weightChart.updateSeries([{
-                        name: 'Weight',
-                        data: sData
-                    }]);
+                if (currentFilteredData.length === 0) {
+                    currentFilteredData = rawData.slice();
                 }
+
+                var activeView = $('[data-chart-view].active').data('chart-view') || 'daily';
+                renderChartView(activeView);
             });
         }
     });

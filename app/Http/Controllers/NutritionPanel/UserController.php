@@ -1529,7 +1529,6 @@ class UserController extends Controller
                 $join->on('attendances.user_id', '=', 'users.id');
             })
             ->where("users.role_type", 'user')
-            ->where('type', 2)
             ->where('user_id', $user->id)
             ->whereBetween('attendances.date', [$startDate, $endDate])
             ->orderBy('attendances.date','ASC')
@@ -1538,15 +1537,18 @@ class UserController extends Controller
                 return Carbon::parse($item->date)->format('Y-m-d');
             });
 
-        // 1. Total Check-ins
-        $totalCheckIns = $attendances->count();
+        // 1. Total Check-ins (present)
+        $presentAttendances = $attendances->filter(function($a) {
+            return $a->type == 2;
+        });
+        $totalCheckIns = $presentAttendances->count();
 
         // 2. Last Check-in
-        $lastAttendance = $attendances->last();
+        $lastAttendance = $presentAttendances->last();
         $lastCheckInDate = $lastAttendance ? date('d M Y', strtotime($lastAttendance->date)) : null;
 
-        // 3. Recent Check-ins (last 6 dates)
-        $recentCheckIns = $attendances->take(-8)->map(function($a) {
+        // 3. Recent Check-ins (last 8 dates)
+        $recentCheckIns = $presentAttendances->take(-8)->map(function($a) {
             return (object)[
                 'date' => $a->date,
                 'formatted' => date('d M', strtotime($a->date)),
@@ -1564,7 +1566,7 @@ class UserController extends Controller
         $longestStreakEnd = null;
         $prevDate = null;
 
-        foreach ($attendances as $att) {
+        foreach ($presentAttendances as $att) {
             $attDate = Carbon::parse($att->date);
             if ($prevDate && $prevDate->copy()->addDay()->isSameDay($attDate)) {
                 $currentStreakDays++;

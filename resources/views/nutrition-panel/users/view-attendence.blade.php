@@ -360,6 +360,9 @@
     .fcc-legend-dot.present {
         background: #10b981;
     }
+    .fcc-legend-dot.absent {
+        background: #ef4444;
+    }
     .fcc-legend-dot.blank {
         background: #ffffff;
         border: 1.5px solid #94a3b8;
@@ -456,10 +459,11 @@
     }
     .fcc-day-cell.blank {
         background: #f8fafc;
-        color: #475569;
+        color: #94a3b8;
     }
     .fcc-day-cell.blank:hover {
-        background: #e2e8f0;
+        background: #f1f5f9;
+        color: #64748b;
     }
     .fcc-day-cell.present {
         background: #86efac;
@@ -472,8 +476,21 @@
         background: #4ade80;
         transform: scale(1.08);
     }
+    .fcc-day-cell.absent {
+        background: #fee2e2;
+        color: #b91c1c;
+        font-weight: 600;
+        box-shadow: 0 1px 2px rgba(239, 68, 68, 0.1);
+        cursor: pointer;
+    }
+    .fcc-day-cell.absent:hover {
+        background: #fca5a5;
+        color: #7f1d1d;
+        transform: scale(1.08);
+    }
     .fcc-day-cell.today-cell {
         border: 1.5px solid #3b46f1;
+        font-weight: 700;
     }
 
     /* 7. Bottom Recent Check-ins Bar */
@@ -676,6 +693,10 @@
                         <span>Present</span>
                     </div>
                     <div class="fcc-cal-legend-item">
+                        <span class="fcc-legend-dot absent"></span>
+                        <span>Absent</span>
+                    </div>
+                    <div class="fcc-cal-legend-item">
                         <span class="fcc-legend-dot blank"></span>
                         <span>No check-in</span>
                     </div>
@@ -734,15 +755,27 @@
                         @for ($d = 1; $d <= $daysInMonth; $d++)
                             @php
                                 $currentDate = Carbon\Carbon::createFromDate($year, $m, $d)->format('Y-m-d');
+                                $today = date('Y-m-d');
                                 $attendance = $attendances->get($currentDate);
                                 $isPresent = ($attendance && $attendance->type == 2);
-                                $isToday = ($currentDate === date('Y-m-d'));
-                                $tooltipText = $isPresent 
-                                    ? 'Present on ' . date('d M Y', strtotime($currentDate)) . (!empty($attendance->weight) ? ' (Weight: ' . $attendance->weight . ' kg)' : '') 
-                                    : date('d M Y', strtotime($currentDate));
+                                $isAbsentExplicit = ($attendance && $attendance->type == 1);
+                                $isPastOrToday = ($currentDate <= $today);
+                                $isAbsent = !$isPresent && ($isAbsentExplicit || $isPastOrToday);
+                                $isToday = ($currentDate === $today);
+
+                                if ($isPresent) {
+                                    $cellStatusClass = 'present';
+                                    $tooltipText = 'Present on ' . date('d M Y', strtotime($currentDate)) . (!empty($attendance->weight) ? ' (Weight: ' . $attendance->weight . ' kg)' : '');
+                                } elseif ($isAbsent) {
+                                    $cellStatusClass = 'absent';
+                                    $tooltipText = 'Absent on ' . date('d M Y', strtotime($currentDate));
+                                } else {
+                                    $cellStatusClass = 'blank';
+                                    $tooltipText = date('d M Y', strtotime($currentDate)) . ' (Upcoming)';
+                                }
                             @endphp
 
-                            <div class="fcc-day-cell {{ $isPresent ? 'present' : 'blank' }} {{ $isToday ? 'today-cell' : '' }}" title="{{ $tooltipText }}">
+                            <div class="fcc-day-cell {{ $cellStatusClass }} {{ $isToday ? 'today-cell' : '' }}" title="{{ $tooltipText }}">
                                 {{ $d }}
                             </div>
                         @endfor
