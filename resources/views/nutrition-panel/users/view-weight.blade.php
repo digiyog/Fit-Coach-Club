@@ -1224,18 +1224,16 @@
                     });
                 });
             } else {
-                // Daily view
+                // Daily view: timestamp array for clean datetime timeline
                 sorted.forEach(function(item) {
                     var m = parseMomentDate(item);
-                    var catLabel = m.format('DD MMM');
                     var fullTitle = m.format('DD MMM YYYY');
                     var wVal = parseFloat(item.weight);
 
-                    seriesData.push(wVal);
-                    categories.push(catLabel);
+                    seriesData.push([m.valueOf(), wVal]);
                     metaList.push({
                         title: fullTitle,
-                        label: catLabel,
+                        label: m.format('DD MMM'),
                         type: 'Daily entry',
                         weight: wVal.toFixed(1) + ' kg',
                         sub: startWeightVal > 0 ? (wVal - startWeightVal) : null,
@@ -1247,57 +1245,14 @@
             return { seriesData: seriesData, categories: categories, metaList: metaList };
         }
 
-        var initialProcessed = processViewData('daily', currentFilteredData);
-        activeMetaList = initialProcessed.metaList;
-        var initialValues = initialProcessed.seriesData;
-        var minVal = initialValues.length ? Math.max(0, Math.floor(Math.min(...initialValues) - 1.0)) : 0;
-        var maxVal = initialValues.length ? Math.ceil(Math.max(...initialValues) + 1.0) : 100;
+        function createChartConfig(view, processed, yMin, yMax, markerSize, seriesName) {
+            var isDaily = (view === 'daily');
 
-        var chartOptions = {
-            chart: {
-                type: 'area',
-                height: 330,
-                toolbar: {
-                    show: true,
-                    tools: {
-                        download: '<i class="fa fa-download" style="font-size: 13px; color: #94a3b8;"></i>',
-                        selection: false,
-                        zoom: false,
-                        zoomin: false,
-                        zoomout: false,
-                        pan: false,
-                        reset: false
-                    }
-                },
-                fontFamily: "'Outfit', sans-serif",
-                sparkline: { enabled: false },
-                animations: {
-                    enabled: true,
-                    easing: 'easeinout',
-                    speed: 500
-                },
-                dropShadow: {
-                    enabled: true,
-                    top: 4,
-                    left: 0,
-                    blur: 8,
-                    opacity: 0.16,
-                    color: '#3b46f1'
-                }
-            },
-            dataLabels: { enabled: false },
-            series: [{
-                name: 'Recorded weight',
-                data: initialProcessed.seriesData
-            }],
-            xaxis: {
-                type: 'category',
-                categories: initialProcessed.categories,
-                tickAmount: Math.min(10, initialProcessed.categories.length),
+            var xaxisConfig = isDaily ? {
+                type: 'datetime',
                 labels: {
-                    rotate: 0,
-                    rotateAlways: false,
-                    hideOverlappingLabels: true,
+                    datetimeUTC: false,
+                    format: 'dd MMM',
                     offsetY: 3,
                     style: {
                         colors: '#94a3b8',
@@ -1306,121 +1261,172 @@
                         fontWeight: 500
                     }
                 },
-                axisBorder: {
-                    show: true,
-                    color: '#f1f5f9'
-                },
-                axisTicks: {
-                    show: false
-                },
-                tooltip: {
-                    enabled: false
-                },
+                axisBorder: { show: true, color: '#f1f5f9' },
+                axisTicks: { show: false },
+                tooltip: { enabled: false },
                 crosshairs: {
                     show: true,
-                    stroke: {
-                        color: '#cbd5e1',
-                        width: 1,
-                        dashArray: 4
-                    }
+                    stroke: { color: '#cbd5e1', width: 1, dashArray: 4 }
                 }
-            },
-            yaxis: {
-                min: minVal,
-                max: maxVal,
-                tickAmount: 5,
+            } : {
+                type: 'category',
+                categories: processed.categories,
                 labels: {
-                    show: true,
-                    align: 'right',
-                    minWidth: 45,
-                    offsetX: -5,
+                    rotate: (view === 'weekly' && processed.categories.length > 7) ? -35 : 0,
+                    rotateAlways: false,
+                    offsetY: 3,
                     style: {
                         colors: '#94a3b8',
-                        fontSize: '11.5px',
+                        fontSize: '11px',
                         fontFamily: "'Outfit', sans-serif",
                         fontWeight: 500
-                    },
-                    formatter: function(val) {
-                        return val !== undefined && val !== null ? parseFloat(val).toFixed(1) + ' kg' : '';
                     }
-                }
-            },
-            colors: ['#3b46f1'],
-            stroke: {
-                curve: 'smooth',
-                width: 3.2,
-                lineCap: 'round'
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    type: 'vertical',
-                    shadeIntensity: 1,
-                    opacityFrom: 0.35,
-                    opacityTo: 0.01,
-                    stops: [0, 85, 100]
-                }
-            },
-            markers: {
-                size: initialProcessed.seriesData.length > 35 ? 0 : 3.5,
-                colors: ['#3b46f1'],
-                strokeColors: '#ffffff',
-                strokeWidth: 2,
-                hover: {
-                    size: 6.5,
-                    sizeOffset: 3
-                }
-            },
-            grid: {
-                borderColor: '#f8fafc',
-                strokeDashArray: 4,
-                padding: {
-                    top: 15,
-                    right: 25,
-                    bottom: 10,
-                    left: 15
                 },
-                yaxis: { lines: { show: true } },
-                xaxis: { lines: { show: false } }
-            },
-            tooltip: {
-                theme: 'dark',
-                custom: function({series, seriesIndex, dataPointIndex, w}) {
-                    var meta = activeMetaList && activeMetaList[dataPointIndex] ? activeMetaList[dataPointIndex] : null;
-                    var val = series[seriesIndex][dataPointIndex];
-                    var titleStr = meta ? meta.title : (w.globals.categoryLabels[dataPointIndex] || 'Weight');
-                    var typeStr = meta ? meta.type : 'Recorded weight';
-                    var weightStr = meta ? meta.weight : (parseFloat(val).toFixed(1) + ' kg');
-                    var diffHtml = '';
+                axisBorder: { show: true, color: '#f1f5f9' },
+                axisTicks: { show: false },
+                tooltip: { enabled: false },
+                crosshairs: {
+                    show: true,
+                    stroke: { color: '#cbd5e1', width: 1, dashArray: 4 }
+                }
+            };
 
-                    if (meta && meta.sub !== null && meta.sub !== undefined) {
-                        var diff = parseFloat(meta.sub);
-                        if (diff < 0) {
-                            diffHtml = '<span style="color: #34d399; font-size: 11.5px; font-weight: 600; background: rgba(52, 211, 153, 0.15); padding: 2px 8px; border-radius: 6px;"><i class="fa fa-arrow-down me-1"></i> ' + Math.abs(diff).toFixed(1) + ' kg</span>';
-                        } else if (diff > 0) {
-                            diffHtml = '<span style="color: #f87171; font-size: 11.5px; font-weight: 600; background: rgba(248, 113, 113, 0.15); padding: 2px 8px; border-radius: 6px;"><i class="fa fa-arrow-up me-1"></i> +' + diff.toFixed(1) + ' kg</span>';
+            return {
+                chart: {
+                    type: 'area',
+                    height: 330,
+                    toolbar: {
+                        show: false
+                    },
+                    fontFamily: "'Outfit', sans-serif",
+                    sparkline: { enabled: false },
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 400
+                    },
+                    dropShadow: {
+                        enabled: true,
+                        top: 4,
+                        left: 0,
+                        blur: 8,
+                        opacity: 0.16,
+                        color: '#3b46f1'
+                    }
+                },
+                dataLabels: { enabled: false },
+                series: [{
+                    name: seriesName,
+                    data: processed.seriesData
+                }],
+                xaxis: xaxisConfig,
+                yaxis: {
+                    min: yMin,
+                    max: yMax,
+                    tickAmount: 5,
+                    labels: {
+                        show: true,
+                        align: 'right',
+                        minWidth: 45,
+                        offsetX: -5,
+                        style: {
+                            colors: '#94a3b8',
+                            fontSize: '11.5px',
+                            fontFamily: "'Outfit', sans-serif",
+                            fontWeight: 500
+                        },
+                        formatter: function(val) {
+                            return val !== undefined && val !== null ? parseFloat(val).toFixed(1) + ' kg' : '';
                         }
                     }
+                },
+                colors: ['#3b46f1'],
+                stroke: {
+                    curve: 'smooth',
+                    width: 3.2,
+                    lineCap: 'round'
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        type: 'vertical',
+                        shadeIntensity: 1,
+                        opacityFrom: 0.35,
+                        opacityTo: 0.01,
+                        stops: [0, 85, 100]
+                    }
+                },
+                markers: {
+                    size: markerSize,
+                    colors: ['#3b46f1'],
+                    strokeColors: '#ffffff',
+                    strokeWidth: 2,
+                    hover: {
+                        size: markerSize > 0 ? markerSize + 3 : 5.5,
+                        sizeOffset: 3
+                    }
+                },
+                grid: {
+                    borderColor: '#f8fafc',
+                    strokeDashArray: 4,
+                    padding: {
+                        top: 15,
+                        right: 25,
+                        bottom: 10,
+                        left: 15
+                    },
+                    yaxis: { lines: { show: true } },
+                    xaxis: { lines: { show: false } }
+                },
+                tooltip: {
+                    theme: 'dark',
+                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                        var meta = activeMetaList && activeMetaList[dataPointIndex] ? activeMetaList[dataPointIndex] : null;
+                        var val = series[seriesIndex][dataPointIndex];
+                        var titleStr = '';
 
-                    var detailHtml = (meta && meta.detail) ? '<div style="color: #94a3b8; font-size: 11px; margin-top: 6px; border-top: 1px solid #334155; padding-top: 6px;">' + meta.detail + '</div>' : '';
+                        if (meta && meta.title) {
+                            titleStr = meta.title;
+                        } else if (w.globals.seriesX && w.globals.seriesX[seriesIndex] && w.globals.seriesX[seriesIndex][dataPointIndex]) {
+                            titleStr = moment(w.globals.seriesX[seriesIndex][dataPointIndex]).format('DD MMM YYYY');
+                        } else if (w.globals.categoryLabels && w.globals.categoryLabels[dataPointIndex]) {
+                            titleStr = w.globals.categoryLabels[dataPointIndex];
+                        } else {
+                            titleStr = 'Weight Entry';
+                        }
 
-                    return '<div style="background: #0f172a; color: #ffffff; padding: 10px 14px; border-radius: 10px; font-family: \'Outfit\', sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.35); border: 1px solid #334155; min-width: 175px;">' +
-                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">' +
-                           '<span style="color: #94a3b8; font-size: 11.5px; font-weight: 500;">' + titleStr + '</span>' +
-                           '<span style="font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.4px;">' + typeStr + '</span>' +
-                           '</div>' +
-                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px;">' +
-                           '<span style="font-size: 16px; font-weight: 800; color: #ffffff;">' + weightStr + '</span>' +
-                           diffHtml +
-                           '</div>' +
-                           detailHtml +
-                           '</div>';
+                        var typeStr = meta ? meta.type : 'Recorded weight';
+                        var weightStr = parseFloat(val).toFixed(1) + ' kg';
+                        var diffHtml = '';
+
+                        if (meta && meta.sub !== null && meta.sub !== undefined) {
+                            var diff = parseFloat(meta.sub);
+                            if (diff < 0) {
+                                diffHtml = '<span style="color: #34d399; font-size: 11.5px; font-weight: 600; background: rgba(52, 211, 153, 0.15); padding: 2px 8px; border-radius: 6px;"><i class="fa fa-arrow-down me-1"></i> ' + Math.abs(diff).toFixed(1) + ' kg</span>';
+                            } else if (diff > 0) {
+                                diffHtml = '<span style="color: #f87171; font-size: 11.5px; font-weight: 600; background: rgba(248, 113, 113, 0.15); padding: 2px 8px; border-radius: 6px;"><i class="fa fa-arrow-up me-1"></i> +' + diff.toFixed(1) + ' kg</span>';
+                            }
+                        }
+
+                        var detailHtml = (meta && meta.detail) ? '<div style="color: #94a3b8; font-size: 11px; margin-top: 6px; border-top: 1px solid #334155; padding-top: 6px;">' + meta.detail + '</div>' : '';
+
+                        return '<div style="background: #0f172a; color: #ffffff; padding: 10px 14px; border-radius: 10px; font-family: \'Outfit\', sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.35); border: 1px solid #334155; min-width: 175px;">' +
+                               '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">' +
+                               '<span style="color: #94a3b8; font-size: 11.5px; font-weight: 500;">' + titleStr + '</span>' +
+                               '<span style="font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.4px;">' + typeStr + '</span>' +
+                               '</div>' +
+                               '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px;">' +
+                               '<span style="font-size: 16px; font-weight: 800; color: #ffffff;">' + weightStr + '</span>' +
+                               diffHtml +
+                               '</div>' +
+                               detailHtml +
+                               '</div>';
+                    }
                 }
-            }
-        };
+            };
+        }
 
-        var weightChart = new ApexCharts(document.querySelector("#weightJourneyApexChart"), chartOptions);
-        weightChart.render();
+        var weightChart = null;
 
         // Switch Chart View (Daily / Weekly / Monthly)
         function renderChartView(view) {
@@ -1428,7 +1434,10 @@
             var processed = processViewData(view, currentFilteredData);
             activeMetaList = processed.metaList;
 
-            var values = processed.seriesData;
+            var values = (view === 'daily') 
+                ? processed.seriesData.map(function(pt) { return pt[1]; }) 
+                : processed.seriesData;
+
             var yMin = values.length ? Math.max(0, Math.floor(Math.min(...values) - 1.0)) : 0;
             var yMax = values.length ? Math.ceil(Math.max(...values) + 1.0) : 100;
 
@@ -1447,40 +1456,17 @@
                 view === 'daily' ? 'Recorded weight (kg)' : (view === 'weekly' ? 'Weekly average weight (kg)' : 'Monthly average weight (kg)')
             );
 
-            weightChart.updateOptions({
-                series: [{
-                    name: seriesName,
-                    data: processed.seriesData
-                }],
-                xaxis: {
-                    type: 'category',
-                    categories: processed.categories,
-                    tickAmount: (view === 'daily' ? Math.min(10, processed.categories.length) : undefined),
-                    labels: {
-                        rotate: (view === 'weekly' && processed.categories.length > 7) ? -35 : 0,
-                        rotateAlways: false,
-                        hideOverlappingLabels: (view === 'daily'),
-                        style: {
-                            colors: '#94a3b8',
-                            fontSize: '11px',
-                            fontFamily: "'Outfit', sans-serif",
-                            fontWeight: 500
-                        }
-                    }
-                },
-                yaxis: {
-                    min: yMin,
-                    max: yMax,
-                    tickAmount: 5
-                },
-                markers: {
-                    size: markerSize,
-                    hover: {
-                        size: markerSize > 0 ? markerSize + 3 : 5.5
-                    }
-                }
-            }, true, true);
+            if (weightChart) {
+                weightChart.destroy();
+            }
+
+            var newConfig = createChartConfig(view, processed, yMin, yMax, markerSize, seriesName);
+            weightChart = new ApexCharts(document.querySelector("#weightJourneyApexChart"), newConfig);
+            weightChart.render();
         }
+
+        // Initial render (Daily)
+        renderChartView('daily');
 
         // Toggle daily / weekly / monthly buttons
         $('[data-chart-view]').on('click', function(e) {
