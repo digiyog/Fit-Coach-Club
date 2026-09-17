@@ -298,55 +298,53 @@ class Attendance extends Model
     {
         // Get user
         $authUser = auth()->user();
-        //----------
+        if (!$authUser) {
+            return !empty($limit) ? collect([]) : 0;
+        }
 
-        $viewWeights = Attendance::select('attendances.id', 'users.name', 'attendances.weight','attendances.weight_image', 'attendances.date', 'attendances.created_at');
+        $viewWeights = Attendance::select('attendances.id', 'users.id as user_id', 'users.name', 'attendances.weight', 'attendances.weight_image', 'attendances.date', 'attendances.created_at');
 
         $viewWeights->leftJoin('users', function($join){
             $join->on('attendances.user_id', '=', 'users.id');
         });
 
-        $viewWeights->where("users.role_type", 'user')->where('type', 2)->where('user_id', $filter['user_id'])->where("attendances.franchise_id", $authUser->id);
+        $viewWeights->where("users.role_type", 'user')
+            ->where('attendances.type', 2)
+            ->where('attendances.user_id', $filter['user_id'] ?? 0)
+            ->where("attendances.franchise_id", $authUser->id);
          
         // Record filter conditions
         $viewWeights->where(function ($query) use ($filter) {
-            // Filter
             if (!empty($filter) && !empty($filter['date_range'])) {
                 $date_range = explode('/', $filter['date_range']);
-                $last_30_days = [
-                    'start_date' => trim($date_range[0]) . ' 00:00:00',
-                    'end_date' => trim($date_range[1]) . ' 00:00:00',
-                ];
-                $query->whereDate('date', '>=', $last_30_days['start_date']);
-                $query->whereDate('date', '<=', $last_30_days['end_date']);
-            } else {
-                // $query->whereDate('date', '=', date('Y-m-d'));
+                if (count($date_range) === 2) {
+                    $start_date = trim($date_range[0]) . ' 00:00:00';
+                    $end_date = trim($date_range[1]) . ' 23:59:59';
+                    $query->whereDate('attendances.date', '>=', $start_date);
+                    $query->whereDate('attendances.date', '<=', $end_date);
+                }
             }
-
         });
         
         // Table list Search conditions
         if(!(empty($search)))
         {
-            $search = strtolower($search);
-            $viewWeights = $viewWeights->whereRaw('(lower(attendances.weight) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(attendances.date) LIKE \'%'.trim(strtolower($filter['name'])).'%\' )');
+            $searchStr = trim(strtolower($search));
+            $viewWeights = $viewWeights->whereRaw('(lower(attendances.weight) LIKE \'%'.$searchStr.'%\' || lower(attendances.date) LIKE \'%'.$searchStr.'%\' )');
         }
         
         // Table columns sort conditions
-        if(!(empty($sort)) && $sort['column'] > 0)
+        if(!(empty($sort)) && isset($sort['column']) && $sort['column'] > 0)
         {
-            $arr_fields = array("", "weight","", "date");
-            for($field = 0; $field < count($arr_fields); $field++)
+            $arr_fields = array("", "attendances.id", "attendances.date", "attendances.weight", "", "");
+            if(isset($arr_fields[$sort['column']]) && $arr_fields[$sort['column']] != "")
             {
-                if($sort['column'] == $field && $arr_fields[$field] != "")
-                {
-                    $viewWeights = $viewWeights->orderBy($arr_fields[$field], $sort['dir']);
-                }
+                $viewWeights = $viewWeights->orderBy($arr_fields[$sort['column']], $sort['dir'] ?? 'DESC');
             }
         }
         else
         {
-            $viewWeights = $viewWeights->orderBy('date', 'DESC');
+            $viewWeights = $viewWeights->orderBy('attendances.date', 'DESC')->orderBy('attendances.id', 'DESC');
         }
 
         // Set final limit and records
@@ -357,7 +355,7 @@ class Attendance extends Model
         }
         else
         {
-            return $viewWeights->get()->count();
+            return $viewWeights->count();
         }
     }
 

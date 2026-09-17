@@ -1302,6 +1302,14 @@ class UserController extends Controller
             ->values();
 
         // View Data
+        $chartStart = !empty($weights->first()) ? date('d M', strtotime($weights->first()->date)) : date('d M', strtotime('-30 days'));
+        $chartEnd = !empty($weights->last()) ? date('d M Y', strtotime($weights->last()->date)) : date('d M Y');
+        $chartDateRangeText = $chartStart . ' – ' . $chartEnd;
+
+        $weightDatesFormatted = $weights->map(function($w) { 
+            return date('d M', strtotime($w->date)); 
+        })->toArray();
+
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
@@ -1311,7 +1319,9 @@ class UserController extends Controller
         $this->viewData['user'] = $user;
         $this->viewData['weights'] = $weights;
         $this->viewData['weightDates'] = $weights->pluck('date')->toArray();
-        $this->viewData['weightValues'] = $weights->pluck('weight')->toArray();
+        $this->viewData['weightDatesFormatted'] = $weightDatesFormatted;
+        $this->viewData['weightValues'] = $weights->map(function($w) { return (float)$w->weight; })->toArray();
+        $this->viewData['chartDateRangeText'] = $chartDateRangeText;
         
         return view('nutrition-panel.users.view-weight')->with($this->viewData);
     }
@@ -1330,10 +1340,10 @@ class UserController extends Controller
 
         // Ajax Post Parameters
         $draw   = $request->get('draw');
-        $start  = $request->get('start');
-        $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $start  = $request->get('start') ? intval($request->get('start')) : 0;
+        $limit  = $request->get('length') ? intval($request->get('length')) : 20;
+        $sort   = $request->get('order')[0] ?? null;
+        $search = $request->get('search')['value'] ?? null;
         
         // Filter Parameters
         $filter = array(
@@ -1342,60 +1352,81 @@ class UserController extends Controller
             "date_range" => $request->date_range,
         );
 
-        // Getting Weights Records
-        $records_count  = Attendance::getViewWeights(null, null, $search, $filter, $sort);
-        $records        = Attendance::getViewWeights($limit, $start, $search, $filter, $sort);
-
         $arr_data = array();
+        $totalRecords = 0;
 
-        if(count($records) > 0)
-        {
-            foreach($records as $key => $value)
+        try {
+            // Getting Weights Records
+            $records_count  = Attendance::getViewWeights(null, null, $search, $filter, $sort);
+            $records        = Attendance::getViewWeights($limit, $start, $search, $filter, $sort);
+            $totalRecords   = intval($records_count);
+
+            if(!empty($records) && count($records) > 0)
             {
-                $name       = 'N/A';
-                $weight     = 'N/A';
-                $weight_image     = 'N/A';
-                $date       = 'N/A';
-                
-                // Preparing Data
-                if(!empty($value->name)){
-                    $name = $value->name;
-                }
+                foreach($records as $key => $value)
+                {
+                    $entryNo    = $start + $key + 1;
+                    $name       = !empty($value->name) ? $value->name : 'N/A';
+                    $weightVal  = !empty($value->weight) ? number_format((float)$value->weight, 1) . ' kg' : 'N/A';
+                    $dateStr    = !empty($value->date) ? date('d M Y', strtotime($value->date)) : 'N/A';
+                    $hasImage   = !empty($value->weight_image);
+                    $encryptedId = ev($value->id);
 
-                if(!empty($value->weight)){
-                    $weight = $value->weight;
-                }
+                    // Evidence Badge
+                    if ($hasImage) {
+                        $evidenceHtml = '<span class="fcc-evidence-badge available"><span class="fcc-dot dot-green"></span> Image available</span>';
+                        $viewBtn = '<a href="javascript:;" data-url="' . route('nutritionPanel.users.viewWeightImage', ['id' => $encryptedId]) . '" class="btn fcc-btn-view-image view-image"><i class="fa fa-eye me-1"></i> View image</a>';
+                    } else {
+                        $evidenceHtml = '<span class="fcc-evidence-badge none"><span class="fcc-dot dot-gray"></span> No image</span>';
+                        $viewBtn = '<span class="text-muted" style="display: inline-block; min-width: 85px;">—</span>';
+                    }
 
-                if(!empty($value->weight_image)){
-                    $weight_image = '<a herf="#" data-url="' . route('nutritionPanel.users.viewWeightImage', ['id' => ev($value->id)]) . '" class="view-image cursor-pointer" title="View Image"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Image</div></a>';
-                }
+                    // Action Column
+                    $userId = $value->user_id ?? 0;
+                    $userEncryptedId = $userId ? ev($userId) : '';
+                    $actionHtml = '<div class="d-flex align-items-center justify-content-end gap-2">
+                        '.$viewBtn.'
+                        <div class="dropdown custom-dropdown d-inline-block">
+                            <a class="dropdown-toggle fcc-action-dots-btn" href="#" role="button" id="dropdownMenuLink_'.$value->id.'" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="dropdownMenuLink_'.$value->id.'" style="border-radius: 12px; min-width: 180px; padding: 6px; border: 1px solid #edf2f7 !important; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important; font-family: \'Outfit\', sans-serif;">
+                                '.($hasImage ? '<a class="dropdown-item py-2 px-3 rounded-2 view-image" href="javascript:;" data-url="' . route('nutritionPanel.users.viewWeightImage', ['id' => $encryptedId]) . '"><i class="fa fa-picture-o me-2 text-muted"></i> View Photo</a>' : '').'
+                                <a class="dropdown-item py-2 px-3 rounded-2" href="'.($userEncryptedId ? route('nutritionPanel.users.viewAttendance', ['id' => $userEncryptedId]) : 'javascript:;').'"><i class="fa fa-calendar-check-o me-2 text-muted"></i> View Attendance</a>
+                                <a class="dropdown-item py-2 px-3 rounded-2" href="'.($userEncryptedId ? route('nutritionPanel.manual-attendances.manual-attendance', ['id' => $userEncryptedId]) : 'javascript:;').'"><i class="fa fa-clock-o me-2 text-muted"></i> Manual Attendance</a>
+                                <div class="dropdown-divider my-1"></div>
+                                <a class="dropdown-item py-2 px-3 rounded-2 text-primary fw-bold" href="'.($userEncryptedId ? route('nutritionPanel.users.details', ['id' => $userEncryptedId]) : 'javascript:;').'"><i class="fa fa-id-card-o me-2 text-primary"></i> View Details</a>
+                            </div>
+                        </div>
+                    </div>';
 
-                if(!empty($value->date)){
-                    $date = date("d-m-Y", strtotime($value->date));
+                    // Array Data
+                    $arr_data[] = array(
+                        "id"                => $value->id,
+                        "entry"             => $entryNo,
+                        "name"              => $name,
+                        "date"              => $dateStr,
+                        "weight"            => $weightVal,
+                        "evidence"          => $evidenceHtml,
+                        "action"            => $actionHtml,
+                        "weight_image"      => $hasImage ? $viewBtn : 'N/A'
+                    );
                 }
-
-                // Array Data
-                $arr_data[] = array(
-                    "id"                => $value->id,
-                    "name"              => $name,
-                    "weight"            => $weight,
-                    "weight_image"      => $weight_image,
-                    "date"              => $date,
-                );
             }
+        } catch (\Exception $e) {
+            \Log::error('getViewWeights error: ' . $e->getMessage());
         }
-
-        $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),
+            "recordsTotal"          => $totalRecords,
+            "recordsFiltered"       => $totalRecords,
             "iTotalRecords"         => $totalRecords,
             "iTotalDisplayRecords"  => $totalRecords,
             "aaData"                => $arr_data
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 
     /**
