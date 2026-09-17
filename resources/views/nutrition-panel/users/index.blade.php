@@ -1366,6 +1366,14 @@
 $(document).ready(function() {
     feather.replace();
 
+    function reloadDataTable() {
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().ajax.reload();
+        } else if (typeof data_table !== 'undefined') {
+            data_table.ajax.reload();
+        }
+    }
+
     // Toggle More Filters
     $('#fccMoreFiltersToggle').on('click', function() {
         $('#fccMoreFiltersCollapse').collapse('toggle');
@@ -1376,9 +1384,7 @@ $(document).ready(function() {
     $('#fccSearchInput').on('keyup input', function() {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(function() {
-            if (typeof data_table !== 'undefined') {
-                data_table.ajax.reload();
-            }
+            reloadDataTable();
         }, 300);
     });
 
@@ -1391,9 +1397,7 @@ $(document).ready(function() {
         $('#coachFilterLabel').text(text);
         $('[data-filter-type="coach"]').removeClass('active');
         $(this).addClass('active');
-        if (typeof data_table !== 'undefined') {
-            data_table.ajax.reload();
-        }
+        reloadDataTable();
     });
 
     // Plan filter selection
@@ -1405,9 +1409,7 @@ $(document).ready(function() {
         $('#planFilterLabel').text(text);
         $('[data-filter-type="plan"]').removeClass('active');
         $(this).addClass('active');
-        if (typeof data_table !== 'undefined') {
-            data_table.ajax.reload();
-        }
+        reloadDataTable();
     });
 
     // Payment status filter selection
@@ -1419,9 +1421,13 @@ $(document).ready(function() {
         $('#paymentFilterLabel').text(text);
         $('[data-filter-type="payment"]').removeClass('active');
         $(this).addClass('active');
-        if (typeof data_table !== 'undefined') {
-            data_table.ajax.reload();
-        }
+        reloadDataTable();
+    });
+
+    // Apply date filter button
+    $(document).on('click', '.apply-filter', function(e) {
+        e.preventDefault();
+        reloadDataTable();
     });
 
     // Page size dropdown
@@ -1432,7 +1438,9 @@ $(document).ready(function() {
         $('#pageSizeLabel').text(text);
         $('[data-page-size]').removeClass('active');
         $(this).addClass('active');
-        if (typeof data_table !== 'undefined') {
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().page.len(size).draw();
+        } else if (typeof data_table !== 'undefined') {
             data_table.page.len(size).draw();
         }
     });
@@ -1440,9 +1448,7 @@ $(document).ready(function() {
     // Reset date filter
     $('#fccResetDateBtn').on('click', function() {
         $('#date_range').val('');
-        if (typeof data_table !== 'undefined') {
-            data_table.ajax.reload();
-        }
+        reloadDataTable();
     });
 
     // Export button click handler

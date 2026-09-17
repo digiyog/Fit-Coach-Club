@@ -126,7 +126,7 @@ var User = (function() {
         getUsers: function() {
             var $dataTable = $("#dataTable");
 
-            data_table = table = $dataTable.DataTable({
+            window.data_table = data_table = table = $dataTable.DataTable({
                 initComplete: function() {
                     if (data_table.row().count() == 0) {
                         data_table
@@ -203,6 +203,10 @@ var User = (function() {
                 drawCallback: function(settings) {
                     if (typeof feather !== "undefined") {
                         feather.replace();
+                    }
+                    if (settings.json) {
+                        var totalRecords = settings.json.recordsFiltered !== undefined ? settings.json.recordsFiltered : settings.json.recordsTotal;
+                        $('#fccTableCountDisplay').text(totalRecords + ' users');
                     }
                 },
                 buttons: {

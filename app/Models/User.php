@@ -186,46 +186,52 @@ class User extends Authenticatable
          
         // Record filter conditions
         $users->where(function ($query) use ($filter) {
-            // Filter
-            if (!empty($filter) && !empty($filter['name'])) 
+            // Search Input (name, email, mobile, coach)
+            if (!empty($filter['name'])) 
             {
-                $query->whereRaw('(lower(users.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\')');
+                $nameSearch = strtolower(trim($filter['name']));
+                $query->where(function($subQ) use ($nameSearch) {
+                    $subQ->whereRaw('(lower(users.name) LIKE \'%'.$nameSearch.'%\')')
+                         ->orWhereRaw('(lower(users.email) LIKE \'%'.$nameSearch.'%\')')
+                         ->orWhereRaw('(lower(users.mobile_number) LIKE \'%'.$nameSearch.'%\')')
+                         ->orWhereRaw('(lower(users.coach_name) LIKE \'%'.$nameSearch.'%\')');
+                });
             }
 
-            if($filter['user_type'] == 'demo'){
-                $query->where('user_type', 'Demo User')->orWhere('user_type', '3 Days Trial');
+            if (!empty($filter['user_type'])) {
+                if ($filter['user_type'] == 'demo') {
+                    $query->where(function($q) {
+                        $q->where('users.user_type', 'Demo User')->orWhere('users.user_type', '3 Days Trial');
+                    });
+                } elseif ($filter['user_type'] == 'offline') {
+                    $query->where('users.user_type', 'Regular User')->where('users.user_state', 'Offline');
+                } elseif ($filter['user_type'] == 'online') {
+                    $query->where('users.user_type', 'Regular User')->where('users.user_state', 'Online');
+                }
             }
 
-            if($filter['user_type'] == 'offline'){
-                $query->where('user_type', 'Regular User')->where('user_state', 'Offline');
-            }
-
-            if($filter['user_type'] == 'online'){
-                $query->where('user_type', 'Regular User')->where('user_state', 'Online');
-            }
-
-            if (!empty($filter) && !empty($filter['email'])) 
+            if (!empty($filter['email'])) 
             {
                 $query->whereRaw('(lower(users.email) LIKE \'%'.trim(strtolower($filter['email'])).'%\')');
             }
 
-            if (!empty($filter) && !empty($filter['mobile_number'])) 
+            if (!empty($filter['mobile_number'])) 
             {
                 $query->whereRaw('(lower(users.mobile_number) LIKE \'%'.trim(strtolower($filter['mobile_number'])).'%\')');
             }
 
-            if (!empty($filter) && !empty($filter['coach_name'])) {
+            if (!empty($filter['coach_name'])) {
                 $query->where('users.coach_name', $filter['coach_name']);
             }
 
-            if (!empty($filter) && !empty($filter['plan_id'])) {
+            if (!empty($filter['plan_id'])) {
                 $pId = $filter['plan_id'];
                 $query->where(function($q) use ($pId) {
                     $q->where('users.meal_type_id', $pId)->orWhere('users.product_type_id', $pId);
                 });
             }
 
-            if (!empty($filter) && !empty($filter['payment_status'])) {
+            if (!empty($filter['payment_status'])) {
                 if ($filter['payment_status'] == 'paid') {
                     $query->where(function($q) {
                         $q->whereNull('users.due_amount')->orWhere('users.due_amount', '<=', 0);
@@ -235,15 +241,13 @@ class User extends Authenticatable
                 }
             }
 
-            if (!empty($filter) && !empty($filter['date_range'])) {
+            if (!empty($filter['date_range'])) {
                 $date_range = explode('/', $filter['date_range']);
-                $last_30_days = [
-                    'start_date' => trim($date_range[0]) . ' 00:00:00',
-                    'end_date' => trim($date_range[1]) . ' 00:00:00',
-                ];
-                $query->whereDate('created_at', '>=', $last_30_days['start_date']);
-                $query->whereDate('created_at', '<=', $last_30_days['end_date']);
-            } else {
+                if (count($date_range) >= 2) {
+                    $startDate = trim($date_range[0]) . ' 00:00:00';
+                    $endDate = trim($date_range[1]) . ' 23:59:59';
+                    $query->whereBetween('users.created_at', [$startDate, $endDate]);
+                }
             }
         });
         

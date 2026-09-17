@@ -4651,8 +4651,7 @@
                                 @foreach($todayAttendences as $tIndex => $tAtt)
                                     @php
                                         $tTime = $tAtt->created_at ? date('H:i', strtotime($tAtt->created_at)) : date('H:i');
-                                        $daysCount = (int)($tAtt->days ?? 1);
-                                        $isDouble = ($daysCount >= 2) || (isset($today2Attendences) && $today2Attendences->where('user_id', $tAtt->user_id)->isNotEmpty());
+                                        $isDouble = (isset($today2Attendences) && $today2Attendences->contains('user_id', $tAtt->user_id));
                                         if ($isDouble) {
                                             $badgeVal = '+2';
                                             $badgeClass = 'double';
