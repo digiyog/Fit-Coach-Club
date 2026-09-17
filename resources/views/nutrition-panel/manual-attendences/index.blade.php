@@ -910,12 +910,6 @@
                 <p class="fcc-card-subheading">Entries recorded manually for {{ $user->name ?? 'Member' }}</p>
             </div>
             <div class="fcc-table-controls-group">
-                <!-- Search Box -->
-                <div class="fcc-table-search-box">
-                    <i data-feather="search"></i>
-                    <input type="text" id="fccHistorySearchInput" class="fcc-table-search-input" placeholder="Search history..." autocomplete="off" />
-                </div>
-
                 <!-- Page Size Dropdown -->
                 <select id="fccPageSizeSelect" class="fcc-page-size-select">
                     <option value="20" selected>20 per page</option>
