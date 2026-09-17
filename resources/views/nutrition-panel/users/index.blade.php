@@ -282,6 +282,11 @@
         background: #f8fafc !important;
         color: #0f172a !important;
     }
+    .fcc-dropdown-pill.active-filter {
+        background: #eff6ff !important;
+        border-color: #93c5fd !important;
+        color: #1d4ed8 !important;
+    }
     .fcc-dropdown-pill svg,
     .fcc-dropdown-pill i {
         width: 14px !important;
@@ -1268,28 +1273,32 @@
                     </ul>
                 </div>
 
-                <!-- More Filters Toggle -->
-                <button type="button" class="btn fcc-dropdown-pill" id="fccMoreFiltersToggle">
-                    <i data-feather="filter" style="width: 14px; height: 14px; color: var(--fcc-primary);"></i>
-                    <span>More filters</span>
-                    <i data-feather="chevron-down" class="fcc-chevron"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Collapsible More Filters (Date Range, etc.) -->
-        <div class="collapse mb-3 {{ !empty(request('date_range')) ? 'show' : '' }}" id="fccMoreFiltersCollapse">
-            <div class="p-3 bg-light rounded-3 border" style="border-color: #e2e8f0 !important;">
-                <div class="row g-2 align-items-end">
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <label class="form-label text-muted" style="font-size: 12px; font-weight: 600;">Registration Date Range</label>
-                        <input type="text" name="date_range" id="date_range" class="form-control form-control-sm date-picker" placeholder="Select Date Range..." autocomplete="off" value="{{ request('date_range', '') }}" />
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4 d-flex align-items-center gap-2 mt-2 mt-md-0">
-                        <button type="button" class="btn btn-sm btn-primary apply-filter px-3" style="height: 36px;">Apply Date</button>
-                        <button type="button" class="btn btn-sm btn-light clear-filter px-3 border" id="fccResetDateBtn" style="height: 36px;">Reset</button>
+                <!-- Date Range Filter Dropdown -->
+                <div class="dropdown">
+                    <button class="btn fcc-dropdown-pill dropdown-toggle {{ !empty(request('date_range')) ? 'active-filter' : '' }}" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i data-feather="calendar" style="width: 14px; height: 14px; color: var(--fcc-primary);"></i>
+                        <span id="dateFilterLabel">{{ !empty(request('date_range')) ? request('date_range') : 'Date range' }}</span>
+                        <i data-feather="chevron-down" class="fcc-chevron"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-3" aria-labelledby="dateFilterDropdown" style="border-radius: 14px; min-width: 300px; border: 1px solid #edf2f7 !important; background: #ffffff;">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span style="font-size: 11.5px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">Registration Date</span>
+                            <a href="javascript:;" id="fccClearDateBtn" class="text-danger fw-semibold" style="font-size: 11.5px; text-decoration: none;">Clear</a>
+                        </div>
+                        <div class="position-relative mb-2">
+                            <input type="text" name="date_range" id="date_range" class="form-control date-picker" placeholder="Select Date Range..." autocomplete="off" value="{{ request('date_range', '') }}" style="border-radius: 9px; font-size: 12.5px; height: 38px; padding-left: 12px !important; border: 1.5px solid #e2e8f0;" />
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <button type="button" class="btn btn-primary btn-sm w-100 apply-filter" style="border-radius: 8px; font-weight: 600; height: 34px;">Apply Range</button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Reset All Filters Button -->
+                <button type="button" class="btn fcc-dropdown-pill" id="fccResetAllFiltersBtn" title="Reset all active filters" style="color: #64748b; padding: 0 12px !important;">
+                    <i data-feather="rotate-ccw" style="width: 13px; height: 13px;"></i>
+                    <span>Reset</span>
+                </button>
             </div>
         </div>
 
@@ -1427,6 +1436,47 @@ $(document).ready(function() {
     // Apply date filter button
     $(document).on('click', '.apply-filter', function(e) {
         e.preventDefault();
+        var val = $('#date_range').val();
+        if (val) {
+            $('#dateFilterLabel').text(val);
+            $('#dateFilterDropdown').addClass('active-filter');
+        } else {
+            $('#dateFilterLabel').text('Date range');
+            $('#dateFilterDropdown').removeClass('active-filter');
+        }
+        $('#dateFilterDropdown').dropdown('hide');
+        reloadDataTable();
+    });
+
+    // Clear date filter
+    $('#fccClearDateBtn').on('click', function(e) {
+        e.preventDefault();
+        $('#date_range').val('');
+        $('#dateFilterLabel').text('Date range');
+        $('#dateFilterDropdown').removeClass('active-filter');
+        reloadDataTable();
+    });
+
+    // Reset all filters button
+    $('#fccResetAllFiltersBtn').on('click', function(e) {
+        e.preventDefault();
+        $('#fccSearchInput').val('');
+        $('#coach_name').val('');
+        $('#coachFilterLabel').text('All coaches');
+        $('[data-filter-type="coach"]').removeClass('active').first().addClass('active');
+        
+        $('#plan_id').val('');
+        $('#planFilterLabel').text('All plans');
+        $('[data-filter-type="plan"]').removeClass('active').first().addClass('active');
+
+        $('#payment_status').val('');
+        $('#paymentFilterLabel').text('Payment status');
+        $('[data-filter-type="payment"]').removeClass('active').first().addClass('active');
+
+        $('#date_range').val('');
+        $('#dateFilterLabel').text('Date range');
+        $('#dateFilterDropdown').removeClass('active-filter');
+
         reloadDataTable();
     });
 
@@ -1443,12 +1493,6 @@ $(document).ready(function() {
         } else if (typeof data_table !== 'undefined') {
             data_table.page.len(size).draw();
         }
-    });
-
-    // Reset date filter
-    $('#fccResetDateBtn').on('click', function() {
-        $('#date_range').val('');
-        reloadDataTable();
     });
 
     // Export button click handler
