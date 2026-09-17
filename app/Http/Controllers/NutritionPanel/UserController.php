@@ -1267,39 +1267,62 @@ class UserController extends Controller
 
         $user = User::where('id', dv($id))->first();
 
-        $firstRecord = Attendance::select('attendances.id as attendance_id', 'users.id', 'users.name', 'attendances.weight', 'attendances.date', 'attendances.created_at')
-            ->leftJoin('users', function($join){
-                $join->on('attendances.user_id', '=', 'users.id');
-            })
-            ->where('weight','!=','')
-            ->where("users.role_type", 'user')->where('type', 2)->where('user_id', $user['id'])->where("users.created_by", $authUser->id)
-            ->orderBy('attendances.date','ASC')->first();
+        if (!$user) {
+            return redirect()->route('nutritionPanel.users.index');
+        }
 
-        $lastRecord = Attendance::select('attendances.id as attendance_id', 'users.id', 'users.name', 'attendances.weight', 'attendances.date', 'attendances.created_at')
-            ->leftJoin('users', function($join){
-                $join->on('attendances.user_id', '=', 'users.id');
-            })
-            ->where('weight','!=','')
-            ->where("users.role_type", 'user')->where('type', 2)->where('user_id', $user['id'])->where("users.created_by", $authUser->id)
-            ->orderBy('attendances.id','DESC')->first();
-
-        $secondLastRecord = Attendance::select('attendances.id as attendance_id', 'users.id', 'users.name', 'attendances.weight', 'attendances.date', 'attendances.created_at')
-            ->leftJoin('users', function($join){
-                $join->on('attendances.user_id', '=', 'users.id');
-            })
-            ->where('weight','!=','')
-            ->where("users.role_type", 'user')->where('type', 2)->where('user_id', $user['id'])->where("users.created_by", $authUser->id)
-            ->skip(1)->orderBy('attendances.id','DESC')->first();
-
-        $weights = Attendance::select('weight','date')
-            ->where('user_id', $user['id'])
+        $firstRecord = Attendance::select('attendances.id as attendance_id', 'attendances.user_id', 'attendances.weight', 'attendances.date', 'attendances.created_at')
+            ->where('attendances.user_id', $user->id)
             ->where('type', 2)
+            ->whereNotNull('weight')
             ->where('weight', '!=', '')
-            ->orderBy('date', 'DESC')   // latest first
-            ->limit(30)
-            ->get()
-            ->sortBy('date')            // convert to ASC
-            ->values();
+            ->where('weight', '>', 0)
+            ->orderBy('attendances.date', 'ASC')
+            ->orderBy('attendances.id', 'ASC')
+            ->first();
+
+        $lastRecord = Attendance::select('attendances.id as attendance_id', 'attendances.user_id', 'attendances.weight', 'attendances.date', 'attendances.created_at')
+            ->where('attendances.user_id', $user->id)
+            ->where('type', 2)
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->orderBy('attendances.date', 'DESC')
+            ->orderBy('attendances.id', 'DESC')
+            ->first();
+
+        $secondLastRecord = Attendance::select('attendances.id as attendance_id', 'attendances.user_id', 'attendances.weight', 'attendances.date', 'attendances.created_at')
+            ->where('attendances.user_id', $user->id)
+            ->where('type', 2)
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->orderBy('attendances.date', 'DESC')
+            ->orderBy('attendances.id', 'DESC')
+            ->skip(1)
+            ->first();
+
+        $weights = Attendance::select('weight', 'date')
+            ->where('user_id', $user->id)
+            ->where('type', 2)
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->orderBy('date', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        // If user has only 1 attendance weight and starting_weight exists, include starting weight baseline
+        if ($weights->count() === 1 && !empty($user->starting_weight) && (float)$user->starting_weight > 0) {
+            $joinDate = !empty($user->created_at) ? date('Y-m-d', strtotime($user->created_at)) : date('Y-m-d', strtotime('-7 days'));
+            if ($joinDate < $weights->first()->date) {
+                $startingEntry = (object)[
+                    'weight' => (float)$user->starting_weight,
+                    'date'   => $joinDate
+                ];
+                $weights->prepend($startingEntry);
+            }
+        }
 
         // View Data
         $chartStart = !empty($weights->first()) ? date('d M', strtotime($weights->first()->date)) : date('d M', strtotime('-30 days'));
@@ -1308,7 +1331,11 @@ class UserController extends Controller
 
         $weightDatesFormatted = $weights->map(function($w) { 
             return date('d M', strtotime($w->date)); 
-        })->toArray();
+        })->values()->toArray();
+
+        $weightValuesFormatted = $weights->map(function($w) { 
+            return round((float)$w->weight, 1); 
+        })->values()->toArray();
 
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
@@ -1320,7 +1347,7 @@ class UserController extends Controller
         $this->viewData['weights'] = $weights;
         $this->viewData['weightDates'] = $weights->pluck('date')->toArray();
         $this->viewData['weightDatesFormatted'] = $weightDatesFormatted;
-        $this->viewData['weightValues'] = $weights->map(function($w) { return (float)$w->weight; })->toArray();
+        $this->viewData['weightValues'] = $weightValuesFormatted;
         $this->viewData['chartDateRangeText'] = $chartDateRangeText;
         
         return view('nutrition-panel.users.view-weight')->with($this->viewData);

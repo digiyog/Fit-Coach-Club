@@ -874,18 +874,18 @@
             feather.replace();
         }
 
-        // ApexChart Data
         var rawDates = @json($weightDatesFormatted ?? []);
         var rawValues = @json($weightValues ?? []);
 
-        // Ensure default data points for a smooth line if sparse
+        // Fallback demo data if user has no weights recorded
         if (!rawDates || rawDates.length === 0) {
             rawDates = ['15 Aug', '17 Aug', '19 Aug', '21 Aug', '23 Aug', '25 Aug', '27 Aug', '29 Aug', '31 Aug', '02 Sep', '04 Sep', '06 Sep', '08 Sep', '10 Sep', '12 Sep', '14 Sep', '16 Sep'];
             rawValues = [99.6, 101.0, 99.8, 97.9, 96.3, 98.6, 99.2, 98.8, 97.5, 97.2, 95.6, 96.8, 98.4, 97.5, 96.0, 97.2, 97.8];
         }
 
-        var minVal = rawValues.length ? Math.floor(Math.min(...rawValues) - 2) : 90;
-        var maxVal = rawValues.length ? Math.ceil(Math.max(...rawValues) + 2) : 105;
+        var numericValues = rawValues.map(function(v) { return parseFloat(v) || 0; });
+        var minVal = numericValues.length ? Math.max(0, Math.floor(Math.min(...numericValues) - 2)) : 50;
+        var maxVal = numericValues.length ? Math.ceil(Math.max(...numericValues) + 2) : 100;
 
         var chartOptions = {
             chart: {
@@ -893,11 +893,15 @@
                 height: 270,
                 toolbar: { show: false },
                 fontFamily: "'Outfit', sans-serif",
-                sparkline: { enabled: false }
+                sparkline: { enabled: false },
+                zoom: { enabled: false }
+            },
+            dataLabels: {
+                enabled: false
             },
             series: [{
                 name: 'Recorded weight',
-                data: rawValues
+                data: numericValues
             }],
             xaxis: {
                 categories: rawDates,
@@ -907,10 +911,15 @@
                         fontSize: '11.5px',
                         fontFamily: "'Outfit', sans-serif",
                         fontWeight: 500
-                    }
+                    },
+                    rotate: 0,
+                    hideOverlappingLabels: true
                 },
                 axisBorder: { show: false },
-                axisTicks: { show: false }
+                axisTicks: { show: false },
+                tooltip: {
+                    enabled: false
+                }
             },
             yaxis: {
                 title: {
@@ -928,11 +937,12 @@
                         fontWeight: 500
                     },
                     formatter: function(val) {
-                        return val ? val.toFixed(1) : '';
+                        return val !== undefined && val !== null ? parseFloat(val).toFixed(1) : '';
                     }
                 },
                 min: minVal,
-                max: maxVal
+                max: maxVal,
+                forceNiceScale: true
             },
             colors: ['#3b46f1'],
             stroke: {
@@ -949,15 +959,21 @@
                 }
             },
             markers: {
-                size: 3.5,
+                size: numericValues.length <= 4 ? 5 : 3.5,
                 colors: ['#3b46f1'],
                 strokeColors: '#ffffff',
                 strokeWidth: 2,
-                hover: { size: 6 }
+                hover: { size: 6.5 }
             },
             grid: {
                 borderColor: '#f1f5f9',
                 strokeDashArray: 4,
+                padding: {
+                    top: 10,
+                    right: 25,
+                    bottom: 0,
+                    left: 20
+                },
                 yaxis: { lines: { show: true } },
                 xaxis: { lines: { show: false } }
             },
@@ -966,7 +982,10 @@
                 custom: function({series, seriesIndex, dataPointIndex, w}) {
                     var val = series[seriesIndex][dataPointIndex];
                     var dateStr = w.globals.categoryLabels[dataPointIndex] || '';
-                    return '<div style="background: #3b46f1; color: #ffffff; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 10px rgba(59,70,241,0.3); font-family: Outfit, sans-serif;">' + val + ' kg - ' + dateStr + '</div>';
+                    return '<div style="background: #1e293b; color: #ffffff; padding: 6px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 700; box-shadow: 0 4px 12px rgba(15,23,42,0.25); font-family: Outfit, sans-serif; display: flex; align-items: center; gap: 6px;">' +
+                           '<span style="width: 8px; height: 8px; border-radius: 50%; background: #3b46f1; display: inline-block;"></span>' +
+                           '<span>' + parseFloat(val).toFixed(1) + ' kg</span> <span style="color: #94a3b8; font-weight: 500; font-size: 11.5px;">(' + dateStr + ')</span>' +
+                           '</div>';
                 }
             }
         };
@@ -979,6 +998,30 @@
             e.preventDefault();
             $('[data-chart-view]').removeClass('active');
             $(this).addClass('active');
+
+            var view = $(this).data('chart-view');
+            if (view === 'weekly' && rawDates.length > 5) {
+                // Aggregate into weekly samples
+                var weeklyDates = [];
+                var weeklyValues = [];
+                for (var i = 0; i < rawDates.length; i += 3) {
+                    weeklyDates.push(rawDates[i]);
+                    weeklyValues.push(numericValues[i]);
+                }
+                if (weeklyDates[weeklyDates.length - 1] !== rawDates[rawDates.length - 1]) {
+                    weeklyDates.push(rawDates[rawDates.length - 1]);
+                    weeklyValues.push(numericValues[numericValues.length - 1]);
+                }
+                weightChart.updateOptions({
+                    xaxis: { categories: weeklyDates },
+                    series: [{ name: 'Recorded weight', data: weeklyValues }]
+                });
+            } else {
+                weightChart.updateOptions({
+                    xaxis: { categories: rawDates },
+                    series: [{ name: 'Recorded weight', data: numericValues }]
+                });
+            }
         });
 
         // Date Range Picker on Chart trigger
