@@ -541,22 +541,41 @@ class UserController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        $authUser = auth()->user();
         $user = User::where('id', dv($id))->first();
 
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'Users' => route('nutritionPanel.users.index'),
-            __('language.edit') => '',
-        ];
+        if (!$user) {
+            return redirect()->route('nutritionPanel.users.index');
+        }
 
-        $mealTypes = MealType::where('status',1)->orderBy('id', 'DESC')->get();
-        $productTypes = ProductType::where('status',1)->orderBy('id', 'DESC')->get();
+        $mealTypes = MealType::where('status', 1)->orderBy('id', 'DESC')->get();
+        $productTypes = ProductType::where('status', 1)->orderBy('id', 'DESC')->get();
+
+        // Coaches list
+        $coachesList = User::where('created_by', $authUser->id)
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
+            ->groupBy('coach_name')
+            ->orderByDesc('total_members')
+            ->get();
+
+        if ($coachesList->isEmpty() && !empty($authUser->name)) {
+            $coachesList = collect([
+                (object)[
+                    'coach_name' => $authUser->name,
+                    'total_members' => 0
+                ]
+            ]);
+        }
         
         // Send view data
-        $this->viewData['breadcrumb']   = $breadcrumb;
+        unset($this->viewData['breadcrumb']);
+        $this->viewData['authUser']     = $authUser;
         $this->viewData['user']         = $user;
         $this->viewData['mealTypes']    = $mealTypes;
-        $this->viewData['productTypes']    = $productTypes;
+        $this->viewData['productTypes'] = $productTypes;
+        $this->viewData['coachesList']  = $coachesList;
 
         return view('nutrition-panel.users.edit')->with($this->viewData);
     }
@@ -1648,7 +1667,7 @@ class UserController extends Controller
         $weightDiff = ($latestWeight > 0 && $startingWeight > 0) ? round($latestWeight - $startingWeight, 2) : 0;
         
         // Send view data
-        $this->viewData['breadcrumb'] = $breadcrumb;
+        unset($this->viewData['breadcrumb']);
         $this->viewData['user'] = $user;
         $this->viewData['lastRecord'] = $lastRecord;
         $this->viewData['maxWeight'] = $maxWeight;
