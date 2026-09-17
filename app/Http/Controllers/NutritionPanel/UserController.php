@@ -1356,12 +1356,33 @@ class UserController extends Controller
             return round((float)$w->weight, 1); 
         })->values()->toArray();
 
+        $minRecord = $weights->count() > 0 ? $weights->sortBy('weight')->first() : null;
+        $maxRecord = $weights->count() > 0 ? $weights->sortByDesc('weight')->first() : null;
+        $startWeight = !empty($firstRecord->weight) ? (float)$firstRecord->weight : (!empty($user->starting_weight) ? (float)$user->starting_weight : 0);
+        $currentWeight = !empty($lastRecord->weight) ? (float)$lastRecord->weight : (!empty($user->current_weight) ? (float)$user->current_weight : 0);
+        $netChange = ($startWeight > 0 && $currentWeight > 0) ? round($currentWeight - $startWeight, 1) : 0;
+
+        $chartData = $weights->map(function($w) {
+            return [
+                'date' => date('d M Y', strtotime($w->date)),
+                'short_date' => date('d M', strtotime($w->date)),
+                'weight' => round((float)$w->weight, 1),
+                'timestamp' => strtotime($w->date) * 1000
+            ];
+        })->values()->toArray();
+
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
         $this->viewData['firstRecord'] = $firstRecord;
         $this->viewData['lastRecord'] = $lastRecord;
         $this->viewData['secondLastRecord'] = $secondLastRecord;
+        $this->viewData['minRecord'] = $minRecord;
+        $this->viewData['maxRecord'] = $maxRecord;
+        $this->viewData['startWeight'] = $startWeight;
+        $this->viewData['currentWeight'] = $currentWeight;
+        $this->viewData['netChange'] = $netChange;
+        $this->viewData['chartData'] = $chartData;
         $this->viewData['user'] = $user;
         $this->viewData['weights'] = $weights;
         $this->viewData['weightDates'] = $weights->pluck('date')->toArray();

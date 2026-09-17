@@ -367,6 +367,63 @@
         background: #3b46f1;
     }
 
+    /* Chart Quick Stats Ribbon */
+    .fcc-chart-quick-stats {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 12px 20px;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        margin-bottom: 16px;
+    }
+    .fcc-cstat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .fcc-cstat-lbl {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .fcc-cstat-val {
+        font-size: 15.5px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+    .fcc-cstat-sep {
+        width: 1px;
+        height: 28px;
+        background: #e2e8f0;
+    }
+    .fcc-cstat-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 6px;
+        margin-top: 2px;
+    }
+    .fcc-cstat-badge.badge-green {
+        background: #dcfce7;
+        color: #15803d;
+    }
+    .fcc-cstat-badge.badge-red {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+    .fcc-cstat-badge.badge-gray {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
     /* ApexChart Text & Alignment Fixes */
     .apexcharts-canvas {
         font-family: 'Outfit', sans-serif !important;
@@ -848,31 +905,62 @@
         <div class="fcc-card-section-header">
             <div>
                 <h3 class="fcc-card-heading">Weight journey</h3>
+                <p class="fcc-card-subheading">Track progress and measurements over time</p>
             </div>
             <div class="fcc-chart-controls">
                 <!-- Date Range Dropdown / Trigger -->
                 <div class="fcc-date-range-pill" id="fccDateRangeTrigger" title="Click to filter chart date range">
                     <i data-feather="calendar"></i>
-                    <span id="fccDateRangeText">{{ $chartDateRangeText ?? '15 Aug – 16 Sep 2026' }}</span>
+                    <span id="fccDateRangeText">{{ $chartDateRangeText ?? 'All time' }}</span>
                     <i data-feather="chevron-down" style="width: 13px; height: 13px; color: #94a3b8;"></i>
                 </div>
                 <input type="hidden" name="date_range" id="date_range" value="" />
 
-                <!-- Daily / Weekly Toggle Buttons -->
+                <!-- Daily / Weekly / Monthly Toggle Buttons -->
                 <div class="fcc-toggle-btn-group">
                     <button type="button" class="fcc-toggle-btn active" data-chart-view="daily">Daily</button>
                     <button type="button" class="fcc-toggle-btn" data-chart-view="weekly">Weekly</button>
+                    <button type="button" class="fcc-toggle-btn" data-chart-view="monthly">Monthly</button>
                 </div>
             </div>
         </div>
 
+        <!-- Quick Summary Ribbon -->
+        <div class="fcc-chart-quick-stats">
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Starting Weight</span>
+                <span class="fcc-cstat-val">{{ $startWeight > 0 ? number_format($startWeight, 1) . ' kg' : 'N/A' }}</span>
+            </div>
+            <div class="fcc-cstat-sep"></div>
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Current Weight</span>
+                <span class="fcc-cstat-val" style="color: #3b46f1;">{{ $currentWeight > 0 ? number_format($currentWeight, 1) . ' kg' : 'N/A' }}</span>
+            </div>
+            <div class="fcc-cstat-sep"></div>
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Lowest Recorded</span>
+                <span class="fcc-cstat-val" style="color: #10b981;">{{ $minRecord && $minRecord->weight ? number_format((float)$minRecord->weight, 1) . ' kg' : 'N/A' }}</span>
+            </div>
+            <div class="fcc-cstat-sep"></div>
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Overall Change</span>
+                @if($netChange < 0)
+                    <span class="fcc-cstat-badge badge-green"><i class="fa fa-arrow-down me-1"></i>{{ abs($netChange) }} kg ({{ $startWeight > 0 ? round((abs($netChange)/$startWeight)*100, 1) : 0 }}%)</span>
+                @elseif($netChange > 0)
+                    <span class="fcc-cstat-badge badge-red"><i class="fa fa-arrow-up me-1"></i>+{{ $netChange }} kg</span>
+                @else
+                    <span class="fcc-cstat-badge badge-gray">0.0 kg</span>
+                @endif
+            </div>
+        </div>
+
         <!-- ApexChart Container -->
-        <div id="weightJourneyApexChart" style="min-height: 280px;"></div>
+        <div id="weightJourneyApexChart" style="min-height: 330px; margin-top: 6px;"></div>
 
         <!-- Chart Legend -->
         <div class="fcc-chart-legend">
             <span class="fcc-legend-circle"></span>
-            <span>Recorded weight</span>
+            <span>Recorded weight (kg)</span>
         </div>
     </div>
 
@@ -974,63 +1062,142 @@
             feather.replace();
         }
 
-        var rawDates = @json($weightDatesFormatted ?? []);
-        var rawValues = @json($weightValues ?? []);
+        var rawData = @json($chartData ?? []);
+        var startWeightVal = parseFloat(@json($startWeight ?? 0)) || 0;
 
         // Fallback demo data if user has no weights recorded
-        if (!rawDates || rawDates.length === 0) {
-            rawDates = ['15 Aug', '17 Aug', '19 Aug', '21 Aug', '23 Aug', '25 Aug', '27 Aug', '29 Aug', '31 Aug', '02 Sep', '04 Sep', '06 Sep', '08 Sep', '10 Sep', '12 Sep', '14 Sep', '16 Sep'];
-            rawValues = [99.6, 101.0, 99.8, 97.9, 96.3, 98.6, 99.2, 98.8, 97.5, 97.2, 95.6, 96.8, 98.4, 97.5, 96.0, 97.2, 97.8];
+        if (!rawData || rawData.length === 0) {
+            var demoDates = ['2026-08-15', '2026-08-17', '2026-08-19', '2026-08-21', '2026-08-23', '2026-08-25', '2026-08-27', '2026-08-29', '2026-08-31', '2026-09-02', '2026-09-04', '2026-09-06', '2026-09-08', '2026-09-10', '2026-09-12', '2026-09-14', '2026-09-16', '2026-09-17'];
+            var demoValues = [104.0, 103.8, 104.2, 103.5, 103.2, 102.8, 102.5, 101.6, 101.0, 100.4, 100.2, 99.8, 98.9, 98.4, 98.0, 97.6, 97.2, 96.8];
+            rawData = demoDates.map(function(d, i) {
+                return {
+                    date: moment(d).format('DD MMM YYYY'),
+                    short_date: moment(d).format('DD MMM'),
+                    weight: demoValues[i],
+                    timestamp: new Date(d).getTime()
+                };
+            });
+            startWeightVal = 104.0;
         }
 
-        var numericValues = rawValues.map(function(v) { return parseFloat(v) || 0; });
-        
-        // Dynamically compute min/max based on data spread so weight variations are clearly visible
-        var minRaw = numericValues.length ? Math.min(...numericValues) : 50;
-        var maxRaw = numericValues.length ? Math.max(...numericValues) : 100;
-        var spread = maxRaw - minRaw;
+        function getDailySeries(data) {
+            return data.map(function(item) {
+                return [item.timestamp, item.weight];
+            });
+        }
 
-        var pad = spread > 4 ? 1.5 : (spread > 1 ? 0.8 : (spread > 0 ? 0.4 : 1.0));
-        var minVal = Number(Math.max(0, minRaw - pad).toFixed(1));
-        var maxVal = Number((maxRaw + pad).toFixed(1));
+        function getWeeklySeries(data) {
+            if (data.length <= 4) return getDailySeries(data);
+            var weeks = {};
+            data.forEach(function(item) {
+                var weekKey = moment(item.timestamp).startOf('isoWeek').valueOf();
+                if (!weeks[weekKey]) weeks[weekKey] = [];
+                weeks[weekKey].push(item.weight);
+            });
+            var series = [];
+            Object.keys(weeks).sort().forEach(function(key) {
+                var vals = weeks[key];
+                var avg = vals.reduce(function(a, b) { return a + b; }, 0) / vals.length;
+                series.push([parseInt(key, 10), parseFloat(avg.toFixed(1))]);
+            });
+            return series;
+        }
+
+        function getMonthlySeries(data) {
+            if (data.length <= 4) return getDailySeries(data);
+            var months = {};
+            data.forEach(function(item) {
+                var monthKey = moment(item.timestamp).startOf('month').valueOf();
+                if (!months[monthKey]) months[monthKey] = [];
+                months[monthKey].push(item.weight);
+            });
+            var series = [];
+            Object.keys(months).sort().forEach(function(key) {
+                var vals = months[key];
+                var avg = vals.reduce(function(a, b) { return a + b; }, 0) / vals.length;
+                series.push([parseInt(key, 10), parseFloat(avg.toFixed(1))]);
+            });
+            return series;
+        }
+
+        var dailyData = getDailySeries(rawData);
+        var allValues = rawData.map(function(d) { return d.weight; });
+        var minVal = Math.max(0, Math.floor(Math.min(...allValues) - 0.8));
+        var maxVal = Math.ceil(Math.max(...allValues) + 0.8);
 
         var chartOptions = {
             chart: {
                 type: 'area',
-                height: 280,
-                toolbar: { show: false },
+                height: 330,
+                toolbar: {
+                    show: true,
+                    tools: {
+                        download: '<i class="fa fa-download" style="font-size: 13px; color: #94a3b8;"></i>',
+                        selection: false,
+                        zoom: false,
+                        zoomin: false,
+                        zoomout: false,
+                        pan: false,
+                        reset: false
+                    }
+                },
                 fontFamily: "'Outfit', sans-serif",
                 sparkline: { enabled: false },
-                zoom: { enabled: false },
-                parentHeightOffset: 0
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 600
+                },
+                dropShadow: {
+                    enabled: true,
+                    top: 4,
+                    left: 0,
+                    blur: 8,
+                    opacity: 0.16,
+                    color: '#3b46f1'
+                }
             },
-            dataLabels: {
-                enabled: false
-            },
+            dataLabels: { enabled: false },
             series: [{
-                name: 'Recorded weight',
-                data: numericValues
+                name: 'Weight',
+                data: dailyData
             }],
             xaxis: {
-                categories: rawDates,
+                type: 'datetime',
                 labels: {
-                    offsetY: 4,
+                    datetimeUTC: false,
+                    format: 'dd MMM',
+                    offsetY: 3,
                     style: {
                         colors: '#94a3b8',
                         fontSize: '11.5px',
                         fontFamily: "'Outfit', sans-serif",
                         fontWeight: 500
-                    },
-                    rotate: 0,
-                    hideOverlappingLabels: true
+                    }
                 },
-                axisBorder: { show: false },
-                axisTicks: { show: false },
+                axisBorder: {
+                    show: true,
+                    color: '#f1f5f9'
+                },
+                axisTicks: {
+                    show: false
+                },
                 tooltip: {
                     enabled: false
+                },
+                crosshairs: {
+                    show: true,
+                    stroke: {
+                        color: '#cbd5e1',
+                        width: 1,
+                        dashArray: 4
+                    }
                 }
             },
             yaxis: {
+                min: minVal,
+                max: maxVal,
+                tickAmount: 5,
                 labels: {
                     show: true,
                     align: 'right',
@@ -1045,41 +1212,42 @@
                     formatter: function(val) {
                         return val !== undefined && val !== null ? parseFloat(val).toFixed(1) + ' kg' : '';
                     }
-                },
-                tickAmount: 5,
-                min: minVal,
-                max: maxVal,
-                forceNiceScale: true
+                }
             },
             colors: ['#3b46f1'],
             stroke: {
                 curve: 'smooth',
-                width: 2.5
+                width: 3.2,
+                lineCap: 'round'
             },
             fill: {
                 type: 'gradient',
                 gradient: {
+                    type: 'vertical',
                     shadeIntensity: 1,
-                    opacityFrom: 0.25,
-                    opacityTo: 0.02,
-                    stops: [0, 90, 100]
+                    opacityFrom: 0.35,
+                    opacityTo: 0.01,
+                    stops: [0, 85, 100]
                 }
             },
             markers: {
-                size: numericValues.length <= 4 ? 5 : 3.5,
+                size: dailyData.length > 35 ? 0 : 3.5,
                 colors: ['#3b46f1'],
                 strokeColors: '#ffffff',
                 strokeWidth: 2,
-                hover: { size: 7 }
+                hover: {
+                    size: 6.5,
+                    sizeOffset: 3
+                }
             },
             grid: {
-                borderColor: '#f1f5f9',
+                borderColor: '#f8fafc',
                 strokeDashArray: 4,
                 padding: {
                     top: 15,
-                    right: 35,
+                    right: 25,
                     bottom: 10,
-                    left: 20
+                    left: 15
                 },
                 yaxis: { lines: { show: true } },
                 xaxis: { lines: { show: false } }
@@ -1088,10 +1256,23 @@
                 theme: 'dark',
                 custom: function({series, seriesIndex, dataPointIndex, w}) {
                     var val = series[seriesIndex][dataPointIndex];
-                    var dateStr = w.globals.categoryLabels[dataPointIndex] || '';
-                    return '<div style="background: #1e293b; color: #ffffff; padding: 6px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 700; box-shadow: 0 4px 12px rgba(15,23,42,0.25); font-family: Outfit, sans-serif; display: flex; align-items: center; gap: 6px;">' +
-                           '<span style="width: 8px; height: 8px; border-radius: 50%; background: #3b46f1; display: inline-block;"></span>' +
-                           '<span>' + parseFloat(val).toFixed(1) + ' kg</span> <span style="color: #94a3b8; font-weight: 500; font-size: 11.5px;">(' + dateStr + ')</span>' +
+                    var time = w.globals.seriesX[seriesIndex][dataPointIndex];
+                    var dateStr = moment(time).format('DD MMM YYYY');
+                    var diffHtml = '';
+                    if (startWeightVal > 0) {
+                        var diff = (val - startWeightVal).toFixed(1);
+                        if (diff < 0) {
+                            diffHtml = '<span style="color: #34d399; font-size: 11.5px; font-weight: 600;"><i class="fa fa-arrow-down me-1"></i> ' + Math.abs(diff) + ' kg total</span>';
+                        } else if (diff > 0) {
+                            diffHtml = '<span style="color: #f87171; font-size: 11.5px; font-weight: 600;"><i class="fa fa-arrow-up me-1"></i> +' + diff + ' kg total</span>';
+                        }
+                    }
+                    return '<div style="background: #0f172a; color: #ffffff; padding: 9px 14px; border-radius: 10px; font-family: \'Outfit\', sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: 1px solid #334155; min-width: 140px;">' +
+                           '<div style="color: #94a3b8; font-size: 11.5px; font-weight: 500; margin-bottom: 3px;">' + dateStr + '</div>' +
+                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">' +
+                           '<span style="font-size: 16px; font-weight: 800; color: #ffffff;">' + parseFloat(val).toFixed(1) + ' kg</span>' +
+                           diffHtml +
+                           '</div>' +
                            '</div>';
                 }
             }
@@ -1100,35 +1281,26 @@
         var weightChart = new ApexCharts(document.querySelector("#weightJourneyApexChart"), chartOptions);
         weightChart.render();
 
-        // Toggle daily / weekly buttons
+        // Toggle daily / weekly / monthly buttons
         $('[data-chart-view]').on('click', function(e) {
             e.preventDefault();
             $('[data-chart-view]').removeClass('active');
             $(this).addClass('active');
 
             var view = $(this).data('chart-view');
-            if (view === 'weekly' && rawDates.length > 5) {
-                // Aggregate into weekly samples
-                var weeklyDates = [];
-                var weeklyValues = [];
-                for (var i = 0; i < rawDates.length; i += 3) {
-                    weeklyDates.push(rawDates[i]);
-                    weeklyValues.push(numericValues[i]);
-                }
-                if (weeklyDates[weeklyDates.length - 1] !== rawDates[rawDates.length - 1]) {
-                    weeklyDates.push(rawDates[rawDates.length - 1]);
-                    weeklyValues.push(numericValues[numericValues.length - 1]);
-                }
-                weightChart.updateOptions({
-                    xaxis: { categories: weeklyDates },
-                    series: [{ name: 'Recorded weight', data: weeklyValues }]
-                });
+            var seriesData = [];
+            if (view === 'weekly') {
+                seriesData = getWeeklySeries(rawData);
+            } else if (view === 'monthly') {
+                seriesData = getMonthlySeries(rawData);
             } else {
-                weightChart.updateOptions({
-                    xaxis: { categories: rawDates },
-                    series: [{ name: 'Recorded weight', data: numericValues }]
-                });
+                seriesData = getDailySeries(rawData);
             }
+
+            weightChart.updateSeries([{
+                name: 'Weight',
+                data: seriesData
+            }]);
         });
 
         // Date Range Picker on Chart trigger
@@ -1143,6 +1315,28 @@
                 $('#date_range').val(filterVal);
                 if (window.data_table) {
                     window.data_table.ajax.reload();
+                }
+
+                // Filter chart client-side
+                var startTime = start.startOf('day').valueOf();
+                var endTime = end.endOf('day').valueOf();
+                var filteredData = rawData.filter(function(d) {
+                    return d.timestamp >= startTime && d.timestamp <= endTime;
+                });
+                if (filteredData.length > 0) {
+                    var activeView = $('[data-chart-view].active').data('chart-view') || 'daily';
+                    var sData = activeView === 'weekly' ? getWeeklySeries(filteredData) : (activeView === 'monthly' ? getMonthlySeries(filteredData) : getDailySeries(filteredData));
+                    var fValues = filteredData.map(function(d) { return d.weight; });
+                    var fMin = Math.max(0, Math.floor(Math.min(...fValues) - 0.8));
+                    var fMax = Math.ceil(Math.max(...fValues) + 0.8);
+
+                    weightChart.updateOptions({
+                        yaxis: { min: fMin, max: fMax, tickAmount: 5 }
+                    });
+                    weightChart.updateSeries([{
+                        name: 'Weight',
+                        data: sData
+                    }]);
                 }
             });
         }
