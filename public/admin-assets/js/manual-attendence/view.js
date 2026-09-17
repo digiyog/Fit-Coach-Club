@@ -314,6 +314,9 @@ var ManualAttendence = (function() {
                 headerCallback: function(e, a, t, n, s) {
                 },
                 columnDefs: [
+                    { targets: 0, width: "60px", orderable: false, searchable: false, className: "no-sort text-start" },
+                    { targets: [1, 2, 3], className: "text-start" },
+                    { targets: 4, width: "90px", orderable: false, searchable: false, className: "no-sort no-content text-end" }
                 ],
                 buttons: {
                     buttons: [
@@ -340,7 +343,7 @@ var ManualAttendence = (function() {
                 ],
                 pageLength: 20,
                 dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12 fcc-dt-footer"<"row align-items-center w-100"<"col-md-5"i><"col-md-7 d-flex justify-content-end"p>>> >',
+                    '<"fcc-modern-table-wrap"rt><"fcc-dt-footer"ip>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
@@ -348,7 +351,7 @@ var ManualAttendence = (function() {
                     }
                 },
                 columns: [
-                    { data: "id", name: "id", width: 80 },
+                    { data: "id", name: "id", width: 60 },
                     { data: "attendence_date", name: "attendence_date" },
                     { data: "weight", name: "weight" },
                     { data: "attendence_count", name: "attendence_count" },
@@ -358,7 +361,7 @@ var ManualAttendence = (function() {
                         searchable: false,
                         sortable: false,
                         className: "text-end",
-                        width: 130,
+                        width: 90,
                     }
                 ],
                 rowCallback: function(row, data, dataIndex) {

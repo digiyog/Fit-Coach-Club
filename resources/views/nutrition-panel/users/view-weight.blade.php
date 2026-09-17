@@ -29,10 +29,8 @@
     }
 
     .fcc-weight-page-wrap {
-        padding: 22px 26px 45px 26px;
+        padding: 6px 4px 40px 4px;
         width: 100%;
-        max-width: 1600px;
-        margin: 0 auto;
         font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     }
 

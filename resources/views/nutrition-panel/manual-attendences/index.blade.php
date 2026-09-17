@@ -34,6 +34,7 @@
         font-family: 'Outfit', sans-serif !important;
         color: var(--fcc-text-dark);
         padding: 6px 4px 40px 4px;
+        width: 100%;
     }
 
     /* 1. Breadcrumbs */
@@ -41,9 +42,9 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: 13px;
+        font-size: 12.5px;
         color: var(--fcc-muted);
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
     .fcc-breadcrumb-nav a {
         color: var(--fcc-muted);
@@ -68,20 +69,20 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 20px;
+        gap: 12px;
+        margin-bottom: 14px;
     }
     .fcc-page-title {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
         color: var(--fcc-text-dark);
         margin: 0;
         line-height: 1.2;
     }
     .fcc-page-subtitle {
-        font-size: 13.5px;
+        font-size: 13px;
         color: var(--fcc-muted);
-        margin: 4px 0 0 0;
+        margin: 3px 0 0 0;
     }
     .fcc-header-btns {
         display: flex;
@@ -93,8 +94,8 @@
         border: 1.5px solid #e2e8f0;
         color: #334155;
         font-weight: 600;
-        font-size: 13px;
-        padding: 8px 18px;
+        font-size: 12.5px;
+        padding: 7px 15px;
         border-radius: 9px;
         display: inline-flex;
         align-items: center;
@@ -109,8 +110,8 @@
         color: var(--fcc-primary);
     }
     .fcc-btn-history-link svg {
-        width: 15px;
-        height: 15px;
+        width: 14px;
+        height: 14px;
         color: var(--fcc-primary);
     }
 
@@ -118,18 +119,18 @@
     .fcc-member-nav-tabs {
         display: flex;
         align-items: center;
-        gap: 28px;
+        gap: 24px;
         border-bottom: 1.5px solid #e2e8f0;
-        margin-bottom: 24px;
+        margin-bottom: 18px;
         overflow-x: auto;
         padding-bottom: 0;
     }
     .fcc-tab-link {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 0 2px 12px 2px;
-        font-size: 13.5px;
+        gap: 7px;
+        padding: 0 2px 10px 2px;
+        font-size: 13px;
         font-weight: 500;
         color: #64748b;
         text-decoration: none;
@@ -138,8 +139,8 @@
         transition: all 0.15s ease;
     }
     .fcc-tab-link svg {
-        width: 16px;
-        height: 16px;
+        width: 15px;
+        height: 15px;
         color: #94a3b8;
         transition: all 0.15s ease;
     }
@@ -171,8 +172,8 @@
     .fcc-metric-cards-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
+        gap: 12px;
+        margin-bottom: 18px;
     }
     @media (max-width: 991px) {
         .fcc-metric-cards-grid {
@@ -182,21 +183,21 @@
     .fcc-metric-card {
         background: #ffffff;
         border: 1px solid #edf2f7;
-        border-radius: 14px;
-        padding: 20px 22px;
+        border-radius: 12px;
+        padding: 16px 18px;
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .fcc-metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
     }
     .fcc-metric-icon-circle {
-        width: 48px;
-        height: 48px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -216,21 +217,21 @@
         color: #9333ea;
     }
     .fcc-metric-icon-circle svg {
-        width: 22px;
-        height: 22px;
+        width: 19px;
+        height: 19px;
     }
     .fcc-metric-content {
         flex: 1;
         min-width: 0;
     }
     .fcc-metric-label {
-        font-size: 12.5px;
+        font-size: 12px;
         color: var(--fcc-muted);
         font-weight: 500;
         margin-bottom: 2px;
     }
     .fcc-metric-value {
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 700;
         color: var(--fcc-text-dark);
         line-height: 1.2;
@@ -240,8 +241,8 @@
     .fcc-action-cards-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
+        gap: 14px;
+        margin-bottom: 18px;
     }
     @media (max-width: 991px) {
         .fcc-action-cards-grid {
@@ -251,8 +252,8 @@
     .fcc-form-card {
         background: #ffffff;
         border: 1px solid #edf2f7;
-        border-radius: 16px;
-        padding: 24px;
+        border-radius: 14px;
+        padding: 20px;
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         display: flex;
         flex-direction: column;
@@ -469,27 +470,27 @@
     .fcc-white-card {
         background: #ffffff;
         border: 1px solid #edf2f7;
-        border-radius: 16px;
-        padding: 24px;
+        border-radius: 14px;
+        padding: 18px 20px;
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
     .fcc-card-section-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 20px;
+        gap: 12px;
+        margin-bottom: 14px;
     }
     .fcc-card-heading {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 700;
         color: var(--fcc-text-dark);
         margin: 0;
     }
     .fcc-card-subheading {
-        font-size: 12.5px;
+        font-size: 12px;
         color: var(--fcc-muted);
         margin-bottom: 0;
         margin-top: 2px;
@@ -498,60 +499,70 @@
     .fcc-table-controls-group {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
     }
     .fcc-table-search-box {
-        position: relative;
+        position: relative !important;
         min-width: 200px;
+        display: flex !important;
+        align-items: center !important;
     }
-    .fcc-table-search-box svg {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 14px;
-        height: 14px;
-        color: #94a3b8;
-        pointer-events: none;
+    .fcc-table-search-box svg,
+    .fcc-table-search-box i,
+    .fcc-table-search-box .feather,
+    .fcc-table-search-box .feather-search {
+        position: absolute !important;
+        left: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 14px !important;
+        height: 14px !important;
+        color: #94a3b8 !important;
+        pointer-events: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 5 !important;
     }
-    .fcc-table-search-input {
-        width: 100%;
-        height: 38px;
-        padding: 0 14px 0 34px !important;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 9px;
-        font-size: 12.5px;
-        font-family: 'Outfit', sans-serif;
-        color: #0f172a;
-        background: #ffffff;
-        transition: all 0.15s ease;
+    input.fcc-table-search-input,
+    #fccHistorySearchInput {
+        width: 100% !important;
+        height: 36px !important;
+        padding: 0 12px 0 36px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        font-size: 12.5px !important;
+        font-family: 'Outfit', sans-serif !important;
+        color: #0f172a !important;
+        background: #ffffff !important;
+        transition: all 0.15s ease !important;
     }
-    .fcc-table-search-input:focus {
-        border-color: #3b46f1;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1);
+    input.fcc-table-search-input:focus,
+    #fccHistorySearchInput:focus {
+        border-color: #3b46f1 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1) !important;
     }
     .fcc-page-size-select {
-        height: 38px;
-        padding: 0 28px 0 12px;
+        height: 36px;
+        padding: 0 26px 0 10px;
         border: 1.5px solid #e2e8f0;
-        border-radius: 9px;
-        font-size: 12.5px;
+        border-radius: 8px;
+        font-size: 12px;
         font-weight: 600;
         color: #334155;
-        background: #ffffff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") no-repeat right 10px center/10px 10px;
+        background: #ffffff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") no-repeat right 8px center/9px 9px;
         cursor: pointer;
         appearance: none;
     }
     .fcc-remaining-badge-pill {
-        height: 38px;
-        padding: 0 14px;
+        height: 36px;
+        padding: 0 12px;
         border: 1.5px solid #e0e7ff;
-        border-radius: 9px;
+        border-radius: 8px;
         background: #eff2fe;
         color: #3b46f1;
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
@@ -559,15 +570,18 @@
         white-space: nowrap;
     }
     .fcc-remaining-badge-pill svg {
-        width: 14px;
-        height: 14px;
+        width: 13px;
+        height: 13px;
     }
 
     /* Table Styling */
     .fcc-modern-table-wrap {
         width: 100%;
         overflow-x: auto;
-        margin-top: 10px;
+        border: 1px solid #edf2f7;
+        border-radius: 10px;
+        background: #ffffff;
+        margin-top: 8px;
     }
     #dataTable {
         width: 100% !important;
@@ -576,21 +590,95 @@
         margin-bottom: 0 !important;
     }
     #dataTable thead th {
+        position: relative !important;
         background-color: #f8fafc !important;
-        color: #64748b !important;
-        font-size: 12px !important;
+        color: #475569 !important;
+        font-size: 11px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
-        padding: 12px 16px !important;
-        border-top: 1px solid #edf2f7 !important;
-        border-bottom: 1.5px solid #edf2f7 !important;
+        letter-spacing: 0.05em !important;
+        padding: 10px 24px 10px 14px !important;
+        border-top: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
         border-left: none !important;
         border-right: none !important;
         white-space: nowrap;
+        vertical-align: middle !important;
     }
+    #dataTable thead th.no-sort,
+    #dataTable thead th.no-content,
+    #dataTable thead th:first-child,
+    #dataTable thead th:last-child {
+        padding-right: 14px !important;
+        padding-left: 14px !important;
+    }
+    #dataTable thead th.text-end,
+    #dataTable thead th:last-child {
+        text-align: right !important;
+    }
+
+    /* Modern Sorting Indicators */
+    #dataTable thead th.sorting:before,
+    #dataTable thead th.sorting_asc:before,
+    #dataTable thead th.sorting_desc:before {
+        position: absolute !important;
+        right: 8px !important;
+        top: 42% !important;
+        transform: translateY(-50%) !important;
+        content: "▲" !important;
+        font-size: 7.5px !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    #dataTable thead th.sorting:after,
+    #dataTable thead th.sorting_asc:after,
+    #dataTable thead th.sorting_desc:after {
+        position: absolute !important;
+        right: 8px !important;
+        top: 58% !important;
+        transform: translateY(-50%) !important;
+        content: "▼" !important;
+        font-size: 7.5px !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    #dataTable thead th.sorting_asc:before {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    #dataTable thead th.sorting_asc:after {
+        opacity: 0.15 !important;
+    }
+
+    #dataTable thead th.sorting_desc:after {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    #dataTable thead th.sorting_desc:before {
+        opacity: 0.15 !important;
+    }
+
+    #dataTable thead th:first-child:before,
+    #dataTable thead th:first-child:after,
+    #dataTable thead th:last-child:before,
+    #dataTable thead th:last-child:after,
+    #dataTable thead th.no-sort:before,
+    #dataTable thead th.no-sort:after,
+    #dataTable thead th.no-content:before,
+    #dataTable thead th.no-content:after {
+        display: none !important;
+    }
+
     #dataTable tbody td {
-        padding: 13px 16px !important;
+        padding: 9px 14px !important;
         vertical-align: middle !important;
         font-size: 13px !important;
         color: #334155 !important;
@@ -610,10 +698,10 @@
         background: #fef2f2;
         border: 1px solid #fecaca;
         color: #dc2626 !important;
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 600;
-        padding: 4px 12px;
-        border-radius: 7px;
+        padding: 3px 10px;
+        border-radius: 6px;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -633,10 +721,10 @@
         align-items: center !important;
         justify-content: space-between !important;
         flex-wrap: wrap !important;
-        gap: 14px !important;
-        padding-top: 16px !important;
+        gap: 12px !important;
+        padding-top: 12px !important;
         border-top: 1px solid #f1f5f9 !important;
-        margin-top: 10px !important;
+        margin-top: 8px !important;
     }
     div.dataTables_wrapper div.dataTables_info {
         border: none !important;
@@ -910,6 +998,12 @@
                 <p class="fcc-card-subheading">Entries recorded manually for {{ $user->name ?? 'Member' }}</p>
             </div>
             <div class="fcc-table-controls-group">
+                <!-- Search Box -->
+                <div class="fcc-table-search-box">
+                    <i data-feather="search"></i>
+                    <input type="text" id="fccHistorySearchInput" class="fcc-table-search-input" placeholder="Search history..." autocomplete="off" />
+                </div>
+
                 <!-- Page Size Dropdown -->
                 <select id="fccPageSizeSelect" class="fcc-page-size-select">
                     <option value="20" selected>20 per page</option>
@@ -928,19 +1022,17 @@
         <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}" />
 
         <!-- Modern Data Table -->
-        <div class="fcc-modern-table-wrap">
-            <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.manual-attendances.getManualAttendance') }}" data-track-shake-url="{{ route('nutritionPanel.track-shake.index', ['id' => $userEncryptedId]) }}">
-                <thead>
-                    <tr>
-                        <th style="width: 70px;">Entry</th>
-                        <th>Date</th>
-                        <th>Weight</th>
-                        <th>Attendance count</th>
-                        <th style="width: 120px; text-align: right;">Action</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+        <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.manual-attendances.getManualAttendance') }}" data-track-shake-url="{{ route('nutritionPanel.track-shake.index', ['id' => $userEncryptedId]) }}">
+            <thead>
+                <tr>
+                    <th class="no-sort text-start" style="width: 60px;">Entry</th>
+                    <th class="text-start">Date</th>
+                    <th class="text-start">Weight</th>
+                    <th class="text-start">Attendance count</th>
+                    <th class="no-sort no-content text-end" style="width: 90px; text-align: right;">Action</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 
 </div>

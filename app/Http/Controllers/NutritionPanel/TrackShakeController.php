@@ -86,26 +86,77 @@ class TrackShakeController extends Controller
         $primarySource = ($appSideCount >= $adminPanelCount && $appSideCount > 0) ? 'App side' : 'Admin panel';
         $primarySourceSubtext = ($primarySource === 'App side') ? 'QR attendance' : 'Manual updates';
 
-        // 4. Trend Chart Data (Last 16-30 days)
-        $chartLogs = $attendanceLogs->take(-16);
-        $chartDates = [];
-        $chartBalances = [];
-
-        if ($chartLogs->count() > 0) {
-            foreach ($chartLogs as $log) {
-                $chartDates[] = date('d M', strtotime($log->date));
-                $chartBalances[] = (int)$log->total_days;
+        // 4. Calculate Summary Metrics
+        $totalShakesAdded = 0;
+        $totalShakesUsed = 0;
+        foreach ($attendanceLogs as $l) {
+            $val = (int)$l->days;
+            if ($val > 0) {
+                $totalShakesAdded += $val;
+            } elseif ($val < 0) {
+                $totalShakesUsed += abs($val);
             }
-        } else {
-            // Demo points based on current balance
-            $base = (int)$currentBalance > 0 ? (int)$currentBalance : 15;
-            $sampleDates = ['01 Sep', '03 Sep', '05 Sep', '07 Sep', '09 Sep', '11 Sep', '13 Sep', '15 Sep', '16 Sep'];
-            $chartDates = $sampleDates;
-            $chartBalances = [30, 28, 26, 24, 22, 20, 18, 16, $base];
         }
 
-        $trendRangeText = (count($chartDates) > 1) 
-            ? $chartDates[0] . ' – ' . $chartDates[count($chartDates) - 1] 
+        // 5. Build Rich Chart Data Points
+        $chartDataPoints = [];
+        if ($attendanceLogs->count() > 0) {
+            foreach ($attendanceLogs as $log) {
+                $dt = $log->date ? date('Y-m-d', strtotime($log->date)) : date('Y-m-d');
+                $eventType = 'attendance';
+                $color = '#3b46f1';
+                $daysVal = (int)$log->days;
+                
+                if (str_contains(strtolower($log->remark ?? ''), 'add user') || $daysVal > 0) {
+                    $eventType = 'add';
+                    $color = '#10b981';
+                } elseif (str_contains(strtolower($log->remark ?? ''), 'subtract') || (str_contains(strtolower($log->remark ?? ''), 'delete') && $daysVal < 0)) {
+                    $eventType = 'subtract';
+                    $color = '#ef4444';
+                } elseif (str_contains(strtolower($log->remark ?? ''), 'delete')) {
+                    $eventType = 'delete';
+                    $color = '#f59e0b';
+                }
+
+                $chartDataPoints[] = [
+                    'id'             => $log->id,
+                    'date'           => $dt,
+                    'timestamp'      => strtotime($dt) * 1000,
+                    'date_formatted' => date('d M Y', strtotime($dt)),
+                    'date_short'     => date('d M', strtotime($dt)),
+                    'balance'        => (int)$log->total_days,
+                    'change'         => $daysVal,
+                    'change_text'    => ($daysVal > 0 ? '+' : '') . $daysVal,
+                    'remark'         => !empty($log->remark) ? $log->remark : 'Attendance',
+                    'source'         => ($log->remark === 'QR Attendance Add' ? 'App side (QR)' : 'Admin panel'),
+                    'event_type'     => $eventType,
+                    'color'          => $color
+                ];
+            }
+        } else {
+            $base = (int)$currentBalance > 0 ? (int)$currentBalance : 15;
+            $sampleDates = ['2026-09-01', '2026-09-03', '2026-09-05', '2026-09-07', '2026-09-09', '2026-09-11', '2026-09-13', '2026-09-15', '2026-09-16'];
+            $sampleBalances = [30, 28, 26, 24, 22, 20, 18, 16, $base];
+            foreach ($sampleDates as $idx => $sDate) {
+                $chartDataPoints[] = [
+                    'id'             => $idx + 1,
+                    'date'           => $sDate,
+                    'timestamp'      => strtotime($sDate) * 1000,
+                    'date_formatted' => date('d M Y', strtotime($sDate)),
+                    'date_short'     => date('d M', strtotime($sDate)),
+                    'balance'        => $sampleBalances[$idx],
+                    'change'         => -1,
+                    'change_text'    => '-1',
+                    'remark'         => 'Attendance',
+                    'source'         => 'App side (QR)',
+                    'event_type'     => 'attendance',
+                    'color'          => '#3b46f1'
+                ];
+            }
+        }
+
+        $trendRangeText = (count($chartDataPoints) > 1) 
+            ? $chartDataPoints[0]['date_short'] . ' – ' . $chartDataPoints[count($chartDataPoints) - 1]['date_short'] 
             : date('d M Y');
 
         // View Data
@@ -116,12 +167,13 @@ class TrackShakeController extends Controller
         $this->viewData['attendanceLogs']       = $attendanceLogs;
         $this->viewData['id']                   = $request->id;
         $this->viewData['currentBalance']       = $currentBalance;
+        $this->viewData['totalShakesAdded']     = $totalShakesAdded;
+        $this->viewData['totalShakesUsed']      = $totalShakesUsed;
         $this->viewData['latestActivityText']   = $latestActivityText;
         $this->viewData['latestActivityDate']   = $latestActivityDate;
         $this->viewData['primarySource']        = $primarySource;
         $this->viewData['primarySourceSubtext'] = $primarySourceSubtext;
-        $this->viewData['chartDates']           = $chartDates;
-        $this->viewData['chartBalances']        = $chartBalances;
+        $this->viewData['chartDataPoints']      = $chartDataPoints;
         $this->viewData['trendRangeText']       = $trendRangeText;
         
         return view('nutrition-panel.track-shake.index')->with($this->viewData);

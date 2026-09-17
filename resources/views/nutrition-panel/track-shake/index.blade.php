@@ -332,18 +332,53 @@
         box-shadow: 0 1px 3px rgba(59, 70, 241, 0.25);
     }
 
+    /* Chart Quick Stats Ribbon */
+    .fcc-chart-quick-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 12px 18px;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+        .fcc-chart-quick-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    .fcc-cstat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .fcc-cstat-lbl {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .fcc-cstat-val {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+
     /* Chart Legend Bar */
     .fcc-shake-legend-bar {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 18px;
         flex-wrap: wrap;
         font-size: 12px;
         font-weight: 600;
         color: #475569;
         margin-top: 14px;
         padding-top: 14px;
-        border-top: 1px solid #f8fafc;
+        border-top: 1px solid #f1f5f9;
     }
     .fcc-shake-legend-item {
         display: inline-flex;
@@ -359,7 +394,7 @@
     .fcc-legend-circle.green { background: #10b981; }
     .fcc-legend-circle.red { background: #ef4444; }
     .fcc-legend-circle.blue { background: #3b46f1; }
-    .fcc-legend-circle.orange { background: #f97316; }
+    .fcc-legend-circle.orange { background: #f59e0b; }
 
     /* ApexChart Text Fixes */
     .apexcharts-canvas {
@@ -454,19 +489,93 @@
         margin-bottom: 0 !important;
     }
     #dataTable thead th {
+        position: relative !important;
         background-color: #f8fafc !important;
-        color: #64748b !important;
-        font-size: 12px !important;
+        color: #475569 !important;
+        font-size: 11.5px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
-        padding: 12px 16px !important;
-        border-top: 1px solid #edf2f7 !important;
-        border-bottom: 1.5px solid #edf2f7 !important;
+        letter-spacing: 0.05em !important;
+        padding: 13px 28px 13px 16px !important;
+        border-top: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
         border-left: none !important;
         border-right: none !important;
         white-space: nowrap;
+        vertical-align: middle !important;
     }
+    #dataTable thead th.no-sort,
+    #dataTable thead th.no-content,
+    #dataTable thead th:first-child,
+    #dataTable thead th:last-child {
+        padding-right: 16px !important;
+        padding-left: 16px !important;
+    }
+    #dataTable thead th.text-end,
+    #dataTable thead th:last-child {
+        text-align: right !important;
+    }
+
+    /* Modern Sorting Indicators */
+    #dataTable thead th.sorting:before,
+    #dataTable thead th.sorting_asc:before,
+    #dataTable thead th.sorting_desc:before {
+        position: absolute !important;
+        right: 10px !important;
+        top: 42% !important;
+        transform: translateY(-50%) !important;
+        content: "▲" !important;
+        font-size: 8px !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    #dataTable thead th.sorting:after,
+    #dataTable thead th.sorting_asc:after,
+    #dataTable thead th.sorting_desc:after {
+        position: absolute !important;
+        right: 10px !important;
+        top: 58% !important;
+        transform: translateY(-50%) !important;
+        content: "▼" !important;
+        font-size: 8px !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    #dataTable thead th.sorting_asc:before {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    #dataTable thead th.sorting_asc:after {
+        opacity: 0.15 !important;
+    }
+
+    #dataTable thead th.sorting_desc:after {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    #dataTable thead th.sorting_desc:before {
+        opacity: 0.15 !important;
+    }
+
+    #dataTable thead th:first-child:before,
+    #dataTable thead th:first-child:after,
+    #dataTable thead th:last-child:before,
+    #dataTable thead th:last-child:after,
+    #dataTable thead th.no-sort:before,
+    #dataTable thead th.no-sort:after,
+    #dataTable thead th.no-content:before,
+    #dataTable thead th.no-content:after {
+        display: none !important;
+    }
+
     #dataTable tbody td {
         padding: 13px 16px !important;
         vertical-align: middle !important;
@@ -681,6 +790,7 @@
                 <div class="fcc-toggle-btn-group">
                     <button type="button" class="fcc-toggle-btn" data-chart-days="7">7 days</button>
                     <button type="button" class="fcc-toggle-btn active" data-chart-days="30">30 days</button>
+                    <button type="button" class="fcc-toggle-btn" data-chart-days="all">All time</button>
                 </div>
                 <div class="fcc-range-badge-pill" id="fccTrendRangeBadge">
                     {{ $trendRangeText }}
@@ -688,8 +798,28 @@
             </div>
         </div>
 
+        <!-- Chart Quick Stats Ribbon -->
+        <div class="fcc-chart-quick-stats">
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Current Balance</span>
+                <span class="fcc-cstat-val" style="color: #3b46f1;">{{ $currentBalance }} Shakes</span>
+            </div>
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Total Added</span>
+                <span class="fcc-cstat-val" style="color: #10b981;">+{{ $totalShakesAdded }} Shakes</span>
+            </div>
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Total Consumed</span>
+                <span class="fcc-cstat-val" style="color: #ef4444;">-{{ $totalShakesUsed }} Shakes</span>
+            </div>
+            <div class="fcc-cstat-item">
+                <span class="fcc-cstat-lbl">Log Entries</span>
+                <span class="fcc-cstat-val">{{ count($chartDataPoints) }} Records</span>
+            </div>
+        </div>
+
         <!-- ApexChart Container -->
-        <div id="shakeBalanceApexChart" style="min-height: 270px;"></div>
+        <div id="shakeBalanceApexChart" style="min-height: 290px;"></div>
 
         <!-- Legend Bar -->
         <div class="fcc-shake-legend-bar">
@@ -802,39 +932,81 @@
             window.print();
         });
 
-        // ApexChart Data
-        var rawDates = @json($chartDates ?? []);
-        var rawBalances = @json($chartBalances ?? []);
+        // Raw Data Points from Controller
+        var allDataPoints = @json($chartDataPoints ?? []);
 
-        var numericBalances = rawBalances.map(function(v) { return parseInt(v, 10) || 0; });
-        var minBal = numericBalances.length ? Math.max(0, Math.floor(Math.min(...numericBalances) - 5)) : 0;
+        // Prepare chart data helper to prevent duplicate labels and handle discrete event types
+        function prepareChartData(points) {
+            if (!points || points.length === 0) {
+                return { categories: [], balances: [], points: [] };
+            }
+
+            var categories = [];
+            var balances = [];
+            var seenDates = {};
+
+            points.forEach(function(pt) {
+                var dStr = pt.date_short;
+                if (!seenDates[dStr]) {
+                    seenDates[dStr] = 1;
+                    categories.push(dStr);
+                } else {
+                    seenDates[dStr]++;
+                    categories.push(dStr + ' (' + seenDates[dStr] + ')');
+                }
+                balances.push(pt.balance);
+            });
+
+            return {
+                categories: categories,
+                balances: balances,
+                points: points
+            };
+        }
+
+        var activePoints = (allDataPoints.length > 30) ? allDataPoints.slice(-30) : allDataPoints;
+        var initialPrepared = prepareChartData(activePoints);
+
+        var numericBalances = initialPrepared.balances;
+        var minBal = numericBalances.length ? Math.max(0, Math.floor(Math.min(...numericBalances) - 4)) : 0;
         var maxBal = numericBalances.length ? Math.ceil(Math.max(...numericBalances) + 5) : 40;
+
+        // Custom Marker colors per data point
+        var markerColors = initialPrepared.points.map(function(p) { return p.color || '#3b46f1'; });
 
         var chartOptions = {
             chart: {
                 type: 'area',
-                height: 270,
+                height: 290,
                 toolbar: { show: false },
                 fontFamily: "'Outfit', sans-serif",
                 sparkline: { enabled: false },
-                zoom: { enabled: false }
+                zoom: { enabled: false },
+                dropShadow: {
+                    enabled: true,
+                    top: 4,
+                    left: 0,
+                    blur: 6,
+                    opacity: 0.18,
+                    color: '#3b46f1'
+                }
             },
             dataLabels: {
                 enabled: false
             },
             series: [{
                 name: 'Shake balance',
-                data: numericBalances
+                data: initialPrepared.balances
             }],
             xaxis: {
-                categories: rawDates,
+                categories: initialPrepared.categories,
                 labels: {
                     offsetY: 4,
                     style: {
                         colors: '#94a3b8',
-                        fontSize: '11.5px',
+                        fontSize: '11px',
                         fontFamily: "'Outfit', sans-serif",
-                        fontWeight: 500
+                        fontWeight: 600
                     },
                     rotate: 0,
                     hideOverlappingLabels: true
@@ -849,13 +1021,13 @@
                 labels: {
                     show: true,
                     align: 'right',
-                    minWidth: 35,
-                    offsetX: -4,
+                    minWidth: 32,
+                    offsetX: -6,
                     style: {
                         colors: '#94a3b8',
-                        fontSize: '11.5px',
+                        fontSize: '11px',
                         fontFamily: "'Outfit', sans-serif",
-                        fontWeight: 500
+                        fontWeight: 600
                     },
                     formatter: function(val) {
                         return val !== undefined && val !== null ? parseInt(val, 10) : '';
@@ -869,30 +1041,35 @@
             colors: ['#3b46f1'],
             stroke: {
                 curve: 'smooth',
-                width: 2.5
+                width: 3
             },
             fill: {
                 type: 'gradient',
                 gradient: {
                     shadeIntensity: 1,
-                    opacityFrom: 0.25,
+                    opacityFrom: 0.42,
                     opacityTo: 0.02,
-                    stops: [0, 90, 100]
+                    stops: [0, 90, 100],
+                    colorStops: [
+                        { offset: 0, color: '#3b46f1', opacity: 0.4 },
+                        { offset: 85, color: '#eff2fe', opacity: 0.08 },
+                        { offset: 100, color: '#ffffff', opacity: 0.0 }
+                    ]
                 }
             },
             markers: {
-                size: numericBalances.length <= 4 ? 5 : 3.5,
-                colors: ['#3b46f1'],
+                size: 5,
+                colors: markerColors,
                 strokeColors: '#ffffff',
                 strokeWidth: 2,
-                hover: { size: 6.5 }
+                hover: { size: 7.5 }
             },
             grid: {
                 borderColor: '#f1f5f9',
                 strokeDashArray: 4,
                 padding: {
                     top: 10,
-                    right: 25,
+                    right: 20,
                     bottom: 10,
                     left: 15
                 },
@@ -903,10 +1080,23 @@
                 theme: 'dark',
                 custom: function({series, seriesIndex, dataPointIndex, w}) {
                     var val = series[seriesIndex][dataPointIndex];
-                    var dateStr = w.globals.categoryLabels[dataPointIndex] || '';
-                    return '<div style="background: #1e293b; color: #ffffff; padding: 6px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 700; box-shadow: 0 4px 12px rgba(15,23,42,0.25); font-family: Outfit, sans-serif; display: flex; align-items: center; gap: 6px;">' +
-                           '<span style="width: 8px; height: 8px; border-radius: 50%; background: #3b46f1; display: inline-block;"></span>' +
-                           '<span>' + val + ' shakes</span> <span style="color: #94a3b8; font-weight: 500; font-size: 11.5px;">(' + dateStr + ')</span>' +
+                    var pt = activePoints[dataPointIndex] || {};
+                    var dateStr = pt.date_formatted || w.globals.categoryLabels[dataPointIndex] || '';
+                    var changeStr = pt.change_text || '';
+                    var remarkStr = pt.remark || 'Activity';
+                    var sourceStr = pt.source || 'Admin Panel';
+                    var badgeBg = pt.color || '#3b46f1';
+
+                    return '<div style="background: #0f172a; color: #ffffff; padding: 10px 14px; border-radius: 10px; font-size: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); font-family: Outfit, sans-serif; border: 1px solid rgba(255,255,255,0.1); min-width: 175px;">' +
+                           '<div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px; font-weight: 500;">' + dateStr + '</div>' +
+                           '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">' +
+                           '<span style="font-size: 16px; font-weight: 800; color: #ffffff;">' + val + ' <span style="font-size: 11px; font-weight: 500; color: #cbd5e1;">shakes</span></span>' +
+                           (changeStr ? '<span style="background: ' + badgeBg + '; color: #ffffff; font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 5px;">' + changeStr + '</span>' : '') +
+                           '</div>' +
+                           '<div style="font-size: 11px; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; display: flex; justify-content: space-between;">' +
+                           '<span>' + remarkStr + '</span>' +
+                           '<span style="color: #64748b;">' + sourceStr + '</span>' +
+                           '</div>' +
                            '</div>';
                 }
             }
@@ -915,27 +1105,37 @@
         var shakeChart = new ApexCharts(document.querySelector("#shakeBalanceApexChart"), chartOptions);
         shakeChart.render();
 
-        // 7 days vs 30 days toggle
+        // 7 days, 30 days, All time toggles
         $('[data-chart-days]').on('click', function(e) {
             e.preventDefault();
             $('[data-chart-days]').removeClass('active');
             $(this).addClass('active');
 
-            var days = parseInt($(this).data('chart-days'), 10);
-            if (days === 7 && rawDates.length > 7) {
-                var slicedDates = rawDates.slice(-7);
-                var slicedBalances = numericBalances.slice(-7);
-                shakeChart.updateOptions({
-                    xaxis: { categories: slicedDates },
-                    series: [{ name: 'Shake balance', data: slicedBalances }]
-                });
-                $('#fccTrendRangeBadge').text(slicedDates[0] + ' – ' + slicedDates[slicedDates.length - 1]);
+            var filter = $(this).data('chart-days');
+            if (filter === 7 || filter === '7') {
+                activePoints = allDataPoints.slice(-7);
+            } else if (filter === 30 || filter === '30') {
+                activePoints = allDataPoints.slice(-30);
             } else {
-                shakeChart.updateOptions({
-                    xaxis: { categories: rawDates },
-                    series: [{ name: 'Shake balance', data: numericBalances }]
-                });
-                $('#fccTrendRangeBadge').text(rawDates[0] + ' – ' + rawDates[rawDates.length - 1]);
+                activePoints = allDataPoints;
+            }
+
+            var updated = prepareChartData(activePoints);
+            var updatedMarkerColors = updated.points.map(function(p) { return p.color || '#3b46f1'; });
+            var uMin = updated.balances.length ? Math.max(0, Math.floor(Math.min(...updated.balances) - 4)) : 0;
+            var uMax = updated.balances.length ? Math.ceil(Math.max(...updated.balances) + 5) : 40;
+
+            shakeChart.updateOptions({
+                xaxis: { categories: updated.categories },
+                yaxis: { min: uMin, max: uMax },
+                markers: { colors: updatedMarkerColors },
+                series: [{ name: 'Shake balance', data: updated.balances }]
+            });
+
+            if (activePoints.length > 1) {
+                $('#fccTrendRangeBadge').text(activePoints[0].date_short + ' – ' + activePoints[activePoints.length - 1].date_short);
+            } else if (activePoints.length === 1) {
+                $('#fccTrendRangeBadge').text(activePoints[0].date_short);
             }
         });
     });

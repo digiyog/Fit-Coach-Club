@@ -40,6 +40,8 @@ var TrackShake = (function() {
                 headerCallback: function(e, a, t, n, s) {
                 },
                 columnDefs: [
+                    { targets: 0, width: "65px", orderable: false, searchable: false, className: "no-sort text-start" },
+                    { targets: [1, 2, 3, 4, 5, 6], className: "text-start" }
                 ],
                 buttons: {
                     buttons: [
@@ -64,7 +66,7 @@ var TrackShake = (function() {
                 ],
                 pageLength: 20,
                 dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12 fcc-dt-footer"<"row align-items-center w-100"<"col-md-5"i><"col-md-7 d-flex justify-content-end"p>>> >',
+                    '<"fcc-modern-table-wrap"rt><"fcc-dt-footer"ip>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
