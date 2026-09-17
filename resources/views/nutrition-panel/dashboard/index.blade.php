@@ -3863,11 +3863,6 @@
             </div>
 
             <div class="fcc-header-actions">
-                <div class="fcc-search-input-box">
-                    <i class="fa fa-search search-icon"></i>
-                    <input type="text" placeholder="Search members, logs..." />
-                </div>
-
                 <div class="dropdown fcc-notif-dropdown d-inline-block">
                     <button class="fcc-icon-btn dropdown-toggle" type="button" id="fccNotificationDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Notifications & Alerts">
                         <i class="fa fa-bell"></i>
