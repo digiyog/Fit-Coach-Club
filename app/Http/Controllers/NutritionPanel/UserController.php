@@ -1604,6 +1604,10 @@ class UserController extends Controller
     {
         $auth_user = auth()->user();
         $user = User::where('id', dv($id))->first();
+
+        if (!$user) {
+            return redirect()->route('nutritionPanel.users.index');
+        }
  
         $breadcrumb = [
             __('language.dashboard') => route('nutritionPanel.dashboard'),
@@ -1612,19 +1616,36 @@ class UserController extends Controller
         ];
 
         $lastRecord = Attendance::select('attendances.id as attendance_id', 'attendances.weight', 'attendances.date', 'attendances.created_at')
-            ->where('weight','!=','')
-            ->where('type', 2)->where('user_id', $user['id'])->where("franchise_id", $auth_user->id)
-            ->orderBy('attendances.id','DESC')->first();
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->where('type', 2)
+            ->where('user_id', $user->id)
+            ->orderBy('attendances.date', 'DESC')
+            ->orderBy('attendances.id', 'DESC')
+            ->first();
 
         $maxWeight = Attendance::select('attendances.id as attendance_id', 'attendances.weight', 'attendances.date', 'attendances.created_at')
-            ->where('weight','!=','')
-            ->where('type', 2)->where('user_id', $user['id'])->where("franchise_id", $auth_user->id)
-            ->orderBy('attendances.weight','DESC')->first();
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->where('type', 2)
+            ->where('user_id', $user->id)
+            ->orderBy('attendances.weight', 'DESC')
+            ->first();
 
         $minWeight = Attendance::select('attendances.id as attendance_id', 'attendances.weight', 'attendances.date', 'attendances.created_at')
-            ->where('weight','!=','')
-            ->where('type', 2)->where('user_id', $user['id'])->where("franchise_id", $auth_user->id)
-            ->orderBy('attendances.weight','ASC')->first();
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->where('type', 2)
+            ->where('user_id', $user->id)
+            ->orderBy('attendances.weight', 'ASC')
+            ->first();
+
+        $latestWeight = (float)($lastRecord->weight ?? ($user->current_weight ?? 0));
+        $startingWeight = (float)($user->starting_weight ?? 0);
+        $weightDiff = ($latestWeight > 0 && $startingWeight > 0) ? round($latestWeight - $startingWeight, 2) : 0;
         
         // Send view data
         $this->viewData['breadcrumb'] = $breadcrumb;
@@ -1632,6 +1653,9 @@ class UserController extends Controller
         $this->viewData['lastRecord'] = $lastRecord;
         $this->viewData['maxWeight'] = $maxWeight;
         $this->viewData['minWeight'] = $minWeight;
+        $this->viewData['latestWeight'] = $latestWeight;
+        $this->viewData['startingWeight'] = $startingWeight;
+        $this->viewData['weightDiff'] = $weightDiff;
         
         return view('nutrition-panel.users.details')->with($this->viewData);
     }
