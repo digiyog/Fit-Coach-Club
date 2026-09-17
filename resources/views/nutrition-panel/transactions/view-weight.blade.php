@@ -160,11 +160,11 @@
                             <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.users.getViewWeights') }}">
                                 <thead>
                                     <tr>
-                                        <th>S.No</th>
-                                        <!-- <th>Name</th> -->
-                                        <th>Weight</th>
-                                        <th>Weight Image</th>
-                                        <th>Date</th>
+                                        <th class="no-sort text-start" style="width: 70px;">Entry</th>
+                                        <th class="text-start" style="width: 25%;">Date</th>
+                                        <th class="text-start" style="width: 25%;">Weight</th>
+                                        <th class="text-start" style="width: 30%;">Evidence</th>
+                                        <th class="no-sort no-content text-end" style="width: 90px; text-align: right;">Action</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -185,7 +185,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/users/view-weight.js') }}"></script>
+<script src="{{ asset('admin-assets/js/users/view-weight.js') }}?v={{ time() }}"></script>
 
 <script type="text/javascript">
     var weightDates = @json($weightDates);

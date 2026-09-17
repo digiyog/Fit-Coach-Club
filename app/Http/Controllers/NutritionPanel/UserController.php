@@ -1418,20 +1418,17 @@ class UserController extends Controller
                     $hasImage   = !empty($value->weight_image);
                     $encryptedId = ev($value->id);
 
-                    // Evidence Badge
+                    // Evidence Column
                     if ($hasImage) {
-                        $evidenceHtml = '<span class="fcc-evidence-badge available"><span class="fcc-dot dot-green"></span> Image available</span>';
-                        $viewBtn = '<a href="javascript:;" data-url="' . route('nutritionPanel.users.viewWeightImage', ['id' => $encryptedId]) . '" class="btn fcc-btn-view-image view-image"><i class="fa fa-eye me-1"></i> View image</a>';
+                        $evidenceHtml = '<a href="javascript:;" data-url="' . route('nutritionPanel.users.viewWeightImage', ['id' => $encryptedId]) . '" class="btn fcc-btn-view-image view-image"><i class="fa fa-picture-o me-1"></i> View image</a>';
                     } else {
                         $evidenceHtml = '<span class="fcc-evidence-badge none"><span class="fcc-dot dot-gray"></span> No image</span>';
-                        $viewBtn = '<span class="text-muted" style="display: inline-block; min-width: 85px;">—</span>';
                     }
 
                     // Action Column
                     $userId = $value->user_id ?? 0;
                     $userEncryptedId = $userId ? ev($userId) : '';
-                    $actionHtml = '<div class="d-flex align-items-center justify-content-end gap-2">
-                        '.$viewBtn.'
+                    $actionHtml = '<div class="d-flex align-items-center justify-content-end">
                         <div class="dropdown custom-dropdown d-inline-block">
                             <a class="dropdown-toggle fcc-action-dots-btn" href="#" role="button" id="dropdownMenuLink_'.$value->id.'" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-ellipsis-h"></i>
@@ -1455,7 +1452,7 @@ class UserController extends Controller
                         "weight"            => $weightVal,
                         "evidence"          => $evidenceHtml,
                         "action"            => $actionHtml,
-                        "weight_image"      => $hasImage ? $viewBtn : 'N/A'
+                        "weight_image"      => $hasImage ? $evidenceHtml : 'N/A'
                     );
                 }
             }

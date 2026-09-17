@@ -399,21 +399,28 @@
     .fcc-table-search-box {
         position: relative;
         min-width: 240px;
+        display: flex;
+        align-items: center;
     }
-    .fcc-table-search-box svg {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 14px;
-        height: 14px;
-        color: #94a3b8;
-        pointer-events: none;
+    .fcc-table-search-box svg,
+    .fcc-table-search-box i,
+    .fcc-table-search-box .feather,
+    .fcc-table-search-box .feather-search {
+        position: absolute !important;
+        left: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 15px !important;
+        height: 15px !important;
+        color: #94a3b8 !important;
+        pointer-events: none !important;
+        z-index: 2 !important;
     }
     .fcc-table-search-input {
         width: 100%;
         height: 38px;
-        padding: 0 14px 0 34px !important;
+        padding-left: 36px !important;
+        padding-right: 14px !important;
         border: 1.5px solid #e2e8f0;
         border-radius: 9px;
         font-size: 13px;
@@ -444,6 +451,9 @@
     .fcc-modern-table-wrap {
         width: 100%;
         overflow-x: auto;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        background: #ffffff;
         margin-top: 10px;
     }
     #dataTable {
@@ -453,19 +463,93 @@
         margin-bottom: 0 !important;
     }
     #dataTable thead th {
+        position: relative !important;
         background-color: #f8fafc !important;
-        color: #64748b !important;
-        font-size: 12px !important;
+        color: #475569 !important;
+        font-size: 11.5px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
-        padding: 12px 16px !important;
-        border-top: 1px solid #edf2f7 !important;
-        border-bottom: 1.5px solid #edf2f7 !important;
+        letter-spacing: 0.05em !important;
+        padding: 13px 28px 13px 16px !important;
+        border-top: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
         border-left: none !important;
         border-right: none !important;
         white-space: nowrap;
+        vertical-align: middle !important;
     }
+    #dataTable thead th.no-sort,
+    #dataTable thead th.no-content,
+    #dataTable thead th:first-child,
+    #dataTable thead th:last-child {
+        padding-right: 16px !important;
+        padding-left: 16px !important;
+    }
+    #dataTable thead th.text-end,
+    #dataTable thead th:last-child {
+        text-align: right !important;
+    }
+
+    /* Modern Sorting Indicators */
+    #dataTable thead th.sorting:before,
+    #dataTable thead th.sorting_asc:before,
+    #dataTable thead th.sorting_desc:before {
+        position: absolute !important;
+        right: 10px !important;
+        top: 42% !important;
+        transform: translateY(-50%) !important;
+        content: "▲" !important;
+        font-size: 8px !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    #dataTable thead th.sorting:after,
+    #dataTable thead th.sorting_asc:after,
+    #dataTable thead th.sorting_desc:after {
+        position: absolute !important;
+        right: 10px !important;
+        top: 58% !important;
+        transform: translateY(-50%) !important;
+        content: "▼" !important;
+        font-size: 8px !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+        line-height: 1 !important;
+        display: block !important;
+        bottom: auto !important;
+    }
+
+    #dataTable thead th.sorting_asc:before {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    #dataTable thead th.sorting_asc:after {
+        opacity: 0.15 !important;
+    }
+
+    #dataTable thead th.sorting_desc:after {
+        opacity: 1 !important;
+        color: var(--fcc-primary) !important;
+    }
+    #dataTable thead th.sorting_desc:before {
+        opacity: 0.15 !important;
+    }
+
+    #dataTable thead th:first-child:before,
+    #dataTable thead th:first-child:after,
+    #dataTable thead th:last-child:before,
+    #dataTable thead th:last-child:after,
+    #dataTable thead th.no-sort:before,
+    #dataTable thead th.no-sort:after,
+    #dataTable thead th.no-content:before,
+    #dataTable thead th.no-content:after {
+        display: none !important;
+    }
+
     #dataTable tbody td {
         padding: 13px 16px !important;
         vertical-align: middle !important;
@@ -517,7 +601,7 @@
         color: #3b46f1 !important;
         font-size: 12px;
         font-weight: 600;
-        padding: 3px 12px;
+        padding: 4px 13px;
         border-radius: 7px;
         text-decoration: none;
         display: inline-flex;
@@ -819,11 +903,11 @@
             <table id="dataTable" class="table" data-url="{{ route('nutritionPanel.users.getViewWeights') }}">
                 <thead>
                     <tr>
-                        <th style="width: 70px;">Entry</th>
-                        <th>Date</th>
-                        <th>Weight</th>
-                        <th>Evidence</th>
-                        <th style="width: 140px; text-align: right;">Action</th>
+                        <th class="no-sort text-start" style="width: 70px;">Entry</th>
+                        <th class="text-start" style="width: 25%;">Date</th>
+                        <th class="text-start" style="width: 25%;">Weight</th>
+                        <th class="text-start" style="width: 30%;">Evidence</th>
+                        <th class="no-sort no-content text-end" style="width: 90px; text-align: right;">Action</th>
                     </tr>
                 </thead>
             </table>
@@ -869,15 +953,6 @@
     </div>
 </div>
 
-<!-- Modal for Image Preview -->
-<div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-            <!-- Loaded via AJAX -->
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')
@@ -889,7 +964,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/users/view-weight.js') }}"></script>
+<script src="{{ asset('admin-assets/js/users/view-weight.js') }}?v={{ time() }}"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
