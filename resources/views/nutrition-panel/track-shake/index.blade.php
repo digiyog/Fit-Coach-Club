@@ -382,35 +382,46 @@
         flex-wrap: wrap;
     }
     .fcc-table-search-box {
-        position: relative;
+        position: relative !important;
         min-width: 200px;
+        display: flex !important;
+        align-items: center !important;
     }
-    .fcc-table-search-box svg {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 14px;
-        height: 14px;
-        color: #94a3b8;
-        pointer-events: none;
+    .fcc-table-search-box svg,
+    .fcc-table-search-box i,
+    .fcc-table-search-box .feather,
+    .fcc-table-search-box .feather-search {
+        position: absolute !important;
+        left: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 15px !important;
+        height: 15px !important;
+        color: #94a3b8 !important;
+        pointer-events: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 5 !important;
     }
+    input.fcc-table-search-input,
     .fcc-table-search-input {
-        width: 100%;
-        height: 38px;
-        padding: 0 14px 0 34px !important;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 9px;
-        font-size: 12.5px;
-        font-family: 'Outfit', sans-serif;
-        color: #0f172a;
-        background: #ffffff;
-        transition: all 0.15s ease;
+        width: 100% !important;
+        height: 38px !important;
+        padding: 0 14px 0 42px !important;
+        padding-left: 42px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 9px !important;
+        font-size: 12.5px !important;
+        font-family: 'Outfit', sans-serif !important;
+        color: #0f172a !important;
+        background: #ffffff !important;
+        transition: all 0.15s ease !important;
     }
+    input.fcc-table-search-input:focus,
     .fcc-table-search-input:focus {
-        border-color: #3b46f1;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1);
+        border-color: #3b46f1 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1) !important;
     }
     .fcc-filter-select {
         height: 38px;

@@ -397,42 +397,46 @@
         gap: 12px;
     }
     .fcc-table-search-box {
-        position: relative;
+        position: relative !important;
         min-width: 240px;
-        display: flex;
-        align-items: center;
+        display: flex !important;
+        align-items: center !important;
     }
     .fcc-table-search-box svg,
     .fcc-table-search-box i,
     .fcc-table-search-box .feather,
     .fcc-table-search-box .feather-search {
         position: absolute !important;
-        left: 12px !important;
+        left: 14px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
         width: 15px !important;
         height: 15px !important;
         color: #94a3b8 !important;
         pointer-events: none !important;
-        z-index: 2 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 5 !important;
     }
-    .fcc-table-search-input {
-        width: 100%;
-        height: 38px;
-        padding-left: 36px !important;
-        padding-right: 14px !important;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 9px;
-        font-size: 13px;
-        font-family: 'Outfit', sans-serif;
-        color: #0f172a;
-        background: #ffffff;
-        transition: all 0.15s ease;
+    input.fcc-table-search-input,
+    #fccHistorySearchInput {
+        width: 100% !important;
+        height: 38px !important;
+        padding: 0 14px 0 42px !important;
+        padding-left: 42px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 9px !important;
+        font-size: 13px !important;
+        font-family: 'Outfit', sans-serif !important;
+        color: #0f172a !important;
+        background: #ffffff !important;
+        transition: all 0.15s ease !important;
     }
-    .fcc-table-search-input:focus {
-        border-color: #3b46f1;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1);
+    input.fcc-table-search-input:focus,
+    #fccHistorySearchInput:focus {
+        border-color: #3b46f1 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1) !important;
     }
     .fcc-page-size-select {
         height: 38px;
