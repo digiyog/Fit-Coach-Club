@@ -80,25 +80,24 @@ class DashboardController extends Controller
             $dayStr = $dayDate->format('Y-m-d');
             $weeklyPulseLabels[] = $dayDate->format('M d');
 
-            $attendCount = Attendance::where('franchise_id', $userId)
-                ->where('type', 2)
-                ->where(function($q) use ($dayStr) {
-                    $q->where('date', $dayStr)->orWhere(function($sub) use ($dayStr) {
-                        $sub->whereNull('date')->whereDate('created_at', $dayStr);
-                    });
-                })
-                ->distinct('user_id')
-                ->count('user_id');
+            $attendCount = Attendance::join('users', 'attendances.user_id', '=', 'users.id')
+                ->where('attendances.franchise_id', $userId)
+                ->where('users.role_type', 'user')
+                ->where('attendances.type', 2)
+                ->whereDate('attendances.date', $dayStr)
+                ->count();
+
+            if ($attendCount == 0) {
+                $attendCount = Attendance::where('franchise_id', $userId)
+                    ->where('type', 2)
+                    ->whereDate('date', $dayStr)
+                    ->count();
+            }
 
             if ($attendCount == 0) {
                 $attendCount = AttendanceLogs::where('created_by', $userId)
-                    ->where(function($q) use ($dayStr) {
-                        $q->where('date', $dayStr)->orWhere(function($sub) use ($dayStr) {
-                            $sub->whereNull('date')->whereDate('created_at', $dayStr);
-                        });
-                    })
-                    ->distinct('user_id')
-                    ->count('user_id');
+                    ->whereDate('date', $dayStr)
+                    ->count();
             }
 
             $weeklyPulseAttendance[] = (int)$attendCount;
@@ -117,8 +116,7 @@ class DashboardController extends Controller
         $prev7DaysAttendance = Attendance::where('franchise_id', $userId)
             ->where('type', 2)
             ->whereBetween('date', [Carbon::today()->subDays(13)->format('Y-m-d'), Carbon::today()->subDays(7)->format('Y-m-d')])
-            ->distinct('user_id')
-            ->count('user_id');
+            ->count();
         $curr7DaysAttendance = array_sum($weeklyPulseAttendance);
 
         if ($prev7DaysAttendance > 0) {
@@ -132,25 +130,24 @@ class DashboardController extends Controller
 
         // 3. Today Stats
         $todayDate = date('Y-m-d');
-        $todayCounsellingCount = Attendance::where('franchise_id', $userId)
-            ->where('type', 2)
-            ->where(function($q) use ($todayDate) {
-                $q->where('date', $todayDate)->orWhere(function($sub) use ($todayDate) {
-                    $sub->whereNull('date')->whereDate('created_at', $todayDate);
-                });
-            })
-            ->distinct('user_id')
-            ->count('user_id');
+        $todayCounsellingCount = Attendance::join('users', 'attendances.user_id', '=', 'users.id')
+            ->where('attendances.franchise_id', $userId)
+            ->where('users.role_type', 'user')
+            ->where('attendances.type', 2)
+            ->whereDate('attendances.date', $todayDate)
+            ->count();
+
+        if ($todayCounsellingCount == 0) {
+            $todayCounsellingCount = Attendance::where('franchise_id', $userId)
+                ->where('type', 2)
+                ->whereDate('date', $todayDate)
+                ->count();
+        }
 
         if ($todayCounsellingCount == 0) {
             $todayCounsellingCount = AttendanceLogs::where('created_by', $userId)
-                ->where(function($q) use ($todayDate) {
-                    $q->where('date', $todayDate)->orWhere(function($sub) use ($todayDate) {
-                        $sub->whereNull('date')->whereDate('created_at', $todayDate);
-                    });
-                })
-                ->distinct('user_id')
-                ->count('user_id');
+                ->whereDate('date', $todayDate)
+                ->count();
         }
 
         $todayNewMemberships = User::where('role_type', 'user')
