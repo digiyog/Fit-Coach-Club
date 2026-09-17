@@ -333,14 +333,14 @@ var ManualAttendence = (function() {
                 },
                 processing: true,
                 serverSide: true,
-                searching: false,
+                searching: true,
                 lengthMenu: [
                     [20, 50, 75, 100],
                     [20, 50, 75, 100]
                 ],
                 pageLength: 20,
                 dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12 fcc-dt-footer"<"row align-items-center w-100"<"col-md-5"i><"col-md-7 d-flex justify-content-end"p>>> >',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
@@ -348,7 +348,7 @@ var ManualAttendence = (function() {
                     }
                 },
                 columns: [
-                    { data: "id", name: "id", width:150, },
+                    { data: "id", name: "id", width: 80 },
                     { data: "attendence_date", name: "attendence_date" },
                     { data: "weight", name: "weight" },
                     { data: "attendence_count", name: "attendence_count" },
@@ -357,19 +357,38 @@ var ManualAttendence = (function() {
                         name: "action",
                         searchable: false,
                         sortable: false,
-                        className: "text-right",
-                        width:180,
+                        className: "text-end",
+                        width: 130,
                     }
                 ],
                 rowCallback: function(row, data, dataIndex) {
                 }
             });
 
+            window.data_table = data_table;
+
+            // Custom Search Input with Debounce
+            var searchTimer;
+            $('#fccHistorySearchInput').on('keyup input', function() {
+                clearTimeout(searchTimer);
+                var val = this.value;
+                searchTimer = setTimeout(function() {
+                    data_table.search(val).draw();
+                }, 300);
+            });
+
+            // Custom Page Size Selector
+            $('#fccPageSizeSelect').on('change', function() {
+                data_table.page.len(parseInt($(this).val(), 10)).draw();
+            });
+
             // Handle table draw event
             table.on("draw", function() {
                 // Additional form validation methods
                 Components.additionalValidationMethods();
-               //----------
+                if (typeof feather !== 'undefined') {
+                    feather.replace();
+                }
             });
         },
 

@@ -59,12 +59,31 @@ class ManualAttendenceController extends Controller
         $user = User::where('status',1)->where('id', dv($request->id))->first();
         $attendanceLogs = AttendanceLogs::where('user_id', dv($request->id))->orderBy('id', 'DESC')->first();
 
+        $lastAttendance = Attendance::where('user_id', $user->id ?? 0)
+            ->where('type', 2)
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        $latestWeightRecord = Attendance::where('user_id', $user->id ?? 0)
+            ->whereNotNull('weight')
+            ->where('weight', '!=', '')
+            ->where('weight', '>', 0)
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        $lastAttendanceDate = $lastAttendance ? date('d M Y', strtotime($lastAttendance->date)) : null;
+        $latestWeight = $latestWeightRecord ? (float)$latestWeightRecord->weight : (!empty($user->current_weight) ? (float)$user->current_weight : 0);
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
         $this->viewData['user'] = $user;
         $this->viewData['attendanceLogs'] = $attendanceLogs;
+        $this->viewData['lastAttendanceDate'] = $lastAttendanceDate;
+        $this->viewData['latestWeight'] = $latestWeight;
         
         return view('nutrition-panel.manual-attendences.index')->with($this->viewData);
     }
@@ -83,10 +102,10 @@ class ManualAttendenceController extends Controller
 
         // Ajax Post Parameters
         $draw   = $request->get('draw');
-        $start  = $request->get('start');
-        $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $start  = $request->get('start') ? intval($request->get('start')) : 0;
+        $limit  = $request->get('length') ? intval($request->get('length')) : 20;
+        $sort   = $request->get('order')[0] ?? null;
+        $search = $request->get('search')['value'] ?? null;
         
         // Filter Parameters
         $filter = array(
@@ -103,7 +122,7 @@ class ManualAttendenceController extends Controller
         {
             foreach($records as $key => $value)
             {
-                $id                 = $key+1;
+                $id                 = $start + $key + 1;
                 $weight             = 'N/A';
                 $attendence_date    = 'N/A';
                 $attendence_count   = 1;
@@ -111,15 +130,15 @@ class ManualAttendenceController extends Controller
                 // Preparing Data
                 if(!empty($value->date))
                 {
-                    $attendence_date = date("d-m-Y", strtotime($value->date));
+                    $attendence_date = date("d M Y", strtotime($value->date));
                 }
 
-                if(!empty($value->weight))
+                if(!empty($value->weight) && (float)$value->weight > 0)
                 {
-                    $weight = $value->weight;
+                    $weight = number_format((float)$value->weight, 1) . ' kg';
                 }
 
-                $action = '<a herf="#" data-url="' . route('nutritionPanel.manual-attendances.destroy', ['id' => ev($value->id)]) . '" class="delete-attendence cursor-pointer" title="Delete Attendance"><div class="badge badge-danger"><i class="fa fa-trash"></i> Delete Attendance</div></a>';
+                $action = '<a href="javascript:;" data-url="' . route('nutritionPanel.manual-attendances.destroy', ['id' => ev($value->id)]) . '" class="fcc-btn-delete-attendance delete-attendence cursor-pointer" title="Delete Attendance"><i class="fa fa-trash-o me-1"></i> Delete</a>';
 
                 // Array Data
                 $arr_data[] = array(
