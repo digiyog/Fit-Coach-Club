@@ -1928,6 +1928,25 @@ table.dataTable tbody tr.fcc-row-dues-flagged.selected td {
     padding: 2.5px 8px !important;
     border-radius: 6px !important;
     display: inline-block !important;
+}/* Global Navigation Tabs Scrollbar Suppression */
+.fcc-users-nav-tabs,
+.fcc-member-nav-tabs,
+.fcc-notif-filter-tabs {
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
 }
-
-
+.fcc-users-nav-tabs::-webkit-scrollbar,
+.fcc-member-nav-tabs::-webkit-scrollbar,
+.fcc-notif-filter-tabs::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+.fcc-users-nav-tabs::-webkit-scrollbar-button,
+.fcc-member-nav-tabs::-webkit-scrollbar-button,
+.fcc-notif-filter-tabs::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}

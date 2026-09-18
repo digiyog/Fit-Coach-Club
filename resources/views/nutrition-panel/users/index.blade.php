@@ -154,6 +154,19 @@
         margin-bottom: 22px;
         padding-bottom: 0;
         overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .fcc-users-nav-tabs::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+    .fcc-users-nav-tabs::-webkit-scrollbar-button {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
     }
     .fcc-tab-item-link {
         font-size: 14px;
