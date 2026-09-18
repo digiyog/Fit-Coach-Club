@@ -5,35 +5,27 @@
 @push('styles')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/forms/theme-checkbox-radio.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/datatables.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet">
 
 <style>
     :root {
-        --fcc-primary: #3b46f1;
-        --fcc-primary-hover: #2e39dc;
-        --fcc-primary-light: #eff2fe;
-        --fcc-dark: #0f172a;
-        --fcc-muted: #64748b;
+        --fcc-blue: #2b52f5;
+        --fcc-blue-hover: #1e40d8;
+        --fcc-text-dark: #1b2559;
+        --fcc-text-body: #2b3674;
+        --fcc-text-muted: #a3aed0;
         --fcc-border: #edf2f7;
-        --fcc-border-subtle: #f1f5f9;
         --fcc-card-bg: #ffffff;
-        --fcc-page-bg: #f8fafc;
-        --fcc-green: #10b981;
-        --fcc-green-light: #dcfce7;
-        --fcc-coral: #fb7185;
-        --fcc-coral-light: #ffe4e6;
-        --fcc-orange: #f97316;
-        --fcc-orange-light: #ffedd5;
-        --fcc-purple: #8b5cf6;
-        --fcc-purple-light: #f3e8ff;
+        --fcc-page-bg: #f4f7fe;
     }
 
     body {
         background-color: var(--fcc-page-bg) !important;
-        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+        font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif !important;
+        -webkit-font-smoothing: antialiased;
     }
 
     .fcc-attendance-wrapper {
@@ -41,56 +33,56 @@
         width: 100%;
         max-width: 1600px;
         margin: 0 auto;
-        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif !important;
     }
 
     /* 1. Breadcrumbs */
     .fcc-breadcrumb-nav {
         display: flex;
         align-items: center;
-        gap: 6px;
-        font-size: 13px;
-        color: #94a3b8;
-        margin-bottom: 6px;
+        gap: 8px;
+        font-size: 12.5px;
+        color: var(--fcc-text-muted);
+        margin-bottom: 4px;
         font-weight: 500;
     }
     .fcc-breadcrumb-nav a {
-        color: #64748b;
+        color: var(--fcc-text-muted);
         text-decoration: none;
         transition: color 0.15s ease;
     }
     .fcc-breadcrumb-nav a:hover {
-        color: var(--fcc-primary);
+        color: var(--fcc-blue);
     }
     .fcc-breadcrumb-sep {
         color: #cbd5e1;
         font-size: 11px;
     }
     .fcc-breadcrumb-active {
-        color: #64748b;
+        color: var(--fcc-text-muted);
         font-weight: 500;
     }
 
     /* 2. Top Header */
     .fcc-page-header {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
     }
     .fcc-page-title {
         font-size: 26px;
         font-weight: 800;
-        color: var(--fcc-dark);
-        letter-spacing: -0.025em;
-        margin-bottom: 3px;
+        color: var(--fcc-text-dark);
+        letter-spacing: -0.02em;
+        margin-bottom: 2px;
         line-height: 1.2;
     }
     .fcc-page-subtitle {
         font-size: 13.5px;
-        color: var(--fcc-muted);
+        color: var(--fcc-text-muted);
         margin-bottom: 0;
         font-weight: 400;
     }
@@ -101,8 +93,8 @@
     }
     .fcc-btn-export {
         background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        color: #1e293b;
+        border: 1.5px solid #d4dcfa;
+        color: var(--fcc-text-body);
         font-weight: 600;
         font-size: 13.5px;
         padding: 8px 18px;
@@ -111,18 +103,18 @@
         align-items: center;
         gap: 8px;
         text-decoration: none;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        transition: all 0.15s ease;
         cursor: pointer;
     }
     .fcc-btn-export:hover {
         background: #f8fafc;
-        border-color: #cbd5e1;
-        color: var(--fcc-primary);
+        border-color: var(--fcc-blue);
+        color: var(--fcc-blue);
     }
     .fcc-btn-mark {
-        background: var(--fcc-primary);
-        border: 1.5px solid var(--fcc-primary);
+        background: var(--fcc-blue);
+        border: none;
         color: #ffffff !important;
         font-weight: 600;
         font-size: 13.5px;
@@ -132,15 +124,14 @@
         align-items: center;
         gap: 8px;
         text-decoration: none;
-        box-shadow: 0 4px 14px rgba(59, 70, 241, 0.25);
-        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(43, 82, 245, 0.28);
+        transition: all 0.15s ease;
         cursor: pointer;
     }
     .fcc-btn-mark:hover {
-        background: var(--fcc-primary-hover);
-        border-color: var(--fcc-primary-hover);
+        background: var(--fcc-blue-hover);
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(59, 70, 241, 0.35);
+        box-shadow: 0 6px 16px rgba(43, 82, 245, 0.38);
     }
 
     /* 3. Filter Bar */
@@ -148,8 +139,8 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 14px;
-        padding: 10px 14px;
-        margin-bottom: 22px;
+        padding: 8px 12px;
+        margin-bottom: 20px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         display: flex;
         align-items: center;
@@ -158,46 +149,62 @@
     }
     .fcc-search-box {
         position: relative;
-        flex: 1;
+        flex: 1.2;
         min-width: 220px;
     }
     .fcc-search-icon {
         position: absolute;
-        left: 14px;
+        left: 13px;
         top: 50%;
         transform: translateY(-50%);
-        color: #94a3b8;
-        font-size: 14px;
+        color: #a3aed0;
+        font-size: 13px;
         pointer-events: none;
     }
     .fcc-search-input {
         width: 100%;
-        padding: 8px 14px 8px 38px;
-        font-size: 13.5px;
+        padding: 7px 14px 7px 36px;
+        font-size: 13px;
+        font-weight: 500;
         border: 1px solid #e2e8f0;
         border-radius: 10px;
         background: #ffffff;
-        color: var(--fcc-dark);
+        color: var(--fcc-text-dark);
         outline: none;
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
+    .fcc-search-input::placeholder {
+        color: #a3aed0;
+    }
     .fcc-search-input:focus {
-        border-color: var(--fcc-primary);
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.1);
+        border-color: var(--fcc-blue);
+        box-shadow: 0 0 0 3px rgba(43, 82, 245, 0.08);
     }
     .fcc-filter-select-wrap {
         position: relative;
         min-width: 160px;
     }
+    .fcc-filter-select-wrap.has-icon .fcc-filter-select {
+        padding-left: 32px;
+    }
+    .fcc-prefix-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a3aed0;
+        font-size: 13px;
+        pointer-events: none;
+    }
     .fcc-filter-select {
         width: 100%;
-        padding: 8px 32px 8px 14px;
-        font-size: 13.5px;
+        padding: 7px 30px 7px 14px;
+        font-size: 13px;
         font-weight: 500;
         border: 1px solid #e2e8f0;
         border-radius: 10px;
         background: #ffffff;
-        color: #334155;
+        color: var(--fcc-text-body);
         outline: none;
         appearance: none;
         -webkit-appearance: none;
@@ -205,24 +212,24 @@
         transition: border-color 0.15s ease;
     }
     .fcc-filter-select:focus {
-        border-color: var(--fcc-primary);
+        border-color: var(--fcc-blue);
     }
     .fcc-select-icon {
         position: absolute;
         right: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: #94a3b8;
+        color: #a3aed0;
         font-size: 11px;
         pointer-events: none;
     }
     .fcc-btn-clear-filters {
-        background: #f8fafc;
+        background: #ffffff;
         border: 1px solid #e2e8f0;
-        color: #64748b;
-        font-weight: 600;
+        color: var(--fcc-text-body);
+        font-weight: 500;
         font-size: 13px;
-        padding: 8px 14px;
+        padding: 7px 14px;
         border-radius: 10px;
         display: inline-flex;
         align-items: center;
@@ -231,16 +238,17 @@
         transition: all 0.15s ease;
     }
     .fcc-btn-clear-filters:hover {
-        background: #edf2f7;
-        color: var(--fcc-dark);
+        background: #f8fafc;
+        border-color: var(--fcc-blue);
+        color: var(--fcc-blue);
     }
 
     /* 4. Pulse & Attention Widgets */
     .fcc-pulse-row {
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 2.1fr 1fr;
         gap: 20px;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
     }
     @media (max-width: 991px) {
         .fcc-pulse-row {
@@ -250,12 +258,13 @@
 
     /* Left Card: Attendance Pulse */
     .fcc-pulse-card {
-        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 45%, #2563eb 100%) !important;
+        background: #2b52f5 !important;
+        background: linear-gradient(135deg, #2b52f5 0%, #2f4eed 100%) !important;
         border-radius: 18px !important;
-        padding: 22px 26px !important;
+        padding: 22px 28px !important;
         color: #ffffff !important;
         position: relative !important;
-        box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.35) !important;
+        box-shadow: 0 10px 24px -4px rgba(43, 82, 245, 0.32) !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
@@ -267,13 +276,13 @@
         display: flex !important;
         align-items: center !important;
         gap: 8px !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 3px !important;
     }
     .fcc-pulse-bar-accent {
         width: 3.5px !important;
         height: 16px !important;
-        background: #60a5fa !important;
-        border-radius: 4px !important;
+        background: #85a9ff !important;
+        border-radius: 3px !important;
         display: inline-block !important;
     }
     .fcc-pulse-title,
@@ -281,7 +290,7 @@
     .fcc-pulse-card h2,
     .fcc-pulse-card h2 span,
     .fcc-pulse-card .fcc-pulse-title {
-        font-size: 16px !important;
+        font-size: 16.5px !important;
         font-weight: 700 !important;
         letter-spacing: -0.01em !important;
         margin: 0 !important;
@@ -293,7 +302,7 @@
     .fcc-pulse-card p span,
     .fcc-pulse-card .fcc-pulse-subtitle {
         font-size: 12.5px !important;
-        color: #bfdbfe !important;
+        color: #d1e0ff !important;
         margin: 0 !important;
         padding-left: 11.5px !important;
     }
@@ -323,13 +332,13 @@
     }
     .fcc-donut-bg {
         fill: none !important;
-        stroke: rgba(255, 255, 255, 0.18) !important;
-        stroke-width: 7 !important;
+        stroke: rgba(255, 255, 255, 0.2) !important;
+        stroke-width: 6 !important;
     }
     .fcc-donut-circle {
         fill: none !important;
-        stroke: #60a5fa !important;
-        stroke-width: 7 !important;
+        stroke: #ffffff !important;
+        stroke-width: 6 !important;
         stroke-linecap: round !important;
         stroke-dasharray: 251.2 !important;
         stroke-dashoffset: 200 !important;
@@ -346,15 +355,15 @@
     }
     .fcc-donut-pct,
     #pulse-avg-rate {
-        font-size: 19px !important;
+        font-size: 22px !important;
         font-weight: 800 !important;
         color: #ffffff !important;
         line-height: 1 !important;
         margin-bottom: 2px !important;
     }
     .fcc-donut-label {
-        font-size: 8.5px !important;
-        color: #bfdbfe !important;
+        font-size: 10px !important;
+        color: #d1e0ff !important;
         text-transform: lowercase !important;
         line-height: 1.1 !important;
         display: block !important;
@@ -368,7 +377,7 @@
     .fcc-pulse-stat-indicators {
         display: flex !important;
         align-items: center !important;
-        gap: 24px !important;
+        gap: 28px !important;
         margin-bottom: 12px !important;
     }
     .fcc-pulse-stat-item {
@@ -379,34 +388,32 @@
     .fcc-pulse-dot-green {
         width: 10px !important;
         height: 10px !important;
-        border-radius: 50 !important;
         border-radius: 50% !important;
         background: #22c55e !important;
         display: inline-block !important;
-        box-shadow: 0 0 8px rgba(34, 197, 94, 0.6) !important;
     }
     .fcc-pulse-dot-coral {
         width: 10px !important;
         height: 10px !important;
         border-radius: 50% !important;
-        background: #f87171 !important;
+        background: #ff7875 !important;
         display: inline-block !important;
-        box-shadow: 0 0 8px rgba(248, 113, 113, 0.6) !important;
     }
     .fcc-pulse-stat-num,
     #pulse-total-present,
     #pulse-total-absent {
-        font-size: 18px !important;
+        font-size: 19px !important;
         font-weight: 700 !important;
         color: #ffffff !important;
+        margin-right: 4px !important;
     }
     .fcc-pulse-stat-lbl {
-        font-size: 12.5px !important;
-        color: #cbd5e1 !important;
+        font-size: 13px !important;
+        color: #d1e0ff !important;
     }
     .fcc-segmented-bar-track {
-        height: 10px !important;
-        background: rgba(255, 255, 255, 0.18) !important;
+        height: 11px !important;
+        background: rgba(255, 255, 255, 0.2) !important;
         border-radius: 10px !important;
         display: flex !important;
         overflow: hidden !important;
@@ -418,44 +425,43 @@
         transition: width 0.6s ease !important;
     }
     .fcc-seg-absent {
-        background: #f87171 !important;
+        background: #ff7875 !important;
         height: 100% !important;
         transition: width 0.6s ease !important;
     }
     .fcc-seg-labels {
         display: flex !important;
         justify-content: space-between !important;
-        font-size: 11px !important;
-        color: #bfdbfe !important;
+        font-size: 11.5px !important;
+        color: #d1e0ff !important;
         font-weight: 500 !important;
     }
     .fcc-seg-labels span {
-        color: #bfdbfe !important;
+        color: #d1e0ff !important;
     }
 
     /* Right Consistency */
     .fcc-pulse-consistency {
         text-align: right !important;
         min-width: 130px !important;
-        border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
-        padding-left: 20px !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.18) !important;
+        padding-left: 24px !important;
     }
     .fcc-trophy-icon {
-        font-size: 20px !important;
-        color: #fde047 !important;
+        font-size: 22px !important;
+        color: #ffffff !important;
         margin-bottom: 4px !important;
         display: inline-block !important;
     }
     .fcc-consistency-label {
-        font-size: 11px !important;
-        color: #bfdbfe !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
+        font-size: 11.5px !important;
+        color: #d1e0ff !important;
+        letter-spacing: 0.02em !important;
         margin-bottom: 2px !important;
     }
     .fcc-consistency-days,
     #pulse-top-days {
-        font-size: 20px !important;
+        font-size: 22px !important;
         font-weight: 800 !important;
         color: #ffffff !important;
         line-height: 1.2 !important;
@@ -463,7 +469,7 @@
     .fcc-consistency-names,
     #pulse-top-names {
         font-size: 12px !important;
-        color: #93c5fd !important;
+        color: #d1e0ff !important;
         margin-top: 2px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
@@ -476,8 +482,8 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 18px;
-        padding: 20px 22px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+        padding: 18px 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -489,48 +495,43 @@
         margin-bottom: 12px;
     }
     .fcc-attention-icon-wrap {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        background: #fee2e2;
-        color: #ef4444;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #ff5252;
+        color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 17px;
-        font-weight: 700;
+        font-size: 15px;
+        font-weight: 800;
+        flex-shrink: 0;
     }
     .fcc-attention-title {
         font-size: 15.5px;
         font-weight: 700;
-        color: var(--fcc-dark);
+        color: var(--fcc-text-dark);
         margin: 0;
         line-height: 1.2;
     }
     .fcc-attention-subtitle {
         font-size: 12px;
-        color: #94a3b8;
+        color: var(--fcc-text-muted);
         margin: 2px 0 0 0;
     }
     .fcc-attention-list {
         display: flex;
         flex-direction: column;
-        gap: 9px;
-        margin-bottom: 14px;
+        gap: 8px;
+        margin-bottom: 12px;
         flex: 1;
     }
     .fcc-attention-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 6px 10px;
-        border-radius: 10px;
-        background: #f8fafc;
-        border: 1px solid #f1f5f9;
+        padding: 4px 0;
         transition: background 0.15s ease;
-    }
-    .fcc-attention-item:hover {
-        background: #f1f5f9;
     }
     .fcc-attention-user-info {
         display: flex;
@@ -538,44 +539,46 @@
         gap: 10px;
     }
     .fcc-attention-avatar {
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
+        background: #ede9fe;
+        color: #7c3aed;
     }
     .fcc-attention-name {
         font-size: 13px;
         font-weight: 600;
-        color: #1e293b;
+        color: var(--fcc-text-body);
     }
     .fcc-attention-stat {
         font-size: 12px;
         font-weight: 500;
-        color: #94a3b8;
+        color: var(--fcc-text-muted);
         display: flex;
         align-items: center;
         gap: 6px;
     }
     .fcc-btn-review-attention {
         width: 100%;
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        color: var(--fcc-primary);
+        background: #ffffff;
+        border: 1.5px solid var(--fcc-blue);
+        color: var(--fcc-blue);
         font-weight: 600;
         font-size: 13px;
-        padding: 8px 14px;
+        padding: 7px 14px;
         border-radius: 10px;
         text-align: center;
         cursor: pointer;
         transition: all 0.15s ease;
+        display: block;
     }
     .fcc-btn-review-attention:hover {
-        background: #dbeafe;
-        color: #1d4ed8;
+        background: #f4f7fe;
     }
 
     /* 5. Main Data Table Card */
@@ -583,7 +586,7 @@
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 18px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         padding: 22px 24px;
     }
     .fcc-table-header {
@@ -598,28 +601,30 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        margin-bottom: 2px;
     }
     .fcc-table-bar-accent {
         width: 3.5px;
-        height: 18px;
-        background: var(--fcc-primary);
-        border-radius: 4px;
+        height: 16px;
+        background: var(--fcc-blue);
+        border-radius: 3px;
         display: inline-block;
     }
     .fcc-table-title {
-        font-size: 17px;
+        font-size: 16.5px;
         font-weight: 700;
-        color: var(--fcc-dark);
+        color: var(--fcc-text-dark);
         margin: 0;
     }
     .fcc-table-subtitle {
-        font-size: 13px;
-        color: var(--fcc-muted);
+        font-size: 12.5px;
+        color: var(--fcc-text-muted);
         margin: 0;
+        padding-left: 11.5px;
     }
     .fcc-page-length-select {
-        padding: 6px 28px 6px 12px;
-        font-size: 13px;
+        padding: 5px 26px 5px 12px;
+        font-size: 12.5px;
         font-weight: 500;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
@@ -634,93 +639,94 @@
     .fcc-datatable {
         width: 100% !important;
         border-collapse: separate !important;
-        border-spacing: 0 4px !important;
+        border-spacing: 0 !important;
+        margin-top: 8px !important;
     }
     .fcc-datatable thead th {
-        background: #f8fafc !important;
-        color: #64748b !important;
+        background: #ffffff !important;
+        color: var(--fcc-text-muted) !important;
         font-size: 12px !important;
         font-weight: 600 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.03em !important;
-        padding: 12px 14px !important;
+        letter-spacing: 0.01em !important;
+        padding: 10px 14px !important;
         border-top: none !important;
-        border-bottom: 1px solid #e2e8f0 !important;
+        border-bottom: 1.5px solid var(--fcc-border) !important;
     }
     .fcc-datatable tbody tr {
         background: #ffffff;
         transition: all 0.15s ease;
     }
     .fcc-datatable tbody tr:hover {
-        background: #f8fafc !important;
+        background: #f9fafb !important;
     }
     .fcc-datatable tbody td {
-        padding: 13px 14px !important;
-        font-size: 13.5px !important;
-        color: #334155 !important;
+        padding: 11px 14px !important;
+        font-size: 13px !important;
+        color: var(--fcc-text-body) !important;
         vertical-align: middle !important;
-        border-top: 1px solid #f1f5f9 !important;
+        border-top: none !important;
         border-bottom: 1px solid #f1f5f9 !important;
     }
 
     /* Table Cell Specific Styles */
     .fcc-avatar-circle {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 700;
         flex-shrink: 0;
     }
     .fcc-member-name {
         font-size: 13.5px;
         font-weight: 600;
-        color: #0f172a;
+        color: var(--fcc-text-body);
     }
     .fcc-mini-progress {
-        width: 60px;
-        height: 6px;
+        width: 55px;
+        height: 5px;
         background: #e2e8f0;
-        border-radius: 6px;
+        border-radius: 10px;
         overflow: hidden;
         flex-shrink: 0;
     }
     .fcc-mini-bar {
-        background: var(--fcc-primary);
+        background: var(--fcc-blue);
         height: 100%;
-        border-radius: 6px;
+        border-radius: 10px;
     }
     .fcc-attendance-label {
         font-size: 13px;
-        color: #334155;
+        color: var(--fcc-text-body);
         font-weight: 500;
     }
     .fcc-dot {
-        width: 7px;
-        height: 7px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
         display: inline-block;
-        margin-right: 5px;
+        margin-right: 6px;
         vertical-align: middle;
     }
     .fcc-dot-green {
-        background: #10b981;
+        background: #22c55e;
     }
     .fcc-dot-coral {
-        background: #fb7185;
+        background: #ff7875;
     }
     .fcc-rate-text {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--fcc-text-body);
+        font-size: 13px;
     }
     
     /* Badges */
     .fcc-badge {
         display: inline-block;
-        padding: 4px 10px;
+        padding: 3px 12px;
         font-size: 11.5px;
         font-weight: 600;
         border-radius: 20px;
@@ -746,11 +752,11 @@
     /* Action Button */
     .fcc-btn-view-attendance {
         background: #ffffff;
-        border: 1px solid #bfdbfe;
-        color: var(--fcc-primary);
+        border: 1.5px solid var(--fcc-blue);
+        color: var(--fcc-blue);
         font-weight: 600;
         font-size: 12px;
-        padding: 5px 12px;
+        padding: 4px 12px;
         border-radius: 20px;
         display: inline-flex;
         align-items: center;
@@ -760,9 +766,8 @@
         cursor: pointer;
     }
     .fcc-btn-view-attendance:hover {
-        background: #eff6ff;
-        border-color: var(--fcc-primary);
-        color: #1d4ed8;
+        background: #f4f7fe;
+        color: var(--fcc-blue-hover);
     }
     .fcc-chevron-icon {
         font-size: 9px;
@@ -774,33 +779,32 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button {
-        padding: 5px 11px !important;
+        padding: 4px 10px !important;
         border-radius: 8px !important;
-        border: 1px solid #e2e8f0 !important;
-        background: #ffffff !important;
-        color: #475569 !important;
-        font-size: 12.5px !important;
-        font-weight: 600 !important;
+        border: none !important;
+        background: transparent !important;
+        color: var(--fcc-text-muted) !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
         cursor: pointer;
-        margin: 0 2px !important;
+        margin: 0 !important;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: var(--fcc-primary) !important;
-        border-color: var(--fcc-primary) !important;
+        background: var(--fcc-blue) !important;
         color: #ffffff !important;
+        font-weight: 700 !important;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.current) {
         background: #f1f5f9 !important;
-        border-color: #cbd5e1 !important;
-        color: var(--fcc-dark) !important;
+        color: var(--fcc-text-dark) !important;
     }
     .dataTables_wrapper .dataTables_info {
         padding-top: 16px;
         font-size: 13px;
-        color: #64748b;
+        color: var(--fcc-text-muted);
         font-weight: 500;
     }
     .dataTables_filter, .dataTables_length {
@@ -843,7 +847,8 @@
         </div>
 
         <!-- Month & Year Selector -->
-        <div class="fcc-filter-select-wrap">
+        <div class="fcc-filter-select-wrap has-icon">
+            <i class="fa fa-calendar-o fcc-prefix-icon"></i>
             <select id="filterMonthYear" class="fcc-filter-select">
                 @php
                     $currentYear = date('Y');
@@ -857,7 +862,7 @@
                 @for ($y = $currentYear; $y >= $currentYear - 3; $y--)
                     @foreach ($months as $num => $name)
                         <option value="{{ $num }}-{{ $y }}" {{ ($selectedMonth == $num && $selectedYear == $y) ? 'selected' : '' }}>
-                            📅 {{ $name }} {{ $y }}
+                            {{ $name }} {{ $y }}
                         </option>
                     @endforeach
                 @endfor
@@ -890,10 +895,15 @@
             <i class="fa fa-chevron-down fcc-select-icon"></i>
         </div>
 
-        <!-- Clear / Reset Filter -->
-        <button type="button" id="btnClearFilters" class="fcc-btn-clear-filters" title="Reset all filters">
-            <i class="fa fa-filter"></i> Clear filters
-        </button>
+        <!-- More Filters / Clear -->
+        <div class="fcc-filter-select-wrap has-icon" style="min-width: 140px;">
+            <i class="fa fa-filter fcc-prefix-icon"></i>
+            <select id="filterMoreActions" class="fcc-filter-select">
+                <option value="">More filters</option>
+                <option value="clear">Clear filters</option>
+            </select>
+            <i class="fa fa-chevron-down fcc-select-icon"></i>
+        </div>
     </div>
 
     <!-- 4. Pulse Summary & Attention Row -->
@@ -905,7 +915,7 @@
                     <span class="fcc-pulse-bar-accent"></span>
                     <h2 class="fcc-pulse-title" style="color: #ffffff !important; font-weight: 700 !important;"><span class="pulse-dynamic-month" style="color: #ffffff !important;">{{ $stats['month_name'] ?? date('F') }}</span> attendance pulse</h2>
                 </div>
-                <p class="fcc-pulse-subtitle" style="color: #bfdbfe !important;">Current view &middot; <span id="pulse-member-count" style="color: #ffffff !important; font-weight: 700 !important;">{{ $stats['total_members'] ?? 0 }}</span> members</p>
+                <p class="fcc-pulse-subtitle" style="color: #d1e0ff !important;">Current view &middot; <span id="pulse-member-count" style="color: #ffffff !important; font-weight: 700 !important;">{{ $stats['total_members'] ?? 0 }}</span> members</p>
             </div>
 
             <div class="fcc-pulse-content">
@@ -992,7 +1002,7 @@
                                 </div>
                                 <div class="fcc-attention-stat">
                                     <span>0 / {{ $item['total_days'] }} days</span>
-                                    <i class="fa fa-chevron-right ms-1"></i>
+                                    <i class="fa fa-chevron-right ms-1" style="font-size: 10px;"></i>
                                 </div>
                             </div>
                         @endforeach
@@ -1038,12 +1048,12 @@
             <table id="attendanceDataTable" class="table fcc-datatable" data-url="{{ route('nutritionPanel.attendance-register.getAttendanceRegister') }}">
                 <thead>
                     <tr>
-                        <th>Member</th>
-                        <th>Attendance</th>
-                        <th>Present</th>
-                        <th>Absent</th>
-                        <th>Rate</th>
-                        <th>Follow-up</th>
+                        <th>Member <i class="fa fa-arrow-down ms-1" style="font-size: 10px; color: #a3aed0;"></i></th>
+                        <th>Attendance <i class="fa fa-sort ms-1" style="font-size: 10px; color: #cbd5e1;"></i></th>
+                        <th>Present <i class="fa fa-sort ms-1" style="font-size: 10px; color: #cbd5e1;"></i></th>
+                        <th>Absent <i class="fa fa-sort ms-1" style="font-size: 10px; color: #cbd5e1;"></i></th>
+                        <th>Rate <i class="fa fa-sort ms-1" style="font-size: 10px; color: #cbd5e1;"></i></th>
+                        <th>Follow-up <i class="fa fa-sort ms-1" style="font-size: 10px; color: #cbd5e1;"></i></th>
                         <th class="text-end">Action</th>
                     </tr>
                 </thead>

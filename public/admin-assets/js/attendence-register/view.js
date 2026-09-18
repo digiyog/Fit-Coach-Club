@@ -230,7 +230,29 @@ var AttendenceRegister = (function() {
                 }
             });
 
-            // Clear Filters Button
+            // More Filters Dropdown Change
+            $("#filterMoreActions").on("change", function() {
+                var action = $(this).val();
+                if (action === "clear") {
+                    $("#filterSearch").val("");
+                    $("#filterCoach").val("");
+                    $("#filterAttendanceStatus").val("");
+                    $("#filterMonthYear").prop("selectedIndex", 0);
+                    $(this).val("");
+
+                    var selectedText = $("#filterMonthYear option:selected").text().replace("📅", "").trim();
+                    var monthOnly = selectedText.split(" ")[0];
+                    if (monthOnly) {
+                        $(".pulse-dynamic-month").text(monthOnly);
+                    }
+
+                    if (data_table) {
+                        data_table.search("").ajax.reload();
+                    }
+                }
+            });
+
+            // Clear Filters Button (if present)
             $("#btnClearFilters").on("click", function(e) {
                 e.preventDefault();
                 $("#filterSearch").val("");
