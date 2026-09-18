@@ -1354,7 +1354,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/users/view.js') }}"></script>
+<script src="{{ asset('admin-assets/js/users/view.js') }}?v={{ file_exists(public_path('admin-assets/js/users/view.js')) ? filemtime(public_path('admin-assets/js/users/view.js')) : time() }}"></script>
 
 <script>
 $(document).ready(function() {
