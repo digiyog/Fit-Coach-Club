@@ -7,7 +7,7 @@
 
 :root {
     --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    
+
     /* Left Hero Dark Space Palette */
     --hero-bg-deep: #060c23;
     --hero-bg-mid: #0a1945;
@@ -20,7 +20,7 @@
     --hero-purple: #a855f7;
     --hero-emerald: #10b981;
     --hero-rose: #f43f5e;
-    
+
     /* Right Pane Clean Light Palette */
     --auth-bg-light: #f6f8fc;
     --auth-card-bg: #ffffff;
@@ -30,7 +30,7 @@
     --auth-input-bg: #f8fafc;
     --auth-input-border: #e2e8f0;
     --auth-input-focus: #3b82f6;
-    
+
     /* Interactive Accents */
     --primary-blue: #2563eb;
     --primary-indigo: #4f46e5;
@@ -39,7 +39,9 @@
 }
 
 /* Reset & Global Base */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -131,9 +133,20 @@ body.auth-body {
 }
 
 @keyframes pulseGlow {
-    0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-    50% { transform: scale(1.1) translate(20px, 15px); opacity: 1; }
-    100% { transform: scale(0.95) translate(-15px, 25px); opacity: 0.85; }
+    0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.1) translate(20px, 15px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.95) translate(-15px, 25px);
+        opacity: 0.85;
+    }
 }
 
 /* Content Container Inside Left Pane */
@@ -166,7 +179,8 @@ body.auth-body {
     flex-shrink: 0;
 }
 
-.hero-brand-logo svg, .hero-brand-logo img {
+.hero-brand-logo svg,
+.hero-brand-logo img {
     width: 100%;
     height: 100%;
     filter: drop-shadow(0 4px 12px rgba(56, 189, 248, 0.4));
@@ -300,7 +314,7 @@ body.auth-body {
     border-radius: 20px;
     padding: clamp(16px, 2.2vh, 24px) clamp(18px, 2vw, 26px) clamp(14px, 1.8vh, 20px);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -354,9 +368,20 @@ body.auth-body {
 }
 
 @keyframes statusPulse {
-    0% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-    100% { opacity: 1; transform: scale(1); }
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* 3 Metrics Row */
@@ -504,7 +529,7 @@ body.auth-body {
     border-radius: 24px;
     padding: clamp(28px, 3.2vh, 42px) clamp(26px, 2.8vw, 40px) clamp(22px, 2.4vh, 32px);
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08),
-                0 0 0 1px rgba(15, 23, 42, 0.02);
+        0 0 0 1px rgba(15, 23, 42, 0.02);
     position: relative;
     transition: all 0.3s ease;
 }
@@ -841,7 +866,7 @@ body.auth-body {
 }
 
 .digiyog-official-logo {
-    height: 57px !important;
+    height: 100px !important;
     width: auto !important;
     max-width: 175px !important;
     object-fit: contain !important;
@@ -883,7 +908,8 @@ body.auth-body {
     text-align: left !important;
 }
 
-.alert-danger, .dark.alert-danger {
+.alert-danger,
+.dark.alert-danger {
     background: #fef2f2 !important;
     border: 1px solid #fee2e2 !important;
     color: #991b1b !important;
@@ -922,6 +948,7 @@ span.invalid-feedback {
     .hero-content-wrap {
         max-width: 780px;
     }
+
     .modern-auth-card-elevated {
         max-width: 510px;
     }
@@ -932,9 +959,11 @@ span.invalid-feedback {
         flex: 1.3;
         padding: 60px 80px;
     }
+
     .hero-content-wrap {
         max-width: 860px;
     }
+
     .modern-auth-card-elevated {
         max-width: 540px;
         padding: 44px 42px 36px;
@@ -946,53 +975,69 @@ span.invalid-feedback {
     .auth-hero-pane {
         padding: 28px 44px;
     }
+
     .hero-brand-header {
         margin-bottom: 14px;
     }
+
     .hero-headline {
         font-size: 32px;
         margin-bottom: 8px;
     }
+
     .hero-description {
         margin-bottom: 16px;
     }
+
     .hero-features-grid {
         margin-bottom: 14px;
     }
+
     .hero-dashboard-preview {
         padding: 16px 20px 14px;
     }
+
     .dashboard-metrics-row {
         margin-bottom: 10px;
     }
+
     .hero-bottom-tag {
         margin-top: 14px;
     }
+
     .modern-auth-card-elevated {
         padding: 24px 30px 20px;
     }
+
     .auth-card-header {
         margin-bottom: 12px;
     }
+
     .login-form-body {
         margin-top: 12px;
     }
+
     .input-field-group {
         margin-bottom: 12px;
     }
+
     .form-options-row {
         margin: 10px 0 14px 0;
     }
+
     .support-help-divider {
         margin: 12px 0 10px;
     }
+
     .ssl-security-badge {
         margin-bottom: 12px;
     }
+
     .digiyog-brand-footer {
         padding-top: 10px;
         margin-top: 10px;
     }
+
     .auth-pane-bottom-footer {
         margin-top: 12px;
     }
@@ -1051,20 +1096,25 @@ span.invalid-feedback {
     .auth-hero-pane {
         padding: 28px 16px !important;
     }
+
     .hero-brand-header {
         margin-bottom: 16px !important;
     }
+
     .hero-headline {
         font-size: 24px !important;
         line-height: 1.25 !important;
     }
+
     .auth-form-pane {
         padding: 20px 12px !important;
     }
+
     .modern-auth-card-elevated {
         padding: 20px 14px 16px !important;
         border-radius: 16px !important;
     }
+
     .auth-card-title {
         font-size: 20px !important;
     }
