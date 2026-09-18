@@ -136,92 +136,106 @@
 
     /* 3. Filter Bar */
     .fcc-filter-card {
-        background: #ffffff;
-        border: 1px solid var(--fcc-border);
-        border-radius: 14px;
-        padding: 8px 12px;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
+        background: #ffffff !important;
+        border: 1px solid var(--fcc-border) !important;
+        border-radius: 14px !important;
+        padding: 8px 12px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        flex-wrap: wrap !important;
     }
     .fcc-search-box {
-        position: relative;
-        flex: 1.2;
-        min-width: 220px;
+        position: relative !important;
+        flex: 1.3 !important;
+        min-width: 220px !important;
     }
     .fcc-search-icon {
-        position: absolute;
-        left: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #a3aed0;
-        font-size: 13px;
-        pointer-events: none;
+        position: absolute !important;
+        left: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #a3aed0 !important;
+        font-size: 13px !important;
+        pointer-events: none !important;
+        z-index: 3 !important;
     }
     .fcc-search-input {
-        width: 100%;
-        padding: 7px 14px 7px 36px;
-        font-size: 13px;
-        font-weight: 500;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        background: #ffffff;
-        color: var(--fcc-text-dark);
-        outline: none;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        width: 100% !important;
+        padding-left: 38px !important;
+        padding-right: 14px !important;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+        height: 38px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        background: #ffffff !important;
+        color: var(--fcc-text-dark) !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
     }
     .fcc-search-input::placeholder {
-        color: #a3aed0;
+        color: #a3aed0 !important;
     }
     .fcc-search-input:focus {
-        border-color: var(--fcc-blue);
-        box-shadow: 0 0 0 3px rgba(43, 82, 245, 0.08);
+        border-color: var(--fcc-blue) !important;
+        box-shadow: 0 0 0 3px rgba(43, 82, 245, 0.08) !important;
     }
     .fcc-filter-select-wrap {
-        position: relative;
-        min-width: 160px;
+        position: relative !important;
+        min-width: 160px !important;
+        flex: 1 !important;
     }
     .fcc-filter-select-wrap.has-icon .fcc-filter-select {
-        padding-left: 32px;
+        padding-left: 36px !important;
     }
     .fcc-prefix-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #a3aed0;
-        font-size: 13px;
-        pointer-events: none;
+        position: absolute !important;
+        left: 13px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #a3aed0 !important;
+        font-size: 13px !important;
+        pointer-events: none !important;
+        z-index: 3 !important;
     }
     .fcc-filter-select {
-        width: 100%;
-        padding: 7px 30px 7px 14px;
-        font-size: 13px;
-        font-weight: 500;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        background: #ffffff;
-        color: var(--fcc-text-body);
-        outline: none;
-        appearance: none;
-        -webkit-appearance: none;
-        cursor: pointer;
-        transition: border-color 0.15s ease;
+        width: 100% !important;
+        padding-left: 14px !important;
+        padding-right: 30px !important;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+        height: 38px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        background: #ffffff !important;
+        color: var(--fcc-text-body) !important;
+        outline: none !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        transition: border-color 0.15s ease !important;
     }
     .fcc-filter-select:focus {
-        border-color: var(--fcc-blue);
+        border-color: var(--fcc-blue) !important;
     }
     .fcc-select-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #a3aed0;
-        font-size: 11px;
-        pointer-events: none;
+        position: absolute !important;
+        right: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #a3aed0 !important;
+        font-size: 11px !important;
+        pointer-events: none !important;
+        z-index: 3 !important;
     }
     .fcc-btn-clear-filters {
         background: #ffffff;
@@ -843,7 +857,7 @@
         <!-- Search -->
         <div class="fcc-search-box">
             <i class="fa fa-search fcc-search-icon"></i>
-            <input type="text" id="filterSearch" class="fcc-search-input" placeholder="Search members...">
+            <input type="text" id="filterSearch" class="fcc-search-input" placeholder="Search members..." style="padding-left: 38px !important;">
         </div>
 
         <!-- Month & Year Selector -->
