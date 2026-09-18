@@ -295,7 +295,7 @@ class Attendance extends Model
         // Table columns sort conditions
         if(!(empty($sort)) && isset($sort['column']) && $sort['column'] > 0)
         {
-            $arr_fields = array("", "", "users.name", "total_attendance", "users.coach_name", "meal_types.name", "users.days", "attendances.weight", "users.due_amount", "meal_types.name", "attendances.created_at", "");
+            $arr_fields = array("", "users.name", "total_attendance", "users.coach_name", "meal_types.name", "users.days", "attendances.weight", "users.due_amount", "meal_types.name", "attendances.created_at", "");
             if(isset($arr_fields[$sort['column']]) && $arr_fields[$sort['column']] != "")
             {
                 $counsellings = $counsellings->orderBy($arr_fields[$sort['column']], $sort['dir'] ?? 'ASC');

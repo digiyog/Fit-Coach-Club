@@ -287,13 +287,16 @@ class CounsellingController extends Controller
                         "checkbox"          => $checkboxHtml,
                         "name"              => $memberHtml,
                         "att"               => $attHtml,
+                        "attendance"        => $attHtml,
                         "coach_name"        => $coachHtml,
                         "plan"              => $planHtml,
                         "days"              => $pendingHtml,
                         "progress"          => $progressHtml,
                         "dues"              => $duesHtml,
                         "meal"              => $mealHtml,
+                        "current_meals"     => $mealHtml,
                         "completed_at"      => $completedAtHtml,
+                        "date"              => $completedAtHtml,
                         "action"            => $action
                     );
                 }

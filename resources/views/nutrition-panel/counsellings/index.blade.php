@@ -815,7 +815,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="{{ asset('admin-assets/js/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/counsellings/view.js') }}"></script>
+<script src="{{ asset('admin-assets/js/counsellings/view.js') }}?v={{ file_exists(public_path('admin-assets/js/counsellings/view.js')) ? filemtime(public_path('admin-assets/js/counsellings/view.js')) : time() }}"></script>
 
 <script>
 $(document).ready(function() {

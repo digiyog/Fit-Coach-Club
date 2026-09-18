@@ -26,9 +26,15 @@ var Counsellings = (function() {
         getCounsellings: function() {
             var $dataTable = $("#dataTable");
 
+            $.fn.dataTable.ext.errMode = 'none';
+
             window.data_table = data_table = $dataTable.DataTable({
                 order: [],
                 columnDefs: [
+                    {
+                        targets: "_all",
+                        defaultContent: ""
+                    },
                     {
                         targets: 0,
                         width: "36px",
