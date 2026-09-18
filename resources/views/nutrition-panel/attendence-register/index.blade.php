@@ -250,208 +250,225 @@
 
     /* Left Card: Attendance Pulse */
     .fcc-pulse-card {
-        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 45%, #2563eb 100%);
-        border-radius: 18px;
-        padding: 22px 26px;
-        color: #ffffff;
-        position: relative;
-        box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.35);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 45%, #2563eb 100%) !important;
+        border-radius: 18px !important;
+        padding: 22px 26px !important;
+        color: #ffffff !important;
+        position: relative !important;
+        box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.35) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
     }
     .fcc-pulse-header {
-        margin-bottom: 16px;
+        margin-bottom: 16px !important;
     }
     .fcc-pulse-title-wrap {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 2px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 2px !important;
     }
     .fcc-pulse-bar-accent {
-        width: 3.5px;
-        height: 16px;
-        background: #60a5fa;
-        border-radius: 4px;
-        display: inline-block;
+        width: 3.5px !important;
+        height: 16px !important;
+        background: #60a5fa !important;
+        border-radius: 4px !important;
+        display: inline-block !important;
     }
-    .fcc-pulse-title {
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        margin: 0;
-        color: #ffffff;
+    .fcc-pulse-title,
+    .fcc-pulse-title span,
+    .fcc-pulse-card h2,
+    .fcc-pulse-card h2 span,
+    .fcc-pulse-card .fcc-pulse-title {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        margin: 0 !important;
+        color: #ffffff !important;
     }
-    .fcc-pulse-subtitle {
-        font-size: 12.5px;
-        color: #bfdbfe;
-        margin: 0;
-        padding-left: 11.5px;
+    .fcc-pulse-subtitle,
+    .fcc-pulse-subtitle span,
+    .fcc-pulse-card p,
+    .fcc-pulse-card p span,
+    .fcc-pulse-card .fcc-pulse-subtitle {
+        font-size: 12.5px !important;
+        color: #bfdbfe !important;
+        margin: 0 !important;
+        padding-left: 11.5px !important;
     }
     .fcc-pulse-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        flex-wrap: wrap;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 24px !important;
+        flex-wrap: wrap !important;
     }
     
     /* Gauge / Donut */
     .fcc-pulse-donut-wrap {
-        display: flex;
-        align-items: center;
-        gap: 16px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 16px !important;
     }
     .fcc-donut-container {
-        position: relative;
-        width: 90px;
-        height: 90px;
+        position: relative !important;
+        width: 90px !important;
+        height: 90px !important;
     }
     .fcc-donut-svg {
-        transform: rotate(-90deg);
-        width: 90px;
-        height: 90px;
+        transform: rotate(-90deg) !important;
+        width: 90px !important;
+        height: 90px !important;
     }
     .fcc-donut-bg {
-        fill: none;
-        stroke: rgba(255, 255, 255, 0.15);
-        stroke-width: 7;
+        fill: none !important;
+        stroke: rgba(255, 255, 255, 0.18) !important;
+        stroke-width: 7 !important;
     }
     .fcc-donut-circle {
-        fill: none;
-        stroke: #60a5fa;
-        stroke-width: 7;
-        stroke-linecap: round;
-        stroke-dasharray: 251.2;
-        stroke-dashoffset: 200;
-        transition: stroke-dashoffset 0.8s ease;
+        fill: none !important;
+        stroke: #60a5fa !important;
+        stroke-width: 7 !important;
+        stroke-linecap: round !important;
+        stroke-dasharray: 251.2 !important;
+        stroke-dashoffset: 200 !important;
+        transition: stroke-dashoffset 0.8s ease !important;
     }
     .fcc-donut-text-wrap {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        width: 100%;
-        pointer-events: none;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        text-align: center !important;
+        width: 100% !important;
+        pointer-events: none !important;
     }
-    .fcc-donut-pct {
-        font-size: 19px;
-        font-weight: 800;
-        color: #ffffff;
-        line-height: 1;
-        margin-bottom: 2px;
+    .fcc-donut-pct,
+    #pulse-avg-rate {
+        font-size: 19px !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        line-height: 1 !important;
+        margin-bottom: 2px !important;
     }
     .fcc-donut-label {
-        font-size: 8.5px;
-        color: #bfdbfe;
-        text-transform: lowercase;
-        line-height: 1.1;
-        display: block;
+        font-size: 8.5px !important;
+        color: #bfdbfe !important;
+        text-transform: lowercase !important;
+        line-height: 1.1 !important;
+        display: block !important;
     }
 
     /* Middle Stats & Segmented Bar */
     .fcc-pulse-middle {
-        flex: 1;
-        min-width: 200px;
+        flex: 1 !important;
+        min-width: 200px !important;
     }
     .fcc-pulse-stat-indicators {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        margin-bottom: 12px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 24px !important;
+        margin-bottom: 12px !important;
     }
     .fcc-pulse-stat-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
     }
     .fcc-pulse-dot-green {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #22c55e;
-        display: inline-block;
-        box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        width: 10px !important;
+        height: 10px !important;
+        border-radius: 50 !important;
+        border-radius: 50% !important;
+        background: #22c55e !important;
+        display: inline-block !important;
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.6) !important;
     }
     .fcc-pulse-dot-coral {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #f87171;
-        display: inline-block;
-        box-shadow: 0 0 8px rgba(248, 113, 113, 0.6);
+        width: 10px !important;
+        height: 10px !important;
+        border-radius: 50% !important;
+        background: #f87171 !important;
+        display: inline-block !important;
+        box-shadow: 0 0 8px rgba(248, 113, 113, 0.6) !important;
     }
-    .fcc-pulse-stat-num {
-        font-size: 18px;
-        font-weight: 700;
-        color: #ffffff;
+    .fcc-pulse-stat-num,
+    #pulse-total-present,
+    #pulse-total-absent {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
     }
     .fcc-pulse-stat-lbl {
-        font-size: 12.5px;
-        color: #cbd5e1;
+        font-size: 12.5px !important;
+        color: #cbd5e1 !important;
     }
     .fcc-segmented-bar-track {
-        height: 10px;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        display: flex;
-        overflow: hidden;
-        margin-bottom: 6px;
+        height: 10px !important;
+        background: rgba(255, 255, 255, 0.18) !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        overflow: hidden !important;
+        margin-bottom: 6px !important;
     }
     .fcc-seg-present {
-        background: #22c55e;
-        height: 100%;
-        transition: width 0.6s ease;
+        background: #22c55e !important;
+        height: 100% !important;
+        transition: width 0.6s ease !important;
     }
     .fcc-seg-absent {
-        background: #f87171;
-        height: 100%;
-        transition: width 0.6s ease;
+        background: #f87171 !important;
+        height: 100% !important;
+        transition: width 0.6s ease !important;
     }
     .fcc-seg-labels {
-        display: flex;
-        justify-content: space-between;
-        font-size: 11px;
-        color: #bfdbfe;
-        font-weight: 500;
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 11px !important;
+        color: #bfdbfe !important;
+        font-weight: 500 !important;
+    }
+    .fcc-seg-labels span {
+        color: #bfdbfe !important;
     }
 
     /* Right Consistency */
     .fcc-pulse-consistency {
-        text-align: right;
-        min-width: 130px;
-        border-left: 1px solid rgba(255, 255, 255, 0.12);
-        padding-left: 20px;
+        text-align: right !important;
+        min-width: 130px !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+        padding-left: 20px !important;
     }
     .fcc-trophy-icon {
-        font-size: 20px;
-        color: #fde047;
-        margin-bottom: 4px;
-        display: inline-block;
+        font-size: 20px !important;
+        color: #fde047 !important;
+        margin-bottom: 4px !important;
+        display: inline-block !important;
     }
     .fcc-consistency-label {
-        font-size: 11px;
-        color: #bfdbfe;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 2px;
+        font-size: 11px !important;
+        color: #bfdbfe !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        margin-bottom: 2px !important;
     }
-    .fcc-consistency-days {
-        font-size: 20px;
-        font-weight: 800;
-        color: #ffffff;
-        line-height: 1.2;
+    .fcc-consistency-days,
+    #pulse-top-days {
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        line-height: 1.2 !important;
     }
-    .fcc-consistency-names {
-        font-size: 12px;
-        color: #93c5fd;
-        margin-top: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 160px;
+    .fcc-consistency-names,
+    #pulse-top-names {
+        font-size: 12px !important;
+        color: #93c5fd !important;
+        margin-top: 2px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 160px !important;
     }
 
     /* Right Card: Needs Attention */
@@ -886,9 +903,9 @@
             <div class="fcc-pulse-header">
                 <div class="fcc-pulse-title-wrap">
                     <span class="fcc-pulse-bar-accent"></span>
-                    <h2 class="fcc-pulse-title"><span class="pulse-dynamic-month">{{ $stats['month_name'] ?? date('F') }}</span> attendance pulse</h2>
+                    <h2 class="fcc-pulse-title" style="color: #ffffff !important; font-weight: 700 !important;"><span class="pulse-dynamic-month" style="color: #ffffff !important;">{{ $stats['month_name'] ?? date('F') }}</span> attendance pulse</h2>
                 </div>
-                <p class="fcc-pulse-subtitle">Current view · <span id="pulse-member-count">{{ $stats['total_members'] ?? 0 }}</span> members</p>
+                <p class="fcc-pulse-subtitle" style="color: #bfdbfe !important;">Current view &middot; <span id="pulse-member-count" style="color: #ffffff !important; font-weight: 700 !important;">{{ $stats['total_members'] ?? 0 }}</span> members</p>
             </div>
 
             <div class="fcc-pulse-content">
