@@ -179,6 +179,8 @@ var User = (function() {
                         '<label class="fcc-custom-checkbox m-0">\n<input type="checkbox" name="select_all" class="fcc-checkbox-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="fcc-checkbox-control"><svg viewBox="0 0 12 10" class="fcc-check-icon"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg><span class="fcc-indeterminate-bar"></span></span>\n</label>'
                     );
                 },
+                ordering: false,
+                bSort: false,
                 order: [],
                 columnDefs: [
                     {

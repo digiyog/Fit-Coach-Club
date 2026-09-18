@@ -403,74 +403,24 @@
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
-        padding: 13px 26px 13px 14px !important;
+        padding: 13px 14px !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-top: none !important;
         white-space: nowrap !important;
         vertical-align: middle !important;
-    }
-
-    /* Beautiful Modern Sorting Indicators */
-    table.dataTable thead th.sorting:before,
-    table.dataTable thead th.sorting_asc:before,
-    table.dataTable thead th.sorting_desc:before {
-        position: absolute !important;
-        right: 10px !important;
-        top: 42% !important;
-        transform: translateY(-50%) !important;
-        content: "▲" !important;
-        font-size: 8px !important;
-        color: #94a3b8 !important;
-        opacity: 0.4 !important;
-        line-height: 1 !important;
-        display: block !important;
-        bottom: auto !important;
-    }
-
-    table.dataTable thead th.sorting:after,
-    table.dataTable thead th.sorting_asc:after,
-    table.dataTable thead th.sorting_desc:after {
-        position: absolute !important;
-        right: 10px !important;
-        top: 58% !important;
-        transform: translateY(-50%) !important;
-        content: "▼" !important;
-        font-size: 8px !important;
-        color: #94a3b8 !important;
-        opacity: 0.4 !important;
-        line-height: 1 !important;
-        display: block !important;
-        bottom: auto !important;
-    }
-
-    table.dataTable thead th.sorting_asc:before {
-        opacity: 1 !important;
-        color: var(--fcc-primary) !important;
-    }
-    table.dataTable thead th.sorting_asc:after {
-        opacity: 0.15 !important;
-    }
-
-    table.dataTable thead th.sorting_desc:after {
-        opacity: 1 !important;
-        color: var(--fcc-primary) !important;
-    }
-    table.dataTable thead th.sorting_desc:before {
-        opacity: 0.15 !important;
-    }
-
-    /* Disable sort arrows on checkbox and action columns */
-    table.dataTable thead th.checkbox-column,
-    table.dataTable thead th.no-sort,
-    table.dataTable thead th.no-content,
-    table.dataTable thead th:first-child,
-    table.dataTable thead th:last-child {
         background-image: none !important;
         cursor: default !important;
-        padding-right: 14px !important;
-        padding-left: 14px !important;
     }
 
+    /* Completely Remove / Hide Sort Arrows in User Management */
+    table.dataTable thead th:before,
+    table.dataTable thead th:after,
+    table.dataTable thead th.sorting:before,
+    table.dataTable thead th.sorting:after,
+    table.dataTable thead th.sorting_asc:before,
+    table.dataTable thead th.sorting_asc:after,
+    table.dataTable thead th.sorting_desc:before,
+    table.dataTable thead th.sorting_desc:after,
     table.dataTable thead th.checkbox-column:before,
     table.dataTable thead th.checkbox-column:after,
     table.dataTable thead th.no-sort:before,
@@ -484,6 +434,9 @@
         display: none !important;
         content: "" !important;
         opacity: 0 !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
     }
 
     /* Column Widths & Alignments */
