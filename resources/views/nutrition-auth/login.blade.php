@@ -325,10 +325,10 @@
             </div>
 
             <!-- Powered by DigiYog Technosoft Branding -->
-            <div class="digiyog-brand-footer">
-                <span class="powered-by-label">POWERED BY</span>
-                <a href="https://digiyog.com" target="_blank" rel="noopener noreferrer" class="digiyog-logo-wrap" title="Digiyog Technosoft">
-                    <img src="{{ asset('admin-assets/images/digiyog-logo.svg') }}" alt="DigiYog Technosoft" class="digiyog-official-logo">
+            <div class="digiyog-brand-footer" style="border-top: 1px solid #f1f5f9; padding-top: 16px; margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box;">
+                <span class="powered-by-label" style="font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 0.12em; text-transform: uppercase;">POWERED BY</span>
+                <a href="https://digiyog.com" target="_blank" rel="noopener noreferrer" class="digiyog-logo-wrap" title="Digiyog Technosoft" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; max-width: 190px;">
+                    <img src="{{ asset('admin-assets/images/digiyog-logo.svg') }}" alt="DigiYog Technosoft" class="digiyog-official-logo" style="height: 32px !important; max-width: 175px !important; width: auto !important; object-fit: contain !important; display: block !important; margin: 0 auto !important;">
                 </a>
             </div>
         </div>

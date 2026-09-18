@@ -807,11 +807,15 @@ body.auth-body {
 .digiyog-brand-footer {
     border-top: 1px solid #f1f5f9;
     padding-top: 16px;
+    margin-top: 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .powered-by-label {
@@ -827,6 +831,7 @@ body.auth-body {
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    max-width: 190px;
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -836,11 +841,12 @@ body.auth-body {
 }
 
 .digiyog-official-logo {
-    height: 28px;
-    width: auto;
-    max-width: 170px;
-    object-fit: contain;
-    display: block;
+    height: 32px !important;
+    width: auto !important;
+    max-width: 175px !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
 }
 
 /* Bottom Right Legal Footer */
