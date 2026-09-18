@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use DataTables;
 use App\Models\DishType;
 use App\Models\Attendance;
+use App\Models\User;
 use App\Http\Traits\UploadImage;
 use Storage;
 use Cviebrock\EloquentSluggable\Services\SlugService;
