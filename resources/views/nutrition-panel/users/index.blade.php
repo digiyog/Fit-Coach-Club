@@ -587,6 +587,33 @@
         color: var(--fcc-primary) !important;
     }
 
+    /* Action dropdown menu & dropup support */
+    .data-table-container,
+    .fcc-users-card,
+    .fcc-modern-table-wrap {
+        overflow: visible !important;
+    }
+
+    .custom-dropdown {
+        position: relative;
+    }
+
+    .custom-dropdown .dropdown-menu {
+        z-index: 1065 !important;
+        position: absolute;
+    }
+
+    /* Dropup - Open upwards when near bottom of table/window */
+    .dropup .dropdown-menu,
+    .dropdown.dropup .dropdown-menu,
+    .custom-dropdown.dropup .dropdown-menu {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
+        transform: none !important;
+    }
+
     /* Avatar Ring with two gaps */
     .fcc-avatar-wrapper {
         position: relative;
@@ -1510,6 +1537,31 @@ $(document).ready(function() {
                 document.body.removeChild(downloadLink);
             }
         }
+    });
+
+    // Smart Auto-Dropup for Action Menus (Flips menu upwards when near table bottom / viewport)
+    $(document).on('show.bs.dropdown', '.dropdown', function () {
+        var $dropdown = $(this);
+        if ($dropdown.closest('table').length || $dropdown.closest('.data-table-container').length) {
+            var offset = $dropdown.offset();
+            var menuHeight = 360; // Estimated height for action menu
+            var windowBottom = $(window).scrollTop() + $(window).height();
+            var spaceBelow = windowBottom - (offset.top + $dropdown.outerHeight());
+
+            var $card = $dropdown.closest('.fcc-users-card, .data-table-container, .card');
+            var cardBottom = $card.length ? ($card.offset().top + $card.outerHeight()) : windowBottom;
+            var spaceInCard = cardBottom - (offset.top + $dropdown.outerHeight());
+
+            if (spaceBelow < menuHeight || spaceInCard < (menuHeight - 30)) {
+                $dropdown.addClass('dropup');
+            } else {
+                $dropdown.removeClass('dropup');
+            }
+        }
+    });
+
+    $(document).on('hidden.bs.dropdown', '.dropdown', function () {
+        $(this).removeClass('dropup');
     });
 
     // Update dynamic count on table draw

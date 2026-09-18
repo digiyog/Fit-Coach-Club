@@ -1950,3 +1950,31 @@ table.dataTable tbody tr.fcc-row-dues-flagged.selected td {
     width: 0 !important;
     height: 0 !important;
 }
+
+/* Global Action Dropdown & Dropup fix for all DataTables */
+.data-table-container,
+.fcc-white-card,
+.fcc-users-card,
+.fcc-modern-table-wrap {
+    overflow: visible !important;
+}
+
+.custom-dropdown {
+    position: relative;
+}
+
+.custom-dropdown .dropdown-menu {
+    z-index: 1065 !important;
+    position: absolute;
+}
+
+.dropup .dropdown-menu,
+.dropdown.dropup .dropdown-menu,
+.custom-dropdown.dropup .dropdown-menu {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 6px !important;
+    transform: none !important;
+}
+
