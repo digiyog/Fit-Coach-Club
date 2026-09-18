@@ -1,347 +1,322 @@
 var AttendenceRegister = (function() {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
+    var searchTimer;
+
     return {
         /**
          * Initialization.
          */
         init: function() {
-            AttendenceRegister.getAttendenceRegister();
-            AttendenceRegister.initializeComponents();
+            AttendenceRegister.initDataTable();
+            AttendenceRegister.initFilters();
+            AttendenceRegister.initActions();
             AttendenceRegister.viewAttendence();
-            AttendenceRegister.dataTableCustomFilter();
         },
 
         /**
-         * Initialize components.
+         * Get selected month and year from dropdown.
          */
-        initializeComponents: function() {
-            // Initialize Components
-            var $filter_form = $(".custom-datatable-filter-form");
-
-            // Bootstrap Select on filter form dropdowns
-            Components.bootstrapSelect($filter_form);
-            //------------
-
-            // Enable Button on change filter form elements
-            // Components.enableButton($filter_form);
-            //------------
+        getSelectedDate: function() {
+            var val = $("#filterMonthYear").val() || "";
+            var parts = val.split("-");
+            var month = parts[0] || "";
+            var year = parts[1] || "";
+            return { month: month, year: year };
         },
 
         /**
-         * Datatable custom filter.
+         * Initialize DataTable.
          */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
-            });
-        },
+        initDataTable: function() {
+            var $dataTable = $("#attendanceDataTable");
+            if (!$dataTable.length) return;
 
-        /**
-         * Updates "Select all" control in a data table
-         */
-        updateDataTableSelectAllCtrl: function(table) {
-            var $table = table.table().node();
-            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-            var $chkbox_checked = $(
-                'tbody input[type="checkbox"]:checked',
-                $table
-            );
-            var chkbox_select_all = $(
-                'thead input[name="select_all"]',
-                $table
-            ).get(0);
-
-            // // If none of the checkboxes are checked
-            // if ($chkbox_checked.length === 0) {
-            //     chkbox_select_all.checked = false;
-
-            //     if ("indeterminate" in chkbox_select_all) {
-            //         chkbox_select_all.indeterminate = false;
-            //     }
-
-            //     // If all of the checkboxes are checked
-            // } else if ($chkbox_checked.length === $chkbox_all.length) {
-            //     chkbox_select_all.checked = true;
-
-            //     if ("indeterminate" in chkbox_select_all) {
-            //         chkbox_select_all.indeterminate = false;
-            //     }
-
-            //     // If some of the checkboxes are checked
-            // } else {
-            //     chkbox_select_all.checked = true;
-            //     if ("indeterminate" in chkbox_select_all) {
-            //         chkbox_select_all.indeterminate = true;
-            //     }
-            // }
-        },
-
-        /**
-         * Get Attendance Register list.
-         */
-        getAttendenceRegister: function() {
-            var $dataTable = $("#dataTable");
-
-            data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-                },
-                // headerCallback: function(e, a, t, n, s) {
-                //     e.getElementsByTagName("th")[0].innerHTML =
-                //             '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                // },
-                columnDefs: [
-                    {
-                //         targets: 0,
-                //         width: "30px",
-                //         className: "",
-                //         orderable: !1,
-                //         visible: true,
-                //         render: function(e, a, t, n) {
-                //             return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                //         }
-                    }
-                ],
-                buttons: {
-                    buttons: [
-                        // {
-                        //     extend: "excel",
-                        //     className: "current-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "current",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2]
-                        //     }
-                        // },
-                        // {
-                        //     extend: "excel",
-                        //     className: "all-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "all",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2, 3, 4]
-                        //     }
-                        // }
-                    ]
-                },
-                oLanguage: {
-                    oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
-                },
+            data_table = $dataTable.DataTable({
                 processing: true,
                 serverSide: true,
-                lengthMenu: [
-                    [20, 50, 75, 100],
-                    [20, 50, 75, 100]
-                ],
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                ordering: true,
+                order: [[0, "asc"]],
+                dom: '<"table-responsive"t><"row mt-3"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                buttons: [
+                    {
+                        extend: "excelHtml5",
+                        title: "Attendance_Register_" + ($("#filterMonthYear").val() || ""),
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5],
+                            format: {
+                                body: function(data, row, column, node) {
+                                    // Strip HTML tags for clean excel export
+                                    var text = $(node).text().trim();
+                                    return text.replace(/\s+/g, " ");
+                                }
+                            }
+                        }
+                    },
+                    {
+                        extend: "csvHtml5",
+                        title: "Attendance_Register_" + ($("#filterMonthYear").val() || ""),
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5],
+                            format: {
+                                body: function(data, row, column, node) {
+                                    var text = $(node).text().trim();
+                                    return text.replace(/\s+/g, " ");
+                                }
+                            }
+                        }
+                    }
+                ],
+                language: {
+                    paginate: {
+                        previous: '<i class="fa fa-chevron-left" style="font-size:11px;"></i> Previous',
+                        next: 'Next <i class="fa fa-chevron-right" style="font-size:11px;"></i>'
+                    },
+                    info: "Showing _START_–_END_ of _TOTAL_ members",
+                    infoEmpty: "Showing 0–0 of 0 members",
+                    emptyTable: "No member attendance records found for this period",
+                    processing: '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>'
+                },
                 ajax: {
                     url: $dataTable.data("url"),
+                    type: "GET",
                     data: function(d) {
-                        d.month = $("#month").val();
-                        d.year = $("#year").val();
+                        var dateObj = AttendenceRegister.getSelectedDate();
+                        d.month = dateObj.month;
+                        d.year = dateObj.year;
+                        d.coach_name = $("#filterCoach").val() || "";
+                        d.attendance_status = $("#filterAttendanceStatus").val() || "";
+                    },
+                    dataSrc: function(json) {
+                        if (json && json.stats) {
+                            AttendenceRegister.updatePulseStats(json.stats);
+                        }
+                        return json.aaData || [];
                     }
                 },
                 columns: [
-                    {
-                        data: null,
-                        name: "serial_no",
-                        searchable: false,
-                        sortable: false,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    { data: "name", name: "name" },
-                    { data: "total_days", name: "total_days" },
-                    { data: "total_present", name: "total_present" },
-                    { data: "total_absent", name: "total_absent" },
-                    {
-                        data: "action",
-                        name: "action",
-                        searchable: false,
-                        sortable: false,
-                        width:50,
-                    }
+                    { data: "member", name: "name", orderable: true },
+                    { data: "attendance", name: "total_present", orderable: true },
+                    { data: "total_present", name: "total_present", orderable: true },
+                    { data: "total_absent", name: "total_absent", orderable: true },
+                    { data: "rate", name: "total_present", orderable: true },
+                    { data: "follow_up", name: "total_present", orderable: true },
+                    { data: "action", name: "action", orderable: false, searchable: false, className: "text-end" }
                 ],
-                rowCallback: function(row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
-
-                    // If row ID is in the list of selected row IDs
-                    if ($.inArray(rowId, rows_selected) !== -1) {
-                        $(row)
-                            .find('input[type="checkbox"]')
-                            .prop("checked", true);
-                        $(row).addClass("selected");
+                drawCallback: function() {
+                    // Update month text in titles if needed
+                    var selectedText = $("#filterMonthYear option:selected").text().replace("📅", "").trim();
+                    var monthOnly = selectedText.split(" ")[0];
+                    if (monthOnly) {
+                        $(".pulse-dynamic-month").text(monthOnly);
                     }
                 }
-            });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function(e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
-
-                    // Get row ID
-                    var rowId = data;
-
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    AttendenceRegister.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function(e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle table draw event
-            table.on("draw", function() {
-                // Update state of "Select all" control
-                AttendenceRegister.updateDataTableSelectAllCtrl(table);
-
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-               //----------
             });
         },
 
         /**
-         * View Attendance.
+         * Update the top Pulse and Attention widgets in real-time.
          */
-        viewAttendence: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".view-attendence", function () {
+        updatePulseStats: function(stats) {
+            if (!stats) return;
 
-                var $this = $(this);
-                var $configuration_modal = $("#pageModal");
+            // Month text
+            if (stats.month_name) {
+                $(".pulse-dynamic-month").text(stats.month_name);
+            }
 
-                $configuration_modal.modal("show");
-                $configuration_modal
-                    .find(".modal-content")
-                    .load($this.data("url"), "", function () {
-                    });
-                $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+            // Member count
+            $("#pulse-member-count").text(stats.total_members || 0);
+
+            // Present & Absent counts
+            $("#pulse-total-present").text(stats.total_present || 0);
+            $("#pulse-total-absent").text(stats.total_absent || 0);
+
+            // Donut Gauge
+            var avgRate = Math.min(100, Math.max(0, parseInt(stats.avg_rate) || 0));
+            $("#pulse-avg-rate").text(avgRate + "%");
+            var circumference = 2 * Math.PI * 40; // 251.32
+            var dashoffset = circumference - (avgRate / 100) * circumference;
+            $("#pulse-donut-gauge").css({
+                "stroke-dasharray": circumference,
+                "stroke-dashoffset": dashoffset
+            });
+
+            // Segmented Progress Bar
+            var presentPct = Math.min(100, Math.max(0, parseInt(stats.present_pct) || 0));
+            var absentPct = Math.min(100, Math.max(0, parseInt(stats.absent_pct) || 0));
+            $("#pulse-bar-present").css("width", presentPct + "%");
+            $("#pulse-bar-absent").css("width", absentPct + "%");
+            $("#pulse-present-pct").text(presentPct + "%");
+            $("#pulse-absent-pct").text(absentPct + "%");
+
+            // Top Consistency
+            $("#pulse-top-days").text((stats.top_consistency_days || 0) + " days");
+            var topNames = stats.top_consistency_names || "None";
+            $("#pulse-top-names").text(topNames).attr("title", topNames);
+
+            // Needs Attention Section
+            $("#needs-attention-count-btn").text(stats.needs_attention_count || 0);
+            var $list = $("#needs-attention-list");
+            $list.empty();
+
+            if (stats.needs_attention_list && stats.needs_attention_list.length > 0) {
+                $.each(stats.needs_attention_list, function(idx, item) {
+                    var html = '<div class="fcc-attention-item">' +
+                        '<div class="fcc-attention-user-info">' +
+                        '<div class="fcc-attention-avatar" style="background-color: ' + (item.bg_color || '#fee2e2') + '; color: ' + (item.text_color || '#dc2626') + ';">' +
+                        (item.initial || 'U') +
+                        '</div>' +
+                        '<span class="fcc-attention-name">' + (item.name || 'User') + '</span>' +
+                        '</div>' +
+                        '<div class="fcc-attention-stat">' +
+                        '<span>0 / ' + (item.total_days || 30) + ' days</span>' +
+                        '<i class="fa fa-chevron-right ms-1"></i>' +
+                        '</div>' +
+                        '</div>';
+                    $list.append(html);
                 });
+            } else {
+                $list.html('<div class="text-muted text-center py-3" style="font-size: 13px;"><i class="fa fa-check-circle text-success me-1"></i> All members have active check-ins!</div>');
+            }
+        },
+
+        /**
+         * Initialize Filter event listeners.
+         */
+        initFilters: function() {
+            // Real-time search with debounce
+            $("#filterSearch").on("keyup search", function() {
+                var query = this.value;
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function() {
+                    if (data_table) {
+                        data_table.search(query).draw();
+                    }
+                }, 300);
+            });
+
+            // Month & Year Filter Change
+            $("#filterMonthYear").on("change", function() {
+                var selectedText = $(this).find("option:selected").text().replace("📅", "").trim();
+                var monthOnly = selectedText.split(" ")[0];
+                if (monthOnly) {
+                    $(".pulse-dynamic-month").text(monthOnly);
+                }
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Coach Filter Change
+            $("#filterCoach").on("change", function() {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Attendance Status Filter Change
+            $("#filterAttendanceStatus").on("change", function() {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Page length change
+            $("#filterPageLength").on("change", function() {
+                var len = parseInt($(this).val()) || 20;
+                if (data_table) {
+                    data_table.page.len(len).draw();
+                }
+            });
+
+            // Clear Filters Button
+            $("#btnClearFilters").on("click", function(e) {
+                e.preventDefault();
+                $("#filterSearch").val("");
+                $("#filterCoach").val("");
+                $("#filterAttendanceStatus").val("");
+                
+                // Reset to first option (current month/year)
+                $("#filterMonthYear").prop("selectedIndex", 0);
+
+                var selectedText = $("#filterMonthYear option:selected").text().replace("📅", "").trim();
+                var monthOnly = selectedText.split(" ")[0];
+                if (monthOnly) {
+                    $(".pulse-dynamic-month").text(monthOnly);
+                }
+
+                if (data_table) {
+                    data_table.search("").ajax.reload();
+                }
             });
         },
+
+        /**
+         * Initialize Actions (Review Needs Attention & Export).
+         */
+        initActions: function() {
+            // Review Needs Attention quick filter
+            $("#btnReviewNeedsAttention").on("click", function(e) {
+                e.preventDefault();
+                $("#filterAttendanceStatus").val("no_checkins");
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+                // Smooth scroll to table card
+                $("html, body").animate({
+                    scrollTop: $(".fcc-table-card").offset().top - 80
+                }, 400);
+            });
+
+            // Export Report button
+            $("#btnExportReport").on("click", function(e) {
+                e.preventDefault();
+                if (data_table) {
+                    data_table.button(".buttons-excel").trigger();
+                }
+            });
+        },
+
+        /**
+         * View Attendance Calendar Modal.
+         */
+        viewAttendence: function() {
+            var $source = $(".data-table-container");
+            $source.on("click", ".view-attendence", function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var url = $this.data("url");
+                if (!url) return;
+
+                var $modal = $("#pageModal");
+                if (!$modal.length) {
+                    // Create modal container if not already in layout
+                    $("body").append(
+                        '<div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-hidden="true">' +
+                        '<div class="modal-dialog modal-dialog-centered modal-lg" role="document">' +
+                        '<div class="modal-content border-0 shadow-lg" style="border-radius: 16px;"></div>' +
+                        '</div>' +
+                        '</div>'
+                    );
+                    $modal = $("#pageModal");
+                }
+
+                $modal.find(".modal-content").html(
+                    '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>'
+                );
+                
+                $modal.modal("show");
+                $modal.find(".modal-content").load(url, function(response, status, xhr) {
+                    if (status === "error") {
+                        $(this).html('<div class="p-4 text-center text-danger">Failed to load attendance details. Please try again.</div>');
+                    }
+                });
+            });
+        }
     };
 })();
 
-AttendenceRegister.init();
+$(document).ready(function() {
+    AttendenceRegister.init();
+});

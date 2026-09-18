@@ -35,54 +35,79 @@ class Attendance extends Model
     {
         // Get user
         $authUser = auth()->user();
-        //----------
+        if (!$authUser) {
+            return !empty($limit) ? collect([]) : 0;
+        }
 
-        $attendenceRegister = User::select('users.id', 'users.name', 'users.status', 'users.created_at')
+        $month = !empty($filter['month']) ? $filter['month'] : date('m');
+        $year = !empty($filter['year']) ? $filter['year'] : date('Y');
+        $totalDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+
+        $attendenceRegister = User::select('users.id', 'users.name', 'users.coach_name', 'users.profile_image', 'users.status', 'users.created_at')
         ->where("users.role_type", 'user')->where("users.created_by", $authUser->id)->with('user_attendence');
 
-        $attendenceRegister = $attendenceRegister->withCount(['user_attendence as total_absent' => function ($query) use ($filter) {
-            $query->where('type', 1)->whereMonth('date', $filter['month'])->whereYear('date', $filter['year']);
+        $attendenceRegister = $attendenceRegister->withCount(['user_attendence as total_absent' => function ($query) use ($month, $year) {
+            $query->where('type', 1)->whereMonth('date', $month)->whereYear('date', $year);
         }]);
 
-        $attendenceRegister = $attendenceRegister->withCount(['user_attendence as total_present' => function ($query) use ($filter) {
-            $query->where('type', 2)->whereMonth('date', $filter['month'])->whereYear('date', $filter['year']);
+        $attendenceRegister = $attendenceRegister->withCount(['user_attendence as total_present' => function ($query) use ($month, $year) {
+            $query->where('type', 2)->whereMonth('date', $month)->whereYear('date', $year);
         }]);
          
         // Record filter conditions
         $attendenceRegister->where(function ($query) use ($filter) {
-            // Filter
             if (!empty($filter) && !empty($filter['name'])) 
             {
                 $query->whereRaw('(lower(users.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\')');
             }
+
+            if (!empty($filter) && !empty($filter['coach_name'])) {
+                $query->where('users.coach_name', $filter['coach_name']);
+            }
         });
         
         // Table list Search conditions
-        if(!(empty($search)))
+        if (!(empty($search)))
         {
-            $search = strtolower($search);
-            $attendenceRegister = $attendenceRegister->whereRaw('((lower(users.name) LIKE \'%'.$search.'%\') )');
+            $search = strtolower(trim($search));
+            $attendenceRegister = $attendenceRegister->whereRaw('((lower(users.name) LIKE \'%'.$search.'%\') OR (lower(users.coach_name) LIKE \'%'.$search.'%\'))');
+        }
+
+        // Attendance status filter
+        if (!empty($filter) && !empty($filter['attendance_status'])) {
+            $status = $filter['attendance_status'];
+            if ($status === 'no_checkins') {
+                $attendenceRegister->having('total_present', '=', 0);
+            } elseif ($status === 'low') {
+                $maxLow = max(1, floor($totalDays * 0.20));
+                $attendenceRegister->having('total_present', '>', 0)->having('total_present', '<=', $maxLow);
+            } elseif ($status === 'building') {
+                $minBuilding = floor($totalDays * 0.20) + 1;
+                $maxBuilding = floor($totalDays * 0.50);
+                $attendenceRegister->having('total_present', '>=', $minBuilding)->having('total_present', '<=', $maxBuilding);
+            } elseif ($status === 'on_track') {
+                $minOnTrack = floor($totalDays * 0.50) + 1;
+                $attendenceRegister->having('total_present', '>=', $minOnTrack);
+            }
         }
         
         // Table columns sort conditions
-        if(!(empty($sort)) && $sort['column'] > 0)
+        if (!(empty($sort)) && isset($sort['column']))
         {
-            $arr_fields = array("", "name", "", "", "", "");
-            for($field = 0; $field < count($arr_fields); $field++)
+            $arr_fields = array("name", "total_present", "total_present", "total_absent", "total_present", "total_present", "");
+            $colIdx = intval($sort['column']);
+            if (isset($arr_fields[$colIdx]) && $arr_fields[$colIdx] != "")
             {
-                if($sort['column'] == $field && $arr_fields[$field] != "")
-                {
-                    $attendenceRegister = $attendenceRegister->orderBy($arr_fields[$field], $sort['dir']);
-                }
+                $attendenceRegister = $attendenceRegister->orderBy($arr_fields[$colIdx], $sort['dir'] ?? 'ASC');
             }
         }
         else
         {
-            $attendenceRegister = $attendenceRegister->orderBy('id', 'DESC');
+            $attendenceRegister = $attendenceRegister->orderBy('name', 'ASC');
         }
 
         // Set final limit and records
-        if(!empty($limit))
+        if (!empty($limit))
         {
             $attendenceRegister = $attendenceRegister->skip($offset)->take($limit);
             return $attendenceRegister->get();
