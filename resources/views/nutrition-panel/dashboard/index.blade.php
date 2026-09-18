@@ -6183,18 +6183,45 @@
         },
         tooltip: {
             theme: 'dark',
+            shared: false,
+            intersect: false,
             style: {
                 fontSize: '12px',
                 fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif'
             },
-            custom: function({series, seriesIndex, dataPointIndex, w}) {
-                var count = series[seriesIndex][dataPointIndex];
-                var day = w.globals.categoryLabels[dataPointIndex] || w.globals.labels[dataPointIndex];
+            custom: function(opts) {
+                if (!opts) return '';
+                var series = opts.series || [];
+                var seriesIndex = (typeof opts.seriesIndex === 'number' && opts.seriesIndex >= 0) ? opts.seriesIndex : 0;
+                var dataPointIndex = (typeof opts.dataPointIndex === 'number' && opts.dataPointIndex >= 0) ? opts.dataPointIndex : 0;
+                var w = opts.w || {};
+
+                var count = 0;
+                if (series && series[seriesIndex] && series[seriesIndex][dataPointIndex] !== undefined) {
+                    count = series[seriesIndex][dataPointIndex];
+                } else if (series && series[0] && series[0][dataPointIndex] !== undefined) {
+                    count = series[0][dataPointIndex];
+                } else if (typeof weeklyPulseAttendance !== 'undefined' && weeklyPulseAttendance[dataPointIndex] !== undefined) {
+                    count = weeklyPulseAttendance[dataPointIndex];
+                }
+
+                var day = '';
+                if (w && w.globals) {
+                    if (w.globals.categoryLabels && w.globals.categoryLabels[dataPointIndex]) {
+                        day = w.globals.categoryLabels[dataPointIndex];
+                    } else if (w.globals.labels && w.globals.labels[dataPointIndex]) {
+                        day = w.globals.labels[dataPointIndex];
+                    }
+                }
+                if (!day && typeof weeklyPulseLabels !== 'undefined' && weeklyPulseLabels[dataPointIndex]) {
+                    day = weeklyPulseLabels[dataPointIndex];
+                }
+
                 return '<div style="background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); color: #fff; font-family: Outfit, sans-serif;">' +
-                    '<div style="font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">' + day + '</div>' +
+                    '<div style="font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">' + (day || 'Attendance') + '</div>' +
                     '<div style="display: flex; align-items: center; gap: 8px;">' +
                         '<span style="width: 9px; height: 9px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 8px #38bdf8;"></span>' +
-                        '<span style="font-size: 14px; font-weight: 800; color: #ffffff;">' + count + '</span>' +
+                        '<span style="font-size: 14px; font-weight: 800; color: #ffffff;">' + (count !== undefined ? count : 0) + '</span>' +
                         '<span style="font-size: 12px; color: #cbd5e1; font-weight: 500;">members attended</span>' +
                     '</div>' +
                 '</div>';
