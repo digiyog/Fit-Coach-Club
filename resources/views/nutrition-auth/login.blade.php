@@ -328,7 +328,7 @@
             <div class="digiyog-brand-footer">
                 <span class="powered-by-label">POWERED BY</span>
                 <a href="https://digiyog.com" target="_blank" rel="noopener noreferrer" class="digiyog-logo-wrap" title="DigiYog Technosoft">
-                    <img src="{{ asset('admin-assets/images/digiyog-logo.svg') }}" alt="DigiYog Technosoft" class="digiyog-official-logo">
+                    <img src="{{ asset('admin-assets/images/digiyog-logo.png') }}" alt="DigiYog Technosoft" class="digiyog-official-logo">
                 </a>
             </div>
         </div>
