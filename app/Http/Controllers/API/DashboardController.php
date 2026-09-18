@@ -88,7 +88,7 @@ class DashboardController extends Controller
         //-----------------------
 
         // Set response
-        if ($attendances[0]) {
+        if ($attendances && $attendances->isNotEmpty()) {
             $response = [
                 '_status'  => true,
                 '_message' => 'Attendance data fetched successfully.',

@@ -569,7 +569,7 @@ class UserController extends Controller
         }
 
         // Set response
-        if ($notifications[0]) {
+        if ($notifications && $notifications->isNotEmpty()) {
             $response = [
                 '_status' => true,
                 '_message' => __('messages.records_found', ['record' => 'Notification']),

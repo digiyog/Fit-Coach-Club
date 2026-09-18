@@ -1,0 +1,977 @@
+{
+  "info": {
+    "_postman_id": "fit-coach-club-api-collection-v2",
+    "name": "Fit Coach Club API Collection",
+    "description": "Complete Postman collection for Fit Coach Club API endpoints with base URL https://www.fitcoachclub.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://www.fitcoachclub.com",
+      "type": "string"
+    },
+    {
+      "key": "bearer_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearer_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication & Config",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData._status && jsonData._data && jsonData._data.access_token) {",
+                  "    pm.collectionVariables.set('bearer_token', jsonData._data.access_token);",
+                  "    console.log('Bearer token saved:', jsonData._data.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "login"]
+            }
+          }
+        },
+        {
+          "name": "Configurations",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/configurations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "configurations"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. User Management",
+      "item": [
+        {
+          "name": "View Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user_id\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/view-profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "view-profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"mobile_number\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/update-profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "update-profile"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"old_password\": \"123456\",\n    \"new_password\": \"654321\",\n    \"confirm_password\": \"654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Update Device Info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"device_token\": \"sample_fcm_token\",\n    \"device_type\": \"android\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/update-device-info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "update-device-info"]
+            }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "notifications"]
+            }
+          }
+        },
+        {
+          "name": "Test Notification",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/test-notification",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "test-notification"]
+            }
+          }
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/delete-account",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "delete-account"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Dashboard",
+      "item": [
+        {
+          "name": "Dashboard Index (Attendance / Weight Chart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"year\": \"2026\",\n    \"month\": \"09\",\n    \"days\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Dashboard Weight Stats",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/weight",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "weight"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Attendance",
+      "item": [
+        {
+          "name": "View Attendance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"month\": \"09\",\n    \"year\": \"2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendence",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendence"]
+            }
+          }
+        },
+        {
+          "name": "Add Attendance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"date\": \"2026-09-18\",\n    \"status\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendence/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendence", "add"]
+            }
+          }
+        },
+        {
+          "name": "Check Attendance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendence/check",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendence", "check"]
+            }
+          }
+        },
+        {
+          "name": "Update Weight",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"weight\": 72.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendence/update-weight",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendence", "update-weight"]
+            }
+          }
+        },
+        {
+          "name": "Update Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"weight_goal\": 68.0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendence/update-goal",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendence", "update-goal"]
+            }
+          }
+        },
+        {
+          "name": "Update Weight Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "weight_image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/attendence/update-weight-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "attendence", "update-weight-image"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Products & Orders",
+      "item": [
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            }
+          }
+        },
+        {
+          "name": "Product Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/details",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "details"]
+            }
+          }
+        },
+        {
+          "name": "Place Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_id\": 1,\n    \"quantity\": 1,\n    \"address\": \"Street 123, City\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/place-order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "place-order"]
+            }
+          }
+        },
+        {
+          "name": "Get Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Order Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"order_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/details",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "details"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Recipes & Meal Types",
+      "item": [
+        {
+          "name": "Get Recipes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes"]
+            }
+          }
+        },
+        {
+          "name": "Recipe Details",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"recipe_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/details",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "details"]
+            }
+          }
+        },
+        {
+          "name": "Meal Types",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/meal-type",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "meal-type"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Other Modules",
+      "item": [
+        {
+          "name": "Achievements",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/achievements",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "achievements"]
+            }
+          }
+        },
+        {
+          "name": "Activities",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities"]
+            }
+          }
+        },
+        {
+          "name": "Videos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/videos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "videos"]
+            }
+          }
+        },
+        {
+          "name": "Testimonials",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/testimonials",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "testimonials"]
+            }
+          }
+        },
+        {
+          "name": "BMI Calculator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"height\": 175,\n    \"weight\": 70\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bmi-calculator",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bmi-calculator"]
+            }
+          }
+        },
+        {
+          "name": "Body Composition",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/body-composition",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "body-composition"]
+            }
+          }
+        },
+        {
+          "name": "Payment History",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payment-history",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payment-history"]
+            }
+          }
+        },
+        {
+          "name": "Add Rating",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"feedback\": \"Great service!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/rating/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rating", "add"]
+            }
+          }
+        },
+        {
+          "name": "Add Community",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"description\": \"My fitness journey update\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/communities/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communities", "add"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Cronjobs",
+      "item": [
+        {
+          "name": "Cronjob 10 Days",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/10days",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "10days"]
+            }
+          }
+        },
+        {
+          "name": "Cronjob 5 Days",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/5days",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "5days"]
+            }
+          }
+        },
+        {
+          "name": "Cronjob 1 Day",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/1days",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "1days"]
+            }
+          }
+        },
+        {
+          "name": "Cronjob Meal Type",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/meal-type",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "meal-type"]
+            }
+          }
+        },
+        {
+          "name": "Cronjob Water Notifications",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/water-notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "water-notifications"]
+            }
+          }
+        },
+        {
+          "name": "Cronjob Pending Notifications",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/pending-notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "pending-notifications"]
+            }
+          }
+        },
+        {
+          "name": "Cronjob Pending Amount",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cronjob/pending-amount",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cronjob", "pending-amount"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
