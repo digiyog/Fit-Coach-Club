@@ -86,6 +86,21 @@
         color: #1d28cd;
         text-decoration: underline;
     }
+
+    @media (max-width: 576px) {
+        .fcc-modern-footer {
+            flex-direction: column !important;
+            text-align: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            padding: 12px 14px !important;
+        }
+        .fcc-footer-left,
+        .fcc-footer-right {
+            justify-content: center !important;
+            text-align: center !important;
+        }
+    }
 </style>
 
 <div class="fcc-modern-footer-container">

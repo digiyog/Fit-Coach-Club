@@ -98,6 +98,37 @@
         text-transform: uppercase;
         letter-spacing: 0.02em;
     }
+
+    @media (max-width: 576px) {
+        .fcc-cal-summary {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .fcc-cal-stat-item {
+            flex: 1 1 calc(50% - 10px);
+            border-left: none !important;
+            padding-left: 0 !important;
+        }
+        .fcc-cal-grid {
+            gap: 4px;
+        }
+        .fcc-cal-header-cell {
+            font-size: 10px;
+            padding: 4px 0;
+        }
+        .fcc-cal-day-cell {
+            min-height: 44px;
+            padding: 6px 2px;
+            border-radius: 6px;
+        }
+        .fcc-cal-day-num {
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+        .fcc-cal-day-badge {
+            font-size: 8px;
+        }
+    }
 </style>
 
 @php

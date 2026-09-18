@@ -14,13 +14,15 @@ $authUser = auth()->user();
                     @if(!empty($headerLogo))
                         <img src="{{get_image_url(config('constants.company_profile.image_path'), $headerLogo)}}" class="img-fluid brand-logo-img" alt="Logo" style="height: 38px;" />
                     @else
-                        <div class="brand-logo-fallback">FC</div>
+                        <div style="height: 38px; width: 38px; border-radius: 9px; background: #000000; display: flex; align-items: center; justify-content: center; padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.18);">
+                            <img src="{{ asset('admin-assets/images/fit-coach-club-symbol.svg') }}" alt="Fit Coach Club" style="height: 100%; width: 100%; object-fit: contain;" />
+                        </div>
                     @endif
                 </a>
             </li>
             <li class="nav-item theme-text d-none d-sm-block">
-                <a href="{{ route('adminPanel.dashboard') }}" class="nav-link fw-bold text-primary fs-5 p-0">
-                    {{ config('app.name', 'Fit-Coach Club') }}
+                <a href="{{ route('adminPanel.dashboard') }}" class="nav-link fw-bold text-primary fs-5 p-0 text-decoration-none" style="display: flex; align-items: center; gap: 4px; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
+                    <span style="color: #20B2AA; font-weight: 800;">Fit Coach</span> <span style="color: #0f172a; font-weight: 800;">Club</span>
                 </a>
             </li>
             <li class="nav-item ms-3">

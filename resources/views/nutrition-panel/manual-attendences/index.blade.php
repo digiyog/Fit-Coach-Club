@@ -772,6 +772,45 @@
     .dataTables_wrapper .dt-buttons {
         display: none !important;
     }
+
+    /* Responsive Breakpoints (Mobile & Tablet) */
+    @media (max-width: 768px) {
+        .fcc-manual-attendance-wrap {
+            padding: 8px 4px 30px 4px !important;
+        }
+        .fcc-page-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+        }
+        .fcc-header-btns {
+            width: 100% !important;
+        }
+        .fcc-btn-history-link {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .fcc-member-nav-tabs {
+            gap: 16px !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        .fcc-card-section-header {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 10px !important;
+        }
+        .fcc-table-controls-group {
+            width: 100% !important;
+            flex-direction: column !important;
+            align-items: stretch !important;
+        }
+        .fcc-table-search-box {
+            width: 100% !important;
+        }
+        .fcc-remaining-badge-pill {
+            justify-content: center !important;
+        }
+    }
 </style>
 @endpush
 

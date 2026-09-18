@@ -17,7 +17,7 @@
                                   <h1>Privacy Policy</h1>
                                   <p class="last-updated">Last updated on <time datetime="2025-04-23">23rd April 2025</time></p>
                                   <p>
-                                    FIt Coach Club (hereinafter referred to as the “Platform”, “Website”, “Web App”, or “FIt Coach Club”) is a web and mobile–accessible wellness &amp; client-management platform owned and operated by DigiYog Techno Soft (hereinafter referred to as “DigiYog Techno Soft,” “we,” “us,” or “our”).
+                                    Fit Coach Club (hereinafter referred to as the “Platform”, “Website”, “Web App”, or “Fit Coach Club”) is a web and mobile–accessible wellness &amp; client-management platform owned and operated by DigiYog Techno Soft (hereinafter referred to as “DigiYog Techno Soft,” “we,” “us,” or “our”).
                                   </p>
                                 </header>
 
@@ -40,7 +40,7 @@
                                   <h2>Definitions</h2>
                                   <dl>
                                     <dt><strong>Service / Platform</strong></dt>
-                                    <dd>The FIt Coach Club website and web/mobile application operated by DigiYog Techno Soft.</dd>
+                                    <dd>The Fit Coach Club website and web/mobile application operated by DigiYog Techno Soft.</dd>
 
                                     <dt><strong>Personal Data</strong></dt>
                                     <dd>Data about an identifiable individual (alone or in combination with other data).</dd>

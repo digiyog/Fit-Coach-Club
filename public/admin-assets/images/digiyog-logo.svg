@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 170" width="540" height="170" fill="none">
+  <!-- Yellow Pebble Background -->
+  <path d="M 110 162 C 40 162 2 122 2 80 C 2 30 42 6 118 6 C 185 6 218 62 218 108 C 218 144 170 162 110 162 Z" fill="#FBB03B"/>
+  
+  <!-- Navy Blue 'd' Shape -->
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M 120 6 L 150 6 L 150 126 C 150 126 138 142 106 142 C 68 142 46 114 46 80 C 46 45 68 18 106 18 C 128 18 144 30 150 48 L 150 6 Z M 100 48 C 80 48 72 63 72 80 C 72 97 80 112 100 112 C 118 112 126 97 126 80 C 126 63 118 48 100 48 Z" fill="#0E2F63"/>
+
+  <!-- DIGIY Text -->
+  <text x="238" y="108" font-family="'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="900" fill="#231F20" letter-spacing="1">DIGIY</text>
+  
+  <!-- Orange O Ring with Head Icon -->
+  <g transform="translate(424, 76)">
+    <!-- Head circle -->
+    <circle cx="21" cy="-14" r="9" fill="#FBB03B" />
+    <!-- Body ring (Letter O) -->
+    <circle cx="21" cy="6" r="23" stroke="#FBB03B" stroke-width="12" fill="none" />
+  </g>
+
+  <!-- Letter G -->
+  <text x="478" y="108" font-family="'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="900" fill="#231F20">G</text>
+
+  <!-- TECHNO SOFT Text -->
+  <text x="240" y="146" font-family="'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="500" fill="#231F20" letter-spacing="5.5">TECHNO SOFT</text>
+</svg>

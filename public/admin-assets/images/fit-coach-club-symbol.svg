@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" width="100%" height="100%" fill="none">
+  <defs>
+    <filter id="fccGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Triangle Outline -->
+  <polygon points="100,16 182,156 18,156" stroke="#FFFFFF" stroke-width="9.5" stroke-linejoin="round" fill="none" opacity="0.96"/>
+
+  <!-- Muscular Upper Body & Flexing Bicep Silhouette -->
+  <!-- Deltoid / Bicep peak -->
+  <path d="M 80 50 C 73 48 65 52 61 58 C 55 67 58 80 68 87 C 76 93 72 102 65 109 C 55 120 62 133 76 136 C 88 138 98 130 102 120 C 104 115 106 102 106 90 C 108 76 118 64 128 66 C 122 75 120 88 122 98 C 124 105 133 110 130 119 C 127 127 116 138 103 150 L 88 150 C 72 134 58 120 52 100 C 37 80 38 54 58 37 C 78 20 98 33 100 52 Z" fill="#FFFFFF"/>
+  <!-- Muscle definition highlight/inner contour -->
+  <path d="M 72 65 C 80 63 88 71 85 82 C 82 90 71 94 64 86 C 60 79 64 69 72 65 Z" fill="#FFFFFF"/>
+
+  <!-- Stylized Cyan/Teal 'F' -->
+  <path d="M 116 78 L 165 78 L 159 97 L 131 97 L 125 111 L 155 111 C 153 120 146 127 137 129 L 118 131 L 98 184 L 76 184 L 102 122 L 108 97 L 116 78 Z" fill="#20B2AA" filter="url(#fccGlow)"/>
+</svg>

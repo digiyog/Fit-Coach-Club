@@ -806,51 +806,41 @@ body.auth-body {
 /* DigiYog Powered Footer */
 .digiyog-brand-footer {
     border-top: 1px solid #f1f5f9;
-    padding-top: 18px;
+    padding-top: 16px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .powered-by-label {
-    font-size: 9.5px;
+    font-size: 10px;
     font-weight: 700;
     color: #94a3b8;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
 .digiyog-logo-wrap {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    text-decoration: none;
-}
-
-.digiyog-mark {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
     justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.digiyog-text {
-    font-size: 14.5px;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.02em;
+.digiyog-logo-wrap:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
 }
 
-.digiyog-text span.accent {
-    color: #f59e0b;
-}
-
-.digiyog-text span.soft {
-    font-weight: 500;
-    color: #334155;
+.digiyog-official-logo {
+    height: 28px;
+    width: auto;
+    max-width: 170px;
+    object-fit: contain;
+    display: block;
 }
 
 /* Bottom Right Legal Footer */
@@ -962,5 +952,32 @@ span.invalid-feedback {
 
     .auth-card-title {
         font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-hero-pane {
+        padding: 30px 16px !important;
+    }
+    .hero-brand-header {
+        margin-bottom: 20px !important;
+    }
+    .hero-headline {
+        font-size: 25px !important;
+        line-height: 1.25 !important;
+    }
+    .hero-live-card-container {
+        padding: 16px 12px !important;
+        border-radius: 16px !important;
+    }
+    .auth-form-pane {
+        padding: 24px 12px !important;
+    }
+    .modern-auth-card-elevated {
+        padding: 22px 14px 18px !important;
+        border-radius: 16px !important;
+    }
+    .auth-card-title {
+        font-size: 20px !important;
     }
 }

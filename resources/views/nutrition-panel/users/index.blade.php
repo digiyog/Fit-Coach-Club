@@ -579,8 +579,27 @@
     table.dataTable tbody tr.selected td {
         background: #f0f5ff !important;
     }
+    table.dataTable tbody tr.fcc-row-dues-flagged td {
+        background: #fff8f8 !important;
+    }
+    table.dataTable tbody tr.fcc-row-dues-flagged:hover td {
+        background: #fff1f1 !important;
+    }
+    table.dataTable tbody tr.fcc-row-dues-flagged.selected td {
+        background: #fee2e2 !important;
+    }
     table.dataTable tbody tr:last-child td {
         border-bottom: none !important;
+    }
+
+    .fcc-dues-flagged {
+        background: #fee2e2;
+        color: #dc2626;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2.5px 8px;
+        border-radius: 6px;
+        display: inline-block;
     }
 
     /* Action 3-dots button */

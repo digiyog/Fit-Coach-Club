@@ -23,24 +23,13 @@
             <div class="hero-top-block">
                 <!-- Brand Header -->
                 <div class="hero-brand-header">
-                    <div class="hero-brand-logo">
-                        <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="brandSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#38bdf8"/>
-                                    <stop offset="50%" stop-color="#818cf8"/>
-                                    <stop offset="100%" stop-color="#c084fc"/>
-                                </linearGradient>
-                                <linearGradient id="sparkAccent" x1="100%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#ffffff"/>
-                                    <stop offset="100%" stop-color="#38bdf8"/>
-                                </linearGradient>
-                            </defs>
-                            <path d="M19 2L22.8 14.2L35 18L22.8 21.8L19 34L15.2 21.8L3 18L15.2 14.2L19 2Z" fill="url(#brandSparkGrad)"/>
-                            <path d="M19 6L21.5 15.5L31 18L21.5 20.5L19 30L16.5 20.5L7 18L16.5 15.5L19 6Z" fill="url(#sparkAccent)" opacity="0.85"/>
-                        </svg>
+                    <div class="hero-brand-logo" style="width: 46px; height: 46px; background: #000000; border-radius: 12px; padding: 5px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 16px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ asset('admin-assets/images/fit-coach-club-symbol.svg') }}" alt="Fit Coach Club" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
-                    <h2 class="hero-brand-title">{{ env('APP_NAME', 'Fit Coach Club') }}</h2>
+                    <div class="d-flex align-items-center" style="gap: 6px; font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;">
+                        <span style="font-size: 22px; font-weight: 800; color: #20B2AA; letter-spacing: -0.02em;">Fit Coach</span>
+                        <span style="font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">Club</span>
+                    </div>
                 </div>
 
                 <!-- Tagline Badge -->
@@ -334,14 +323,8 @@
             <!-- Powered by DigiYog Technosoft Branding -->
             <div class="digiyog-brand-footer">
                 <span class="powered-by-label">POWERED BY</span>
-                <a href="https://digiyog.com" target="_blank" rel="noopener noreferrer" class="digiyog-logo-wrap">
-                    <div class="digiyog-mark">
-                        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14 2C7.37 2 2 7.37 2 14C2 20.63 7.37 26 14 26C18.42 26 22.28 23.61 24.36 20.08L18.42 16.65C17.43 18.06 15.82 19 14 19C11.24 19 9 16.76 9 14C9 11.24 11.24 9 14 9C15.82 9 17.43 9.94 18.42 11.35L24.36 7.92C22.28 4.39 18.42 2 14 2Z" fill="#F59E0B"/>
-                            <path d="M26 14C26 7.37 20.63 2 14 2V9C16.76 9 19 11.24 19 14C19 16.76 16.76 19 14 19V26C20.63 26 26 20.63 26 14Z" fill="#2563EB"/>
-                        </svg>
-                    </div>
-                    <span class="digiyog-text"><span class="accent">Digi</span>Yog <span class="soft">Technosoft</span></span>
+                <a href="https://digiyog.com" target="_blank" rel="noopener noreferrer" class="digiyog-logo-wrap" title="Digiyog Technosoft">
+                    <img src="{{ asset('admin-assets/images/digiyog-logo.svg') }}" alt="DigiYog Technosoft" class="digiyog-official-logo">
                 </a>
             </div>
         </div>

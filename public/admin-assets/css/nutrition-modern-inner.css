@@ -1910,3 +1910,24 @@ textarea.form-control:focus {
     padding-left: 22px !important;
 }
 
+/* Global Dues Flagged Row Highlighting */
+table.dataTable tbody tr.fcc-row-dues-flagged td {
+    background-color: #fff8f8 !important;
+}
+table.dataTable tbody tr.fcc-row-dues-flagged:hover td {
+    background-color: #fff1f1 !important;
+}
+table.dataTable tbody tr.fcc-row-dues-flagged.selected td {
+    background-color: #fee2e2 !important;
+}
+.fcc-dues-flagged {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    padding: 2.5px 8px !important;
+    border-radius: 6px !important;
+    display: inline-block !important;
+}
+
+

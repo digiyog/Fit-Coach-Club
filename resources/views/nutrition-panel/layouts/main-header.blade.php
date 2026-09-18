@@ -15,15 +15,15 @@ $userInitial = !empty($authUser->name) ? strtoupper(substr(trim($authUser->name)
                     @if(!empty($headerLogo))
                         <img src="{{get_image_url(config('constants.company_profile.image_path'), $headerLogo)}}" class="img-fluid brand-logo-img" alt="Logo" style="height: 38px; border-radius: 9px;" />
                     @else
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #3246d3 0%, #4361ee 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; box-shadow: 0 3px 10px rgba(50, 70, 211, 0.28); font-family: 'Outfit', sans-serif;">
-                            FC
+                        <div style="height: 38px; width: 38px; border-radius: 9px; background: #000000; display: flex; align-items: center; justify-content: center; padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.18);">
+                            <img src="{{ asset('admin-assets/images/fit-coach-club-symbol.svg') }}" alt="Fit Coach Club" style="height: 100%; width: 100%; object-fit: contain;" />
                         </div>
                     @endif
                 </a>
             </li>
             <li class="nav-item theme-text d-none d-sm-block ps-1">
-                <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link fw-bold text-dark fs-5 p-0 text-decoration-none" style="letter-spacing: -0.025em; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif; font-size: 18px !important; color: #0f172a !important;">
-                    {{ config('app.name', 'Fit Coach Club') }}
+                <a href="{{ route('nutritionPanel.dashboard') }}" class="nav-link fw-bold text-dark fs-5 p-0 text-decoration-none" style="letter-spacing: -0.025em; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif; font-size: 17px !important; display: flex; align-items: center; gap: 4px;">
+                    <span style="color: #20B2AA; font-weight: 800;">Fit Coach</span> <span style="color: #0f172a; font-weight: 800;">Club</span>
                 </a>
             </li>
             <li class="nav-item ms-2">

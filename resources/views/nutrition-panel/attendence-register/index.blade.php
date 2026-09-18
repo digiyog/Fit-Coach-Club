@@ -151,20 +151,27 @@
         position: relative !important;
         flex: 1.3 !important;
         min-width: 220px !important;
+        display: flex !important;
+        align-items: center !important;
     }
+    .fcc-search-box .fcc-search-icon,
     .fcc-search-icon {
         position: absolute !important;
         left: 14px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
         color: #a3aed0 !important;
-        font-size: 13px !important;
+        font-size: 13.5px !important;
         pointer-events: none !important;
-        z-index: 3 !important;
+        z-index: 10 !important;
+        line-height: 1 !important;
+        margin: 0 !important;
     }
-    .fcc-search-input {
+    .fcc-search-box .fcc-search-input,
+    .fcc-search-input,
+    input#filterSearch {
         width: 100% !important;
-        padding-left: 38px !important;
+        padding-left: 44px !important;
         padding-right: 14px !important;
         padding-top: 7px !important;
         padding-bottom: 7px !important;
@@ -177,10 +184,15 @@
         color: var(--fcc-text-dark) !important;
         outline: none !important;
         box-sizing: border-box !important;
+        text-indent: 0 !important;
         transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
     }
-    .fcc-search-input::placeholder {
+    .fcc-search-input::placeholder,
+    .fcc-search-input::-webkit-input-placeholder,
+    .fcc-search-input::-moz-placeholder,
+    .fcc-search-input:-ms-input-placeholder {
         color: #a3aed0 !important;
+        opacity: 1 !important;
     }
     .fcc-search-input:focus {
         border-color: var(--fcc-blue) !important;
@@ -824,6 +836,80 @@
     .dataTables_filter, .dataTables_length {
         display: none !important;
     }
+
+    /* Responsive Media Queries (Mobile & Tablet) */
+    @media (max-width: 1024px) {
+        .fcc-pulse-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+        }
+        .fcc-filter-card {
+            flex-wrap: wrap !important;
+        }
+        .fcc-search-box {
+            min-width: 100% !important;
+        }
+        .fcc-filter-select-wrap {
+            min-width: calc(33.333% - 8px) !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .fcc-attendance-wrapper {
+            padding: 16px 12px 32px !important;
+        }
+        .fcc-page-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 14px !important;
+        }
+        .fcc-header-btns {
+            width: 100% !important;
+            justify-content: flex-start !important;
+        }
+        .fcc-pulse-card {
+            padding: 20px 18px !important;
+        }
+        .fcc-pulse-body {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 20px !important;
+        }
+        .fcc-pulse-stat-indicators {
+            flex-wrap: wrap !important;
+            gap: 16px !important;
+        }
+        .fcc-pulse-middle {
+            width: 100% !important;
+        }
+        .fcc-filter-select-wrap {
+            min-width: calc(50% - 6px) !important;
+        }
+        .fcc-btn-clear-filters {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .fcc-table-card {
+            padding: 14px 12px !important;
+        }
+        .fcc-table-responsive-wrap {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .fcc-header-btns {
+            flex-direction: column !important;
+        }
+        .fcc-btn-export, .fcc-btn-mark {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .fcc-filter-select-wrap {
+            min-width: 100% !important;
+        }
+    }
 </style>
 @endpush
 
@@ -857,7 +943,7 @@
         <!-- Search -->
         <div class="fcc-search-box">
             <i class="fa fa-search fcc-search-icon"></i>
-            <input type="text" id="filterSearch" class="fcc-search-input" placeholder="Search members..." style="padding-left: 38px !important;">
+            <input type="text" id="filterSearch" class="fcc-search-input" placeholder="Search members..." style="padding-left: 44px !important;">
         </div>
 
         <!-- Month & Year Selector -->

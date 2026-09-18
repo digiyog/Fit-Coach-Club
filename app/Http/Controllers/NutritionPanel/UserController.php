@@ -247,7 +247,12 @@ class UserController extends Controller
                 }
 
                 // 7. Due Amount
-                $dueHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">₹'.number_format($dueAmount = abs($due_amount), 0).'</span>';
+                $hasDue = ($due_amount > 0);
+                if ($hasDue) {
+                    $dueHtml = '<span class="fcc-dues-flagged text-nowrap">₹'.number_format($due_amount, 0).'</span>';
+                } else {
+                    $dueHtml = '<span class="text-muted text-nowrap" style="font-size: 13px; font-weight: 500;">₹0</span>';
+                }
 
                 // 8. Status
                 if ($value->status == 0) {
@@ -278,6 +283,7 @@ class UserController extends Controller
 
                 // Array Data
                 $arr_data[] = array(
+                    "DT_RowClass"       => ($hasDue ? 'fcc-row-dues-flagged' : ''),
                     "id"                => $value->id,
                     "member"            => $memberHtml,
                     "user_type"         => $userTypeHtml,

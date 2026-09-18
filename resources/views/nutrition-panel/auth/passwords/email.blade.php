@@ -18,11 +18,8 @@
     <div class="modern-auth-card">
         <!-- Brand / Header Section -->
         <div class="auth-header">
-            <div class="auth-logo-badge nutrition">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
+            <div class="auth-logo-badge nutrition" style="background: #000000; border-radius: 14px; padding: 6px; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15);">
+                <img src="{{ asset('admin-assets/images/fit-coach-club-symbol.svg') }}" alt="Fit Coach Club" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             
             <h1 class="auth-brand-name">Password Recovery</h1>
