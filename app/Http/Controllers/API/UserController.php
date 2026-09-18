@@ -58,25 +58,27 @@ class UserController extends Controller
             $today  = Carbon::today();
             $exists = Attendance::where('user_id', $user['id'])->where('type',2)->whereDate('date', $today)->first();
 
-            if($exists->weight != ''){
-                $weight = 1;
+            if($exists){
+                if(!empty($exists->weight)){
+                    $weight = 1;
+                }
+
+                if(!empty($exists->weight_image)){
+                    $weight_image = 1;
+                }
+
+                if(!empty($exists->weight_goal)){
+                    $weight_goal = 1;
+                }
             }
 
-            if($exists->weight_image != ''){
-                $weight_image = 1;
-            }
-
-            if($exists->weight_goal != ''){
-                $weight_goal = 1;
-            }
-
-            if($request['user_id'] != ''){
+            if(!empty($request['user_id'])){
                 $userId = $request['user_id'];
             } else {
                 $userId = $user->id;
             }
 
-            if($request['user_id'] != ''){
+            if(!empty($request['user_id'])){
                 $userProfile = userInfo($request['user_id']);
             } else {
                 $userProfile = userInfo($user->id);
@@ -92,11 +94,15 @@ class UserController extends Controller
 
         // Set response
         if (!is_null($userProfile)) {
-            $bucket_base_url    = env('AWS_CloudFront_URL').'/';
+            $bucket_base_url = env('AWS_CloudFront_URL') ? rtrim(env('AWS_CloudFront_URL'), '/') . '/' : '';
+            $qrCode = ($franchiseInfo && !empty($franchiseInfo['qr_code']))
+                ? $bucket_base_url . config('constants.users.image_path') . '/' . $franchiseInfo['qr_code']
+                : '';
+
             $response = [
                 '_status' => true,
                 '_message' => __('messages.profile_found'),
-                '_qr_code' => $bucket_base_url. config('constants.users.image_path').'/'.$franchiseInfo['qr_code'],
+                '_qr_code' => $qrCode,
                 'weight' => $weight,
                 'weight_image' => $weight_image,
                 'weight_goal' => $weight_goal,
