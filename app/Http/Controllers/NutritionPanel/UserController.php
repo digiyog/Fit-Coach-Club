@@ -980,11 +980,12 @@ class UserController extends Controller
                 throw new \Exception('User not found.');
             }
 
-            $daysToAdd = (int)($request->input('days', 0));
+            $daysToAdd = max(1, (int)($request->input('days', 1)));
             $totalAmount = (float)($request->input('amount', 0));
             $receivedAmount = (float)($request->input('received_amount', 0));
             $dueAmount = max(0, $totalAmount - $receivedAmount);
-            $paymentType = $dueAmount > 0 ? 'Pending' : 'Received';
+            $paymentType = ($dueAmount > 0) ? 'Pending' : 'Received';
+            $createdById = $authUser ? $authUser->id : null;
 
             // 1. Attendance Logs
             $lastAttendanceLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'DESC')->first();
@@ -998,7 +999,7 @@ class UserController extends Controller
                 'days'          => $daysToAdd,
                 'message'       => $request->input('remark') ?? '',
                 'total_days'    => $newTotalDays,
-                'created_by'    => $authUser->id,
+                'created_by'    => $createdById,
             ]);
 
             // 2. Transaction
@@ -1010,44 +1011,46 @@ class UserController extends Controller
                 'due_amount'        => $dueAmount,
                 'payment_type'      => $paymentType,
                 'remark'            => $request->input('remark') ?? '',
-                'created_by'        => $authUser->id,
+                'created_by'        => $createdById,
             ];
             Transaction::create($transaction);
 
             // 3. Increment User dues & days
+            $user->days = (int)($user->days ?? 0) + $daysToAdd;
             if ($dueAmount > 0) {
-                User::where('id', $user->id)->increment('due_amount', $dueAmount);
+                $user->due_amount = (float)($user->due_amount ?? 0) + $dueAmount;
             }
-            $userUpdate = User::where('id', $user->id)->increment('days', $daysToAdd);
+            $userUpdate = $user->save();
 
-            // 4. In-App Notification
-            $senderData   = $authUser;
-            $receiverData = $user;
-            $senderName   = !empty($senderData->name) ? $senderData->name : 'Nutrihut';
-            $receiverName = !empty($receiverData->name) ? $receiverData->name : 'Member';
+            DB::commit();
 
-            $title       = 'Days Added';
-            $notiMessage = $receiverName . ', You’re all set ' . $daysToAdd . ' Days added.';
+            // 4. In-App Notification & Push Notification (isolated from main transaction)
+            try {
+                $senderData   = $authUser;
+                $receiverData = $user;
+                $senderName   = !empty($senderData->name) ? $senderData->name : 'Nutrihut';
+                $receiverName = !empty($receiverData->name) ? $receiverData->name : 'Member';
 
-            Notification::create([
-                'user_id'             => $receiverData->id,
-                'sender_id'           => $senderData->id,
-                'data_id'             => '',
-                'notification_title'  => $title,
-                'notification_text'   => $notiMessage,
-                'sender_name'         => $senderName,
-                'receiver_name'       => $receiverName,
-                'notification_type'   => 1,
-            ]);
+                $title       = 'Days Added';
+                $notiMessage = $receiverName . ', You’re all set ' . $daysToAdd . ' Days added.';
 
-            // 5. Push Notification
-            if (!empty($receiverData->fcm_token)) {
-                try {
+                Notification::create([
+                    'user_id'             => $receiverData->id,
+                    'sender_id'           => $senderData ? $senderData->id : 0,
+                    'data_id'             => null,
+                    'notification_title'  => $title,
+                    'notification_text'   => $notiMessage,
+                    'sender_name'         => $senderName,
+                    'receiver_name'       => $receiverName,
+                    'notification_type'   => 1,
+                ]);
+
+                if (!empty($receiverData->fcm_token)) {
                     push_notification(
                         $receiverData->id,
                         $title,
                         $notiMessage,
-                        $senderData->id,
+                        $senderData ? $senderData->id : 0,
                         1,
                         $receiverData->fcm_token,
                         '',
@@ -1055,12 +1058,11 @@ class UserController extends Controller
                         $receiverName,
                         $receiverData->device_os
                     );
-                } catch (\Exception $pushEx) {
-                    \Log::warning('Push notification error in updateUserDays: ' . $pushEx->getMessage());
                 }
+            } catch (\Exception $pushEx) {
+                \Log::warning('Notification error in updateUserDays: ' . $pushEx->getMessage());
             }
 
-            DB::commit();
         } catch (\Exception $e) {
             $userUpdate = null;
             \Log::error('updateUserDays Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
@@ -1068,7 +1070,7 @@ class UserController extends Controller
         }
 
         // Response
-        if (!is_null($userUpdate)) {
+        if (!empty($userUpdate)) {
             $response = [
                 '_status' => true,
                 '_message' => __('messages.records_updated', ['record' => 'Add User Days']),
@@ -1127,7 +1129,8 @@ class UserController extends Controller
                 throw new \Exception('User not found.');
             }
 
-            $daysToSubtract = (int)($request->input('days', 0));
+            $daysToSubtract = max(1, (int)($request->input('days', 1)));
+            $createdById = $authUser ? $authUser->id : null;
 
             // 1. Attendance Logs
             $lastAttendanceLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'DESC')->first();
@@ -1141,40 +1144,42 @@ class UserController extends Controller
                 'days'          => $daysToSubtract,
                 'message'       => $request->input('remark') ?? '',
                 'total_days'    => $newTotalDays,
-                'created_by'    => $authUser->id,
+                'created_by'    => $createdById,
             ]);
 
             // 2. Decrement user days
-            $userUpdate = User::where('id', $user->id)->decrement('days', $daysToSubtract);
+            $user->days = max(0, (int)($user->days ?? 0) - $daysToSubtract);
+            $userUpdate = $user->save();
 
-            // 3. In-App Notification
-            $senderData   = $authUser;
-            $receiverData = $user;
-            $senderName   = !empty($senderData->name) ? $senderData->name : 'Nutrihut';
-            $receiverName = !empty($receiverData->name) ? $receiverData->name : 'Member';
+            DB::commit();
 
-            $title       = 'Days Subtract';
-            $notiMessage = $receiverName . ', ' . $daysToSubtract . ' days are deducted from your subscription.';
+            // 3. In-App Notification & Push Notification (isolated from main transaction)
+            try {
+                $senderData   = $authUser;
+                $receiverData = $user;
+                $senderName   = !empty($senderData->name) ? $senderData->name : 'Nutrihut';
+                $receiverName = !empty($receiverData->name) ? $receiverData->name : 'Member';
 
-            Notification::create([
-                'user_id'             => $receiverData->id,
-                'sender_id'           => $senderData->id,
-                'data_id'             => '',
-                'notification_title'  => $title,
-                'notification_text'   => $notiMessage,
-                'sender_name'         => $senderName,
-                'receiver_name'       => $receiverName,
-                'notification_type'   => 1,
-            ]);
+                $title       = 'Days Subtract';
+                $notiMessage = $receiverName . ', ' . $daysToSubtract . ' days are deducted from your subscription.';
 
-            // 4. Push Notification
-            if (!empty($receiverData->fcm_token)) {
-                try {
+                Notification::create([
+                    'user_id'             => $receiverData->id,
+                    'sender_id'           => $senderData ? $senderData->id : 0,
+                    'data_id'             => null,
+                    'notification_title'  => $title,
+                    'notification_text'   => $notiMessage,
+                    'sender_name'         => $senderName,
+                    'receiver_name'       => $receiverName,
+                    'notification_type'   => 1,
+                ]);
+
+                if (!empty($receiverData->fcm_token)) {
                     push_notification(
                         $receiverData->id,
                         $title,
                         $notiMessage,
-                        $senderData->id,
+                        $senderData ? $senderData->id : 0,
                         1,
                         $receiverData->fcm_token,
                         '',
@@ -1182,12 +1187,11 @@ class UserController extends Controller
                         $receiverName,
                         $receiverData->device_os
                     );
-                } catch (\Exception $pushEx) {
-                    \Log::warning('Push notification error in updateSubtractUserDays: ' . $pushEx->getMessage());
                 }
+            } catch (\Exception $pushEx) {
+                \Log::warning('Notification error in updateSubtractUserDays: ' . $pushEx->getMessage());
             }
 
-            DB::commit();
         } catch (\Exception $e) {
             $userUpdate = null;
             \Log::error('updateSubtractUserDays Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
@@ -1195,7 +1199,7 @@ class UserController extends Controller
         }
 
         // Response
-        if (!is_null($userUpdate)) {
+        if (!empty($userUpdate)) {
             $response = [
                 '_status' => true,
                 '_message' => __('messages.records_updated', ['record' => 'Subtract User Days']),
