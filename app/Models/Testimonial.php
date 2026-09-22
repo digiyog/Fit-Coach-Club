@@ -59,11 +59,26 @@ class Testimonial extends Model
             $search = strtolower($search);
             $testimonials = $testimonials->whereRaw('(lower(testimonials.name) LIKE \'%'.$search.'%\' OR lower(testimonials.link) like \'%'.$search.'%\' )');
         }
+
+        // Table filters
+        if (!empty($filter['format']) && $filter['format'] !== 'all') {
+            if ($filter['format'] === 'video') {
+                $testimonials = $testimonials->whereNotNull('testimonials.link')->where('testimonials.link', '!=', '');
+            } elseif ($filter['format'] === 'photo') {
+                $testimonials = $testimonials->where(function($q) {
+                    $q->whereNull('testimonials.link')->orWhere('testimonials.link', '');
+                });
+            }
+        }
+
+        if (isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null && $filter['status'] !== 'all') {
+            $testimonials = $testimonials->where('testimonials.status', $filter['status']);
+        }
         
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("","name", "link" , "image", 'order', "status", "");
+            $arr_fields = array("", "name", "link", "image", "", 'order', "status", "");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")

@@ -2,6 +2,9 @@ var Tip = (function() {
     // Array holding selected row IDs
     var rows_selected = [];
     var data_table;
+    var table;
+    var searchTimer = null;
+
     return {
         /**
          * Initialization.
@@ -11,49 +14,103 @@ var Tip = (function() {
             Tip.changeStatus();
             Tip.destroyRecord();
             Tip.updateOrder();
-            Tip.initializeComponents();
             Tip.viewVideo();
+            Tip.initFilterControls();
+            Tip.initializeComponents();
         },
 
         /**
          * Initialize components.
          */
         initializeComponents: function() {
-            // Initialize Components
+            // Content settings modal save feedback
+            $(document).on('click', '.btn-save-content-settings', function() {
+                var $btn = $(this);
+                $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i> Saving...');
+                setTimeout(function() {
+                    $btn.prop('disabled', false).html('<i class="fa fa-check me-1"></i> Saved');
+                    if (typeof App !== 'undefined' && App.showNotification) {
+                        App.showNotification({ status: true, message: 'Content settings updated successfully.' });
+                    } else if (typeof iziToast !== 'undefined') {
+                        iziToast.success({ title: 'Success', message: 'Content settings updated successfully.' });
+                    }
+                    setTimeout(function() {
+                        $('#contentSettingsModal').modal('hide');
+                        $btn.html('Save settings');
+                    }, 600);
+                }, 500);
+            });
         },
 
         /**
-         * Updates "Select all" control in a data table
+         * Initialize custom filter & search controls.
          */
-        updateDataTableSelectAllCtrl: function(table) {
-            var $table = table.table().node();
-            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-            var $chkbox_checked = $(
-                'tbody input[type="checkbox"]:checked',
-                $table
-            );
-            var chkbox_select_all = $(
-                'thead input[name="select_all"]',
-                $table
-            ).get(0);
+        initFilterControls: function() {
+            // Live Search with Debounce
+            $('#tip-search-input').on('keyup', function() {
+                clearTimeout(searchTimer);
+                var query = $(this).val();
+                searchTimer = setTimeout(function() {
+                    if (data_table) {
+                        data_table.search(query).draw();
+                    }
+                }, 300);
+            });
 
-            // If none of the checkboxes are checked
+            // Filter dropdowns
+            $('#tip-filter-coach, #tip-filter-status').on('change', function() {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Per page dropdown
+            $('#tip-per-page').on('change', function() {
+                var len = parseInt($(this).val(), 10) || 20;
+                if (data_table) {
+                    data_table.page.len(len).draw();
+                }
+            });
+
+            // Reset filters
+            $(document).on('click', '#tip-clear-filters-btn, .tip-btn-reset-filters', function(e) {
+                e.preventDefault();
+                $('#tip-search-input').val('');
+                $('#tip-filter-coach').val('all');
+                $('#tip-filter-status').val('all');
+                if (data_table) {
+                    data_table.search('').ajax.reload();
+                }
+            });
+
+            // Toggle More Filters
+            $('#tip-more-filters-btn').on('click', function() {
+                $('#tip-more-filters-panel').slideToggle(200);
+                $(this).toggleClass('active');
+            });
+        },
+
+        /**
+         * Updates "Select all" control in a data table.
+         */
+        updateDataTableSelectAllCtrl: function(tbl) {
+            var $table = tbl.table().node();
+            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+            var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+            var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+
+            if (!chkbox_select_all) return;
+
             if ($chkbox_checked.length === 0) {
                 chkbox_select_all.checked = false;
-
                 if ("indeterminate" in chkbox_select_all) {
                     chkbox_select_all.indeterminate = false;
                 }
-
-                // If all of the checkboxes are checked
             } else if ($chkbox_checked.length === $chkbox_all.length) {
                 chkbox_select_all.checked = true;
-
                 if ("indeterminate" in chkbox_select_all) {
                     chkbox_select_all.indeterminate = false;
                 }
-
-                // If some of the checkboxes are checked
             } else {
                 chkbox_select_all.checked = true;
                 if ("indeterminate" in chkbox_select_all) {
@@ -67,106 +124,11 @@ var Tip = (function() {
          */
         getTips: function() {
             var $dataTable = $("#dataTable");
+            if (!$dataTable.length) return;
+
+            var createUrl = $dataTable.data("create-url") || "#";
 
             data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Order Update" class="btn btn-icon btn-rounded btn-primary btn-outline update-order"> &nbsp; Order Update </button> '
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Change Status" class="btn btn-icon btn-rounded btn-primary btn-outline change-status" disabled> <i class="fa fa-exchange" aria-hidden="true"></i> &nbsp; Change Status </button> '
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Delete" class="btn btn-icon btn-rounded btn-primary btn-outline dt-delete" disabled> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete </button> '
-                    );
-                },
-                headerCallback: function(e, a, t, n, s) {
-                    e.getElementsByTagName("th")[0].innerHTML =
-                            '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                },
-                columnDefs: [
-                    {
-                        targets: 0,
-                        width: "30px",
-                        className: "",
-                        orderable: !1,
-                        visible: true,
-                        render: function(e, a, t, n) {
-                            return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                        }
-                    }
-                ],
-                buttons: {
-                    buttons: [
-                        // {
-                        //     extend: "excel",
-                        //     className: "current-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "current",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2]
-                        //     }
-                        // },
-                        // {
-                        //     extend: "excel",
-                        //     className: "all-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "all",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2, 3, 4]
-                        //     }
-                        // }
-                    ]
-                },
-                oLanguage: {
-                    oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
-                },
                 processing: true,
                 serverSide: true,
                 lengthMenu: [
@@ -174,11 +136,12 @@ var Tip = (function() {
                     [20, 50, 75, 100]
                 ],
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"tip-table-footer d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3"ip>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
+                        d.coach = $("#tip-filter-coach").val();
+                        d.status = $("#tip-filter-status").val();
                     }
                 },
                 columns: [
@@ -186,133 +149,164 @@ var Tip = (function() {
                         data: null,
                         name: "",
                         searchable: false,
-                        sortable: false
+                        sortable: false,
+                        width: "36px"
                     },
                     { data: "name", name: "name" },
-                    { data: "coach_name", name: "coach_name" },
-                    { data: "link", name: "link", width:150 },
-                    { data: "order", name: "order" , width:80  },
-                    { data: "status", name: "status" , width:80 },
+                    { data: "coach_name", name: "coach_name", width: 140 },
+                    { data: "link", name: "link", width: 170 },
+                    { data: "order", name: "order", width: 90 },
+                    { data: "status", name: "status", width: 90 },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
                         sortable: false,
-                        width:50,
+                        width: 80
                     }
                 ],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        width: "36px",
+                        className: "text-center",
+                        orderable: false,
+                        render: function(e, a, t, n) {
+                            return '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                        }
+                    },
+                    {
+                        targets: [3, 6],
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                headerCallback: function(e, a, t, n, s) {
+                    var thFirst = e.getElementsByTagName("th")[0];
+                    if (thFirst) {
+                        thFirst.innerHTML =
+                            '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                    }
+                },
+                oLanguage: {
+                    oPaginate: {
+                        sPrevious: '<i class="fa fa-angle-left me-1"></i> Previous',
+                        sNext: 'Next <i class="fa fa-angle-right ms-1"></i>'
+                    },
+                    sInfo: "Showing _START_ to _END_ of _TOTAL_ video tips",
+                    sInfoEmpty: "Showing 0 of 0 video tips",
+                    sInfoFiltered: "(filtered from _MAX_ total video tips)",
+                    sEmptyTable: `
+                        <div class="tip-empty-state">
+                            <div class="tip-empty-icon-wrap">
+                                <svg class="tip-empty-illustration" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="60" cy="60" r="54" fill="#EEF2FF" />
+                                    <!-- Play Button Circle -->
+                                    <circle cx="60" cy="58" r="22" fill="#2563EB"/>
+                                    <polygon points="56,48 70,58 56,68" fill="#FFFFFF"/>
+                                    <!-- Lightbulb badge left -->
+                                    <circle cx="38" cy="74" r="14" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2.5"/>
+                                    <path d="M38 67C35.5 67 33.5 69 33.5 71.5C33.5 73.1 34.4 74.4 35.6 75.2V77H40.4V75.2C41.6 74.4 42.5 73.1 42.5 71.5C42.5 69 40.5 67 38 67Z" fill="#F59E0B"/>
+                                    <rect x="36" y="78" width="4" height="2" rx="1" fill="#D97706"/>
+                                    <!-- Link badge right -->
+                                    <circle cx="82" cy="74" r="14" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2.5"/>
+                                    <path d="M78 78L86 70M76 74L79 71C80.5 69.5 83 69.5 84.5 71C86 72.5 86 75 84.5 76.5L82 79" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+                                    <!-- Sparkles -->
+                                    <path d="M88 34L89.5 38L93.5 39.5L89.5 41L88 45L86.5 41L82.5 39.5L86.5 38L88 34Z" fill="#60A5FA"/>
+                                    <path d="M28 48L29 51L32 52L29 53L28 56L27 53L24 52L27 51L28 48Z" fill="#93C5FD"/>
+                                </svg>
+                            </div>
+                            <h4 class="tip-empty-title">No video tips added yet</h4>
+                            <p class="tip-empty-desc">Add a title, select a coach and paste a YouTube link to share helpful content with members.</p>
+                            <a href="` + createUrl + `" class="btn btn-primary tip-btn-create-empty">
+                                <i class="fa fa-plus me-1"></i> Add video tip
+                            </a>
+                        </div>
+                    `,
+                    sZeroRecords: `
+                        <div class="tip-empty-state">
+                            <div class="tip-empty-icon-wrap" style="background:#f1f5f9; width:80px; height:80px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px;">
+                                <i class="fa fa-search fa-2x" style="color:#94a3b8;"></i>
+                            </div>
+                            <h4 class="tip-empty-title">No matching video tips found</h4>
+                            <p class="tip-empty-desc">Try adjusting your search or coach filters to find what you're looking for.</p>
+                            <button type="button" class="btn btn-outline-primary tip-btn-reset-filters">
+                                <i class="fa fa-refresh me-1"></i> Reset Filters
+                            </button>
+                        </div>
+                    `
+                },
                 rowCallback: function(row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
-
-                    // If row ID is in the list of selected row IDs
+                    var rowId = data;
                     if ($.inArray(rowId, rows_selected) !== -1) {
-                        $(row)
-                            .find('input[type="checkbox"]')
-                            .prop("checked", true);
+                        $(row).find('input[type="checkbox"]').prop("checked", true);
                         $(row).addClass("selected");
                     }
                 }
             });
 
-            // Apply filter
-            // $(".apply-filter").on("click", function(e) {
-            //     data_table.ajax.reload();
-            //     e.preventDefault();
-            // });
-            //-------------
+            // Handle click on row checkbox
+            $dataTable.find("tbody").on("click", 'input[type="checkbox"]', function(e) {
+                var $row = $(this).closest("tr");
+                var data = table.row($row).data();
+                var rowId = data;
+                var index = $.inArray(rowId, rows_selected);
 
-            // Clear filter
-            // $(".clear-filter").on("click", function(e) {
-            //     $(".agency-filter-form")[0].reset();
-            //     $source = $(".agency-filter-form");
-            //     $select = $source.find(".select-picker");
-            //     $select.selectpicker("refresh");
-            //     data_table.ajax.reload();
-            //     e.preventDefault();
-            // });
-            //-------------
+                if (this.checked && index === -1) {
+                    rows_selected.push(rowId);
+                } else if (!this.checked && index !== -1) {
+                    rows_selected.splice(index, 1);
+                }
 
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function(e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
+                if ($dataTable.find('tbody input[type="checkbox"]:checked').length > 0) {
+                    $(".change-status").prop("disabled", false);
+                    $(".dt-delete").prop("disabled", false);
+                } else {
+                    $(".change-status").prop("disabled", true);
+                    $(".dt-delete").prop("disabled", true);
+                }
 
-                    // Get row ID
-                    var rowId = data;
+                if (this.checked) {
+                    $row.addClass("selected");
+                } else {
+                    $row.removeClass("selected");
+                }
 
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    Tip.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
+                Tip.updateDataTableSelectAllCtrl(table);
+                e.stopPropagation();
+            });
 
             // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function(e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
+            $dataTable.find("thead").on("click", 'input[name="select_all"]', function(e) {
+                if (this.checked) {
+                    $dataTable.find('tbody input[type="checkbox"]:not(:checked)').trigger("click");
+                    $(".change-status").prop("disabled", false);
+                    $(".dt-delete").prop("disabled", false);
+                } else {
+                    $dataTable.find('tbody input[type="checkbox"]:checked').trigger("click");
+                    $(".change-status").prop("disabled", true);
+                    $(".dt-delete").prop("disabled", true);
+                }
+                e.stopPropagation();
+            });
 
             // Handle table draw event
             table.on("draw", function() {
-                // Update state of "Select all" control
                 Tip.updateDataTableSelectAllCtrl(table);
 
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-               //----------
-            });
+                if (typeof Components !== 'undefined' && Components.additionalValidationMethods) {
+                    Components.additionalValidationMethods();
+                }
 
-            // multiCheck($dataTable);
+                var info = table.page.info();
+                var count = info.recordsDisplay;
+                $("#tip-records-count").text(count + (count === 1 ? " video tip" : " video tips"));
+
+                // Reset selection array and toolbar buttons on fresh draw
+                rows_selected = [];
+                $(".change-status").prop("disabled", true);
+                $(".dt-delete").prop("disabled", true);
+            });
         },
 
         /**
@@ -322,13 +316,17 @@ var Tip = (function() {
             var $data_table_container = $(".data-table-container");
             var $dataTable = $(".dataTable");
 
-            // Handle form submission event
             $data_table_container.on("click", ".change-status", function() {
-                // Iterate over all selected checkboxes
                 var ids = [];
                 $.each(rows_selected, function(index, rowId) {
-                    ids.push(rowId.id);
+                    if (rowId && rowId.id) {
+                        ids.push(rowId.id);
+                    }
                 });
+
+                if (ids.length === 0) {
+                    return;
+                }
 
                 $.ajax({
                     type: "POST",
@@ -339,7 +337,11 @@ var Tip = (function() {
                         $(".dt-delete").prop("disabled", true);
                     },
                     success: function(response) {
-                        App.showNotification(response);
+                        if (typeof App !== 'undefined' && App.showNotification) {
+                            App.showNotification(response);
+                        } else if (typeof iziToast !== 'undefined') {
+                            iziToast.success({ title: 'Success', message: response.message || 'Status changed successfully' });
+                        }
                         data_table.ajax.reload(null, false);
                         rows_selected = [];
                     },
@@ -359,76 +361,81 @@ var Tip = (function() {
             var $data_table_container = $(".data-table-container");
             var $dataTable = $(".dataTable");
 
-            // Handle form submission event
             $data_table_container.on("click", ".dt-delete", function() {
-                // Iterate over all selected checkboxes
                 var ids = [];
                 $.each(rows_selected, function(index, rowId) {
-                    ids.push(rowId.id);
-                });
-
-                iziToast.question({
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: "once",
-                    color: "yellow",
-                    id: "question",
-                    zindex: 99999,
-                    title: "Hey!",
-                    message: "Are you sure to want to delete?",
-                    position: "center",
-                    progressBar: false,
-                    buttons: [
-                        [
-                            "<button><b>YES</b></button>",
-                            function(instance, toast) {
-
-                                $.ajax({
-                                    type: "DELETE",
-                                    url: $dataTable.data("destroy-url"),
-                                    data: { ids: ids },
-                                    beforeSend: function() {
-                                        $(".dt-delete").prop("disabled", true);
-                                        $(".change-status").prop("disabled", true);
-                                    },
-                                    success: function(response) {
-                                        App.showNotification(response);
-                                        data_table.ajax.reload(null, false);
-                                        rows_selected = [];
-                                    },
-                                    error: function() {},
-                                    complete: function() {
-                                        $(".dt-delete").prop("disabled", true);
-                                        $(".change-status").prop("disabled", true);
-                                    }
-                                });
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
-                            },
-                            true
-                        ],
-                        [
-                            "<button>NO</button>",
-                            function(instance, toast) {
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
-                            }
-                        ]
-                    ],
-                    onClosing: function(instance, toast, closedBy) {
-                        console.info("Closing | closedBy: " + closedBy);
-                    },
-                    onClosed: function(instance, toast, closedBy) {
-                        console.info("Closed | closedBy: " + closedBy);
+                    if (rowId && rowId.id) {
+                        ids.push(rowId.id);
                     }
                 });
+
+                if (ids.length === 0) {
+                    return;
+                }
+
+                if (typeof iziToast !== 'undefined') {
+                    iziToast.question({
+                        timeout: 20000,
+                        close: false,
+                        overlay: true,
+                        displayMode: "once",
+                        color: "yellow",
+                        id: "question",
+                        zindex: 99999,
+                        title: "Hey!",
+                        message: "Are you sure you want to delete selected video tips?",
+                        position: "center",
+                        progressBar: false,
+                        buttons: [
+                            [
+                                "<button><b>YES</b></button>",
+                                function(instance, toast) {
+                                    $.ajax({
+                                        type: "DELETE",
+                                        url: $dataTable.data("destroy-url"),
+                                        data: { ids: ids },
+                                        beforeSend: function() {
+                                            $(".dt-delete").prop("disabled", true);
+                                            $(".change-status").prop("disabled", true);
+                                        },
+                                        success: function(response) {
+                                            if (typeof App !== 'undefined' && App.showNotification) {
+                                                App.showNotification(response);
+                                            }
+                                            data_table.ajax.reload(null, false);
+                                            rows_selected = [];
+                                        },
+                                        error: function() {},
+                                        complete: function() {
+                                            $(".dt-delete").prop("disabled", true);
+                                            $(".change-status").prop("disabled", true);
+                                        }
+                                    });
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                                },
+                                true
+                            ],
+                            [
+                                "<button>NO</button>",
+                                function(instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                                }
+                            ]
+                        ]
+                    });
+                } else {
+                    if (confirm("Are you sure you want to delete selected video tips?")) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: $dataTable.data("destroy-url"),
+                            data: { ids: ids },
+                            success: function(response) {
+                                data_table.ajax.reload(null, false);
+                                rows_selected = [];
+                            }
+                        });
+                    }
+                }
             });
         },
 
@@ -439,26 +446,23 @@ var Tip = (function() {
             var $data_table_container = $(".data-table-container");
             var $dataTable = $(".dataTable");
 
-            // Handle form submission event
             $data_table_container.on("click", ".update-order", function() {
-                // $('.new-checkbox').click();
-                // Iterate over all selected checkboxes
-                // var ids = [];
-                // $.each(rows_selected, function(index, rowId) {
-                //     console.log(rowId);
-                //     ids.push(rowId.id);
-                // });
                 var ids = [];
-                $(".dataTable tbody tr").each(function(index, rowId) {
+                $(".dataTable tbody tr").each(function(index, elem) {
                     var innerArray = [];
                     var $row = $(this).closest("tr");
                     var data = table.row($row).data();
-                    var rowId = data;
-                    rows_selected.push(rowId);
-                    var tipOrder = $('#tip_order_'+rowId.id).val();
-                    innerArray.push(rowId.id, tipOrder);
-                    ids.push(innerArray);
+                    if (data && data.id) {
+                        var tipOrder = $('#tip_order_' + data.id).val();
+                        innerArray.push(data.id, tipOrder);
+                        ids.push(innerArray);
+                    }
                 });
+
+                if (ids.length === 0) {
+                    return;
+                }
+
                 $.ajax({
                     type: "POST",
                     url: $dataTable.data("update-order-url"),
@@ -467,7 +471,11 @@ var Tip = (function() {
                         $(".update-order").prop("disabled", true);
                     },
                     success: function(response) {
-                        App.showNotification(response);
+                        if (typeof App !== 'undefined' && App.showNotification) {
+                            App.showNotification(response);
+                        } else if (typeof iziToast !== 'undefined') {
+                            iziToast.success({ title: 'Success', message: response.message || 'Order updated successfully' });
+                        }
                         data_table.ajax.reload(null, false);
                         rows_selected = [];
                     },
@@ -480,28 +488,29 @@ var Tip = (function() {
         },
 
         /**
-         * View Video.
+         * View Video Modal.
          */
-        viewVideo: function () {
+        viewVideo: function() {
             var $source = $(".data-table-container");
-            $source.on("click", ".view-video", function () {
-
+            $source.on("click", ".view-video", function() {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModal");
 
                 $configuration_modal.modal("show");
                 $configuration_modal
                     .find(".modal-content")
-                    .load($this.data("url"), "", function () {
+                    .load($this.data("url"), "", function() {});
 
-
-                    });
-                $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                $configuration_modal.on("hidden.bs.modal", function() {
+                    if (typeof App !== 'undefined' && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
-        },
+        }
     };
 })();
 
-Tip.init();
+$(document).ready(function() {
+    Tip.init();
+});

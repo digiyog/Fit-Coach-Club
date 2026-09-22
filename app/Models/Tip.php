@@ -59,11 +59,20 @@ class Tip extends Model
             $search = strtolower($search);
             $tips = $tips->whereRaw('(lower(tips.name) LIKE \'%'.$search.'%\' OR lower(tips.coach_name) like \'%'.$search.'%\' OR lower(tips.link) like \'%'.$search.'%\' )');
         }
+
+        // Table filters
+        if (!empty($filter['coach']) && $filter['coach'] !== 'all') {
+            $tips = $tips->where('tips.coach_name', $filter['coach']);
+        }
+
+        if (isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null && $filter['status'] !== 'all') {
+            $tips = $tips->where('tips.status', $filter['status']);
+        }
         
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("","name", "coach_name" , "link", 'order', "status", "");
+            $arr_fields = array("", "name", "coach_name", "link", 'order', "status", "");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")

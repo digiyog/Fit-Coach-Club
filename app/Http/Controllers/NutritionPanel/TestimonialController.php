@@ -62,7 +62,19 @@ class TestimonialController extends Controller
             'attributes' => []
         ];
 
+        // Calculate Testimonials Statistics
+        $totalTestimonials = Testimonial::where('created_by', $authUser['id'])->count();
+        $videoStories = Testimonial::where('created_by', $authUser['id'])->whereNotNull('link')->where('link', '!=', '')->count();
+        $photoStories = Testimonial::where('created_by', $authUser['id'])->where(function($q) {
+            $q->whereNull('link')->orWhere('link', '');
+        })->count();
+        $publishedTestimonials = Testimonial::where('created_by', $authUser['id'])->where('status', 1)->count();
+
         // View Data
+        $this->viewData['totalTestimonials'] = $totalTestimonials;
+        $this->viewData['videoStories'] = $videoStories;
+        $this->viewData['photoStories'] = $photoStories;
+        $this->viewData['publishedTestimonials'] = $publishedTestimonials;
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
@@ -91,6 +103,9 @@ class TestimonialController extends Controller
         
         // Filter Parameters
         $filter = array(
+            'format'  => $request->get('format'),
+            'channel' => $request->get('channel'),
+            'status'  => $request->get('status'),
         );
 
         // Getting Testimonials Records
@@ -104,45 +119,60 @@ class TestimonialController extends Controller
             foreach($records as $key => $value)
             {
                 $name               = 'N/A';
-                $link               = 'N/A';
-                $image              = 'N/A';
+                $story_type         = '';
+                $media              = '<span class="text-muted small">No media</span>';
+                $display_channels   = '<span class="tst-badge-channel"><i class="fa fa-mobile me-1"></i> Mobile &amp; Web</span>';
                 $order              = 'N/A';
                 $status             = '';
                 $action             = '';
 
                 // Preparing Data
                 if(!empty($value->name)){
-                    $name = $value->name;
+                    $name = '<span class="fw-bold text-dark">' . e($value->name) . '</span>';
                 }
 
-                if(!empty($value->link)){
-                    $link = '<a target="_blank" href="' . $value->link . '" class="" title="View"><div class="badge badge-primary"><i class="fa fa-eye"></i> View </div></a>';
+                $isVideo = !empty($value->link);
+
+                if($isVideo){
+                    $story_type = '<span class="tst-badge-type type-video"><i class="fa fa-play-circle me-1"></i> Video story</span>';
+                } else {
+                    $story_type = '<span class="tst-badge-type type-photo"><i class="fa fa-image me-1"></i> Photo story</span>';
                 }
 
+                $mediaHtml = [];
                 if(!empty($value->image))
                 {
                     $imagePath = get_image_url(config('constants.testimonials.image_path'), $value->image) ?? '';
-                    $image = '<img src="'.$imagePath.'" width="100" height="100" />';
+                    $mediaHtml[] = '<div class="tst-thumb-wrapper"><img src="'.$imagePath.'" class="tst-thumb-img" alt="media" />' . ($isVideo ? '<span class="tst-thumb-play"><i class="fa fa-play"></i></span>' : '') . '</div>';
+                }
+
+                if(!empty($value->link)){
+                    $mediaHtml[] = '<a target="_blank" href="' . e($value->link) . '" class="tst-link-btn" title="Watch video"><i class="fa fa-external-link"></i></a>';
+                }
+
+                if(!empty($mediaHtml)) {
+                    $media = '<div class="d-flex align-items-center gap-2">' . implode(' ', $mediaHtml) . '</div>';
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1" id="testimonial_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control numeric pr-1 tst-order-input text-center" id="testimonial_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
                 }
 
                 if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                    $status = '<span class="tst-table-status tst-status-inactive badge badge-warning">Inactive</span>';
                 } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $status = '<span class="tst-table-status tst-status-active badge badge-success">Active</span>';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.testimonials.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<a href="' . route('nutritionPanel.testimonials.edit', ['id' => ev($value->id)]) . '" class="tst-table-action-edit" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"                => $value->id,
                     "name"              => $name,
-                    "link"              => $link,
-                    "image"             => $image,
+                    "story_type"        => $story_type,
+                    "media"             => $media,
+                    "display_channels"  => $display_channels,
                     "order"             => $order,
                     "status"            => $status,
                     "action"            => $action,

@@ -59,6 +59,23 @@ class Achievement extends Model
             $search = strtolower($search);
             $achievements = $achievements->whereRaw('(lower(achievements.title) LIKE \'%'.$search.'%\' OR lower(achievements.in_app_show) like \'%'.$search.'%\' OR lower(achievements.type) like \'%'.$search.'%\' OR lower(achievements.show_achievement) like \'%'.$search.'%\' )');
         }
+
+        // Table filters
+        if (!empty($filter['type']) && $filter['type'] !== 'all') {
+            $achievements = $achievements->where('achievements.type', $filter['type']);
+        }
+
+        if (isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null && $filter['status'] !== 'all') {
+            $achievements = $achievements->where('achievements.status', $filter['status']);
+        }
+
+        if (!empty($filter['visibility']) && $filter['visibility'] !== 'all') {
+            $achievements = $achievements->where('achievements.show_achievement', $filter['visibility']);
+        }
+
+        if (!empty($filter['in_app_show']) && $filter['in_app_show'] !== 'all') {
+            $achievements = $achievements->where('achievements.in_app_show', $filter['in_app_show']);
+        }
         
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)

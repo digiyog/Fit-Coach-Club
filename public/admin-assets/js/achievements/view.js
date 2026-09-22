@@ -66,52 +66,9 @@ var Achievement = (function() {
          */
         getAchievements: function() {
             var $dataTable = $("#dataTable");
+            var createUrl = $dataTable.data("create-url") || "/achievements/create";
 
             data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Order Update" class="btn btn-icon btn-rounded btn-primary btn-outline update-order"> &nbsp; Order Update </button> '
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Change Status" class="btn btn-icon btn-rounded btn-primary btn-outline change-status" disabled> <i class="fa fa-exchange" aria-hidden="true"></i> &nbsp; Change Status </button> '
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Delete" class="btn btn-icon btn-rounded btn-primary btn-outline dt-delete" disabled> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete </button> '
-                    );
-                },
                 headerCallback: function(e, a, t, n, s) {
                     e.getElementsByTagName("th")[0].innerHTML =
                             '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
@@ -119,52 +76,60 @@ var Achievement = (function() {
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "30px",
-                        className: "",
-                        orderable: !1,
+                        width: "36px",
+                        className: "text-center",
+                        orderable: false,
                         visible: true,
                         render: function(e, a, t, n) {
-                            return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                            return '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
                         }
                     }
                 ],
-                buttons: {
-                    buttons: [
-                        // {
-                        //     extend: "excel",
-                        //     className: "current-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "current",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2]
-                        //     }
-                        // },
-                        // {
-                        //     extend: "excel",
-                        //     className: "all-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "all",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2, 3, 4]
-                        //     }
-                        // }
-                    ]
-                },
                 oLanguage: {
                     oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        sPrevious: '<span class="ach-nav-arrow"><i class="fa fa-angle-left"></i> Previous</span>',
+                        sNext: '<span class="ach-nav-arrow">Next <i class="fa fa-angle-right"></i></span>'
                     },
                     sInfo: "Showing records _START_ to _END_ of _TOTAL_",
+                    sInfoEmpty: "Showing 0 of 0 achievements",
+                    sInfoFiltered: "(filtered from _MAX_ total achievements)",
                     sSearch: '<i data-feather="search"></i>',
                     sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
+                    sLengthMenu: "Results :  _MENU_",
+                    sEmptyTable: `
+                        <div class="ach-empty-illustration-wrap">
+                            <div class="ach-empty-icon-circle">
+                                <div class="ach-sparkle-dot s1">✦</div>
+                                <div class="ach-sparkle-dot s2">✦</div>
+                                <div class="ach-sparkle-dot s3">✦</div>
+                                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="6"></circle>
+                                    <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>
+                                </svg>
+                            </div>
+                            <h4 class="ach-empty-heading">No achievements yet</h4>
+                            <p class="ach-empty-text">Create your first achievement to start celebrating member progress.</p>
+                            <a href="${createUrl}" class="ach-btn ach-btn-create ach-empty-create-btn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Create achievement
+                            </a>
+                        </div>
+                    `,
+                    sZeroRecords: `
+                        <div class="ach-empty-illustration-wrap">
+                            <div class="ach-empty-icon-circle" style="background: #f1f5f9; border-color: #e2e8f0;">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </div>
+                            <h4 class="ach-empty-heading">No matching achievements found</h4>
+                            <p class="ach-empty-text">Try adjusting your search criteria or clearing filters.</p>
+                        </div>
+                    `
                 },
                 processing: true,
                 serverSide: true,
@@ -173,11 +138,14 @@ var Achievement = (function() {
                     [20, 50, 75, 100]
                 ],
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"ach-table-footer d-flex justify-content-between align-items-center flex-wrap gap-2"ip>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
+                        d.type = $('#ach-filter-type').val();
+                        d.status = $('#ach-filter-status').val();
+                        d.visibility = $('#ach-filter-visibility').val();
+                        d.in_app_show = $('#ach-filter-inapp').val();
                     }
                 },
                 columns: [
@@ -191,14 +159,14 @@ var Achievement = (function() {
                     { data: "type", name: "type" },
                     { data: "in_app_show", name: "in_app_show" },
                     { data: "show_achievement", name: "show_achievement" },
-                    { data: "order", name: "order" , width:80  },
-                    { data: "status", name: "status" , width:80 },
+                    { data: "order", name: "order" , width: 90 },
+                    { data: "status", name: "status" , width: 90 },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
                         sortable: false,
-                        width:50,
+                        width: 70,
                     }
                 ],
                 rowCallback: function(row, data, dataIndex) {
@@ -215,23 +183,39 @@ var Achievement = (function() {
                 }
             });
 
-            // Apply filter
-            // $(".apply-filter").on("click", function(e) {
-            //     data_table.ajax.reload();
-            //     e.preventDefault();
-            // });
-            //-------------
+            // Live Search Integration
+            $('#ach-search-input').on('keyup input', function() {
+                table.search($(this).val()).draw();
+            });
 
-            // Clear filter
-            // $(".clear-filter").on("click", function(e) {
-            //     $(".agency-filter-form")[0].reset();
-            //     $source = $(".agency-filter-form");
-            //     $select = $source.find(".select-picker");
-            //     $select.selectpicker("refresh");
-            //     data_table.ajax.reload();
-            //     e.preventDefault();
-            // });
-            //-------------
+            // Page Length Integration
+            $('#ach-per-page').on('change', function() {
+                var len = parseInt($(this).val(), 10);
+                table.page.len(len).draw();
+            });
+
+            // Filter Dropdowns Integration
+            $('.ach-filter-select').on('change', function() {
+                table.ajax.reload();
+            });
+
+            // More Filters Toggle
+            $('#ach-more-filters-btn').on('click', function(e) {
+                e.preventDefault();
+                $('#ach-more-filters-collapse').slideToggle(200);
+                $(this).toggleClass('open');
+            });
+
+            // Clear All Filters
+            $('#ach-clear-filters-btn').on('click', function(e) {
+                e.preventDefault();
+                $('#ach-search-input').val('');
+                $('#ach-filter-type').val('all');
+                $('#ach-filter-status').val('all');
+                $('#ach-filter-visibility').val('all');
+                $('#ach-filter-inapp').val('all');
+                table.search('').ajax.reload();
+            });
 
             // Handle click on checkbox
             $dataTable
@@ -260,11 +244,11 @@ var Achievement = (function() {
                         $dataTable.find('tbody input[type="checkbox"]:checked')
                             .length > 0
                     ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
+                        $(".change-status").prop("disabled", false).addClass('active-btn');
+                        $(".dt-delete").prop("disabled", false).addClass('active-btn');
                     } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
+                        $(".change-status").prop("disabled", true).removeClass('active-btn');
+                        $(".dt-delete").prop("disabled", true).removeClass('active-btn');
                     }
 
                     if (this.checked) {
@@ -288,14 +272,14 @@ var Achievement = (function() {
                         $dataTable
                             .find('tbody input[type="checkbox"]:not(:checked)')
                             .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
+                        $(".change-status").prop("disabled", false).addClass('active-btn');
+                        $(".dt-delete").prop("disabled", false).addClass('active-btn');
                     } else {
                         $dataTable
                             .find('tbody input[type="checkbox"]:checked')
                             .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
+                        $(".change-status").prop("disabled", true).removeClass('active-btn');
+                        $(".dt-delete").prop("disabled", true).removeClass('active-btn');
                     }
 
                     // Prevent click event from propagating to parent
@@ -309,10 +293,24 @@ var Achievement = (function() {
 
                 // Additional form validation methods
                 Components.additionalValidationMethods();
-               //----------
-            });
 
-            // multiCheck($dataTable);
+                // Dynamic Count Syncing
+                var pageInfo = table.page.info();
+                var count = pageInfo.recordsTotal || 0;
+                $('#ach-records-count').text(count + ' achievements');
+                $('.ach-stat-count').text(count);
+
+                // Dynamic Publishing Checklist Syncing
+                if (count > 0) {
+                    $('.ach-checklist-status').text('3 of 3 complete');
+                    $('.ach-progress-fill').css('width', '100%');
+                    $('.ach-step-num').addClass('step-done');
+                } else {
+                    $('.ach-checklist-status').text('0 of 3 complete');
+                    $('.ach-progress-fill').css('width', '0%');
+                    $('.ach-step-num').removeClass('step-done');
+                }
+            });
         },
 
         /**
