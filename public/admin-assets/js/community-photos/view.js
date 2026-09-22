@@ -60,9 +60,30 @@ window.CommunityPhoto = (function() {
                         name: "name",
                         width: 220,
                         render: function(data, type, row) {
-                            var avatarHtml = (row && row.avatar) ?
-                                '<img src="' + row.avatar + '" class="cp-table-avatar" alt="Avatar">' :
-                                '<div class="cp-table-avatar-fallback">' + ((data && data.length) ? data.charAt(0).toUpperCase() : 'U') + '</div>';
+                            var initial = (data && data.trim().length > 0) ? data.trim().charAt(0).toUpperCase() : 'U';
+                            var colors = [
+                                { bg: '#eff6ff', color: '#2563eb' },
+                                { bg: '#f5f3ff', color: '#7c3aed' },
+                                { bg: '#ecfdf5', color: '#059669' },
+                                { bg: '#fff7ed', color: '#ea580c' },
+                                { bg: '#fdf2f8', color: '#db2777' },
+                                { bg: '#fefce8', color: '#ca8a04' }
+                            ];
+                            var charCode = (data && data.length > 0) ? data.charCodeAt(0) + data.length : 0;
+                            var col = colors[charCode % colors.length];
+
+                            var fallbackHtml = '<div class="cp-table-avatar-fallback" style="background: ' + col.bg + '; color: ' + col.color + '; font-weight: 700; width: 34px; height: 34px; min-width: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;">' + initial + '</div>';
+
+                            var avatarHtml;
+                            if (row && row.avatar && row.avatar.trim() !== '') {
+                                avatarHtml = '<div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; min-width: 34px; flex-shrink: 0;">' +
+                                    fallbackHtml +
+                                    '<img src="' + row.avatar + '" class="cp-table-avatar" alt="" style="position: absolute; top: 0; left: 0; width: 34px; height: 34px; border-radius: 50%; object-fit: cover; z-index: 2;" onerror="this.remove();" />' +
+                                '</div>';
+                            } else {
+                                avatarHtml = fallbackHtml;
+                            }
+
                             return '<div class="d-flex align-items-center gap-2">' +
                                    avatarHtml +
                                    '<div><div class="fw-bold text-dark" style="font-size: 13.5px;">' + (data || 'N/A') + '</div></div>' +
@@ -146,9 +167,29 @@ window.CommunityPhoto = (function() {
             $.each(records, function(idx, item) {
                 var imgSrc = item.first_image || (item.images && item.images.length > 0 ? item.images[0] : '');
                 var photoUrl = item.view_photos_url || '';
-                var avatarHtml = (item && item.avatar) ?
-                    '<img src="' + item.avatar + '" class="cp-card-avatar" alt="Avatar">' :
-                    '<div class="cp-card-avatar-fallback">' + ((item && item.name && item.name.length) ? item.name.charAt(0).toUpperCase() : 'U') + '</div>';
+                var initial = (item && item.name && item.name.trim().length > 0) ? item.name.trim().charAt(0).toUpperCase() : 'U';
+                var colors = [
+                    { bg: '#eff6ff', color: '#2563eb' },
+                    { bg: '#f5f3ff', color: '#7c3aed' },
+                    { bg: '#ecfdf5', color: '#059669' },
+                    { bg: '#fff7ed', color: '#ea580c' },
+                    { bg: '#fdf2f8', color: '#db2777' },
+                    { bg: '#fefce8', color: '#ca8a04' }
+                ];
+                var charCode = (item && item.name && item.name.length > 0) ? item.name.charCodeAt(0) + item.name.length : 0;
+                var col = colors[charCode % colors.length];
+
+                var cardFallbackHtml = '<div class="cp-card-avatar-fallback" style="background: ' + col.bg + '; color: ' + col.color + '; font-weight: 700; width: 34px; height: 34px; min-width: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;">' + initial + '</div>';
+
+                var avatarHtml;
+                if (item && item.avatar && item.avatar.trim() !== '') {
+                    avatarHtml = '<div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; min-width: 34px; flex-shrink: 0;">' +
+                        cardFallbackHtml +
+                        '<img src="' + item.avatar + '" class="cp-card-avatar" alt="" style="position: absolute; top: 0; left: 0; width: 34px; height: 34px; border-radius: 50%; object-fit: cover; z-index: 2;" onerror="this.remove();" />' +
+                    '</div>';
+                } else {
+                    avatarHtml = cardFallbackHtml;
+                }
 
                 var countBadge = (item.images_count > 1) ?
                     '<span class="cp-card-photo-count"><i class="fa fa-camera"></i> ' + item.images_count + ' photos</span>' : '';

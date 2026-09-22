@@ -139,7 +139,7 @@ class CommunityPhotoController extends Controller
                     }
                 }
                 $first_image = count($images) > 0 ? $images[0] : '';
-                $user_avatar = !empty($value->user) && !empty($value->user['profile_image']) ? get_image_url(config('constants.users.profile_image_path'), $value->user['profile_image']) : '';
+                $user_avatar = !empty($value->user) && !empty($value->user['profile_image']) ? get_image_url(config('constants.users.image_path'), $value->user['profile_image']) : '';
                 $date_formatted = !empty($value->created_at) ? Carbon::parse($value->created_at)->format('d M Y, h:i A') : 'N/A';
                 $relative_time = !empty($value->created_at) ? Carbon::parse($value->created_at)->diffForHumans() : '';
 
