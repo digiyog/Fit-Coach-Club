@@ -9,7 +9,7 @@
 
 <style>
 /* ==========================================================================
-   Community Photos - Modern Redesign Styles
+   Community Photos - Pixel-Perfect Redesign Styles
    ========================================================================== */
 .cp-page-wrapper {
     padding: 16px 0 48px;
@@ -98,8 +98,8 @@
 /* Header Buttons */
 .cp-btn-header {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    color: #334155;
+    border: 1px solid #cbd5e1;
+    color: #2563eb;
     font-size: 13px;
     font-weight: 600;
     border-radius: 10px;
@@ -110,11 +110,12 @@
     transition: all 0.2s ease;
     text-decoration: none;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
 }
 .cp-btn-header:hover {
-    background: #f8fafc;
-    border-color: #cbd5e1;
-    color: #0f172a;
+    background: #eff6ff;
+    border-color: #2563eb;
+    color: #1d4ed8;
 }
 
 /* Metrics Bar */
@@ -135,17 +136,17 @@
 .cp-metric-item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     min-width: 140px;
 }
 .cp-metric-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     flex-shrink: 0;
 }
 .cp-icon-blue {
@@ -165,19 +166,19 @@
     color: #ea580c;
 }
 .cp-metric-val {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     color: #0f172a;
     line-height: 1.15;
 }
 .cp-metric-label {
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 500;
     color: #64748b;
 }
 .cp-metric-divider {
     width: 1px;
-    height: 36px;
+    height: 38px;
     background: #f1f5f9;
 }
 @media (max-width: 768px) {
@@ -187,14 +188,10 @@
 }
 .cp-metric-info-box {
     margin-left: auto;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 8px 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 12.5px;
+    gap: 12px;
+    font-size: 13px;
     color: #64748b;
     max-width: 320px;
 }
@@ -207,18 +204,27 @@
 }
 .cp-cloud-icon {
     color: #2563eb;
-    font-size: 22px;
+    font-size: 26px;
     flex-shrink: 0;
 }
 
-/* Main Card */
-.cp-main-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 22px;
+/* Two-Column Grid */
+.cp-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 22px;
+    align-items: start;
     margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+@media (max-width: 1200px) {
+    .cp-main-grid {
+        grid-template-columns: minmax(0, 1fr) 310px;
+    }
+}
+@media (max-width: 992px) {
+    .cp-main-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Section Title */
@@ -235,7 +241,7 @@
 }
 .cp-section-indicator {
     width: 4px;
-    height: 20px;
+    height: 18px;
     background: #2563eb;
     border-radius: 2px;
     display: inline-block;
@@ -249,48 +255,44 @@
 .cp-section-sub {
     font-size: 13.5px;
     color: #64748b;
-    margin: 2px 0 16px 12px;
+    margin: 2px 0 14px 12px;
 }
 
-/* Filters Bar */
+/* Left Filter Bar */
 .cp-filter-bar {
-    background: #f8fafc;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 10px 14px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 .cp-search-wrap {
-    flex: 1 1 240px;
-    min-width: 200px;
+    flex: 1 1 200px;
+    min-width: 170px;
     position: relative;
 }
 .cp-search-wrap svg {
     position: absolute;
-    left: 15px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
     color: #64748b;
     pointer-events: none;
     z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
 }
 .cp-search-input {
     width: 100% !important;
-    height: 40px !important;
-    padding: 8px 14px 8px 44px !important;
+    height: 38px !important;
+    padding: 6px 12px 6px 44px !important;
     padding-left: 44px !important;
     border: 1px solid #e2e8f0 !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     background: #ffffff !important;
-    font-size: 13.5px !important;
+    font-size: 13px !important;
     color: #1e293b !important;
     outline: none !important;
     transition: all 0.2s ease;
@@ -305,14 +307,14 @@
 }
 
 .cp-select-filter {
-    height: 40px;
-    padding: 8px 30px 8px 12px;
+    height: 38px;
+    padding: 6px 28px 6px 12px;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    border-radius: 8px;
     background-color: #ffffff;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 10px center;
+    background-position: right 8px center;
     background-size: 12px;
     appearance: none;
     -webkit-appearance: none;
@@ -321,28 +323,23 @@
     font-weight: 500;
     cursor: pointer;
     outline: none;
-    transition: border-color 0.2s ease;
-}
-.cp-select-filter:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 /* View Switcher */
 .cp-view-switcher {
     display: inline-flex;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
     border: 1px solid #e2e8f0;
     background: #ffffff;
 }
 .cp-btn-view {
-    height: 38px;
+    height: 36px;
     padding: 6px 14px;
     border: none;
     background: #ffffff;
     color: #64748b;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -364,7 +361,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     padding: 0 2px;
 }
 .cp-toolbar-count {
@@ -373,8 +370,8 @@
     color: #0f172a;
 }
 .cp-select-perpage {
-    height: 34px;
-    padding: 4px 28px 4px 10px;
+    height: 32px;
+    padding: 3px 26px 3px 10px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     background-color: #ffffff;
@@ -389,103 +386,126 @@
     cursor: pointer;
 }
 
-/* Data Table */
-.cp-table {
-    margin-bottom: 0 !important;
-    width: 100% !important;
-    border-collapse: collapse !important;
-}
-.cp-table thead th {
-    background: #f8fafc !important;
-    color: #64748b !important;
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.05em !important;
-    text-transform: uppercase !important;
-    padding: 14px 16px !important;
-    border-top: none !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-}
-.cp-table tbody td {
-    padding: 14px 16px !important;
-    font-size: 13.5px !important;
-    color: #334155 !important;
-    vertical-align: middle !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-}
-.cp-table tbody tr:hover td {
-    background-color: #f8fafc !important;
-}
-.cp-table-avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    object-fit: cover;
+/* Main Left Card */
+.cp-content-card {
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    flex-shrink: 0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 20px;
 }
-.cp-table-avatar-fallback {
-    width: 34px;
-    height: 34px;
+
+/* Empty State Illustration */
+.cp-empty-illustration-wrap {
+    padding: 40px 20px;
+    text-align: center;
+    margin: auto;
+}
+.cp-empty-icon-circle {
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     background: #eff6ff;
-    color: #2563eb;
-    font-size: 13px;
-    font-weight: 700;
+    border: 2px solid #dbeafe;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    position: relative;
+    margin-bottom: 20px;
 }
+.cp-phone-sync-graphic {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.cp-phone-badge-sync {
+    position: absolute;
+    bottom: -6px;
+    right: -8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+.cp-sparkle-dot {
+    position: absolute;
+    color: #3b82f6;
+    font-size: 13px;
+    line-height: 1;
+}
+.cp-sparkle-dot.s1 { top: 6px; left: 4px; font-size: 12px; }
+.cp-sparkle-dot.s2 { top: 4px; right: -4px; font-size: 15px; }
+.cp-sparkle-dot.s3 { bottom: 12px; right: -8px; font-size: 12px; }
 
-/* Footer / Pagination */
-.cp-table-footer {
-    padding: 14px 16px;
-    border-top: 1px solid #f1f5f9;
+.cp-empty-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+.cp-empty-text {
+    font-size: 13px;
+    color: #64748b;
+    max-width: 420px;
+    margin: 0 auto 20px;
+    line-height: 1.45;
+}
+.cp-btn-check {
     background: #ffffff;
+    border: 1.5px solid #2563eb;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 22px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
-.cp-table-footer .dataTables_info {
-    font-size: 13px !important;
-    color: #64748b !important;
-}
-.cp-table-footer .dataTables_paginate .paginate_button {
-    border-radius: 8px !important;
-    border: 1px solid #e2e8f0 !important;
-    background: #ffffff !important;
-    color: #334155 !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    padding: 5px 12px !important;
-    margin: 0 3px !important;
-}
-.cp-table-footer .dataTables_paginate .paginate_button.current {
-    background: #2563eb !important;
-    border-color: #2563eb !important;
-    color: #ffffff !important;
+.cp-btn-check:hover {
+    background: #eff6ff;
 }
 
-/* Gallery Grid */
+/* Gallery Cards Grid */
 .cp-gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 18px;
-    padding: 12px 0 20px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 10px 0 20px;
 }
 .cp-gallery-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 14px;
-    padding: 14px;
+    padding: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 .cp-gallery-card:hover {
     border-color: #93c5fd;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08);
+}
+.cp-gallery-card.active {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 .cp-card-header {
     display: flex;
@@ -493,20 +513,20 @@
     gap: 10px;
 }
 .cp-card-avatar {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
 }
 .cp-card-avatar-fallback {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: #eff6ff;
     color: #2563eb;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -530,14 +550,14 @@
 .cp-card-image-wrap {
     position: relative;
     width: 100%;
-    height: 160px;
+    height: 140px;
     border-radius: 10px;
     overflow: hidden;
     background: #f1f5f9;
 }
 .cp-card-thumb {
     width: 100%;
-    height: 160px;
+    height: 140px;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
@@ -546,18 +566,18 @@
 }
 .cp-card-photo-count {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
+    bottom: 6px;
+    right: 6px;
     background: rgba(15, 23, 42, 0.75);
     color: #ffffff;
     font-size: 11px;
     font-weight: 600;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 6px;
     backdrop-filter: blur(4px);
 }
 .cp-card-message {
-    font-size: 12.5px;
+    font-size: 12px;
     color: #475569;
     line-height: 1.4;
     white-space: nowrap;
@@ -569,92 +589,231 @@
     font-style: italic;
 }
 
-/* Empty State */
-.cp-empty-illustration-wrap {
-    padding: 60px 24px;
-    text-align: center;
-    margin: auto;
+/* List Table Styles */
+.cp-table {
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
 }
-.cp-empty-icon-circle {
-    width: 90px;
-    height: 90px;
+.cp-table thead th {
+    background: #f8fafc !important;
+    color: #64748b !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    padding: 12px 14px !important;
+    border-top: none !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+.cp-table tbody td {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+    color: #334155 !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+.cp-table tbody tr:hover td {
+    background-color: #f8fafc !important;
+    cursor: pointer;
+}
+.cp-table tbody tr.selected td {
+    background-color: #eff6ff !important;
+}
+.cp-table-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.cp-table-avatar-fallback {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: #eff6ff;
-    border: 2px solid #dbeafe;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin-bottom: 18px;
-}
-.cp-phone-sync-icon {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.cp-phone-badge-sync {
-    position: absolute;
-    bottom: -4px;
-    right: -8px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #2563eb;
-    color: #ffffff;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #ffffff;
-}
-.cp-sparkle-dot {
-    position: absolute;
-    color: #3b82f6;
-    font-size: 12px;
-    line-height: 1;
-}
-.cp-sparkle-dot.s1 { top: -4px; left: 0px; }
-.cp-sparkle-dot.s2 { top: 4px; right: -6px; font-size: 14px; }
-.cp-sparkle-dot.s3 { bottom: 0px; right: 0px; font-size: 11px; }
-
-.cp-empty-heading {
-    font-size: 18px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 8px;
-}
-.cp-empty-text {
-    font-size: 13.5px;
-    color: #64748b;
-    max-width: 440px;
-    margin: 0 auto 20px;
-    line-height: 1.45;
-}
-.cp-btn-check {
-    background: #ffffff;
-    border: 1.5px solid #2563eb;
     color: #2563eb;
-    font-size: 13.5px;
-    font-weight: 600;
-    padding: 8px 20px;
-    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Left Card Footer Pagination */
+.cp-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 14px;
+    margin-top: auto;
+    border-top: 1px solid #f1f5f9;
+}
+.cp-footer-info {
+    font-size: 13px;
+    color: #64748b;
+}
+.cp-footer-paginate {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.cp-btn-page {
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.cp-btn-page:hover:not(:disabled) {
+    background: #f8fafc;
+    color: #0f172a;
+}
+.cp-btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.cp-btn-page.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+/* Right Column: Photo Preview */
+.cp-preview-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+}
+.cp-preview-nav-btns {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.cp-btn-nav-arrow {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+.cp-btn-nav-arrow:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+.cp-preview-box {
+    background: #f8fafc;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+.cp-preview-empty-state {
+    text-align: center;
+    color: #94a3b8;
+}
+.cp-preview-img-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.cp-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cp-btn-zoom {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(15, 23, 42, 0.7);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
     transition: all 0.2s;
 }
-.cp-btn-check:hover {
-    background: #eff6ff;
+.cp-btn-zoom:hover {
+    background: #2563eb;
+    color: #ffffff;
 }
 
-/* Bottom How-it-works Banner */
+.cp-preview-metadata {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.cp-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+}
+.cp-meta-label {
+    color: #64748b;
+    font-weight: 500;
+}
+.cp-meta-val {
+    color: #0f172a;
+    font-weight: 700;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cp-preview-status-bar {
+    padding: 12px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cp-status-dot-active {
+    color: #10b981;
+    font-size: 14px;
+}
+
+/* Bottom How-it-works Flow Card */
 .cp-bottom-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 22px;
+    padding: 20px 22px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 .cp-how-flow-row {
@@ -663,33 +822,36 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 20px;
-    margin-top: 14px;
+    margin-top: 12px;
 }
 .cp-flow-steps {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 16px 22px;
 }
 .cp-flow-step-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 8px 14px;
 }
-.cp-flow-icon {
+.cp-flow-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #eff6ff;
     color: #2563eb;
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
 }
 .cp-flow-num {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    background: #2563eb;
-    color: #ffffff;
+    background: #eff6ff;
+    color: #2563eb;
     font-size: 11px;
     font-weight: 700;
     display: flex;
@@ -697,13 +859,14 @@
     justify-content: center;
 }
 .cp-flow-text {
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 600;
     color: #334155;
 }
 .cp-flow-arrow {
-    color: #94a3b8;
+    color: #2563eb;
     font-size: 18px;
+    font-weight: bold;
 }
 .cp-btn-open-settings {
     color: #2563eb;
@@ -713,6 +876,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    cursor: pointer;
 }
 .cp-btn-open-settings:hover {
     text-decoration: underline;
@@ -812,7 +976,7 @@
         <!-- Top Breadcrumb & Header -->
         <div class="cp-top-header">
             <div class="cp-breadcrumb">
-                <span class="cp-crumb-parent">Dashboard</span>
+                <span class="cp-crumb-parent">Achievements &amp; Hub</span>
                 <span class="cp-crumb-sep">/</span>
                 <span class="cp-crumb-current">Community Photos</span>
             </div>
@@ -916,119 +1080,192 @@
             </div>
         </div>
 
-        <!-- Main Card: Community Gallery & List -->
-        <div class="cp-main-card">
-            <!-- Section Header -->
-            <div class="cp-section-title-wrap mb-1">
-                <div class="cp-section-title-left">
-                    <span class="cp-section-indicator"></span>
-                    <h3 class="cp-section-title">Community gallery &amp; uploads</h3>
-                </div>
-            </div>
-            <p class="cp-section-sub">All member photo uploads, captions and progress shared via mobile app.</p>
+        <!-- Main Two-Column Grid -->
+        <div class="cp-main-grid">
 
-            <!-- Filter Bar & View Switcher -->
-            <div class="cp-filter-bar">
-                <div class="cp-search-wrap">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" id="cp-search-input" class="cp-search-input" placeholder="Search member or message..." autocomplete="off" style="padding-left: 44px !important;">
+            <!-- Left Column: Community Gallery & List -->
+            <div>
+                <!-- Section Header -->
+                <div class="cp-section-title-wrap mb-1">
+                    <div class="cp-section-title-left">
+                        <span class="cp-section-indicator"></span>
+                        <h3 class="cp-section-title">Community gallery</h3>
+                    </div>
                 </div>
-                <div>
-                    <select id="cp-filter-member" class="cp-select-filter">
-                        <option value="all">All members</option>
-                        @if(isset($users) && count($users) > 0)
-                            @foreach($users as $u)
-                                <option value="{{ $u->id }}">{{ $u->name }}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-                <div>
-                    <select id="cp-filter-date" class="cp-select-filter">
-                        <option value="all">All dates</option>
-                        <option value="today">Today</option>
-                        <option value="this_week">This week</option>
-                        <option value="this_month">This month</option>
-                    </select>
-                </div>
-                <div>
-                    <select id="cp-filter-sort" class="cp-select-filter">
-                        <option value="newest" selected>Newest first</option>
-                        <option value="oldest">Oldest first</option>
-                    </select>
-                </div>
-                <div class="cp-view-switcher">
-                    <button type="button" id="cp-view-list" class="cp-btn-view active" title="List View">
-                        <i class="fa fa-list"></i> List
-                    </button>
-                    <button type="button" id="cp-view-gallery" class="cp-btn-view" title="Gallery View">
-                        <i class="fa fa-th-large"></i> Gallery
-                    </button>
-                </div>
-            </div>
+                <p class="cp-section-sub">All member uploads in one place.</p>
 
-            <!-- Toolbar (Photos Count & Per Page) -->
-            <div class="cp-toolbar">
-                <span class="cp-toolbar-count" id="cp-records-count">{{ $totalUploads ?? 0 }} photos</span>
-                <div>
-                    <select id="cp-per-page" class="cp-select-perpage">
-                        <option value="20" selected>20 per page</option>
-                        <option value="50">50 per page</option>
-                        <option value="100">100 per page</option>
-                    </select>
+                <!-- Filter Bar & View Switcher -->
+                <div class="cp-filter-bar">
+                    <div class="cp-search-wrap">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="cp-search-input" class="cp-search-input" placeholder="Search member or message..." autocomplete="off" style="padding-left: 44px !important;">
+                    </div>
+                    <div>
+                        <select id="cp-filter-date" class="cp-select-filter">
+                            <option value="all">All dates</option>
+                            <option value="today">Today</option>
+                            <option value="this_week">This week</option>
+                            <option value="this_month">This month</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="cp-filter-sort" class="cp-select-filter">
+                            <option value="newest" selected>Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                        </select>
+                    </div>
+                    <div class="cp-view-switcher">
+                        <button type="button" id="cp-view-gallery" class="cp-btn-view active" title="Gallery View">
+                            <i class="fa fa-th-large"></i> Gallery
+                        </button>
+                        <button type="button" id="cp-view-list" class="cp-btn-view" title="List View">
+                            <i class="fa fa-list"></i> List
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- List View Section (DataTables - Active by default) -->
-            <div id="cp-list-section">
-                <div class="table-responsive">
-                    <table id="dataTable" class="table cp-table" data-url="{{ route('nutritionPanel.community-photos.getCommunityPhotos') }}">
-                        <thead>
-                            <tr>
-                                <th class="text-center" style="width: 50px;">#</th>
-                                <th style="width: 220px;">MEMBER</th>
-                                <th>MESSAGE</th>
-                                <th style="width: 180px;">PHOTOS</th>
-                                <th style="width: 180px;">DATE &amp; TIME</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <!-- Toolbar (Photos Count & Per Page) -->
+                <div class="cp-toolbar">
+                    <span class="cp-toolbar-count" id="cp-records-count">{{ $totalUploads ?? 0 }} photos</span>
+                    <div>
+                        <select id="cp-per-page" class="cp-select-perpage">
+                            <option value="20" selected>20 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Gallery View Section -->
-            <div id="cp-gallery-section" style="display: none;">
-                <!-- Empty State in Gallery -->
-                <div id="cp-gallery-empty" class="cp-empty-illustration-wrap" style="{{ ($totalUploads ?? 0) > 0 ? 'display: none;' : '' }}">
-                    <div class="cp-empty-icon-circle">
-                        <div class="cp-sparkle-dot s1">✦</div>
-                        <div class="cp-sparkle-dot s2">✦</div>
-                        <div class="cp-sparkle-dot s3">✦</div>
-                        <div class="cp-phone-sync-icon">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
-                                <path d="M12 18h.01"></path>
-                            </svg>
-                            <span class="cp-phone-badge-sync">
-                                <i class="fa fa-refresh"></i>
-                            </span>
+                <!-- Content Card (Gallery + List) -->
+                <div class="cp-content-card">
+                    <!-- Gallery View Section -->
+                    <div id="cp-gallery-section">
+                        <!-- Empty State in Gallery -->
+                        <div id="cp-gallery-empty" class="cp-empty-illustration-wrap" style="{{ ($totalUploads ?? 0) > 0 ? 'display: none;' : '' }}">
+                            <div class="cp-empty-icon-circle">
+                                <div class="cp-sparkle-dot s1">✦</div>
+                                <div class="cp-sparkle-dot s2">✦</div>
+                                <div class="cp-sparkle-dot s3">✦</div>
+                                <div class="cp-phone-sync-graphic">
+                                    <svg width="44" height="60" viewBox="0 0 44 60" fill="none">
+                                        <rect x="2" y="2" width="40" height="56" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+                                        <line x1="16" y1="7" x2="28" y2="7" stroke="#93c5fd" stroke-width="2" stroke-linecap="round"/>
+                                        <rect x="7" y="14" width="30" height="26" rx="4" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                        <circle cx="27" cy="20" r="2.5" fill="#3b82f6"/>
+                                        <path d="M10 36L18 25L24 31L28 27L34 36H10Z" fill="#60a5fa"/>
+                                    </svg>
+                                    <span class="cp-phone-badge-sync">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                            <h4 class="cp-empty-heading">No community photos yet</h4>
+                            <p class="cp-empty-text">Photos shared through the Fit Coach Club mobile app will appear here automatically. No admin upload is required.</p>
+                            <button type="button" class="cp-btn-check cp-check-photos-btn">
+                                <i class="fa fa-refresh"></i> Check for new photos
+                            </button>
+                        </div>
+
+                        <!-- Gallery Cards Grid -->
+                        <div id="cp-gallery-grid" class="cp-gallery-grid" style="{{ ($totalUploads ?? 0) == 0 ? 'display: none;' : '' }}">
                         </div>
                     </div>
-                    <h4 class="cp-empty-heading">No community photos yet</h4>
-                    <p class="cp-empty-text">Photos shared through the Fit Coach Club mobile app will appear here automatically. No admin upload is required.</p>
-                    <button type="button" class="cp-btn-check cp-check-photos-btn">
-                        <i class="fa fa-refresh"></i> Check for new photos
-                    </button>
-                </div>
 
-                <!-- Gallery Cards Grid -->
-                <div id="cp-gallery-grid" class="cp-gallery-grid" style="{{ ($totalUploads ?? 0) == 0 ? 'display: none;' : '' }}">
+                    <!-- List View Section (DataTables) -->
+                    <div id="cp-list-section" style="display: none;">
+                        <div class="table-responsive">
+                            <table id="dataTable" class="table cp-table" data-url="{{ route('nutritionPanel.community-photos.getCommunityPhotos') }}">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 50px;">#</th>
+                                        <th style="width: 200px;">NAME</th>
+                                        <th>MESSAGE</th>
+                                        <th style="width: 140px;">VIEW PHOTOS</th>
+                                        <th style="width: 160px;">DATE &amp; TIME</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Card Bottom Footer (Showing & Pagination) -->
+                    <div class="cp-card-footer">
+                        <div class="cp-footer-info" id="cp-footer-info">Showing 0 of 0 photos</div>
+                        <div class="cp-footer-paginate" id="cp-footer-paginate">
+                            <button type="button" class="cp-btn-page" id="cp-prev-page" disabled>
+                                <i class="fa fa-angle-left"></i> Previous
+                            </button>
+                            <button type="button" class="cp-btn-page active" id="cp-curr-page">1</button>
+                            <button type="button" class="cp-btn-page" id="cp-next-page" disabled>
+                                Next <i class="fa fa-angle-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Right Column: Photo Preview -->
+            <div>
+                <!-- Section Header with Arrows -->
+                <div class="cp-section-title-wrap mb-1">
+                    <div class="cp-section-title-left">
+                        <span class="cp-section-indicator"></span>
+                        <h3 class="cp-section-title">Photo preview</h3>
+                    </div>
+                    <div class="cp-preview-nav-btns">
+                        <button type="button" id="cp-preview-prev" class="cp-btn-nav-arrow" title="Previous photo">
+                            <i class="fa fa-angle-left"></i>
+                        </button>
+                        <button type="button" id="cp-preview-next" class="cp-btn-nav-arrow" title="Next photo">
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="height: 18px;"></div>
+
+                <!-- Preview Card -->
+                <div class="cp-preview-card">
+                    <div id="cp-preview-visual" class="cp-preview-box">
+                        <div class="cp-preview-empty-state">
+                            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                            </svg>
+                            <p class="mb-0 mt-2 text-muted fw-semibold" style="font-size: 13px;">Select a photo to preview</p>
+                        </div>
+                    </div>
+
+                    <!-- Metadata -->
+                    <div class="cp-preview-metadata">
+                        <div class="cp-meta-row">
+                            <span class="cp-meta-label">Member</span>
+                            <span class="cp-meta-val" id="cp-meta-member">—</span>
+                        </div>
+                        <div class="cp-meta-row">
+                            <span class="cp-meta-label">Uploaded</span>
+                            <span class="cp-meta-val" id="cp-meta-uploaded">—</span>
+                        </div>
+                        <div class="cp-meta-row">
+                            <span class="cp-meta-label">Message</span>
+                            <span class="cp-meta-val" id="cp-meta-message">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Status Bar Footer -->
+                    <div class="cp-preview-status-bar" id="cp-meta-status">
+                        <i class="fa fa-clock-o text-muted"></i>
+                        Waiting for the first mobile upload
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Bottom Card: How mobile uploads appear -->
@@ -1041,7 +1278,9 @@
                 <div class="cp-flow-steps">
                     <!-- Step 1 -->
                     <div class="cp-flow-step-item">
-                        <i class="fa fa-mobile cp-flow-icon"></i>
+                        <div class="cp-flow-icon-wrap">
+                            <i class="fa fa-mobile"></i>
+                        </div>
                         <span class="cp-flow-num">1</span>
                         <span class="cp-flow-text">Member uploads from app</span>
                     </div>
@@ -1050,7 +1289,9 @@
 
                     <!-- Step 2 -->
                     <div class="cp-flow-step-item">
-                        <i class="fa fa-cloud cp-flow-icon"></i>
+                        <div class="cp-flow-icon-wrap">
+                            <i class="fa fa-cloud"></i>
+                        </div>
                         <span class="cp-flow-num">2</span>
                         <span class="cp-flow-text">Photo syncs automatically</span>
                     </div>
@@ -1059,7 +1300,9 @@
 
                     <!-- Step 3 -->
                     <div class="cp-flow-step-item">
-                        <i class="fa fa-picture-o cp-flow-icon"></i>
+                        <div class="cp-flow-icon-wrap">
+                            <i class="fa fa-picture-o"></i>
+                        </div>
                         <span class="cp-flow-num">3</span>
                         <span class="cp-flow-text">Appears in community gallery</span>
                     </div>
@@ -1156,6 +1399,8 @@
 window.CommunityPhoto = (function() {
     var data_table;
     var table;
+    var allRecords = [];
+    var currentIndex = -1;
     var searchTimer = null;
 
     return {
@@ -1174,25 +1419,16 @@ window.CommunityPhoto = (function() {
                     if (ths.length > 0) ths[0].innerHTML = '#';
                 },
                 oLanguage: {
-                    oPaginate: {
-                        sPrevious: '<span class="cp-nav-arrow"><i class="fa fa-angle-left"></i> Previous</span>',
-                        sNext: '<span class="cp-nav-arrow">Next <i class="fa fa-angle-right"></i></span>'
-                    },
-                    sInfo: "Showing _START_ to _END_ of _TOTAL_ photos",
-                    sInfoEmpty: "Showing 0 to 0 of 0 photos",
-                    sInfoFiltered: "(filtered from _MAX_ total photos)",
-                    sEmptyTable: '<div class="text-center py-5 text-muted"><i class="fa fa-picture-o fa-3x mb-3" style="color: #cbd5e1;"></i><h5 class="fw-bold text-dark mb-1">No community photos yet</h5><p class="text-muted small">Photos uploaded by members from the mobile app will appear here.</p></div>',
-                    sZeroRecords: '<div class="text-center py-5 text-muted"><i class="fa fa-search fa-3x mb-3" style="color: #cbd5e1;"></i><h5 class="fw-bold text-dark mb-1">No matching photos found</h5><p class="text-muted small">Try adjusting your search terms or filters.</p></div>'
+                    sEmptyTable: 'No photos uploaded yet',
+                    sZeroRecords: 'No matching photos found'
                 },
                 processing: true,
                 serverSide: true,
                 pageLength: 20,
-                dom: 'rt<"cp-table-footer d-flex justify-content-between align-items-center flex-wrap gap-2"ip>',
+                dom: 'rt',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
-                        var memberVal = $("#cp-filter-member").val();
-                        d.name = (memberVal && memberVal !== "all") ? memberVal : "";
                         d.date = $("#cp-filter-date").val() || "all";
                         d.sort_order = $("#cp-filter-sort").val() || "newest";
                     }
@@ -1212,7 +1448,7 @@ window.CommunityPhoto = (function() {
                     {
                         data: "name",
                         name: "name",
-                        width: 220,
+                        width: 200,
                         render: function(data, type, row) {
                             var initial = (data && data.trim().length > 0) ? data.trim().charAt(0).toUpperCase() : 'U';
                             var colors = [
@@ -1226,13 +1462,13 @@ window.CommunityPhoto = (function() {
                             var charCode = (data && data.length > 0) ? data.charCodeAt(0) + data.length : 0;
                             var col = colors[charCode % colors.length];
 
-                            var fallbackHtml = '<div class="cp-table-avatar-fallback" style="background: ' + col.bg + '; color: ' + col.color + '; font-weight: 700; width: 34px; height: 34px; min-width: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;">' + initial + '</div>';
+                            var fallbackHtml = '<div class="cp-table-avatar-fallback" style="background: ' + col.bg + '; color: ' + col.color + '; font-weight: 700; width: 32px; height: 32px; min-width: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">' + initial + '</div>';
 
                             var avatarHtml;
                             if (row && row.avatar && row.avatar.trim() !== '') {
-                                avatarHtml = '<div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; min-width: 34px; flex-shrink: 0;">' +
+                                avatarHtml = '<div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; min-width: 32px; flex-shrink: 0;">' +
                                     fallbackHtml +
-                                    '<img src="' + row.avatar + '" class="cp-table-avatar" alt="" style="position: absolute; top: 0; left: 0; width: 34px; height: 34px; border-radius: 50%; object-fit: cover; z-index: 2;" onerror="this.remove();" />' +
+                                    '<img src="' + row.avatar + '" class="cp-table-avatar" alt="" style="position: absolute; top: 0; left: 0; width: 32px; height: 32px; border-radius: 50%; object-fit: cover; z-index: 2;" onerror="this.remove();" />' +
                                 '</div>';
                             } else {
                                 avatarHtml = fallbackHtml;
@@ -1240,7 +1476,7 @@ window.CommunityPhoto = (function() {
 
                             return '<div class="d-flex align-items-center gap-2">' +
                                    avatarHtml +
-                                   '<div><div class="fw-bold text-dark" style="font-size: 13.5px;">' + (data || 'N/A') + '</div></div>' +
+                                   '<div><div class="fw-bold text-dark" style="font-size: 13px;">' + (data || 'N/A') + '</div></div>' +
                                    '</div>';
                         }
                     },
@@ -1249,26 +1485,26 @@ window.CommunityPhoto = (function() {
                         name: "message",
                         render: function(data) {
                             if (!data || data === 'N/A' || data.trim() === '') {
-                                return '<span class="text-muted fst-italic" style="font-size: 12.5px;">No message provided</span>';
+                                return '<span class="text-muted fst-italic" style="font-size: 12px;">No caption provided</span>';
                             }
-                            return '<span class="text-secondary" style="font-size: 13px; line-height: 1.45;">' + data + '</span>';
+                            return '<span class="text-secondary" style="font-size: 12.5px; line-height: 1.4;">' + data + '</span>';
                         }
                     },
                     {
                         data: "view_photos",
                         name: "view_photos",
-                        width: 180,
+                        width: 140,
                         render: function(data, type, row) {
                             var url = (row && row.view_photos_url) ? row.view_photos_url : '';
                             var count = (row && row.images_count) ? row.images_count : 1;
                             var thumb = (row && row.first_image) ?
-                                '<img src="' + row.first_image + '" style="width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0;" alt="Photo">' :
+                                '<img src="' + row.first_image + '" style="width: 34px; height: 34px; border-radius: 6px; object-fit: cover; border: 1px solid #e2e8f0;" alt="Photo">' :
                                 '';
 
                             if (url) {
                                 return '<div class="d-flex align-items-center gap-2">' +
                                        thumb +
-                                       '<a href="javascript:void(0);" data-url="' + url + '" class="view-photos btn btn-sm btn-outline-primary" style="border-radius: 8px; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;"><i class="fa fa-eye"></i> View (' + count + ')</a>' +
+                                       '<a href="javascript:void(0);" data-url="' + url + '" class="view-photos btn btn-sm btn-outline-primary py-1 px-2" style="border-radius: 8px; font-weight: 600; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px;"><i class="fa fa-eye"></i> View (' + count + ')</a>' +
                                        '</div>';
                             }
                             return data || '<span class="text-muted">No photos</span>';
@@ -1277,39 +1513,63 @@ window.CommunityPhoto = (function() {
                     {
                         data: "date_time",
                         name: "date_time",
-                        width: 180,
+                        width: 160,
                         render: function(data, type, row) {
                             var formatted = (row && row.date_formatted) ? row.date_formatted : data;
                             var rel = (row && row.relative_time) ? '<div class="text-muted" style="font-size: 11px;">' + row.relative_time + '</div>' : '';
-                            return '<div><div style="font-size: 12.5px; font-weight: 600; color: #334155;">' + (formatted || 'N/A') + '</div>' + rel + '</div>';
+                            return '<div><div style="font-size: 12px; font-weight: 600; color: #334155;">' + (formatted || 'N/A') + '</div>' + rel + '</div>';
                         }
                     }
                 ]
             });
 
             table.on("draw", function() {
-                var records = table.rows().data().toArray();
+                allRecords = table.rows().data().toArray();
                 var pageInfo = table.page.info();
                 var total = pageInfo.recordsTotal || 0;
+                var current = pageInfo.page + 1;
+                var totalPages = pageInfo.pages || 1;
 
-                $("#cp-records-count").text(total + (total === 1 ? " photo" : " photos"));
+                // Sync counts
+                $("#cp-records-count").text(total + " photos");
                 $("#cp-stat-total").text(total);
 
-                if ($("#cp-view-gallery").hasClass("active")) {
-                    CommunityPhoto.renderGallery(records);
+                // Sync custom footer info & pagination
+                if (total === 0) {
+                    $("#cp-footer-info").text("Showing 0 of 0 photos");
+                    $("#cp-curr-page").text("1");
+                    $("#cp-prev-page").prop("disabled", true);
+                    $("#cp-next-page").prop("disabled", true);
+                } else {
+                    var start = pageInfo.start + 1;
+                    var end = pageInfo.end;
+                    $("#cp-footer-info").text("Showing " + start + " to " + end + " of " + total + " photos");
+                    $("#cp-curr-page").text(current);
+                    $("#cp-prev-page").prop("disabled", current <= 1);
+                    $("#cp-next-page").prop("disabled", current >= totalPages);
+                }
+
+                // Render Gallery
+                CommunityPhoto.renderGallery();
+
+                // Select first photo if available and none selected
+                if (allRecords.length > 0) {
+                    if (currentIndex < 0 || currentIndex >= allRecords.length) {
+                        CommunityPhoto.selectPhoto(0);
+                    } else {
+                        CommunityPhoto.selectPhoto(currentIndex);
+                    }
+                } else {
+                    CommunityPhoto.resetPreview();
                 }
             });
         },
 
-        renderGallery: function(records) {
+        renderGallery: function() {
             var $galleryWrap = $("#cp-gallery-grid");
             var $emptyWrap = $("#cp-gallery-empty");
 
-            if (!records) {
-                records = (data_table && data_table.rows) ? data_table.rows().data().toArray() : [];
-            }
-
-            if (!records || records.length === 0) {
+            if (!allRecords || allRecords.length === 0) {
                 $galleryWrap.hide();
                 $emptyWrap.show();
                 return;
@@ -1318,9 +1578,9 @@ window.CommunityPhoto = (function() {
             $emptyWrap.hide();
             $galleryWrap.show().empty();
 
-            $.each(records, function(idx, item) {
+            $.each(allRecords, function(idx, item) {
                 var imgSrc = item.first_image || (item.images && item.images.length > 0 ? item.images[0] : '');
-                var photoUrl = item.view_photos_url || '';
+                var isSelected = (idx === currentIndex) ? 'active' : '';
                 var initial = (item && item.name && item.name.trim().length > 0) ? item.name.trim().charAt(0).toUpperCase() : 'U';
                 var colors = [
                     { bg: '#eff6ff', color: '#2563eb' },
@@ -1333,13 +1593,13 @@ window.CommunityPhoto = (function() {
                 var charCode = (item && item.name && item.name.length > 0) ? item.name.charCodeAt(0) + item.name.length : 0;
                 var col = colors[charCode % colors.length];
 
-                var cardFallbackHtml = '<div class="cp-card-avatar-fallback" style="background: ' + col.bg + '; color: ' + col.color + '; font-weight: 700; width: 34px; height: 34px; min-width: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;">' + initial + '</div>';
+                var cardFallbackHtml = '<div class="cp-card-avatar-fallback" style="background: ' + col.bg + '; color: ' + col.color + '; font-weight: 700; width: 32px; height: 32px; min-width: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">' + initial + '</div>';
 
                 var avatarHtml;
                 if (item && item.avatar && item.avatar.trim() !== '') {
-                    avatarHtml = '<div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; min-width: 34px; flex-shrink: 0;">' +
+                    avatarHtml = '<div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px; min-width: 32px; flex-shrink: 0;">' +
                         cardFallbackHtml +
-                        '<img src="' + item.avatar + '" class="cp-card-avatar" alt="" style="position: absolute; top: 0; left: 0; width: 34px; height: 34px; border-radius: 50%; object-fit: cover; z-index: 2;" onerror="this.remove();" />' +
+                        '<img src="' + item.avatar + '" class="cp-card-avatar" alt="" style="position: absolute; top: 0; left: 0; width: 32px; height: 32px; border-radius: 50%; object-fit: cover; z-index: 2;" onerror="this.remove();" />' +
                     '</div>';
                 } else {
                     avatarHtml = cardFallbackHtml;
@@ -1349,7 +1609,7 @@ window.CommunityPhoto = (function() {
                     '<span class="cp-card-photo-count"><i class="fa fa-camera"></i> ' + item.images_count + ' photos</span>' : '';
 
                 var cardHtml = `
-                    <div class="cp-gallery-card view-photos cursor-pointer" data-url="${photoUrl}" title="Click to view photos">
+                    <div class="cp-gallery-card ${isSelected}" data-index="${idx}">
                         <div class="cp-card-header">
                             ${avatarHtml}
                             <div class="cp-card-user-info">
@@ -1360,7 +1620,7 @@ window.CommunityPhoto = (function() {
                         <div class="cp-card-image-wrap">
                             ${imgSrc ?
                                 `<img src="${imgSrc}" class="cp-card-thumb" alt="Upload" loading="lazy">` :
-                                `<div class="cp-card-placeholder d-flex align-items-center justify-content-center h-100 text-muted" style="min-height: 160px; background: #f1f5f9;"><i class="fa fa-picture-o fa-2x"></i></div>`
+                                `<div class="cp-card-placeholder d-flex align-items-center justify-content-center h-100 text-muted" style="min-height: 140px; background: #f1f5f9;"><i class="fa fa-picture-o fa-2x"></i></div>`
                             }
                             ${countBadge}
                         </div>
@@ -1371,8 +1631,87 @@ window.CommunityPhoto = (function() {
             });
         },
 
+        selectPhoto: function(idx) {
+            if (!allRecords || idx < 0 || idx >= allRecords.length) {
+                CommunityPhoto.resetPreview();
+                return;
+            }
+
+            currentIndex = idx;
+            var item = allRecords[idx];
+
+            // Highlight gallery card
+            $(".cp-gallery-card").removeClass("active");
+            $(".cp-gallery-card[data-index='" + idx + "']").addClass("active");
+
+            // Highlight table row
+            $("#dataTable tbody tr").removeClass("selected");
+            $($("#dataTable tbody tr").get(idx)).addClass("selected");
+
+            // Update Right Preview Box
+            var imgSrc = item.first_image || (item.images && item.images.length > 0 ? item.images[0] : '');
+            var $box = $("#cp-preview-visual");
+
+            if (imgSrc) {
+                $box.html(`
+                    <div class="cp-preview-img-container">
+                        <img src="${imgSrc}" id="cp-main-preview-img" class="cp-preview-img" alt="Preview">
+                        <button type="button" class="cp-btn-zoom view-photos" data-url="${item.view_photos_url}" title="View Fullscreen">
+                            <i class="fa fa-arrows-alt"></i>
+                        </button>
+                    </div>
+                `);
+            } else {
+                $box.html(`
+                    <div class="cp-preview-empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                        <p class="mb-0 mt-2 text-muted fw-semibold" style="font-size: 13px;">No image available</p>
+                    </div>
+                `);
+            }
+
+            // Update Metadata
+            $("#cp-meta-member").text(item.name || '—');
+            $("#cp-meta-uploaded").text(item.date_formatted || item.date_time || '—');
+            $("#cp-meta-message").text(item.message || 'No message provided');
+
+            // Status bar
+            $("#cp-meta-status").html('<span class="cp-status-dot-active">●</span> Mobile upload synced');
+        },
+
+        resetPreview: function() {
+            currentIndex = -1;
+            $("#cp-preview-visual").html(`
+                <div class="cp-preview-empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                        <circle cx="9" cy="9" r="2"/>
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                    </svg>
+                    <p class="mb-0 mt-2 text-muted fw-semibold" style="font-size: 13px;">Select a photo to preview</p>
+                </div>
+            `);
+            $("#cp-meta-member").text('—');
+            $("#cp-meta-uploaded").text('—');
+            $("#cp-meta-message").text('—');
+            $("#cp-meta-status").html('<i class="fa fa-clock-o text-muted"></i> Waiting for the first mobile upload');
+        },
+
         bindEventHandlers: function() {
-            // Switch to List View
+            // View Mode Switching (Gallery vs List)
+            $(document).on("click", "#cp-view-gallery", function(e) {
+                e.preventDefault();
+                $("#cp-view-gallery").addClass("active");
+                $("#cp-view-list").removeClass("active");
+                $("#cp-list-section").hide();
+                $("#cp-gallery-section").show();
+                CommunityPhoto.renderGallery();
+            });
+
             $(document).on("click", "#cp-view-list", function(e) {
                 e.preventDefault();
                 $("#cp-view-list").addClass("active");
@@ -1384,14 +1723,44 @@ window.CommunityPhoto = (function() {
                 }
             });
 
-            // Switch to Gallery View
-            $(document).on("click", "#cp-view-gallery", function(e) {
+            // Click Gallery Card to select photo
+            $(document).on("click", ".cp-gallery-card", function() {
+                var idx = parseInt($(this).data("index"), 10);
+                CommunityPhoto.selectPhoto(idx);
+            });
+
+            // Click Table Row to select photo
+            $(document).on("click", "#dataTable tbody tr", function() {
+                var idx = $(this).index();
+                CommunityPhoto.selectPhoto(idx);
+            });
+
+            // Preview Nav Arrows (< and >)
+            $(document).on("click", "#cp-preview-prev", function() {
+                if (allRecords.length === 0) return;
+                var newIdx = (currentIndex <= 0) ? allRecords.length - 1 : currentIndex - 1;
+                CommunityPhoto.selectPhoto(newIdx);
+            });
+
+            $(document).on("click", "#cp-preview-next", function() {
+                if (allRecords.length === 0) return;
+                var newIdx = (currentIndex >= allRecords.length - 1) ? 0 : currentIndex + 1;
+                CommunityPhoto.selectPhoto(newIdx);
+            });
+
+            // Pagination Controls (< Previous, Next >)
+            $(document).on("click", "#cp-prev-page", function(e) {
                 e.preventDefault();
-                $("#cp-view-gallery").addClass("active");
-                $("#cp-view-list").removeClass("active");
-                $("#cp-list-section").hide();
-                $("#cp-gallery-section").show();
-                CommunityPhoto.renderGallery();
+                if (data_table) {
+                    data_table.page("previous").draw(false);
+                }
+            });
+
+            $(document).on("click", "#cp-next-page", function(e) {
+                e.preventDefault();
+                if (data_table) {
+                    data_table.page("next").draw(false);
+                }
             });
 
             // Live Search with Debounce
@@ -1406,7 +1775,7 @@ window.CommunityPhoto = (function() {
             });
 
             // Filter dropdowns
-            $("#cp-filter-member, #cp-filter-date, #cp-filter-sort").on("change", function() {
+            $("#cp-filter-date, #cp-filter-sort").on("change", function() {
                 if (data_table) {
                     data_table.ajax.reload();
                 }
