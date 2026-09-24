@@ -411,34 +411,12 @@ class User extends Authenticatable
      */
     public function recalculatePendingDays()
     {
-        $logs = AttendanceLogs::where('user_id', $this->id)->orderBy('id', 'asc')->get();
-        if ($logs->isEmpty()) {
-            return (int)($this->days ?? 0);
-        }
-
-        $first = $logs->first();
-        $firstRemark = strtolower($first->remark ?? '');
-        if (str_contains($firstRemark, 'add user') || str_contains($firstRemark, 'add plan')) {
-            $running = (int)$first->days;
+        $lastLog = AttendanceLogs::where('user_id', $this->id)->orderBy('id', 'desc')->first();
+        if ($lastLog && $lastLog->total_days !== null && $lastLog->total_days >= 0) {
+            $this->days = max(0, (int)$lastLog->total_days);
         } else {
-            $running = (int)$first->total_days + (int)$first->days;
+            $this->days = max(0, (int)($this->days ?? 0));
         }
-
-        if (!str_contains($firstRemark, 'add user') && !str_contains($firstRemark, 'add plan')) {
-            $running = max(0, $running - (int)$first->days);
-        }
-
-        foreach ($logs->slice(1) as $l) {
-            $r = strtolower($l->remark ?? '');
-            $val = (int)$l->days;
-            if (str_contains($r, 'add user') || str_contains($r, 'add plan') || str_contains($r, 'delete') || str_contains($r, 'restore')) {
-                $running += $val;
-            } else {
-                $running = max(0, $running - $val);
-            }
-        }
-
-        $this->days = $running;
         $this->save();
 
         return (int)$this->days;

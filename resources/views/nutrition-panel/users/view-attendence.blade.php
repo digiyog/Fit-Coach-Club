@@ -760,7 +760,9 @@
                                 $isPresent = ($attendance && $attendance->type == 2);
                                 $isAbsentExplicit = ($attendance && $attendance->type == 1);
                                 $isPastOrToday = ($currentDate <= $today);
-                                $isAbsent = !$isPresent && ($isAbsentExplicit || $isPastOrToday);
+                                $userStartDate = !empty($user->start_date) ? date('Y-m-d', strtotime($user->start_date)) : (!empty($user->created_at) ? date('Y-m-d', strtotime($user->created_at)) : null);
+                                $isEnrolledDate = (!$userStartDate || $currentDate >= $userStartDate);
+                                $isAbsent = !$isPresent && ($isAbsentExplicit || ($isPastOrToday && $isEnrolledDate));
                                 $isToday = ($currentDate === $today);
 
                                 if ($isPresent) {
@@ -771,7 +773,7 @@
                                     $tooltipText = 'Absent on ' . date('d M Y', strtotime($currentDate));
                                 } else {
                                     $cellStatusClass = 'blank';
-                                    $tooltipText = date('d M Y', strtotime($currentDate)) . ' (Upcoming)';
+                                    $tooltipText = $isPastOrToday ? date('d M Y', strtotime($currentDate)) . ' (No check-in)' : date('d M Y', strtotime($currentDate)) . ' (Upcoming)';
                                 }
                             @endphp
 

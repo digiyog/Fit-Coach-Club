@@ -295,7 +295,7 @@ class DashboardController extends Controller
         $membershipExpires = User::select('users.id', 'users.user_type', 'users.user_state', 'users.name', 'users.email' ,'users.mobile_number', 'users.coach_name', 'users.meal_type_id', 'users.product_type_id', 'users.days', 'users.due_amount', 'users.status', 'users.created_at')
             ->where("users.role_type", 'user')
             ->where("users.created_by", $userId)
-            ->where('days', '<=', 10)
+            ->where('days', '<=', 30)
             ->orderBy('days', 'ASC')
             ->get();
 

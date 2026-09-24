@@ -47,11 +47,23 @@ class Attendance extends Model
         ->where("users.role_type", 'user')->where("users.created_by", $authUser->id)->with('user_attendence');
 
         $attendenceRegister = $attendenceRegister->withCount(['user_attendence as total_absent' => function ($query) use ($month, $year) {
-            $query->where('type', 1)->whereMonth('date', $month)->whereYear('date', $year);
+            $query->where('type', 1)->where(function($q) use ($month, $year) {
+                $q->where(function($sub1) use ($month, $year) {
+                    $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
+                })->orWhere(function($sub2) use ($month, $year) {
+                    $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
+                });
+            });
         }]);
 
         $attendenceRegister = $attendenceRegister->withCount(['user_attendence as total_present' => function ($query) use ($month, $year) {
-            $query->where('type', 2)->whereMonth('date', $month)->whereYear('date', $year);
+            $query->where('type', 2)->where(function($q) use ($month, $year) {
+                $q->where(function($sub1) use ($month, $year) {
+                    $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
+                })->orWhere(function($sub2) use ($month, $year) {
+                    $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
+                });
+            });
         }]);
          
         // Record filter conditions

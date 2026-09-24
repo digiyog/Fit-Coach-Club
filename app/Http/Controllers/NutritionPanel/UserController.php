@@ -238,10 +238,10 @@ class UserController extends Controller
 
                 // 6. Renewal
                 $daysLeft = (int)$days;
-                if ($daysLeft <= 3 && $daysLeft >= 0) {
-                    $renewalHtml = '<span class="badge" style="background: #fef3c7; color: #d97706; font-size: 11px; font-weight: 600; padding: 1.5px 6px; border-radius: 4px; line-height: 1.2;">'.$daysLeft.' days</span>';
-                } elseif ($daysLeft < 0) {
+                if ($daysLeft <= 0) {
                     $renewalHtml = '<span class="badge" style="background: #fee2e2; color: #ef4444; font-size: 11px; font-weight: 600; padding: 1.5px 6px; border-radius: 4px; line-height: 1.2;">Expired</span>';
+                } elseif ($daysLeft <= 3) {
+                    $renewalHtml = '<span class="badge" style="background: #fef3c7; color: #d97706; font-size: 11px; font-weight: 600; padding: 1.5px 6px; border-radius: 4px; line-height: 1.2;">'.$daysLeft.' days</span>';
                 } else {
                     $renewalHtml = '<span style="font-size: 12px; color: #334155; font-weight: 500;">'.$daysLeft.' days</span>';
                 }
@@ -1496,35 +1496,45 @@ class UserController extends Controller
         $startDate = Carbon::createFromDate($year, 1, 1)->startOfYear();
         $endDate   = Carbon::createFromDate($year, 12, 31)->endOfYear();
 
-        $attendances = Attendance::select('attendances.id as attendance_id', 'users.id', 'users.name', 'attendances.weight', 'attendances.date', 'attendances.type', 'attendances.created_at')
+        $attendancesRaw = Attendance::select('attendances.id as attendance_id', 'users.id', 'users.name', 'attendances.weight', 'attendances.date', 'attendances.type', 'attendances.created_at')
             ->leftJoin('users', function($join){
                 $join->on('attendances.user_id', '=', 'users.id');
             })
             ->where("users.role_type", 'user')
             ->where('user_id', $user->id)
-            ->whereBetween('attendances.date', [$startDate, $endDate])
-            ->orderBy('attendances.date','ASC')
-            ->get()
-            ->keyBy(function ($item) {
-                return Carbon::parse($item->date)->format('Y-m-d');
-            });
+            ->where(function($q) use ($startDate, $endDate) {
+                $q->whereBetween('attendances.date', [$startDate, $endDate])
+                  ->orWhere(function($sub) use ($startDate, $endDate) {
+                      $sub->whereNull('attendances.date')
+                          ->whereBetween('attendances.created_at', [$startDate, $endDate]);
+                  });
+            })
+            ->orderBy(DB::raw('COALESCE(attendances.date, DATE(attendances.created_at))'),'ASC')
+            ->get();
+
+        $attendances = $attendancesRaw->keyBy(function ($item) {
+            $d = !empty($item->date) ? $item->date : date('Y-m-d', strtotime($item->created_at));
+            return Carbon::parse($d)->format('Y-m-d');
+        });
 
         // 1. Total Check-ins (present)
-        $presentAttendances = $attendances->filter(function($a) {
+        $presentAttendances = $attendancesRaw->filter(function($a) {
             return $a->type == 2;
         });
         $totalCheckIns = $presentAttendances->count();
 
         // 2. Last Check-in
         $lastAttendance = $presentAttendances->last();
-        $lastCheckInDate = $lastAttendance ? date('d M Y', strtotime($lastAttendance->date)) : null;
+        $lastDateVal = $lastAttendance ? (!empty($lastAttendance->date) ? $lastAttendance->date : $lastAttendance->created_at) : null;
+        $lastCheckInDate = $lastDateVal ? date('d M Y', strtotime($lastDateVal)) : null;
 
         // 3. Recent Check-ins (last 8 dates)
         $recentCheckIns = $presentAttendances->take(-8)->map(function($a) {
+            $d = !empty($a->date) ? $a->date : date('Y-m-d', strtotime($a->created_at));
             return (object)[
-                'date' => $a->date,
-                'formatted' => date('d M', strtotime($a->date)),
-                'full' => date('d M Y', strtotime($a->date)),
+                'date' => $d,
+                'formatted' => date('d M', strtotime($d)),
+                'full' => date('d M Y', strtotime($d)),
                 'weight' => $a->weight
             ];
         })->values();

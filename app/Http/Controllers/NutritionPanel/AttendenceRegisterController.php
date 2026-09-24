@@ -93,7 +93,13 @@ class AttendenceRegisterController extends Controller
         }
 
         $allMembers = $query->withCount(['user_attendence as total_present' => function ($q) use ($month, $year) {
-            $q->where('type', 2)->whereMonth('date', $month)->whereYear('date', $year);
+            $q->where('type', 2)->where(function($sub) use ($month, $year) {
+                $sub->where(function($sub1) use ($month, $year) {
+                    $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
+                })->orWhere(function($sub2) use ($month, $year) {
+                    $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
+                });
+            });
         }])->get();
 
         $totalMembers = $allMembers->count();
