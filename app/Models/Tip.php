@@ -53,6 +53,15 @@ class Tip extends Model
 
         $tips = Tip::select('id', 'name', 'coach_name', 'link', 'order', 'status', 'created_at')->where('created_by', $authUser['id']);
         
+        // Filter conditions
+        if (!empty($filter['coach_name'])) {
+            $tips = $tips->where('coach_name', $filter['coach_name']);
+        }
+
+        if (isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null) {
+            $tips = $tips->where('status', $filter['status']);
+        }
+
         // Table list Search conditions
         if(!(empty($search)))
         {
@@ -74,7 +83,7 @@ class Tip extends Model
         }
         else
         {
-            $tips = $tips->orderBy('id', 'DESC');
+            $tips = $tips->orderBy('order', 'ASC')->orderBy('id', 'DESC');
         }
 
         // Set final limit and records

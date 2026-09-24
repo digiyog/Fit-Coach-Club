@@ -53,6 +53,21 @@ class Testimonial extends Model
 
         $testimonials = Testimonial::select('id', 'name', 'link', 'image', 'order', 'status', 'created_at')->where('created_by', $authUser['id']);
         
+        // Filter conditions
+        if (isset($filter['format']) && $filter['format'] !== '' && $filter['format'] !== null) {
+            if ($filter['format'] === 'video') {
+                $testimonials = $testimonials->whereNotNull('link')->where('link', '!=', '');
+            } elseif ($filter['format'] === 'photo') {
+                $testimonials = $testimonials->whereNotNull('image')->where('image', '!=', '');
+            } elseif ($filter['format'] === 'both') {
+                $testimonials = $testimonials->whereNotNull('link')->where('link', '!=', '')->whereNotNull('image')->where('image', '!=', '');
+            }
+        }
+
+        if (isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null) {
+            $testimonials = $testimonials->where('status', $filter['status']);
+        }
+
         // Table list Search conditions
         if(!(empty($search)))
         {
@@ -63,7 +78,7 @@ class Testimonial extends Model
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("","name", "link" , "image", 'order', "status", "");
+            $arr_fields = array("", "name", "link", "image", "status", "order", "status", "");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")
@@ -74,7 +89,7 @@ class Testimonial extends Model
         }
         else
         {
-            $testimonials = $testimonials->orderBy('id', 'DESC');
+            $testimonials = $testimonials->orderBy('order', 'ASC')->orderBy('id', 'DESC');
         }
 
         // Set final limit and records

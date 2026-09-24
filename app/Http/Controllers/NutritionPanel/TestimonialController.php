@@ -62,10 +62,20 @@ class TestimonialController extends Controller
             'attributes' => []
         ];
 
+        // Top Metrics
+        $totalTestimonials = Testimonial::where('created_by', $authUser->id)->count();
+        $videoStories = Testimonial::where('created_by', $authUser->id)->whereNotNull('link')->where('link', '!=', '')->count();
+        $photoStories = Testimonial::where('created_by', $authUser->id)->whereNotNull('image')->where('image', '!=', '')->count();
+        $publishedTestimonials = Testimonial::where('created_by', $authUser->id)->where('status', 1)->count();
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['totalTestimonials'] = $totalTestimonials;
+        $this->viewData['videoStories'] = $videoStories;
+        $this->viewData['photoStories'] = $photoStories;
+        $this->viewData['publishedTestimonials'] = $publishedTestimonials;
         
         return view('nutrition-panel.testimonials.index')->with($this->viewData);
     }
@@ -86,11 +96,13 @@ class TestimonialController extends Controller
         $draw   = $request->get('draw');
         $start  = $request->get('start');
         $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $sort   = $request->get('order')[0] ?? [];
+        $search = $request->get('search')['value'] ?? '';
         
         // Filter Parameters
         $filter = array(
+            'format' => $request->get('format'),
+            'status' => $request->get('status'),
         );
 
         // Getting Testimonials Records
@@ -104,45 +116,70 @@ class TestimonialController extends Controller
             foreach($records as $key => $value)
             {
                 $name               = 'N/A';
-                $link               = 'N/A';
-                $image              = 'N/A';
+                $story_type         = 'N/A';
+                $media              = '—';
+                $display_channels   = '';
                 $order              = 'N/A';
                 $status             = '';
                 $action             = '';
 
-                // Preparing Data
+                // Name
                 if(!empty($value->name)){
-                    $name = $value->name;
+                    $name = '<span class="test-item-name">' . e($value->name) . '</span>';
                 }
 
-                if(!empty($value->link)){
-                    $link = '<a target="_blank" href="' . $value->link . '" class="" title="View"><div class="badge badge-primary"><i class="fa fa-eye"></i> View </div></a>';
-                }
+                // Story Type
+                $hasVideo = !empty($value->link);
+                $hasPhoto = !empty($value->image);
 
-                if(!empty($value->image))
-                {
-                    $imagePath = get_image_url(config('constants.testimonials.image_path'), $value->image) ?? '';
-                    $image = '<img src="'.$imagePath.'" width="100" height="100" />';
-                }
-
-                if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1" id="testimonial_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
-                }
-
-                if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                if ($hasVideo && $hasPhoto) {
+                    $story_type = '<span class="badge-type-video"><i class="fa fa-play-circle me-1"></i> Video & Photo</span>';
+                } elseif ($hasVideo) {
+                    $story_type = '<span class="badge-type-video"><i class="fa fa-play-circle me-1"></i> Video Story</span>';
+                } elseif ($hasPhoto) {
+                    $story_type = '<span class="badge-type-photo"><i class="fa fa-picture-o me-1"></i> Photo Story</span>';
                 } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $story_type = '<span class="badge-type-text"><i class="fa fa-quote-left me-1"></i> Text Story</span>';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.testimonials.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                // Media column
+                $mediaItems = [];
+                if ($hasPhoto) {
+                    $imagePath = get_image_url(config('constants.testimonials.image_path'), $value->image) ?? '';
+                    $mediaItems[] = '<img src="' . $imagePath . '" class="test-media-thumb" alt="Thumbnail" />';
+                }
+                if ($hasVideo) {
+                    $mediaItems[] = '<a href="' . $value->link . '" target="_blank" class="btn-watch-link" title="Watch Video"><i class="fa fa-play"></i> <span>Video link</span></a>';
+                }
+                if (!empty($mediaItems)) {
+                    $media = '<div class="d-flex align-items-center gap-2">' . implode('', $mediaItems) . '</div>';
+                }
+
+                // Display Channels
+                $display_channels = '<span class="badge-channel-app"><i class="fa fa-mobile me-1"></i> Mobile App</span> <span class="badge-channel-web ms-1"><i class="fa fa-globe me-1"></i> Website</span>';
+
+                // Order
+                if(!empty($value->order) || $value->order == 0) {
+                    $order = '<input type="text" class="form-control form-control-sm numeric text-center test-order-input" id="testimonial_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                }
+
+                // Status
+                if ( $value->status == 0 ){
+                    $status = '<span class="badge-status-inactive">Inactive</span>';
+                } else {
+                    $status = '<span class="badge-status-active">Active</span>';
+                }
+
+                // Action
+                $action = '<div class="d-flex align-items-center justify-content-end gap-1"><a href="' . route('nutritionPanel.testimonials.edit', ['id' => ev($value->id)]) . '" class="btn-test-edit" title="Edit"><i class="fa fa-pencil"></i> <span>Edit</span></a></div>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"                => $value->id,
                     "name"              => $name,
-                    "link"              => $link,
-                    "image"             => $image,
+                    "story_type"        => $story_type,
+                    "media"             => $media,
+                    "display_channels"  => $display_channels,
                     "order"             => $order,
                     "status"            => $status,
                     "action"            => $action,
