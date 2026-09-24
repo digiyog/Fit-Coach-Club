@@ -35,9 +35,12 @@ class Community extends Model
     public function scopeGetCommunityPhotos($model, $limit = null, $offset = null, $search = null, $filter = array(), $sort = array())
     {
         $communities = Community::select('id','user_id', 'message', 'created_at')
-        ->with(['user' => function ($query) use ($filter) {
-            $query->select('id','name','email','mobile_number')->active();
-        }])
+        ->with([
+            'user' => function ($query) use ($filter) {
+                $query->select('id','name','email','mobile_number')->active();
+            },
+            'community_images'
+        ])
         ->whereHas('user', function ($query) use ($filter) {
             if (!empty($filter) && !empty($filter['name'])) 
             {

@@ -128,7 +128,16 @@ class CommunityPhotoController extends Controller
                     $date_time = date("d F Y",strtotime($value->created_at)).' <br> '.date("h:i A",strtotime($value->created_at));
                 }
             
-                $view_photos = '<a herf="#" data-url="' . route('nutritionPanel.community-photos.viewPhotos', ['id' => ev($value->id)]) . '" class="view-photos cursor-pointer" title="View Photos"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Photos</div></a>';
+                $images = [];
+                if (!empty($value->community_images)) {
+                    foreach ($value->community_images as $img) {
+                        if (!empty($img->image)) {
+                            $images[] = get_image_url(config('constants.communities.image_path'), $img->image);
+                        }
+                    }
+                }
+
+                $view_photos = '<button type="button" class="btn btn-sm btn-outline-primary px-2 py-1 rounded-2 view-photos cursor-pointer d-inline-flex align-items-center gap-1" title="View in Preview Pane"><i class="fa fa-eye"></i> <span>View Photos</span></button>';
 
                 // Array Data
                 $arr_data[] = array(
@@ -137,11 +146,11 @@ class CommunityPhotoController extends Controller
                     "message"       => $message,
                     "view_photos"   => $view_photos,
                     "date_time"     => $date_time,
+                    "images"        => $images,
                 );
             }
         }
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),

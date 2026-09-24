@@ -490,30 +490,78 @@
         transition: all 0.2s ease;
     }
 
-    .comm-nav-arrow-btn:hover {
+    .comm-nav-arrow-btn:hover:not(:disabled) {
         background: #f8fafc;
         color: #0f172a;
+        border-color: #cbd5e1;
+    }
+
+    .comm-nav-arrow-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
     .comm-preview-box {
         background: #f8fafc;
         border: 1.5px dashed #e2e8f0;
         border-radius: 14px;
-        min-height: 240px;
+        min-height: 260px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 24px;
+        padding: 16px;
         margin-bottom: 20px;
         color: #94a3b8;
+        position: relative;
+        overflow: hidden;
     }
 
-    .comm-preview-box img {
+    .comm-preview-box.has-photo {
+        border-style: solid;
+        border-color: #e2e8f0;
+        background: #ffffff;
+        padding: 8px;
+    }
+
+    .comm-preview-img-main {
         max-width: 100%;
         max-height: 260px;
+        width: auto;
+        height: auto;
         border-radius: 10px;
+        object-fit: contain;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .comm-preview-thumbnails {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .comm-thumb-item {
+        width: 42px;
+        height: 42px;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .comm-thumb-item.active {
+        border-color: #2563eb;
+        transform: scale(1.05);
+    }
+
+    .comm-thumb-item img {
+        width: 100%;
+        height: 100%;
         object-fit: cover;
     }
 
@@ -526,7 +574,7 @@
 
     .comm-meta-row {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         font-size: 13px;
     }
 
@@ -534,12 +582,14 @@
         width: 90px;
         color: #64748b;
         font-weight: 500;
+        flex-shrink: 0;
     }
 
     .comm-meta-val {
         color: #0f172a;
         font-weight: 600;
         flex: 1;
+        word-break: break-word;
     }
 
     .comm-preview-footer {
@@ -640,6 +690,12 @@
         transform: translateX(2px);
     }
 
+    /* Active Table Row Highlight */
+    #dataTable tbody tr.active-preview-row td {
+        background-color: #eff6ff !important;
+        border-color: #bfdbfe !important;
+    }
+
     /* DataTable Overrides */
     .dataTables_wrapper .dt-buttons,
     .dataTables_wrapper .dataTables_filter,
@@ -664,6 +720,15 @@
         border-bottom: 1px solid #f1f5f9 !important;
         color: #334155;
         font-size: 13px;
+    }
+
+    #dataTable tbody tr {
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    #dataTable tbody tr:hover td {
+        background-color: #f8fafc !important;
     }
 </style>
 @endpush
@@ -810,15 +875,15 @@
                     </div>
 
                     <!-- Table container for DataTable / List View -->
-                    <div class="table-responsive data-table-container" style="display: none;">
+                    <div class="table-responsive data-table-container">
                         <table id="dataTable" class="table table-hover" data-url="{{ route('nutritionPanel.community-photos.getCommunityPhotos') }}">
                             <thead>
                                 <tr>
                                     <th class="checkbox-column" style="width: 40px;"> S.No </th>
                                     <th> Name </th>
                                     <th> Message </th>
-                                    <th> View Photos </th>
-                                    <th> Date & Time </th>
+                                    <th style="width: 120px;"> View Photos </th>
+                                    <th style="width: 140px;"> Date & Time </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -827,7 +892,7 @@
                     </div>
 
                     <!-- Empty State View -->
-                    <div id="empty-state-view" class="comm-empty-state">
+                    <div id="empty-state-view" class="comm-empty-state" style="display: none;">
                         <div class="comm-phone-illustration-wrap">
                             <div class="comm-phone-bg"></div>
                             <div class="comm-phone-outline">
@@ -861,13 +926,13 @@
                                     <h2 class="comm-section-title">Photo preview</h2>
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
-                                    <button type="button" class="comm-nav-arrow-btn" title="Previous photo"><i class="fa fa-chevron-left"></i></button>
-                                    <button type="button" class="comm-nav-arrow-btn" title="Next photo"><i class="fa fa-chevron-right"></i></button>
+                                    <button type="button" class="comm-nav-arrow-btn" id="btnPrevPhoto" title="Previous photo"><i class="fa fa-chevron-left"></i></button>
+                                    <button type="button" class="comm-nav-arrow-btn" id="btnNextPhoto" title="Next photo"><i class="fa fa-chevron-right"></i></button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Preview Placeholder Box -->
+                        <!-- Preview Placeholder Box / Image View -->
                         <div class="comm-preview-box" id="preview-image-container">
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -895,7 +960,7 @@
                     </div>
 
                     <!-- Footer -->
-                    <div class="comm-preview-footer">
+                    <div class="comm-preview-footer" id="preview-footer-status">
                         <i class="fa fa-clock-o text-muted"></i>
                         <span>Waiting for the first mobile upload</span>
                     </div>

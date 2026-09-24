@@ -2,6 +2,8 @@ var CommunityPhoto = (function() {
     var data_table;
     var searchTimer;
     var activeViewMode = 'gallery';
+    var allLoadedRows = [];
+    var currentPreviewIndex = -1;
 
     return {
         /**
@@ -10,11 +12,10 @@ var CommunityPhoto = (function() {
         init: function() {
             CommunityPhoto.getCommunityPhotos();
             CommunityPhoto.bindCustomEvents();
-            CommunityPhoto.viewPhotos();
         },
 
         /**
-         * Bind custom filter, search, view toggle and refresh events
+         * Bind custom filter, search, view toggle, refresh, and preview navigation events
          */
         bindCustomEvents: function() {
             // Search Input with debounce
@@ -42,20 +43,12 @@ var CommunityPhoto = (function() {
                 activeViewMode = 'gallery';
                 $('.btn-view-toggle').removeClass('active');
                 $(this).addClass('active');
-                if (data_table && data_table.rows().count() > 0) {
-                    $('.data-table-container').hide();
-                    $('#gallery-view-container').show();
-                }
             });
 
             $('#btnViewList').on('click', function() {
                 activeViewMode = 'list';
                 $('.btn-view-toggle').removeClass('active');
                 $(this).addClass('active');
-                if (data_table && data_table.rows().count() > 0) {
-                    $('#gallery-view-container').hide();
-                    $('.data-table-container').show();
-                }
             });
 
             // Refresh buttons
@@ -67,6 +60,34 @@ var CommunityPhoto = (function() {
                         $btn.prop('disabled', false).find('i').removeClass('fa-spin');
                     }, 400);
                 });
+            });
+
+            // Arrow button navigation in preview header
+            $('#btnPrevPhoto').on('click', function() {
+                if (currentPreviewIndex > 0) {
+                    CommunityPhoto.selectPreviewByIndex(currentPreviewIndex - 1);
+                }
+            });
+
+            $('#btnNextPhoto').on('click', function() {
+                if (currentPreviewIndex >= 0 && currentPreviewIndex < allLoadedRows.length - 1) {
+                    CommunityPhoto.selectPreviewByIndex(currentPreviewIndex + 1);
+                }
+            });
+
+            // Handle clicking on "View Photos" button without opening modal
+            $(document).on('click', '.view-photos', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $row = $(this).closest('tr');
+                var rowIndex = $row.index();
+                CommunityPhoto.selectPreviewByIndex(rowIndex);
+            });
+
+            // Handle clicking on any row in the table
+            $('#dataTable tbody').on('click', 'tr', function(e) {
+                var rowIndex = $(this).index();
+                CommunityPhoto.selectPreviewByIndex(rowIndex);
             });
         },
 
@@ -131,29 +152,34 @@ var CommunityPhoto = (function() {
                     { data: "view_photos", name: "view_photos", width: 120 },
                     { data: "date_time", name: "date_time", width: 140 }
                 ],
-                rowCallback: function(row, data, dataIndex) {
-                    $(row).addClass('cursor-pointer');
-                    $(row).on('click', function() {
-                        CommunityPhoto.updatePreviewPane(data);
-                    });
-                },
                 drawCallback: function(settings) {
                     var api = this.api();
                     var info = api.page.info();
 
+                    allLoadedRows = [];
+                    api.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                        allLoadedRows.push(this.data());
+                    });
+
                     // Update count text
                     $('#comm-record-count-text').text(info.recordsDisplay + ' photos');
 
-                    // Toggle empty state vs data state
+                    // Toggle empty state vs table view
                     if (info.recordsTotal === 0) {
                         $('#empty-state-view').show();
                         $('.data-table-container').hide();
+                        CommunityPhoto.resetPreviewPane();
                     } else {
                         $('#empty-state-view').hide();
-                        if (activeViewMode === 'list') {
-                            $('.data-table-container').show();
-                        } else {
-                            $('.data-table-container').show();
+                        $('.data-table-container').show();
+
+                        // Auto-select first row on initial draw if none selected
+                        if (allLoadedRows.length > 0 && currentPreviewIndex < 0) {
+                            CommunityPhoto.selectPreviewByIndex(0);
+                        } else if (currentPreviewIndex >= 0 && currentPreviewIndex < allLoadedRows.length) {
+                            CommunityPhoto.selectPreviewByIndex(currentPreviewIndex);
+                        } else if (allLoadedRows.length > 0) {
+                            CommunityPhoto.selectPreviewByIndex(0);
                         }
                     }
                 }
@@ -161,36 +187,101 @@ var CommunityPhoto = (function() {
         },
 
         /**
-         * Update the Right Preview Pane
+         * Select a row and update preview by row index
          */
-        updatePreviewPane: function(data) {
-            if (!data) return;
+        selectPreviewByIndex: function(index) {
+            if (index < 0 || index >= allLoadedRows.length) return;
 
-            $('#meta-member-val').text(data.name || '—');
-            $('#meta-uploaded-val').html(data.date_time || '—');
-            $('#meta-message-val').text(data.message || '—');
+            currentPreviewIndex = index;
+            var data = allLoadedRows[index];
+
+            // Highlight table row
+            $('#dataTable tbody tr').removeClass('active-preview-row');
+            $('#dataTable tbody tr').eq(index).addClass('active-preview-row');
+
+            // Update prev/next button states
+            $('#btnPrevPhoto').prop('disabled', index === 0);
+            $('#btnNextPhoto').prop('disabled', index >= allLoadedRows.length - 1);
+
+            // Update photo & metadata
+            CommunityPhoto.renderPhotoPreview(data);
         },
 
         /**
-         * View Photos Modal.
+         * Render Photo and Details in Right Preview Pane
          */
-        viewPhotos: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".view-photos", function (e) {
-                e.stopPropagation();
-                var $this = $(this);
-                var $configuration_modal = $("#pageModal");
+        renderPhotoPreview: function(data) {
+            if (!data) return;
 
-                $configuration_modal.modal("show");
-                $configuration_modal
-                    .find(".modal-content")
-                    .load($this.data("url"), "", function () {});
-                $configuration_modal.on("hidden.bs.modal", function () {
-                    if (typeof App !== "undefined" && typeof App.resetModal === "function") {
-                        App.resetModal($configuration_modal);
-                    }
+            var $container = $('#preview-image-container');
+            var images = data.images || [];
+
+            if (images.length > 0) {
+                var firstImage = images[0];
+                var html = '<div class="w-100 text-center position-relative">';
+                html += '<img src="' + firstImage + '" id="main-preview-img" class="comm-preview-img-main" alt="' + (data.name || 'Member Photo') + '">';
+
+                // Thumbnails if multiple images
+                if (images.length > 1) {
+                    html += '<div class="comm-preview-thumbnails mt-2">';
+                    $.each(images, function(i, url) {
+                        var activeClass = i === 0 ? 'active' : '';
+                        html += '<div class="comm-thumb-item ' + activeClass + '" data-img-src="' + url + '">';
+                        html += '<img src="' + url + '" alt="thumb">';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                }
+                html += '</div>';
+
+                $container.html(html).addClass('has-photo');
+
+                // Thumbnail click handler
+                $container.find('.comm-thumb-item').on('click', function(e) {
+                    e.stopPropagation();
+                    $container.find('.comm-thumb-item').removeClass('active');
+                    $(this).addClass('active');
+                    $('#main-preview-img').attr('src', $(this).data('img-src'));
                 });
-            });
+            } else {
+                $container.html(
+                    '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2">' +
+                    '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>' +
+                    '<circle cx="8.5" cy="8.5" r="1.5"></circle>' +
+                    '<polyline points="21 15 16 10 5 21"></polyline>' +
+                    '</svg>' +
+                    '<span style="font-size: 13.5px; font-weight: 500;">No photo available for this upload</span>'
+                ).removeClass('has-photo');
+            }
+
+            // Update Metadata Details
+            $('#meta-member-val').text(data.name || '—');
+            $('#meta-uploaded-val').html(data.date_time || '—');
+            $('#meta-message-val').text(data.message || '—');
+
+            // Footer
+            $('#preview-footer-status').html('<i class="fa fa-check-circle text-success me-1"></i> <span>Mobile upload synced</span>');
+        },
+
+        /**
+         * Reset preview pane to default state
+         */
+        resetPreviewPane: function() {
+            currentPreviewIndex = -1;
+            $('#preview-image-container').html(
+                '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2">' +
+                '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>' +
+                '<circle cx="8.5" cy="8.5" r="1.5"></circle>' +
+                '<polyline points="21 15 16 10 5 21"></polyline>' +
+                '</svg>' +
+                '<span style="font-size: 13.5px; font-weight: 500;">Select a photo to preview</span>'
+            ).removeClass('has-photo');
+
+            $('#meta-member-val').text('—');
+            $('#meta-uploaded-val').text('—');
+            $('#meta-message-val').text('—');
+            $('#preview-footer-status').html('<i class="fa fa-clock-o text-muted me-1"></i> <span>Waiting for mobile uploads</span>');
+            $('#btnPrevPhoto, #btnNextPhoto').prop('disabled', true);
         }
     };
 })();
