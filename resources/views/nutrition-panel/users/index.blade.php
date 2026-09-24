@@ -405,6 +405,11 @@
         width: 100%;
         position: relative;
     }
+    /* Allow dropdown menus to escape the overflow container */
+    .fcc-modern-table-wrap.has-dropdown-open {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+    }
     table.dataTable {
         margin: 0 !important;
         border-collapse: separate !important;
@@ -1686,6 +1691,9 @@ $(document).ready(function() {
     $(document).on('show.bs.dropdown', '.dropdown', function () {
         var $dropdown = $(this);
         if ($dropdown.closest('table').length || $dropdown.closest('.data-table-container').length) {
+            // Temporarily allow overflow so dropdown escapes the table wrapper
+            $dropdown.closest('.fcc-modern-table-wrap').addClass('has-dropdown-open');
+
             var offset = $dropdown.offset();
             var menuHeight = 360; // Estimated height for action menu
             var windowBottom = $(window).scrollTop() + $(window).height();
@@ -1705,6 +1713,8 @@ $(document).ready(function() {
 
     $(document).on('hidden.bs.dropdown', '.dropdown', function () {
         $(this).removeClass('dropup');
+        // Restore overflow on the table wrapper
+        $(this).closest('.fcc-modern-table-wrap').removeClass('has-dropdown-open');
     });
 
     // Close open dropdowns when scrolling table horizontally
