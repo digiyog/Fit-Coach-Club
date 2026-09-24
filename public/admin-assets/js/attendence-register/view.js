@@ -86,6 +86,7 @@ var AttendenceRegister = (function() {
                         d.year = dateObj.year;
                         d.coach_name = $("#filterCoach").val() || "";
                         d.attendance_status = $("#filterAttendanceStatus").val() || "";
+                        d.date = $("#filterDate").val() || (new URLSearchParams(window.location.search).get('date') || "");
                     },
                     dataSrc: function(json) {
                         if (json && json.stats) {
@@ -185,6 +186,16 @@ var AttendenceRegister = (function() {
          * Initialize Filter event listeners.
          */
         initFilters: function() {
+            // Sync filter from URL params if present and not already set
+            var urlParams = new URLSearchParams(window.location.search);
+            var statusParam = urlParams.get('attendance_status');
+            if (statusParam && $("#filterAttendanceStatus").length && !$("#filterAttendanceStatus").val()) {
+                $("#filterAttendanceStatus").val(statusParam);
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            }
+
             // Real-time search with debounce
             $("#filterSearch").on("keyup search", function() {
                 var query = this.value;
@@ -217,6 +228,9 @@ var AttendenceRegister = (function() {
 
             // Attendance Status Filter Change
             $("#filterAttendanceStatus").on("change", function() {
+                if ($(this).val() !== "multiple") {
+                    $("#filterDate").val("");
+                }
                 if (data_table) {
                     data_table.ajax.reload();
                 }
@@ -237,6 +251,7 @@ var AttendenceRegister = (function() {
                     $("#filterSearch").val("");
                     $("#filterCoach").val("");
                     $("#filterAttendanceStatus").val("");
+                    $("#filterDate").val("");
                     $("#filterMonthYear").prop("selectedIndex", 0);
                     $(this).val("");
 
@@ -258,6 +273,7 @@ var AttendenceRegister = (function() {
                 $("#filterSearch").val("");
                 $("#filterCoach").val("");
                 $("#filterAttendanceStatus").val("");
+                $("#filterDate").val("");
                 
                 // Reset to first option (current month/year)
                 $("#filterMonthYear").prop("selectedIndex", 0);

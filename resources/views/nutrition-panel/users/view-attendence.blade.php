@@ -817,6 +817,7 @@
             <form action="{{ route('nutritionPanel.manual-attendances.addManualAttendance') }}" method="POST">
                 @csrf
                 <input type="hidden" name="user_id" value="{{ $user->id }}">
+                <input type="hidden" name="days" value="1">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold" style="font-size: 13px; color: #334155;">Attendance Date <span class="text-danger">*</span></label>
@@ -828,6 +829,10 @@
                             <input type="number" step="0.01" name="weight" class="form-control" placeholder="e.g. 74.5" style="border-radius: 9px 0 0 9px; height: 42px; border: 1.5px solid #e2e8f0; font-size: 13.5px;" />
                             <span class="input-group-text fw-bold" style="border-radius: 0 9px 9px 0; background: #f8fafc; border: 1.5px solid #e2e8f0; border-left: none; color: #64748b;">kg</span>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size: 13px; color: #334155;">Remark <span class="text-muted fw-normal">(Optional)</span></label>
+                        <input type="text" name="remark" class="form-control" placeholder="Optional remark" style="border-radius: 9px; height: 42px; border: 1.5px solid #e2e8f0; font-size: 13.5px;" />
                     </div>
                 </div>
                 <div class="modal-footer py-3 px-4" style="border-top: 1px solid #edf2f7; background: #f8fafc;">

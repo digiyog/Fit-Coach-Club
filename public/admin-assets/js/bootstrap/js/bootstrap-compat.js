@@ -208,4 +208,35 @@
         initDelegatedTooltips("tooltip");
         initDelegatedTooltips("popover");
     }
+
+    /* ------------------------------------------------------------------
+     * Global Dropdown Popper Strategy: Fixed & Viewport-Bounded
+     *
+     * In tables (DataTables, .table-responsive, cards, etc.), dropdowns
+     * often get clipped or go under the table if positioned absolutely
+     * inside containers with overflow: hidden / auto / scroll.
+     *
+     * By setting strategy to 'fixed' and boundary to 'viewport' globally
+     * on Bootstrap 5's Dropdown defaults, Popper calculates the menu
+     * coordinates relative to the viewport. The menu floats on top of
+     * all table containers, never clips, flips upwards if near the screen
+     * bottom, and avoids any DOM detaching.
+     * ------------------------------------------------------------------ */
+    if (bootstrap && bootstrap.Dropdown && bootstrap.Dropdown.Default) {
+        bootstrap.Dropdown.Default.boundary = 'viewport';
+        bootstrap.Dropdown.Default.popperConfig = { strategy: 'fixed' };
+    }
+
+    // Close any open table dropdown when scrolling table containers
+    $(document).on('scroll', '.table-responsive, .fcc-modern-table-wrap, .dataTables_wrapper', function () {
+        $('.dropdown-menu.show').each(function () {
+            var $menu = $(this);
+            var $wrapper = $menu.closest('.dropdown, .custom-dropdown');
+            var toggle = $wrapper.find('[data-bs-toggle="dropdown"], [data-toggle="dropdown"]')[0];
+            if (toggle && bootstrap && bootstrap.Dropdown) {
+                var inst = bootstrap.Dropdown.getInstance(toggle);
+                if (inst) inst.hide();
+            }
+        });
+    });
 });

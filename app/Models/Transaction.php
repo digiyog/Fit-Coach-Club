@@ -38,7 +38,7 @@ class Transaction extends Model
         $transactions = Transaction::select('transactions.id', 'users.name', 'user_id', 'order_id', 'title', 'total_amount' ,'transactions.due_amount', 'received_amount', 'payment_type','remark', 'transactions.created_at', 'type')
         ->where("transactions.created_by", $authUser->id);
 
-        $transactions->Join("users", function ($join) {
+        $transactions->leftJoin("users", function ($join) {
             $join->on("transactions.user_id", "=", "users.id");
         });
 
@@ -76,7 +76,7 @@ class Transaction extends Model
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("name", "", "title", "total_amount", "due_amount", "received_amount", "payment_type");
+            $arr_fields = array("users.name", "", "title", "total_amount", "due_amount", "received_amount", "payment_type");
 
             for($field = 0; $field < count($arr_fields); $field++)
             {

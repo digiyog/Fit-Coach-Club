@@ -139,7 +139,9 @@
     for ($d = 1; $d <= $daysInMonth; $d++) {
         $dateKey = \Carbon\Carbon::createFromDate($year, $month, $d)->format('Y-m-d');
         $att = $attendances->get($dateKey);
-        if ($att && $att->type == 2) {
+        $dayAtts = ($att instanceof \Illuminate\Support\Collection) ? $att : ($att ? collect([$att]) : collect([]));
+        $presentAtts = $dayAtts->where('type', 2);
+        if ($presentAtts->count() > 0) {
             $presentCount++;
         } else {
             $absentCount++;
@@ -182,15 +184,21 @@
         @for ($day = 1; $day <= $daysInMonth; $day++)
             @php
                 $currentDate = \Carbon\Carbon::createFromDate($year, $month, $day)->format('Y-m-d');
-                $attendance = $attendances->get($currentDate);
+                $att = $attendances->get($currentDate);
+                $dayAtts = ($att instanceof \Illuminate\Support\Collection) ? $att : ($att ? collect([$att]) : collect([]));
+                $presentAtts = $dayAtts->where('type', 2);
+                $presentCountOnDay = $presentAtts->count();
                 $isToday = ($currentDate === date('Y-m-d'));
-                $isPresent = ($attendance && $attendance->type == 2);
+                $isPresent = ($presentCountOnDay > 0);
+                $isMultiple = ($presentCountOnDay > 1);
             @endphp
 
-            <div class="fcc-cal-day-cell {{ $isPresent ? 'present' : 'absent' }}" @if($isToday) style="outline: 2px solid #3b46f1; outline-offset: 1px;" @endif title="{{ \Carbon\Carbon::createFromDate($year, $month, $day)->format('D, M d, Y') }} - {{ $isPresent ? 'Present' : 'Absent' }}">
+            <div class="fcc-cal-day-cell {{ $isPresent ? 'present' : 'absent' }}" @if($isToday) style="outline: 2px solid #3b46f1; outline-offset: 1px;" @endif title="{{ \Carbon\Carbon::createFromDate($year, $month, $day)->format('D, M d, Y') }} - {{ $isPresent ? ($isMultiple ? $presentCountOnDay . ' Check-ins (Multiple)' : 'Present') : 'Absent' }}">
                 <span class="fcc-cal-day-num">{{ $day }}</span>
                 <span class="fcc-cal-day-badge">
-                    @if ($isPresent)
+                    @if ($isMultiple)
+                        <span style="font-weight: 700; color: #1e40af;">{{ $presentCountOnDay }}x Present</span>
+                    @elseif ($isPresent)
                         Present
                     @else
                         Absent

@@ -34,11 +34,11 @@
                     {
                         foreach($value['attributes'] as $akey => $avalue)
                         {
-                            $attributes .= "$akey=".$avalue." ";
+                            $attributes .= "$akey=\"$avalue\" ";
                         }
                     }
                     @endphp
-                    <a href="{{ $value['btn_link'] }}" class="{{ $value['btn_class'] }}" title="{{ $value['btn_text'] ?? '' }}" {{$attributes}}>
+                    <a href="{{ $value['btn_link'] }}" class="{{ $value['btn_class'] }}" title="{{ $value['btn_text'] ?? '' }}" {!! $attributes !!}>
                         <i data-feather="{{$value['btn_icon']}}"></i>
                     </a>
                 @endforeach

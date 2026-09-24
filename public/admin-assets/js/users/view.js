@@ -173,8 +173,9 @@ var User = (function() {
                 },
                 headerCallback: function(e, a, t, n, s) {
                     var th0 = $(e).find("th").eq(0);
-                    th0.removeClass("sorting sorting_asc sorting_desc sorting_asc_disabled sorting_desc_disabled");
-                    th0.addClass("no-content no-sort checkbox-column text-center");
+                    th0.removeClass("sorting sorting_asc sorting_desc sorting_asc_disabled sorting_desc_disabled text-center");
+                    th0.addClass("no-content no-sort checkbox-column");
+                    th0.css("width", "30px");
                     th0.html(
                         '<label class="fcc-custom-checkbox m-0">\n<input type="checkbox" name="select_all" class="fcc-checkbox-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="fcc-checkbox-control"><svg viewBox="0 0 12 10" class="fcc-check-icon"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg><span class="fcc-indeterminate-bar"></span></span>\n</label>'
                     );
@@ -182,11 +183,12 @@ var User = (function() {
                 ordering: false,
                 bSort: false,
                 order: [],
+                autoWidth: false,
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "40px",
-                        className: "checkbox-column no-sort no-content text-center",
+                        width: "32px",
+                        className: "checkbox-column no-sort no-content",
                         orderable: false,
                         searchable: false,
                         visible: true,
@@ -194,12 +196,20 @@ var User = (function() {
                             return '<label class="fcc-custom-checkbox m-0">\n<input type="checkbox" class="fcc-checkbox-input child-chk select-customers-primary">\n<span class="fcc-checkbox-control"><svg viewBox="0 0 12 10" class="fcc-check-icon"><polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg><span class="fcc-indeterminate-bar"></span></span>\n</label>';
                         }
                     },
+                    { targets: 1, width: "17%" },
+                    { targets: 2, width: "9%" },
+                    { targets: 3, width: "11%" },
+                    { targets: 4, width: "10%" },
+                    { targets: 5, width: "17%" },
+                    { targets: 6, width: "9%" },
+                    { targets: 7, width: "9%" },
+                    { targets: 8, width: "9%" },
                     {
                         targets: 9,
-                        width: "60px",
+                        width: "48px",
                         orderable: false,
                         searchable: false,
-                        className: "no-sort no-content text-end"
+                        className: "no-sort no-content text-center"
                     }
                 ],
                 drawCallback: function(settings) {
@@ -210,6 +220,11 @@ var User = (function() {
                         var totalRecords = settings.json.recordsFiltered !== undefined ? settings.json.recordsFiltered : settings.json.recordsTotal;
                         $('#fccTableCountDisplay').text(totalRecords + ' users');
                     }
+                    $('#dataTable thead th:first-child, #dataTable tbody td:first-child').css({
+                        'width': '32px',
+                        'max-width': '34px',
+                        'min-width': '32px'
+                    });
                 },
                 buttons: {
                     buttons: [
@@ -279,22 +294,23 @@ var User = (function() {
                         name: "",
                         searchable: false,
                         sortable: false,
-                        width: "36px"
+                        width: "32px"
                     },
-                    { data: "member", name: "name" },
-                    { data: "user_type", name: "user_type" },
-                    { data: "contact", name: "mobile_number" },
-                    { data: "coach_name", name: "coach_name" },
-                    { data: "plan", name: "meal_type" },
-                    { data: "days", name: "days" },
-                    { data: "due_amount", name: "due_amount" },
-                    { data: "status", name: "status" },
+                    { data: "member", name: "name", width: "17%" },
+                    { data: "user_type", name: "user_type", width: "9%" },
+                    { data: "contact", name: "mobile_number", width: "11%" },
+                    { data: "coach_name", name: "coach_name", width: "10%" },
+                    { data: "plan", name: "meal_type", width: "17%" },
+                    { data: "days", name: "days", width: "9%" },
+                    { data: "due_amount", name: "due_amount", width: "9%" },
+                    { data: "status", name: "status", width: "9%" },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
                         sortable: false,
-                        className: "text-end"
+                        className: "text-center",
+                        width: "48px"
                     }
                 ],
                 rowCallback: function(row, data, dataIndex) {

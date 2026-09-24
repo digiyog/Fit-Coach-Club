@@ -28,7 +28,7 @@
     }
 
     .fcc-users-page-wrapper {
-        padding: 20px 24px 40px 24px;
+        padding: 12px 18px 24px 18px;
         width: 100%;
         max-width: 1600px;
         margin: 0 auto;
@@ -40,9 +40,9 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: 13px;
+        font-size: 12.5px;
         color: #94a3b8;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         font-weight: 500;
     }
     .fcc-breadcrumb-nav a {
@@ -68,19 +68,19 @@
         align-items: flex-start;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 22px;
+        gap: 12px;
+        margin-bottom: 12px;
     }
     .fcc-page-title {
-        font-size: 26px;
+        font-size: 22px;
         font-weight: 800;
         color: var(--fcc-dark);
         letter-spacing: -0.025em;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         line-height: 1.2;
     }
     .fcc-page-subtitle {
-        font-size: 13.5px;
+        font-size: 13px;
         color: var(--fcc-muted);
         margin-bottom: 0;
         font-weight: 400;
@@ -88,19 +88,20 @@
     .fcc-header-btns {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
     }
     .fcc-btn-export {
         background: #ffffff;
         border: 1.5px solid #e2e8f0;
         color: #1e293b;
         font-weight: 600;
-        font-size: 13.5px;
-        padding: 9px 18px;
-        border-radius: 10px;
+        font-size: 13px;
+        padding: 6px 14px;
+        height: 35px;
+        border-radius: 8px;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 6px;
         transition: all 0.16s ease;
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         text-decoration: none;
@@ -108,8 +109,8 @@
     }
     .fcc-btn-export svg,
     .fcc-btn-export i {
-        width: 15px;
-        height: 15px;
+        width: 14px;
+        height: 14px;
         color: #3b46f1;
     }
     .fcc-btn-export:hover {
@@ -122,36 +123,37 @@
         border: 1.5px solid #3b46f1;
         color: #ffffff !important;
         font-weight: 600;
-        font-size: 13.5px;
-        padding: 9px 20px;
-        border-radius: 10px;
+        font-size: 13px;
+        padding: 6px 16px;
+        height: 35px;
+        border-radius: 8px;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 6px;
         transition: all 0.16s ease;
-        box-shadow: 0 4px 12px rgba(59, 70, 241, 0.28);
+        box-shadow: 0 3px 10px rgba(59, 70, 241, 0.25);
         text-decoration: none;
         cursor: pointer;
     }
     .fcc-btn-register-member svg,
     .fcc-btn-register-member i {
-        width: 16px;
-        height: 16px;
+        width: 15px;
+        height: 15px;
         color: #ffffff;
     }
     .fcc-btn-register-member:hover {
         background: #2d38db;
         border-color: #2d38db;
-        box-shadow: 0 6px 16px rgba(59, 70, 241, 0.38);
+        box-shadow: 0 5px 14px rgba(59, 70, 241, 0.35);
     }
 
     /* 3. Navigation Tabs */
     .fcc-users-nav-tabs {
         display: flex;
         align-items: center;
-        gap: 28px;
+        gap: 20px;
         border-bottom: 1.5px solid #e2e8f0;
-        margin-bottom: 22px;
+        margin-bottom: 12px;
         padding-bottom: 0;
         overflow-x: auto;
         overflow-y: hidden;
@@ -169,11 +171,11 @@
         height: 0 !important;
     }
     .fcc-tab-item-link {
-        font-size: 14px;
+        font-size: 13.5px;
         font-weight: 500;
         color: #64748b;
         text-decoration: none;
-        padding: 0 2px 14px 2px;
+        padding: 0 2px 8px 2px;
         position: relative;
         transition: color 0.15s ease;
         white-space: nowrap;
@@ -202,9 +204,9 @@
     .fcc-users-card {
         background: #ffffff;
         border: 1px solid #edf2f7;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-        padding: 22px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+        padding: 14px 16px;
     }
 
     /* 5. Filter & Search Bar */
@@ -213,14 +215,14 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 18px;
+        gap: 8px;
+        margin-bottom: 10px;
     }
     .fcc-search-wrap {
         position: relative !important;
         flex-grow: 1;
-        max-width: 330px !important;
-        min-width: 240px !important;
+        max-width: 310px !important;
+        min-width: 220px !important;
         display: flex !important;
         align-items: center !important;
     }
@@ -229,12 +231,12 @@
     .fcc-search-wrap .feather,
     .fcc-search-wrap .feather-search {
         position: absolute !important;
-        left: 14px !important;
+        left: 12px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
         color: #94a3b8 !important;
-        width: 16px !important;
-        height: 16px !important;
+        width: 15px !important;
+        height: 15px !important;
         pointer-events: none !important;
         margin: 0 !important;
         padding: 0 !important;
@@ -243,13 +245,13 @@
     input.fcc-search-input,
     #fccSearchInput {
         width: 100% !important;
-        height: 40px !important;
+        height: 35px !important;
         background-color: #f8fafc !important;
         border: 1.5px solid #e2e8f0 !important;
-        border-radius: 10px !important;
-        padding-left: 44px !important;
-        padding-right: 14px !important;
-        font-size: 13.5px !important;
+        border-radius: 8px !important;
+        padding-left: 36px !important;
+        padding-right: 12px !important;
+        font-size: 13px !important;
         color: #0f172a !important;
         transition: all 0.18s ease !important;
         box-shadow: none !important;
@@ -264,27 +266,27 @@
     input.fcc-search-input::placeholder,
     #fccSearchInput::placeholder {
         color: #94a3b8 !important;
-        font-size: 13.5px !important;
+        font-size: 13px !important;
         opacity: 1 !important;
     }
     .fcc-filters-group {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: 9px;
+        gap: 7px;
     }
     .fcc-dropdown-pill {
         background: #ffffff !important;
         border: 1.5px solid #e2e8f0 !important;
-        border-radius: 10px !important;
-        padding: 0 14px !important;
-        height: 40px !important;
-        font-size: 13px !important;
+        border-radius: 8px !important;
+        padding: 0 11px !important;
+        height: 35px !important;
+        font-size: 12.5px !important;
         font-weight: 600 !important;
         color: #334155 !important;
         display: inline-flex !important;
         align-items: center !important;
-        gap: 8px !important;
+        gap: 6px !important;
         transition: all 0.16s ease !important;
         cursor: pointer !important;
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
@@ -302,15 +304,15 @@
     }
     .fcc-dropdown-pill svg,
     .fcc-dropdown-pill i {
-        width: 14px !important;
-        height: 14px !important;
+        width: 13px !important;
+        height: 13px !important;
         color: #64748b !important;
         vertical-align: middle !important;
     }
     .fcc-dropdown-pill svg.fcc-chevron,
     .fcc-dropdown-pill i.fcc-chevron {
-        width: 13px !important;
-        height: 13px !important;
+        width: 12px !important;
+        height: 12px !important;
         color: #94a3b8 !important;
     }
 
@@ -320,27 +322,27 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 14px;
-        padding-top: 2px;
+        gap: 8px;
+        margin-bottom: 8px;
+        padding-top: 0px;
     }
     .fcc-count-text {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
         color: #0f172a;
     }
     .fcc-page-len-btn {
         background: #ffffff;
         border: 1.5px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 4px 10px;
-        font-size: 12.5px;
+        border-radius: 7px;
+        padding: 2px 8px;
+        font-size: 12px;
         font-weight: 600;
         color: #475569;
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        height: 32px;
+        height: 28px;
         cursor: pointer;
     }
     .fcc-page-len-btn:hover {
@@ -349,29 +351,29 @@
     }
     .fcc-page-len-btn svg,
     .fcc-page-len-btn i {
-        width: 12px;
-        height: 12px;
+        width: 11px;
+        height: 11px;
         color: #94a3b8;
     }
     .fcc-btn-batch {
         background: #ffffff !important;
         border: 1.5px solid #e2e8f0 !important;
-        border-radius: 9px !important;
-        padding: 0 13px !important;
-        height: 34px !important;
-        font-size: 12.5px !important;
+        border-radius: 7px !important;
+        padding: 0 10px !important;
+        height: 28px !important;
+        font-size: 12px !important;
         font-weight: 600 !important;
         color: #64748b !important;
         display: inline-flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 5px !important;
         transition: all 0.16s ease !important;
         cursor: pointer !important;
     }
     .fcc-btn-batch svg,
     .fcc-btn-batch i {
-        width: 13px !important;
-        height: 13px !important;
+        width: 12px !important;
+        height: 12px !important;
     }
     .fcc-btn-batch:disabled {
         opacity: 0.55 !important;
@@ -394,20 +396,24 @@
 
     /* 7. Modern DataTables Override & Perfect Column Formatting */
     .fcc-modern-table-wrap {
-        overflow-x: auto;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
         border: 1px solid #edf2f7;
-        border-radius: 12px;
+        border-radius: 10px;
         background: #ffffff;
         margin-bottom: 0 !important;
         width: 100%;
+        position: relative;
     }
     table.dataTable {
         margin: 0 !important;
         border-collapse: separate !important;
         border-spacing: 0 !important;
         width: 100% !important;
-        min-width: 1060px !important;
+        table-layout: fixed !important;
+        min-width: 920px !important;
     }
+    .fcc-modern-table-wrap table.dataTable thead th,
     table.dataTable thead th {
         position: relative !important;
         background: #f8fafc !important;
@@ -416,13 +422,14 @@
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
-        padding: 13px 14px !important;
+        padding: 7px 10px !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-top: none !important;
         white-space: nowrap !important;
         vertical-align: middle !important;
         background-image: none !important;
         cursor: default !important;
+        line-height: 1.2 !important;
     }
 
     /* Completely Remove / Hide Sort Arrows in User Management */
@@ -452,74 +459,158 @@
         height: 0 !important;
     }
 
-    /* Column Widths & Alignments */
+    /* Column 1: Checkbox */
+    .fcc-modern-table-wrap table.dataTable thead th.checkbox-column,
+    .fcc-modern-table-wrap table.dataTable thead th:first-child,
+    .fcc-modern-table-wrap table.dataTable tbody td.checkbox-column,
+    .fcc-modern-table-wrap table.dataTable tbody td:first-child,
     table.dataTable thead th.checkbox-column,
     table.dataTable thead th:first-child,
     table.dataTable tbody td.checkbox-column,
     table.dataTable tbody td:first-child {
-        padding-right: 10px !important;
-        padding-left: 14px !important;
-        text-align: center !important;
-        width: 44px !important;
-        min-width: 44px !important;
-        max-width: 44px !important;
+        padding: 6px 0 6px 12px !important;
+        text-align: left !important;
+        width: 32px !important;
+        min-width: 32px !important;
+        max-width: 34px !important;
     }
 
-    /* Member */
+    /* Column 2: Member - Compact & Proportional */
+    .fcc-modern-table-wrap table.dataTable thead th:nth-child(2),
+    .fcc-modern-table-wrap table.dataTable tbody td:nth-child(2),
     table.dataTable thead th:nth-child(2),
     table.dataTable tbody td:nth-child(2) {
-        min-width: 220px !important;
+        padding-left: 6px !important;
+        padding-right: 8px !important;
+        width: 17% !important;
+        min-width: 175px !important;
+        max-width: 230px !important;
     }
 
-    /* User Type */
+    .fcc-member-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 155px !important;
+    }
+
+    .fcc-member-email {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 155px !important;
+    }
+
+    /* Column 3: User Type */
     table.dataTable thead th:nth-child(3),
     table.dataTable tbody td:nth-child(3) {
-        min-width: 110px !important;
+        width: 9% !important;
+        min-width: 80px !important;
+        max-width: 105px !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
     }
 
-    /* Contact */
+    /* Column 4: Contact */
     table.dataTable thead th:nth-child(4),
     table.dataTable tbody td:nth-child(4) {
-        min-width: 130px !important;
+        width: 11% !important;
+        min-width: 95px !important;
+        max-width: 125px !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
     }
 
-    /* Coach */
+    /* Column 5: Coach */
     table.dataTable thead th:nth-child(5),
     table.dataTable tbody td:nth-child(5) {
-        min-width: 115px !important;
+        width: 10% !important;
+        min-width: 80px !important;
+        max-width: 115px !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
     }
 
-    /* Plan */
+    /* Column 6: Plan - Balanced Proportional Width, NO huge void! */
+    .fcc-modern-table-wrap table.dataTable thead th:nth-child(6),
+    .fcc-modern-table-wrap table.dataTable tbody td:nth-child(6),
     table.dataTable thead th:nth-child(6),
     table.dataTable tbody td:nth-child(6) {
-        min-width: 180px !important;
+        width: 17% !important;
+        min-width: 150px !important;
+        max-width: 230px !important;
+        padding: 6px 8px !important;
     }
 
-    /* Renewal */
+    /* Column 7: Renewal */
     table.dataTable thead th:nth-child(7),
     table.dataTable tbody td:nth-child(7) {
-        min-width: 105px !important;
+        width: 9% !important;
+        min-width: 75px !important;
+        max-width: 100px !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
     }
 
-    /* Due Amount */
+    /* Column 8: Due Amount */
     table.dataTable thead th:nth-child(8),
     table.dataTable tbody td:nth-child(8) {
-        min-width: 110px !important;
+        width: 9% !important;
+        min-width: 80px !important;
+        max-width: 105px !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
     }
 
-    /* Status */
+    /* Column 9: Status */
     table.dataTable thead th:nth-child(9),
     table.dataTable tbody td:nth-child(9) {
-        min-width: 100px !important;
+        width: 9% !important;
+        min-width: 75px !important;
+        max-width: 100px !important;
+        white-space: nowrap !important;
+        padding: 6px 8px !important;
     }
 
-    /* Action */
-    table.dataTable thead th:last-child,
+    /* Action - Sticky right column so it is always visible on short/small screens */
+    table.dataTable thead th:last-child {
+        width: 46px !important;
+        min-width: 46px !important;
+        max-width: 46px !important;
+        text-align: center !important;
+        padding: 7px 4px !important;
+        position: sticky !important;
+        right: 0 !important;
+        background: #f8fafc !important;
+        z-index: 10 !important;
+        box-shadow: -3px 0 8px rgba(15, 23, 42, 0.06);
+    }
     table.dataTable tbody td:last-child {
-        width: 70px !important;
-        min-width: 70px !important;
-        text-align: right !important;
-        padding-right: 16px !important;
+        width: 46px !important;
+        min-width: 46px !important;
+        max-width: 46px !important;
+        text-align: center !important;
+        padding: 5px 4px !important;
+        position: sticky !important;
+        right: 0 !important;
+        background: #ffffff !important;
+        z-index: 9 !important;
+        box-shadow: -3px 0 8px rgba(15, 23, 42, 0.06);
+    }
+    table.dataTable tbody tr:hover td:last-child {
+        background: #f8faff !important;
+    }
+    table.dataTable tbody tr.selected td:last-child {
+        background: #f0f5ff !important;
+    }
+    table.dataTable tbody tr.fcc-row-dues-flagged td:last-child {
+        background: #fff8f8 !important;
+    }
+    table.dataTable tbody tr.fcc-row-dues-flagged:hover td:last-child {
+        background: #fff1f1 !important;
+    }
+    table.dataTable tbody tr.fcc-row-dues-flagged.selected td:last-child {
+        background: #fee2e2 !important;
     }
 
     table.dataTable tbody:before,
@@ -530,12 +621,15 @@
         line-height: 0 !important;
     }
 
-    table.dataTable tbody td {
-        padding: 12px 14px !important;
+    .fcc-modern-table-wrap table.dataTable tbody td,
+    table.dataTable tbody td,
+    .fcc-users-card .table tbody td {
+        padding: 5px 10px !important;
         vertical-align: middle !important;
         border-bottom: 1px solid #f1f5f9 !important;
         color: #334155;
-        font-size: 13px;
+        font-size: 12.5px !important;
+        line-height: 1.25 !important;
         background: transparent !important;
         white-space: nowrap !important;
     }
@@ -562,24 +656,32 @@
         background: #fee2e2;
         color: #dc2626;
         font-weight: 700;
-        font-size: 12px;
-        padding: 2.5px 8px;
-        border-radius: 6px;
+        font-size: 11.5px;
+        padding: 1.5px 6px;
+        border-radius: 4px;
         display: inline-block;
+        line-height: 1.2;
     }
 
     /* Action 3-dots button */
     .fcc-action-dots-btn {
-        width: 32px;
-        height: 32px;
+        width: 26px !important;
+        height: 26px !important;
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
-        color: #64748b !important;
+        border-radius: 6px;
+        color: #2563eb !important;
         transition: all 0.16s ease;
         background: transparent;
         text-decoration: none !important;
+        user-select: none;
+        padding: 0 !important;
+    }
+    .fcc-action-dots-btn::after,
+    .fcc-action-dots-btn:after {
+        display: none !important;
+        content: none !important;
     }
     .fcc-action-dots-btn:hover,
     .fcc-action-dots-btn[aria-expanded="true"] {
@@ -589,37 +691,43 @@
 
     /* Action dropdown menu & dropup support */
     .data-table-container,
-    .fcc-users-card,
-    .fcc-modern-table-wrap {
+    .fcc-users-card {
         overflow: visible !important;
     }
 
     .custom-dropdown {
         position: relative;
+        display: inline-block;
     }
 
     .custom-dropdown .dropdown-menu {
-        z-index: 1065 !important;
         position: absolute;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: min(390px, 80vh) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        z-index: 1070 !important;
     }
 
-    /* Dropup - Open upwards when near bottom of table/window */
-    .dropup .dropdown-menu,
-    .dropdown.dropup .dropdown-menu,
-    .custom-dropdown.dropup .dropdown-menu {
+    /* Dropup - Open upwards when static */
+    .dropup .dropdown-menu[data-bs-popper="static"],
+    .dropdown.dropup .dropdown-menu[data-bs-popper="static"],
+    .custom-dropdown.dropup .dropdown-menu[data-bs-popper="static"] {
         top: auto !important;
         bottom: 100% !important;
         margin-top: 0 !important;
         margin-bottom: 6px !important;
         transform: none !important;
+        height: auto !important;
     }
 
     /* Avatar Ring with two gaps */
     .fcc-avatar-wrapper {
         position: relative;
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -634,7 +742,6 @@
         border-bottom-color: transparent !important;
         pointer-events: none;
     }
-
     /* Hide default DataTable elements replaced by custom UI */
     .dataTables_wrapper .dataTables_filter,
     .dataTables_wrapper .dataTables_length,
@@ -648,10 +755,10 @@
         align-items: center !important;
         justify-content: space-between !important;
         flex-wrap: wrap !important;
-        gap: 14px !important;
-        padding-top: 18px !important;
+        gap: 10px !important;
+        padding-top: 10px !important;
         border-top: 1px solid #f1f5f9 !important;
-        margin-top: 14px !important;
+        margin-top: 8px !important;
     }
 
     div.dataTables_wrapper div.dataTables_info {
@@ -660,13 +767,13 @@
         border-radius: 0 !important;
         padding: 0 !important;
         margin: 0 !important;
-        font-size: 13.5px !important;
+        font-size: 12.5px !important;
         font-weight: 500 !important;
         color: #64748b !important;
         display: inline-flex !important;
         align-items: center !important;
         white-space: nowrap !important;
-        line-height: 1.4 !important;
+        line-height: 1.3 !important;
     }
 
     div.dataTables_wrapper div.dataTables_paginate {
@@ -681,7 +788,7 @@
     div.dataTables_wrapper div.dataTables_paginate ul.pagination {
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 4px !important;
         margin: 0 !important;
         padding: 0 !important;
         list-style: none !important;
@@ -705,17 +812,17 @@
 
     div.dataTables_wrapper div.dataTables_paginate ul.pagination li a,
     div.dataTables_wrapper div.dataTables_paginate ul.pagination li .page-link {
-        min-width: 36px !important;
-        height: 36px !important;
-        padding: 0 10px !important;
+        min-width: 30px !important;
+        height: 30px !important;
+        padding: 0 8px !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        border-radius: 9px !important;
+        border-radius: 7px !important;
         border: 1px solid #e2e8f0 !important;
         background: #ffffff !important;
         color: #475569 !important;
-        font-size: 13px !important;
+        font-size: 12px !important;
         font-weight: 600 !important;
         cursor: pointer !important;
         transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -755,8 +862,8 @@
 
     div.dataTables_wrapper div.dataTables_paginate ul.pagination li a svg,
     div.dataTables_wrapper div.dataTables_paginate ul.pagination li .page-link svg {
-        width: 14px !important;
-        height: 14px !important;
+        width: 13px !important;
+        height: 13px !important;
         stroke-width: 2.2 !important;
         color: #64748b !important;
         vertical-align: middle !important;
@@ -790,10 +897,10 @@
     }
 
     .fcc-checkbox-control {
-        width: 19px;
-        height: 19px;
-        border: 1.8px solid #cbd5e1;
-        border-radius: 6px;
+        width: 16px;
+        height: 16px;
+        border: 1.6px solid #cbd5e1;
+        border-radius: 4px;
         background: #ffffff;
         display: flex;
         align-items: center;
@@ -817,7 +924,7 @@
     .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control {
         background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%) !important;
         border-color: #3b46f1 !important;
-        box-shadow: 0 2px 8px rgba(59, 70, 241, 0.32);
+        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.28);
     }
 
     .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control .fcc-check-icon {
@@ -826,8 +933,8 @@
     }
 
     .fcc-check-icon {
-        width: 11px;
-        height: 11px;
+        width: 9px;
+        height: 9px;
         stroke: #ffffff;
         stroke-width: 2.4;
         fill: none;
@@ -842,12 +949,12 @@
     .fcc-custom-checkbox input[type="checkbox"]:indeterminate + .fcc-checkbox-control {
         background: linear-gradient(135deg, #3b46f1 0%, #4361ee 100%) !important;
         border-color: #3b46f1 !important;
-        box-shadow: 0 2px 8px rgba(59, 70, 241, 0.32);
+        box-shadow: 0 2px 6px rgba(59, 70, 241, 0.28);
     }
 
     .fcc-indeterminate-bar {
-        width: 9px;
-        height: 2.2px;
+        width: 8px;
+        height: 2px;
         background: #ffffff;
         border-radius: 2px;
         display: none;
@@ -1099,25 +1206,61 @@
         /* Table on mobile */
         .fcc-modern-table-wrap {
             border-radius: 10px;
+            overflow-x: auto !important;
             -webkit-overflow-scrolling: touch;
+            position: relative;
         }
         table.dataTable {
-            min-width: 1040px !important;
+            min-width: 940px !important;
         }
         table.dataTable thead th {
-            padding: 10px 24px 10px 10px !important;
-            font-size: 11px !important;
+            padding: 7px 8px !important;
+            font-size: 10.5px !important;
         }
         table.dataTable thead th.checkbox-column,
         table.dataTable thead th.no-sort,
         table.dataTable thead th:first-child,
+        table.dataTable tbody td.checkbox-column,
+        table.dataTable tbody td:first-child {
+            padding: 5px 0 5px 8px !important;
+            width: 30px !important;
+            min-width: 30px !important;
+            max-width: 30px !important;
+            text-align: left !important;
+        }
+        table.dataTable thead th:nth-child(2),
+        table.dataTable tbody td:nth-child(2) {
+            padding-left: 6px !important;
+            width: 180px !important;
+            max-width: 200px !important;
+        }
         table.dataTable thead th:last-child {
-            padding-right: 10px !important;
-            padding-left: 10px !important;
+            position: sticky !important;
+            right: 0 !important;
+            background: #f8fafc !important;
+            z-index: 10 !important;
+            box-shadow: -3px 0 8px rgba(15, 23, 42, 0.08) !important;
+            text-align: center !important;
+            padding: 7px 4px !important;
+            width: 46px !important;
+            min-width: 46px !important;
+            max-width: 46px !important;
         }
         table.dataTable tbody td {
-            padding: 10px 10px !important;
-            font-size: 12px !important;
+            padding: 5px 8px !important;
+            font-size: 11.5px !important;
+        }
+        table.dataTable tbody td:last-child {
+            position: sticky !important;
+            right: 0 !important;
+            background: #ffffff !important;
+            z-index: 9 !important;
+            box-shadow: -3px 0 8px rgba(15, 23, 42, 0.08) !important;
+            text-align: center !important;
+            padding: 5px 4px !important;
+            width: 46px !important;
+            min-width: 46px !important;
+            max-width: 46px !important;
         }
 
         /* Footer & Pagination on mobile */
@@ -1353,16 +1496,16 @@
             <table id="dataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.users.getUsers') }}" data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" data-destroy-url="{{ route('nutritionPanel.users.destroy') }}">
                 <thead>
                     <tr>
-                        <th class="checkbox-column no-sort no-content text-center" style="width: 38px;"></th>
-                        <th>Member</th>
-                        <th>User type</th>
-                        <th>Contact</th>
-                        <th>Coach</th>
-                        <th>Plan</th>
-                        <th>Renewal</th>
-                        <th>Due amount</th>
-                        <th>Status</th>
-                        <th class="text-end no-sort no-content" style="width: 60px;">Action</th>
+                        <th class="checkbox-column no-sort no-content" style="width: 32px;"></th>
+                        <th style="width: 17%;">Member</th>
+                        <th style="width: 9%;">User type</th>
+                        <th style="width: 11%;">Contact</th>
+                        <th style="width: 10%;">Coach</th>
+                        <th style="width: 17%;">Plan</th>
+                        <th style="width: 9%;">Renewal</th>
+                        <th style="width: 9%;">Due amount</th>
+                        <th style="width: 9%;">Status</th>
+                        <th class="text-center no-sort no-content" style="width: 48px;">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -1562,6 +1705,21 @@ $(document).ready(function() {
 
     $(document).on('hidden.bs.dropdown', '.dropdown', function () {
         $(this).removeClass('dropup');
+    });
+
+    // Close open dropdowns when scrolling table horizontally
+    $(document).on('scroll', '.fcc-modern-table-wrap', function () {
+        $('#dataTable .dropdown.show').each(function() {
+            var toggle = $(this).find('[data-bs-toggle="dropdown"], [data-toggle="dropdown"]')[0];
+            if (toggle) {
+                var instance = (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) ? bootstrap.Dropdown.getInstance(toggle) : null;
+                if (instance) {
+                    instance.hide();
+                } else if ($(toggle).dropdown) {
+                    $(toggle).dropdown('hide');
+                }
+            }
+        });
     });
 
     // Update dynamic count on table draw

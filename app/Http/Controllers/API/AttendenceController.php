@@ -35,121 +35,236 @@ class AttendenceController extends Controller
      */
     public function add(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $secretyKey = 1234567890;
-        $encryption = new \MrShan0\CryptoLib\CryptoLib();
-        $plainText  = $encryption->decryptCipherTextWithRandomIV($request['franchise_id'], $secretyKey);
-
-        if($plainText != $user['created_by']){
-            $response = [
-                '_status'  => false,
-                '_message' => 'Something went wrong. Please try again later.',
-            ];
-
-            return response()->json($response, 200);
-        }
-
-        if($user['days'] > 0){
-            $today = Carbon::today();
-            $exists = Attendance::where('user_id', $user['id'])->where('type',2)->whereDate('date', $today)->exists();
-
-            if($exists){
-                $response = [
+            if (!$user) {
+                return response()->json([
                     '_status'  => false,
-                    '_message' => 'Attendance has already been marked for today.',
-                ];
-            } else {
-                Attendance::create([
-                    'franchise_id'  => $user['created_by'],
+                    '_message' => 'Unauthenticated user.',
+                ], 401);
+            }
+
+            if (empty($request['franchise_id'])) {
+                return response()->json([
+                    '_status'  => false,
+                    '_message' => 'Franchise QR code or ID is required.',
+                ], 200);
+            }
+
+            $secretyKey = 1234567890;
+            $encryption = new \MrShan0\CryptoLib\CryptoLib();
+
+            $rawFranchiseInput = trim((string)$request['franchise_id']);
+            $plainText = '';
+
+            // Attempt 1: Direct decrypt of ciphertext
+            try {
+                $plainText = $encryption->decryptCipherTextWithRandomIV($rawFranchiseInput, $secretyKey);
+            } catch (\Throwable $e) {
+                $plainText = '';
+            }
+
+            // Attempt 2: If spaces replaced '+' during HTTP transmission, restore '+' and retry decrypt
+            if (empty($plainText) && strpos($rawFranchiseInput, ' ') !== false) {
+                try {
+                    $fixedInput = str_replace(' ', '+', $rawFranchiseInput);
+                    $plainText = $encryption->decryptCipherTextWithRandomIV($fixedInput, $secretyKey);
+                } catch (\Throwable $e) {
+                    $plainText = '';
+                }
+            }
+
+            // Attempt 3: If URL encoded, try urldecode
+            if (empty($plainText) && strpos($rawFranchiseInput, '%') !== false) {
+                try {
+                    $decoded = urldecode($rawFranchiseInput);
+                    $plainText = $encryption->decryptCipherTextWithRandomIV($decoded, $secretyKey);
+                } catch (\Throwable $e) {
+                    $plainText = '';
+                }
+            }
+
+            // Attempt 4: UPI QR code parsing (e.g. upi://pay?pa=7728933011@ptsbi&pn=DAKSHA%20%20SANKHLA)
+            if (empty($plainText) && (stripos($rawFranchiseInput, 'upi://') !== false || strpos($rawFranchiseInput, '@') !== false)) {
+                try {
+                    $parsedUrl = parse_url($rawFranchiseInput);
+                    $queryString = $parsedUrl['query'] ?? (strpos($rawFranchiseInput, '?') !== false ? substr($rawFranchiseInput, strpos($rawFranchiseInput, '?') + 1) : $rawFranchiseInput);
+                    parse_str($queryString, $upiParams);
+
+                    $upiVpa = $upiParams['pa'] ?? '';
+                    $upiPhone = '';
+                    if (preg_match('/(\d{10})/', $upiVpa, $m)) {
+                        $upiPhone = $m[1];
+                    } elseif (preg_match('/(\d{10})/', $rawFranchiseInput, $m)) {
+                        $upiPhone = $m[1];
+                    }
+
+                    if (!empty($upiPhone)) {
+                        $matchedFranchise = User::where('role_type', 'franchise')
+                            ->where(function ($q) use ($upiPhone) {
+                                $q->where('mobile_number', 'LIKE', '%' . $upiPhone . '%');
+                            })
+                            ->first();
+                        if ($matchedFranchise) {
+                            $plainText = (string)$matchedFranchise->id;
+                        }
+                    }
+                } catch (\Throwable $upiEx) {
+                    \Log::warning('UPI QR parse failed: ' . $upiEx->getMessage());
+                }
+            }
+
+            // Attempt 5: If raw numeric, check if it's a valid franchise ID
+            if (empty($plainText) && is_numeric($rawFranchiseInput)) {
+                $franchiseExists = User::where('id', (int)$rawFranchiseInput)->where('role_type', 'franchise')->exists();
+                if ($franchiseExists) {
+                    $plainText = (string)$rawFranchiseInput;
+                }
+            }
+
+            // Verify franchise membership
+            $isValidFranchise = false;
+            if (!empty($plainText)) {
+                $targetFranchiseId = (string)$plainText;
+
+                if ($targetFranchiseId === (string)$user['created_by']) {
+                    $isValidFranchise = true;
+                } else {
+                    // Check if the user's creator was created by this franchise (coach -> franchise hierarchy)
+                    $creator = User::find($user['created_by']);
+                    if ($creator && (string)$creator->created_by === $targetFranchiseId) {
+                        $isValidFranchise = true;
+                    }
+
+                    // Check coach name association if available
+                    if (!$isValidFranchise && !empty($user->coach_name)) {
+                        $coach = User::where('name', $user->coach_name)->where('created_by', (int)$targetFranchiseId)->first();
+                        if ($coach) {
+                            $isValidFranchise = true;
+                        }
+                    }
+                }
+            }
+
+            if (!$isValidFranchise) {
+                return response()->json([
+                    '_status'  => false,
+                    '_message' => 'Invalid franchise QR code or you do not belong to this franchise.',
+                ], 200);
+            }
+
+            $attendanceFranchiseId = !empty($plainText) ? (int)$plainText : (int)$user['created_by'];
+
+            if ($user['days'] > 0) {
+                $today = Carbon::today();
+                $exists = Attendance::where('user_id', $user['id'])
+                    ->where('type', 2)
+                    ->whereDate('date', $today)
+                    ->whereNull('deleted_at')
+                    ->exists();
+
+                if ($exists) {
+                    return response()->json([
+                        '_status'  => false,
+                        '_message' => 'Attendance has already been marked for today.',
+                    ], 200);
+                }
+
+                $attendance = Attendance::create([
+                    'franchise_id'  => $attendanceFranchiseId,
                     'user_id'       => $user['id'],
-                    'date'          => $today,
+                    'date'          => $today->toDateString(),
                     'type'          => 2
                 ]);
 
-                $attendenceLogs = AttendanceLogs::where('user_id',$user->id)->orderBy('id','DESC')->count();
+                /** @var User $userModel */
+                $userModel = User::find($user['id']);
+                $newPendingDays = $userModel ? $userModel->recalculatePendingDays() : max(0, $user['days'] - 1);
 
-                if($attendanceLogs == 0) {
-                    $data = [
-                        'user_id'       => $user->id,
-                        'date'          => date('Y-m-d'),
-                        'remark'        => 'QR Attendance Add',
-                        'days'          => 1,
-                        'total_days'    => $user['days'] - 1,
-                        'created_by'    => $user->id,
-                    ];
-                    
-                    AttendanceLogs::create($data);
-                } else {
-                    $attendenceLogs = AttendanceLogs::where('user_id',$user->id)->orderBy('id','DESC')->first();
-                    $data = [
-                        'user_id'       => $user->id,
-                        'date'          => date('Y-m-d'),
-                        'remark'        => 'QR Attendance Add',
-                        'days'          => 1,
-                        'total_days'    => $attendenceLogs['total_days'] - 1,
-                        'created_by'    => $user->id,
-                    ];
-                    
-                    AttendanceLogs::create($data);
+                $data = [
+                    'user_id'       => $user->id,
+                    'date'          => date('Y-m-d'),
+                    'remark'        => 'QR Attendance Add',
+                    'days'          => 1,
+                    'total_days'    => $newPendingDays,
+                    'created_by'    => $attendanceFranchiseId ?: $user->id,
+                ];
+
+                AttendanceLogs::create($data);
+
+                // Send Notification safely without crashing on missing sender
+                try {
+                    $senderData   = User::find($attendanceFranchiseId) ?? User::find($user['created_by']) ?? User::first();
+                    $receiverData = User::find($user['id']);
+
+                    $senderName   = $senderData && !empty($senderData->name) ? $senderData->name : 'Fit Coach Club';
+                    $receiverName = $receiverData && !empty($receiverData->name) ? $receiverData->name : ($user->name ?: 'Member');
+                    $senderId     = $senderData ? $senderData->id : 0;
+
+                    $title = 'Attendance Marked ✅';
+                    $notiMessage = $receiverName . ', Congratulations! Your Attendance is marked for today.';
+                    $message = $receiverName . ', Congratulations! Your Attendance is marked for today.';
+                    $notificationType = 5;
+
+                    Notification::create([
+                        'user_id'             => $receiverData->id,
+                        'sender_id'           => $senderId,
+                        'data_id'             => '',
+                        'notification_title'  => $title,
+                        'notification_text'   => $notiMessage,
+                        'sender_name'         => $senderName,
+                        'receiver_name'       => $receiverName,
+                        'notification_type'   => $notificationType,
+                    ]);
+
+                    if ($receiverData && !empty($receiverData->fcm_token) && function_exists('push_notification')) {
+                        $platform  = $receiverData->device_os;
+                        $fcm_token = $receiverData->fcm_token;
+                        push_notification(
+                            $receiverData->id,
+                            $title,
+                            $message,
+                            $senderId,
+                            $notificationType,
+                            $fcm_token,
+                            '',
+                            $senderName,
+                            $receiverName,
+                            $platform
+                        );
+                    }
+                } catch (\Throwable $notiEx) {
+                    \Log::warning('Attendance notification sending failed: ' . $notiEx->getMessage());
                 }
 
-                User::where('id', $user->id)->decrement('days', 1);
-
-                // Send Notification
-                $senderData   = User::find(0);
-                $receiverData = User::find($user['id']);
-
-                // Set usernames
-                $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
-                $receiverData['username']   = $receiverData['name'] == '' ? 'Anonymous User' : $receiverData['name'];
-
-                // Notification content
-                $title = 'Attendance Marked ✅';
-                $notiMessage = $receiverData['username'].', Congratulations! Your Attendance is marked for today.';
-                $message = $receiverData['username'].', Congratulations! Your Attendance is marked for today.';
-                $notificationType = 5;
-
-                Notification::create([
-                    'user_id'             => $receiverData->id,
-                    'sender_id'           => $senderData->id,
-                    'data_id'             => '',
-                    'notification_title'  => $title,
-                    'notification_text'   => $notiMessage,
-                    'sender_name'         => $senderData['name'],
-                    'receiver_name'       => $receiverData['name'],
-                    'notification_type'   => $notificationType,
-                ]);
-
-                $user_id                = $receiverData->id;
-                $notification_title     = $title;
-                $notification_text      = $message;
-                $sender_id              = $senderData->id;
-                $notification_type      = $notificationType;
-                $platform               = $receiverData->device_os;
-                $fcm_token              = $receiverData->fcm_token;
-                $data_id                = '';
-                $sender_name            = $senderData['name'];
-                $receiver_name          = $receiverData['name'];
-
-                push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiver_name, $platform);
-                //---------
-
-                $response = [
+                return response()->json([
                     '_status'  => true,
                     '_message' => 'Your attendance has been marked successfully.',
-                ];
+                    '_data'    => [
+                        'attendance_id' => $attendance->id,
+                        'pending_days'  => $newPendingDays,
+                        'date'          => $today->toDateString(),
+                    ]
+                ], 200);
+            } else {
+                return response()->json([
+                    '_status'  => false,
+                    '_message' => 'Not sufficient days to mark attendance.',
+                ], 200);
             }
-        } else {
-            $response = [
+        } catch (\Throwable $e) {
+            \Log::error('API Attendance add error: ' . $e->getMessage(), [
+                'trace'   => $e->getTraceAsString(),
+                'user_id' => Auth::id(),
+                'input'   => $request->all()
+            ]);
+
+            return response()->json([
                 '_status'  => false,
-                '_message' => 'Not sufficient days to mark attendance.',
-            ];
+                '_message' => config('app.debug') ? ('Failed to mark attendance: ' . $e->getMessage()) : 'Something went wrong. Please try again later.',
+            ], 200);
         }
-        //-------------
-
-        return response()->json($response, 200);
-
     }
 
     /**

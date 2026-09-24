@@ -27,11 +27,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
     <link href="{{ asset('admin-assets/css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ asset('admin-assets/css/plugins.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin-assets/css/plugins.css') }}?v={{ file_exists(public_path('admin-assets/css/plugins.css')) ? filemtime(public_path('admin-assets/css/plugins.css')) : time() }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/plugins/loaders/custom-loader.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/plugins/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('admin-assets/css/custom.css') }}" rel="stylesheet">
-    <link href="{{ asset('admin-assets/css/nutrition-modern-inner.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin-assets/css/custom.css') }}?v={{ file_exists(public_path('admin-assets/css/custom.css')) ? filemtime(public_path('admin-assets/css/custom.css')) : time() }}" rel="stylesheet">
+    <link href="{{ asset('admin-assets/css/nutrition-modern-inner.css') }}?v={{ file_exists(public_path('admin-assets/css/nutrition-modern-inner.css')) ? filemtime(public_path('admin-assets/css/nutrition-modern-inner.css')) : time() }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/elements/alert.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/elements/tooltip.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -113,7 +113,7 @@
     <!-- Scripts -->
     <script src="{{ asset('admin-assets/js/libs/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('admin-assets/js/bootstrap/js/bootstrap-compat.js') }}"></script>
+    <script src="{{ asset('admin-assets/js/bootstrap/js/bootstrap-compat.js') }}?v={{ file_exists(public_path('admin-assets/js/bootstrap/js/bootstrap-compat.js')) ? filemtime(public_path('admin-assets/js/bootstrap/js/bootstrap-compat.js')) : time() }}"></script>
     <script src="{{ asset('admin-assets/js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/additional-methods.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/jquery.validate.file.js') }}"></script>

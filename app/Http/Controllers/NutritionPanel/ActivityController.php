@@ -62,17 +62,7 @@ class ActivityController extends Controller
             'attributes' => []
         ];
 
-        // Calculate Activity Statistics
-        $totalActivities = Activity::where('created_by', $authUser['id'])->count();
-        $scheduledActivities = Activity::where('created_by', $authUser['id'])->where('activity_type', 2)->count();
-        $publishedActivities = Activity::where('created_by', $authUser['id'])->where('status', 1)->count();
-        $notificationsSent = Activity::where('created_by', $authUser['id'])->where('status', 1)->count();
-
         // View Data
-        $this->viewData['totalActivities'] = $totalActivities;
-        $this->viewData['scheduledActivities'] = $scheduledActivities;
-        $this->viewData['publishedActivities'] = $publishedActivities;
-        $this->viewData['notificationsSent'] = $notificationsSent;
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
@@ -101,9 +91,6 @@ class ActivityController extends Controller
         
         // Filter Parameters
         $filter = array(
-            'activity_type' => $request->get('activity_type'),
-            'date_filter'   => $request->get('date_filter'),
-            'status'        => $request->get('status'),
         );
 
         // Getting Activities Records
@@ -119,38 +106,37 @@ class ActivityController extends Controller
                 $name               = 'N/A';
                 $activity_type      = 'N/A';
                 $date               = 'N/A';
-                $app_notification   = '<span class="act-badge-notify"><i class="fa fa-bell-o"></i> Ready</span>';
                 $order              = 'N/A';
                 $status             = '';
                 $action             = '';
 
                 // Preparing Data
                 if(!empty($value->name)){
-                    $name = '<span class="fw-bold text-dark">' . e($value->name) . '</span>';
+                    $name = $value->name;
                 }
 
                 if($value->activity_type == 1){
-                    $activity_type = '<span class="act-badge-type type-old">Old Activity</span>';
+                    $activity_type = 'Old Activity';
                 } else if($value->activity_type == 2){
-                    $activity_type = '<span class="act-badge-type type-upcoming">Upcoming Activity</span>';
+                    $activity_type = 'Upcoming Activity';
                 }
 
                 if(!empty($value->date))
                 {
-                    $date = '<span class="act-date-text"><i class="fa fa-calendar-o text-muted me-1"></i> ' . date("d M Y", strtotime($value->date)) . '</span>';
+                    $date = date("d-m-Y", strtotime($value->date));
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1 act-order-input text-center" id="activity_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control numeric pr-1" id="activity_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
                 }
 
                 if ( $value->status == 0 ){
-                    $status = '<span class="act-table-status act-status-inactive badge badge-warning">Inactive</span>';
+                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
                 } else {
-                    $status = '<span class="act-table-status act-status-active badge badge-success">Active</span>';
+                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.activities.edit', ['id' => ev($value->id)]) . '" class="act-table-action-edit" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<a href="' . route('nutritionPanel.activities.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
 
                 // Array Data
                 $arr_data[] = array(
@@ -158,7 +144,6 @@ class ActivityController extends Controller
                     "name"              => $name,
                     "activity_type"     => $activity_type,
                     "date"              => $date,
-                    "app_notification"  => $app_notification,
                     "order"             => $order,
                     "status"            => $status,
                     "action"            => $action,

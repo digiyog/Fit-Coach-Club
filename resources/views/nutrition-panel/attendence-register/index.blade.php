@@ -940,6 +940,7 @@
 
     <!-- 3. Filter Bar -->
     <div class="fcc-filter-card">
+        <input type="hidden" id="filterDate" value="{{ $selectedDate ?? request('date', '') }}">
         <!-- Search -->
         <div class="fcc-search-box">
             <i class="fa fa-search fcc-search-icon"></i>
@@ -987,10 +988,11 @@
         <div class="fcc-filter-select-wrap">
             <select id="filterAttendanceStatus" class="fcc-filter-select">
                 <option value="">All attendance</option>
-                <option value="no_checkins">Needs attention (0 check-ins)</option>
-                <option value="low">Low (1 - 20%)</option>
-                <option value="building">Building (21 - 50%)</option>
-                <option value="on_track">On track (> 50%)</option>
+                <option value="multiple" {{ in_array(($selectedAttendanceStatus ?? ''), ['multiple', 'multi', 'multi_attendance', 'multiple_attendances']) ? 'selected' : '' }}>Multi attendance</option>
+                <option value="no_checkins" {{ ($selectedAttendanceStatus ?? '') == 'no_checkins' ? 'selected' : '' }}>Needs attention (0 check-ins)</option>
+                <option value="low" {{ ($selectedAttendanceStatus ?? '') == 'low' ? 'selected' : '' }}>Low (1 - 20%)</option>
+                <option value="building" {{ ($selectedAttendanceStatus ?? '') == 'building' ? 'selected' : '' }}>Building (21 - 50%)</option>
+                <option value="on_track" {{ ($selectedAttendanceStatus ?? '') == 'on_track' ? 'selected' : '' }}>On track (> 50%)</option>
             </select>
             <i class="fa fa-chevron-down fcc-select-icon"></i>
         </div>

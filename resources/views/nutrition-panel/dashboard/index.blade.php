@@ -4226,7 +4226,7 @@
                                     <strong>{{ count($today2Attendences ?? []) }}</strong> multiple attendances
                                 </div>
                             </div>
-                            <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
+                            <a href="{{ route('nutritionPanel.attendance-register.index', ['attendance_status' => 'multiple', 'date' => date('Y-m-d')]) }}" class="fcc-action-chevron">View <i class="fa fa-chevron-right"></i></a>
                         </div>
 
                         <div class="fcc-today-item">
@@ -4616,7 +4616,7 @@
                                     <div style="font-size: 11.5px; color: #7f1d1d; margin-top: 2px;">Coach: {{ $firstAlert->coach_name ?? 'Club Coach' }}</div>
                                 </div>
                             </div>
-                            <a href="{{ route('nutritionPanel.attendance-register.index') }}" class="fcc-btn-review-rec">
+                            <a href="{{ route('nutritionPanel.attendance-register.index', ['attendance_status' => 'multiple', 'date' => date('Y-m-d')]) }}" class="fcc-btn-review-rec">
                                 Review record
                             </a>
                         </div>

@@ -15,14 +15,32 @@
         <div class="form pb-2">
             {!! Form::open(['class' => 'update-transaction-form', 'method' => 'post', 'url' => route('nutritionPanel.transactions.updateTransaction', ['id' => ev($transaction->id)]), 'enctype' => 'multipart/form-data', 'autocomplete' => 'off' ]) !!}
                 <div class="row mb-4">
+                    @if(!empty($transaction->user))
+                    <div class="col-md-12 mt-2">
+                        <label class="text-muted mb-1 d-block"><small>User</small></label>
+                        <strong>{{ $transaction->user->name ?? 'N/A' }}</strong>
+                        @if(!empty($transaction->user->mobile_number))
+                            <span class="text-muted">({{ $transaction->user->mobile_number }})</span>
+                        @endif
+                    </div>
+                    @endif
+
                     <div class="col-md-12 mt-3">
-                        <label for="amount"> Total Amount </label>
-                        {!! Form::number('amount', $transaction->total_amount, ['class' => 'form-control', 'id' => 'amount', 'placeholder' => 'Amount' ]) !!}
+                        <label for="amount"> Total Amount <span class="text-danger">*</span></label>
+                        {!! Form::number('amount', $transaction->total_amount, ['class' => 'form-control', 'id' => 'amount', 'placeholder' => 'Amount', 'step' => 'any', 'min' => '0']) !!}
                     </div>
 
                     <div class="col-md-12 mt-3">
-                        <label for="received_amount"> Received Amount </label>
-                        {!! Form::number('received_amount', $transaction->received_amount, ['class' => 'form-control', 'id' => 'received_amount', 'placeholder' => 'Received Amount', ]) !!}
+                        <label for="received_amount"> Received Amount <span class="text-danger">*</span></label>
+                        {!! Form::number('received_amount', $transaction->received_amount, ['class' => 'form-control', 'id' => 'received_amount', 'placeholder' => 'Received Amount', 'step' => 'any', 'min' => '0']) !!}
+                    </div>
+
+                    <div class="col-md-12 mt-3">
+                        <label for="type">Select Type</label>
+                        <select class="form-control" name="type" id="type">
+                            <option value="0" {{ (isset($transaction->type) && $transaction->type == 0) ? 'selected' : '' }}>Subscription</option>
+                            <option value="1" {{ (isset($transaction->type) && $transaction->type == 1) ? 'selected' : '' }}>Product</option>
+                        </select>
                     </div>
 
                     <div class="col-md-12 mt-3">

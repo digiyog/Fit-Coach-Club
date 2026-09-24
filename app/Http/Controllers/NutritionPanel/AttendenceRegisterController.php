@@ -45,6 +45,8 @@ class AttendenceRegisterController extends Controller
 
         $selectedMonth = $request->get('month', date('m'));
         $selectedYear = $request->get('year', date('Y'));
+        $selectedAttendanceStatus = $request->get('attendance_status', '');
+        $selectedDate = $request->get('date', '');
 
         // Adding breadcrumb array
         $breadcrumb = [
@@ -68,6 +70,8 @@ class AttendenceRegisterController extends Controller
         $this->viewData['coachesList'] = $coachesList;
         $this->viewData['selectedMonth'] = $selectedMonth;
         $this->viewData['selectedYear'] = $selectedYear;
+        $this->viewData['selectedAttendanceStatus'] = $selectedAttendanceStatus;
+        $this->viewData['selectedDate'] = $selectedDate;
         $this->viewData['stats'] = $stats;
         
         return view('nutrition-panel.attendence-register.index')->with($this->viewData);
@@ -199,13 +203,15 @@ class AttendenceRegisterController extends Controller
         $year = $request->year ?: date('Y');
         $coachName = $request->coach_name;
         $attendanceStatus = $request->attendance_status;
+        $date = $request->date;
 
         // Filter Parameters
         $filter = array(
             "month" => $month,
             "year" => $year,
             "coach_name" => $coachName,
-            "attendance_status" => $attendanceStatus
+            "attendance_status" => $attendanceStatus,
+            "date" => $date
         );
 
         $totalDays = cal_days_in_month(CAL_GREGORIAN, intval($month), intval($year));
@@ -221,6 +227,36 @@ class AttendenceRegisterController extends Controller
 
         if (count($records) > 0)
         {
+            $targetDate = !empty($filter['date']) ? $filter['date'] : ($month == date('m') && $year == date('Y') ? date('Y-m-d') : null);
+
+            // Identify users who have multiple attendances on target date / month
+            $multiQuery = Attendance::whereIn('user_id', $records->pluck('id'))
+                ->where('type', 2)
+                ->whereNull('deleted_at');
+
+            if ($targetDate) {
+                $multiQuery->where(function($q) use ($targetDate) {
+                    $q->where('date', $targetDate)
+                      ->orWhere(function($sub) use ($targetDate) {
+                          $sub->whereNull('date')->whereDate('created_at', $targetDate);
+                      });
+                });
+            } else {
+                $multiQuery->where(function($q) use ($month, $year) {
+                    $q->where(function($sub1) use ($month, $year) {
+                        $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
+                    })->orWhere(function($sub2) use ($month, $year) {
+                        $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
+                    });
+                });
+            }
+
+            $userIdsWithMultiple = $multiQuery->groupBy('user_id', DB::raw('COALESCE(date, DATE(created_at))'))
+                ->havingRaw('COUNT(id) > 1')
+                ->pluck('user_id')
+                ->unique()
+                ->toArray();
+
             foreach ($records as $key => $value)
             {
                 $name           = !empty($value->name) ? $value->name : 'N/A';
@@ -228,6 +264,7 @@ class AttendenceRegisterController extends Controller
                 $total_present  = !empty($value->total_present) ? intval($value->total_present) : 0;
                 $total_absent   = max(0, $totalDays - $total_present);
                 $ratePct        = $total_days > 0 ? round(($total_present / $total_days) * 100) : 0;
+                $hasMulti       = in_array($value->id, $userIdsWithMultiple);
                 
                 $colors = $this->getAvatarColor($name);
                 $initial = strtoupper(substr(trim($name), 0, 1) ?: 'U');
@@ -259,7 +296,9 @@ class AttendenceRegisterController extends Controller
                 $rateCol = '<span class="fcc-rate-text">' . $ratePct . '%</span>';
 
                 // 6. Follow-up priority badge
-                if ($total_present === 0) {
+                if ($hasMulti) {
+                    $followUpCol = '<span class="fcc-badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a;" title="Multiple check-ins recorded"><i class="fa fa-exclamation-triangle me-1"></i>Multi attendance</span>';
+                } elseif ($total_present === 0) {
                     $followUpCol = '<span class="fcc-badge fcc-badge-danger">No check-ins</span>';
                 } elseif ($ratePct <= 20) {
                     $followUpCol = '<span class="fcc-badge fcc-badge-warning">Low</span>';
@@ -322,11 +361,16 @@ class AttendenceRegisterController extends Controller
 
         // Get Attendance
         $attendances = Attendance::where('user_id', $userId)
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
+            ->where(function($q) use ($month, $year) {
+                $q->where(function($sub1) use ($month, $year) {
+                    $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
+                })->orWhere(function($sub2) use ($month, $year) {
+                    $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
+                });
+            })
             ->get()
-            ->keyBy(function ($item) {
-                return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+            ->groupBy(function ($item) {
+                return !empty($item->date) ? \Carbon\Carbon::parse($item->date)->format('Y-m-d') : \Carbon\Carbon::parse($item->created_at)->format('Y-m-d');
             });
 
         // Send view data

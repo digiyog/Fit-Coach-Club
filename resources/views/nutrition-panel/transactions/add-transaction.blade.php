@@ -17,23 +17,23 @@
                 <div class="row mb-4">
 
                     <div class="col-md-12 mt-3">
-                        <label for="user">Select User</label>
+                        <label for="user">Select User <span class="text-danger">*</span></label>
                         {!! Form::select('user', create_select_options($users, 'name', 'id', 'Select User'), '', ['class' => 'form-control select-picker', 'id' => 'user' ]) !!}
                     </div>
 
                     <div class="col-md-12 mt-4">
-                        <label for="amount"> Total Amount </label>
-                        {!! Form::number('amount', '', ['class' => 'form-control', 'id' => 'amount', 'placeholder' => 'Amount', ]) !!}
+                        <label for="amount"> Total Amount <span class="text-danger">*</span></label>
+                        {!! Form::number('amount', '', ['class' => 'form-control', 'id' => 'amount', 'placeholder' => 'Amount', 'step' => 'any', 'min' => '0']) !!}
                     </div>
 
                     <div class="col-md-12 mt-3">
-                        <label for="received_amount"> Received Amount </label>
-                        {!! Form::number('received_amount', '', ['class' => 'form-control', 'id' => 'received_amount', 'placeholder' => 'Received Amount', ]) !!}
+                        <label for="received_amount"> Received Amount <span class="text-danger">*</span></label>
+                        {!! Form::number('received_amount', '', ['class' => 'form-control', 'id' => 'received_amount', 'placeholder' => 'Received Amount', 'step' => 'any', 'min' => '0']) !!}
                     </div>
 
                     <div class="col-md-12 mt-3">
-                        <label for="user">Select Type</label>
-                        <select class="form-control" name="type">
+                        <label for="type">Select Type <span class="text-danger">*</span></label>
+                        <select class="form-control" name="type" id="type">
                             <option value="">Select Type</option>
                             <option value="0">Subscription</option>
                             <option value="1">Product</option>
@@ -42,7 +42,7 @@
 
                     <div class="col-md-12 mt-3">
                         <label for="remark"> Remark </label>
-                        {!! Form::textarea('remark', $transaction->remark, ['class' => 'form-control remark', 'id' => 'remark', 'placeholder' => 'Remark', ]) !!}
+                        {!! Form::textarea('remark', '', ['class' => 'form-control remark', 'id' => 'remark', 'placeholder' => 'Remark', ]) !!}
                     </div>
                 </div>
                 {{ Form::button('<i class="fa fa-save"></i> &nbsp; Add Transaction', ['class' => 'btn btn-primary btn-submit', 'type' => 'submit', 'title' => 'Add Transaction']) }}

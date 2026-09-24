@@ -192,35 +192,35 @@ class UserController extends Controller
                 }
 
                 if ($profileImageUrl) {
-                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 30px; height: 30px; min-width: 30px; object-fit: cover;" alt="'.e($name).'" />';
+                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 24px; height: 24px; min-width: 24px; object-fit: cover;" alt="'.e($name).'" />';
                 } else {
-                    $avatarInner = '<div class="fcc-member-avatar" style="width: 30px; height: 30px; min-width: 30px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                    $avatarInner = '<div class="fcc-member-avatar" style="width: 24px; height: 24px; min-width: 24px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
                 }
 
-                $memberHtml = '<div class="d-flex align-items-center gap-2">
-                    <div class="fcc-avatar-wrapper" style="position: relative; width: 38px; height: 38px; min-width: 38px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                $memberHtml = '<div class="d-flex align-items-center gap-2" style="gap: 7px !important;">
+                    <div class="fcc-avatar-wrapper" style="position: relative; width: 30px; height: 30px; min-width: 30px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <div class="fcc-avatar-ring" style="position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid #cbd5e1; border-top-color: transparent; border-bottom-color: transparent; pointer-events: none;"></div>
                         '.$avatarInner.'
                     </div>
-                    <div>
-                        <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 13.5px; line-height: 1.25;">'.e($name).'</div>
-                        <div class="fcc-member-email text-muted" style="font-size: 11.5px; margin-top: 1px;">'.e($email).'</div>
+                    <div style="line-height: 1.15;">
+                        <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 12.5px; line-height: 1.2;">'.e($name).'</div>
+                        <div class="fcc-member-email text-muted" style="font-size: 11px; margin-top: 0px; line-height: 1.1;">'.e($email).'</div>
                     </div>
                 </div>';
 
                 // 2. User Type
                 $userState = !empty($value->user_state) ? $value->user_state : (($request->user_type == 'offline') ? 'Offline' : (($request->user_type == 'online') ? 'Online' : 'Offline'));
                 $userTypeTitle = ($value->user_type == 'Demo User' || $value->user_type == '3 Days Trial') ? 'Demo' : 'Regular';
-                $userTypeHtml = '<div>
-                    <div style="font-size: 13px; font-weight: 500; color: #334155;">'.$userTypeTitle.'</div>
-                    <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-top: 2px;">'.$userState.'</span>
+                $userTypeHtml = '<div style="line-height: 1.15;">
+                    <div style="font-size: 12px; font-weight: 600; color: #334155; line-height: 1.2;">'.$userTypeTitle.'</div>
+                    <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 9.5px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-top: 1px; display: inline-block; line-height: 1.2;">'.$userState.'</span>
                 </div>';
 
                 // 3. Contact
-                $contactHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">'.e($mobile_number).'</span>';
+                $contactHtml = '<span style="font-size: 12px; color: #334155; font-weight: 600; letter-spacing: 0.2px;">'.e($mobile_number).'</span>';
 
                 // 4. Coach
-                $coachHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">'.e($coach_name).'</span>';
+                $coachHtml = '<span style="font-size: 12.5px; color: #334155; font-weight: 500;">'.e($coach_name).'</span>';
 
                 // 5. Plan
                 $planTitle = !empty($meal_type) ? $meal_type : (!empty($product_type) ? $product_type : 'Basic Plan');
@@ -231,42 +231,42 @@ class UserController extends Controller
                     'Bronze' => ['bg' => '#ffedd5', 'color' => '#c2410c'],
                     default => ['bg' => '#eff6ff', 'color' => '#1d4ed8'],
                 };
-                $planHtml = '<div>
-                    <div style="font-size: 13px; color: #334155; font-weight: 500;">'.e($planTitle).'</div>
-                    <span class="badge" style="background: '.$tierStyle['bg'].'; color: '.$tierStyle['color'].'; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-top: 2px;">'.e($tierBadge).'</span>
+                $planHtml = '<div style="line-height: 1.15;">
+                    <div style="font-size: 12px; color: #1e293b; font-weight: 600; line-height: 1.2;">'.e($planTitle).'</div>
+                    <span class="badge" style="background: '.$tierStyle['bg'].'; color: '.$tierStyle['color'].'; font-size: 9.5px; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-top: 1px; display: inline-block; line-height: 1.2;">'.e($tierBadge).'</span>
                 </div>';
 
                 // 6. Renewal
                 $daysLeft = (int)$days;
                 if ($daysLeft <= 3 && $daysLeft >= 0) {
-                    $renewalHtml = '<span class="badge" style="background: #fef3c7; color: #d97706; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">'.$daysLeft.' days</span>';
+                    $renewalHtml = '<span class="badge" style="background: #fef3c7; color: #d97706; font-size: 11px; font-weight: 600; padding: 1.5px 6px; border-radius: 4px; line-height: 1.2;">'.$daysLeft.' days</span>';
                 } elseif ($daysLeft < 0) {
-                    $renewalHtml = '<span class="badge" style="background: #fee2e2; color: #ef4444; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">Expired</span>';
+                    $renewalHtml = '<span class="badge" style="background: #fee2e2; color: #ef4444; font-size: 11px; font-weight: 600; padding: 1.5px 6px; border-radius: 4px; line-height: 1.2;">Expired</span>';
                 } else {
-                    $renewalHtml = '<span style="font-size: 13px; color: #334155; font-weight: 500;">'.$daysLeft.' days</span>';
+                    $renewalHtml = '<span style="font-size: 12px; color: #334155; font-weight: 500;">'.$daysLeft.' days</span>';
                 }
 
                 // 7. Due Amount
                 $hasDue = ($due_amount > 0);
                 if ($hasDue) {
-                    $dueHtml = '<span class="fcc-dues-flagged text-nowrap">₹'.number_format($due_amount, 0).'</span>';
+                    $dueHtml = '<span class="fcc-dues-flagged text-nowrap" style="background: #fee2e2; color: #dc2626; font-weight: 700; font-size: 11.5px; padding: 1.5px 6px; border-radius: 4px; display: inline-block; line-height: 1.2;">₹'.number_format($due_amount, 0).'</span>';
                 } else {
-                    $dueHtml = '<span class="text-muted text-nowrap" style="font-size: 13px; font-weight: 500;">₹0</span>';
+                    $dueHtml = '<span class="text-muted text-nowrap" style="font-size: 12px; font-weight: 500;">₹0</span>';
                 }
 
                 // 8. Status
                 if ($value->status == 0) {
-                    $statusHtml = '<span class="badge" style="background: #fee2e2; color: #991b1b; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;">Inactive</span>';
+                    $statusHtml = '<span class="badge" style="background: #fee2e2; color: #991b1b; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; line-height: 1.2;">Inactive</span>';
                 } else {
-                    $statusHtml = '<span class="badge" style="background: #dcfce7; color: #166534; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;">Active</span>';
+                    $statusHtml = '<span class="badge" style="background: #dcfce7; color: #166534; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; line-height: 1.2;">Active</span>';
                 }
 
                 // 9. Actions
                 $action = '<div class="dropdown custom-dropdown d-inline-block">
-                    <a class="dropdown-toggle fcc-action-dots-btn" href="#" role="button" id="dropdownMenuLink_'.$value->id.'" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #2563eb; font-size: 16px; text-decoration: none; padding: 4px 8px; cursor: pointer;">
-                        <i class="fa fa-ellipsis-h" style="font-size: 17px; letter-spacing: 2px;"></i>
+                    <a class="dropdown-toggle fcc-action-dots-btn" href="#" role="button" id="dropdownMenuLink_'.$value->id.'" data-bs-toggle="dropdown" data-toggle="dropdown" data-bs-boundary="viewport" data-bs-popper-config=\'{"strategy":"fixed"}\' aria-haspopup="true" aria-expanded="false" style="color: #2563eb; font-size: 14px; text-decoration: none; padding: 0; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px;">
+                        <i class="fa fa-ellipsis-h" style="font-size: 14px; letter-spacing: 1.5px;"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="dropdownMenuLink_'.$value->id.'" style="border-radius: 12px; min-width: 195px; padding: 6px; border: 1px solid #edf2f7 !important; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important; font-family: \'Outfit\', sans-serif;">
+                    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="dropdownMenuLink_'.$value->id.'" style="border-radius: 12px; min-width: 230px; padding: 6px; height: auto !important; max-height: min(390px, 80vh) !important; overflow-y: auto !important; border: 1px solid #edf2f7 !important; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important; font-family: \'Outfit\', sans-serif; white-space: nowrap;">
                         <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.users.edit', ['id' => ev($value->id)]).'"><i class="fa fa-pencil me-2 text-muted"></i> Edit</a>
                         <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.users.viewWeights', ['id' => ev($value->id)]).'"><i class="fa fa-balance-scale me-2 text-muted"></i> View Weight</a>
                         <a class="dropdown-item py-2 px-3 rounded-2" href="'.route('nutritionPanel.users.viewAttendance', ['id' => ev($value->id)]).'"><i class="fa fa-calendar-check-o me-2 text-muted"></i> View Attendance</a>
@@ -497,9 +497,20 @@ class UserController extends Controller
                     $data['profile_image'] = $imageName;
                 }
             }
-            //-------------------
-            
             $user = User::create($data);
+
+            if ($days > 0) {
+                AttendanceLogs::create([
+                    'user_id'    => $user->id,
+                    'date'       => $startDate,
+                    'remark'     => 'Add User Days',
+                    'message'    => 'Initial plan allocation on registration',
+                    'days'       => $days,
+                    'total_days' => $days,
+                    'created_by' => $authUser ? $authUser->id : 0,
+                ]);
+            }
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -988,17 +999,13 @@ class UserController extends Controller
             $createdById = $authUser ? $authUser->id : null;
 
             // 1. Attendance Logs
-            $lastAttendanceLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'DESC')->first();
-            $prevTotalDays = $lastAttendanceLog ? (int)$lastAttendanceLog->total_days : (int)($user->days ?? 0);
-            $newTotalDays = $prevTotalDays + $daysToAdd;
-
-            AttendanceLogs::create([
+            $createdLog = AttendanceLogs::create([
                 'user_id'       => $user->id,
                 'date'          => date('Y-m-d'),
                 'remark'        => 'Add User Days',
                 'days'          => $daysToAdd,
                 'message'       => $request->input('remark') ?? '',
-                'total_days'    => $newTotalDays,
+                'total_days'    => 0,
                 'created_by'    => $createdById,
             ]);
 
@@ -1015,12 +1022,15 @@ class UserController extends Controller
             ];
             Transaction::create($transaction);
 
-            // 3. Increment User dues & days
-            $user->days = (int)($user->days ?? 0) + $daysToAdd;
+            // 3. Recalculate pending days automatically
+            $newPendingDays = $user->recalculatePendingDays();
+            $createdLog->update(['total_days' => $newPendingDays]);
+
             if ($dueAmount > 0) {
                 $user->due_amount = (float)($user->due_amount ?? 0) + $dueAmount;
+                $user->save();
             }
-            $userUpdate = $user->save();
+            $userUpdate = true;
 
             DB::commit();
 
@@ -1133,23 +1143,21 @@ class UserController extends Controller
             $createdById = $authUser ? $authUser->id : null;
 
             // 1. Attendance Logs
-            $lastAttendanceLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'DESC')->first();
-            $prevTotalDays = $lastAttendanceLog ? (int)$lastAttendanceLog->total_days : (int)($user->days ?? 0);
-            $newTotalDays = max(0, $prevTotalDays - $daysToSubtract);
-
-            AttendanceLogs::create([
+            $createdLog = AttendanceLogs::create([
                 'user_id'       => $user->id,
                 'date'          => date('Y-m-d'),
                 'remark'        => 'Subtract User Days',
                 'days'          => $daysToSubtract,
                 'message'       => $request->input('remark') ?? '',
-                'total_days'    => $newTotalDays,
+                'total_days'    => 0,
                 'created_by'    => $createdById,
             ]);
 
-            // 2. Decrement user days
-            $user->days = max(0, (int)($user->days ?? 0) - $daysToSubtract);
-            $userUpdate = $user->save();
+            // 2. Recalculate pending days automatically
+            $newPendingDays = $user->recalculatePendingDays();
+            $createdLog->update(['total_days' => $newPendingDays]);
+
+            $userUpdate = true;
 
             DB::commit();
 
@@ -1417,7 +1425,7 @@ class UserController extends Controller
                             <a class="dropdown-toggle fcc-action-dots-btn" href="#" role="button" id="dropdownMenuLink_'.$value->id.'" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-ellipsis-h"></i>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="dropdownMenuLink_'.$value->id.'" style="border-radius: 12px; min-width: 180px; padding: 6px; border: 1px solid #edf2f7 !important; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important; font-family: \'Outfit\', sans-serif;">
+                            <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="dropdownMenuLink_'.$value->id.'" style="border-radius: 12px; min-width: 180px; padding: 6px; height: auto !important; max-height: none !important; border: 1px solid #edf2f7 !important; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1) !important; font-family: \'Outfit\', sans-serif;">
                                 '.($hasImage ? '<a class="dropdown-item py-2 px-3 rounded-2 view-image" href="javascript:;" data-url="' . route('nutritionPanel.users.viewWeightImage', ['id' => $encryptedId]) . '"><i class="fa fa-picture-o me-2 text-muted"></i> View Photo</a>' : '').'
                                 <a class="dropdown-item py-2 px-3 rounded-2" href="'.($userEncryptedId ? route('nutritionPanel.users.viewAttendance', ['id' => $userEncryptedId]) : 'javascript:;').'"><i class="fa fa-calendar-check-o me-2 text-muted"></i> View Attendance</a>
                                 <a class="dropdown-item py-2 px-3 rounded-2" href="'.($userEncryptedId ? route('nutritionPanel.manual-attendances.manual-attendance', ['id' => $userEncryptedId]) : 'javascript:;').'"><i class="fa fa-clock-o me-2 text-muted"></i> Manual Attendance</a>

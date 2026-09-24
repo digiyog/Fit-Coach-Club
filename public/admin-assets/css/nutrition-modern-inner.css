@@ -1959,22 +1959,97 @@ table.dataTable tbody tr.fcc-row-dues-flagged.selected td {
     overflow: visible !important;
 }
 
+@media (max-width: 991px) {
+    .fcc-modern-table-wrap {
+        overflow-x: auto !important;
+    }
+}
+
 .custom-dropdown {
     position: relative;
+    display: inline-block;
 }
 
 .custom-dropdown .dropdown-menu {
-    z-index: 1065 !important;
     position: absolute;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    min-width: 185px !important;
+    border-radius: 12px !important;
+    padding: 6px !important;
+    border: 1px solid #edf2f7 !important;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08) !important;
+    font-family: 'Outfit', sans-serif !important;
+    z-index: 1070 !important;
 }
 
-.dropup .dropdown-menu,
-.dropdown.dropup .dropdown-menu,
-.custom-dropdown.dropup .dropdown-menu {
+/* Dropdown menu height guard */
+.custom-dropdown .dropdown-menu {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+}
+
+.custom-dropdown .dropdown-item {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #334155 !important;
+    border-radius: 8px !important;
+    padding: 7px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.15s ease !important;
+    white-space: nowrap !important;
+}
+
+.custom-dropdown .dropdown-item:hover {
+    background-color: #eff2fe !important;
+    color: #3246d3 !important;
+}
+
+.custom-dropdown .dropdown-item i,
+.custom-dropdown .dropdown-item svg {
+    width: 15px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.custom-dropdown .dropdown-divider {
+    margin: 4px 0 !important;
+    border-top: 1px solid #f1f5f9 !important;
+    opacity: 1 !important;
+}
+
+/* Static fallback only when Popper is not active */
+.dropup .dropdown-menu[data-bs-popper="static"],
+.dropdown.dropup .dropdown-menu[data-bs-popper="static"],
+.custom-dropdown.dropup .dropdown-menu[data-bs-popper="static"] {
     top: auto !important;
     bottom: 100% !important;
     margin-top: 0 !important;
     margin-bottom: 6px !important;
     transform: none !important;
+    height: auto !important;
 }
+
+/* Table Action Dropdowns - Floating over tables via fixed strategy */
+.table .dropdown-menu,
+table .dropdown-menu,
+.dataTable .dropdown-menu,
+.custom-dropdown .dropdown-menu {
+    z-index: 1080 !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+}
+
+.fcc-modern-table-wrap {
+    min-height: 180px;
+}
+
 

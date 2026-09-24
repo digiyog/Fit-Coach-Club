@@ -668,7 +668,7 @@
                 <button type="button" class="btn fcc-btn-more-actions dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-expanded="false">
                     <span>··· More actions</span>
                 </button>
-                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius: 12px; min-width: 195px; padding: 6px; font-family: 'Outfit', sans-serif;">
+                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius: 12px; min-width: 230px; padding: 6px; font-family: 'Outfit', sans-serif; white-space: nowrap;">
                     <a class="dropdown-item py-2 px-3 rounded-2" href="{{ route('nutritionPanel.users.viewWeights', ['id' => $userEncryptedId]) }}">
                         <i class="fa fa-line-chart me-2 text-muted"></i> View Weight
                     </a>

@@ -161,7 +161,7 @@ class TransactionController extends Controller
                 }
 
                 if(!empty($value->remark)){
-                    $remark = '<a herf="#" data-url="' . route('nutritionPanel.transactions.viewRemark', ['id' => ev($value->id)]) . '" class="view-remark cursor-pointer" title="View Remark"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Remark</div></a>';
+                    $remark = '<a href="javascript:;" data-url="' . route('nutritionPanel.transactions.viewRemark', ['id' => ev($value->id)]) . '" class="view-remark cursor-pointer" title="View Remark"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Remark</div></a>';
                 }
 
                 if(!empty($value->created_at)){
@@ -206,7 +206,7 @@ class TransactionController extends Controller
     }
 
     /**
-     * Edit Transaction.
+     * Add Transaction.
      *
      * @return response
      *
@@ -217,7 +217,7 @@ class TransactionController extends Controller
     {
         $auth_user = auth()->user();
 
-        // Edit Users.
+        // Users
         $users = User::where("users.role_type", 'user')->where("users.created_by", $auth_user->id)->get();
 
         // Send view data
@@ -227,7 +227,7 @@ class TransactionController extends Controller
     }
 
     /**
-     * Update Transaction.
+     * Store Transaction.
      *
      * @return mixed
      *
@@ -236,71 +236,85 @@ class TransactionController extends Controller
      */
     public function storeTransaction(Request $request)
     {
-        // Get Transaction
         $authUser = auth()->user();
-        //----------
         
-        $transactionUpdate  = false;
+        $validator = \Validator::make($request->all(), [
+            'user'            => 'required',
+            'amount'          => 'required|numeric|min:0',
+            'received_amount' => 'required|numeric|min:0',
+            'type'            => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                '_status'  => false,
+                '_message' => $validator->errors()->first(),
+                '_type'    => 'error',
+            ], 200);
+        }
+
+        $transactionCreated = false;
         $errorMessage       = null;
         
-        // Update Transaction
         DB::beginTransaction();
 
         try {
-            if($request['amount'] - $request['received_amount'] > 0){
-                $request['payment_type'] = 'Pending';
-            } else {
-                $request['payment_type'] = 'Received';
-            }
+            $amount = (float)($request->input('amount', 0));
+            $receivedAmount = (float)($request->input('received_amount', 0));
+            $dueAmount = max(0, $amount - $receivedAmount);
+            $paymentType = ($dueAmount > 0) ? 'Pending' : 'Received';
+            $userId = $request->input('user');
 
             $transaction = [
-                'user_id'           => $request['user'],
+                'user_id'           => $userId,
                 'title'             => 'Admin Manual Add',
-                'total_amount'      => $request['amount'],
-                'received_amount'   => $request['received_amount'],
-                'type'              => $request['type'],
-                'due_amount'        => $request['amount'] - $request['received_amount'],
-                'payment_type'      => $request['payment_type'],
-                'remark'            => $request['remark'],
-                'created_by'        => $authUser->id
+                'total_amount'      => $amount,
+                'received_amount'   => $receivedAmount,
+                'type'              => $request->input('type', 0),
+                'due_amount'        => $dueAmount,
+                'payment_type'      => $paymentType,
+                'remark'            => $request->input('remark'),
+                'created_by'        => $authUser->id,
             ];
             
             Transaction::create($transaction);
 
-            User::where('id', $request['user'])->increment('due_amount', $transaction['due_amount']);
+            if (!empty($userId)) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->due_amount = max(0, (float)($user->due_amount ?? 0) + $dueAmount);
+                    $user->save();
+                }
+            }
 
             DB::commit();
+            $transactionCreated = true;
         } catch (\Exception $e) {
-            $transactionUpdate = null;
+            $transactionCreated = false;
             $errorMessage = $e->getMessage();
-            \Log::error('Transaction update Error: ' . $e->getMessage());
+            \Log::error('Transaction store Error: ' . $e->getMessage());
             DB::rollback();
         }
-        //------------
 
-        // Set response
-        if (!is_null($transactionUpdate)){
+        if ($transactionCreated) {
             $response = [
-                '_status' => true,
+                '_status'  => true,
                 '_message' => __('messages.record_created', ['record' => 'Transaction']),
-                '_type' => 'success',
+                '_type'    => 'success',
             ];
-        } 
-        else 
-        {
+        } else {
             $response = [
-                '_status' => false,
-                '_message' => __('messages.record_creation_failed', ['record' => 'Transaction']),
-                '_type' => 'error',
+                '_status'  => false,
+                '_message' => $errorMessage ?: __('messages.record_creation_failed', ['record' => 'Transaction']),
+                '_type'    => 'error',
             ];
         }
-        //-------------
         
         return response()->json($response, 200);
     }
 
     /**
-     * Add Transaction.
+     * Edit Transaction.
      *
      * @return response
      *
@@ -311,10 +325,13 @@ class TransactionController extends Controller
     {
         $auth_user = auth()->user();
 
-        // Edit Transaction
-        $transaction = Transaction::where('id', dv($id))->first();
+        $transactionId = is_numeric($id) ? (int)$id : dv($id);
+        $transaction = Transaction::with('user')->where('id', $transactionId)->first();
 
-        // Send view data
+        if (!$transaction) {
+            return '<div class="modal-header"><h5 class="modal-title text-danger">Error</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 text-center text-danger"><p>Transaction not found.</p></div>';
+        }
+
         $this->viewData['transaction'] = $transaction;
 
         return view('nutrition-panel.transactions.edit-transaction')->with($this->viewData);
@@ -330,65 +347,86 @@ class TransactionController extends Controller
      */
     public function updateTransaction(Request $request, $id)
     {
-        // Get Transaction
         $authUser = auth()->user();
-        //----------
         
-        $transactionUpdate  = false;
+        $validator = \Validator::make($request->all(), [
+            'amount'          => 'required|numeric|min:0',
+            'received_amount' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                '_status'  => false,
+                '_message' => $validator->errors()->first(),
+                '_type'    => 'error',
+            ], 200);
+        }
+
+        $transactionUpdated = false;
         $errorMessage       = null;
         
-        // Update Transaction
         DB::beginTransaction();
 
         try {
-            $transaction = Transaction::where('id', dv($id))->first();
-            $userId = $transaction->user_id;
-            
-            User::where('id', $transaction->user_id)->decrement('due_amount', $transaction['due_amount']);
+            $transactionId = is_numeric($id) ? (int)$id : dv($id);
+            $transactionRecord = Transaction::where('id', $transactionId)->first();
 
-            if($request['amount'] - $request['received_amount'] > 0){
-                $request['payment_type'] = 'Pending';
-            } else {
-                $request['payment_type'] = 'Received';
+            if (!$transactionRecord) {
+                throw new \Exception(__('messages.record_not_found', ['record' => 'Transaction']));
             }
 
-            $transaction = [
-                'total_amount'      => $request['amount'],
-                'received_amount'   => $request['received_amount'],
-                'due_amount'        => $request['amount'] - $request['received_amount'],
-                'payment_type'      => $request['payment_type'],
-                'remark'            => $request['remark'],
-            ];
-            
-            Transaction::where('id', dv($id))->update($transaction);
+            $amount = (float)($request->input('amount', 0));
+            $receivedAmount = (float)($request->input('received_amount', 0));
+            $newDue = max(0, $amount - $receivedAmount);
+            $oldDue = (float)($transactionRecord->due_amount ?? 0);
+            $dueDifference = $newDue - $oldDue;
 
-            User::where('id', $userId)->increment('due_amount', $transaction['due_amount']);
+            $paymentType = ($newDue > 0) ? 'Pending' : 'Received';
+
+            $updateData = [
+                'total_amount'      => $amount,
+                'received_amount'   => $receivedAmount,
+                'due_amount'        => $newDue,
+                'payment_type'      => $paymentType,
+                'remark'            => $request->input('remark'),
+            ];
+
+            if ($request->has('type')) {
+                $updateData['type'] = $request->input('type');
+            }
+            
+            $transactionRecord->update($updateData);
+
+            if (!empty($transactionRecord->user_id)) {
+                $user = User::find($transactionRecord->user_id);
+                if ($user) {
+                    $user->due_amount = max(0, (float)($user->due_amount ?? 0) + $dueDifference);
+                    $user->save();
+                }
+            }
 
             DB::commit();
+            $transactionUpdated = true;
         } catch (\Exception $e) {
-            $transactionUpdate = null;
-            \Log::error('Transaction update2 Error: ' . $e->getMessage());
+            $transactionUpdated = false;
+            $errorMessage = $e->getMessage();
+            \Log::error('Transaction update Error: ' . $e->getMessage());
             DB::rollback();
         }
-        // ------------
 
-        // Set response
-        if (!is_null($transactionUpdate)){
+        if ($transactionUpdated) {
             $response = [
-                '_status' => true,
+                '_status'  => true,
                 '_message' => __('messages.records_updated', ['record' => 'Transaction']),
-                '_type' => 'success',
+                '_type'    => 'success',
             ];
-        } 
-        else 
-        {
+        } else {
             $response = [
-                '_status' => false,
-                '_message' => __('messages.records_updation_failed', ['record' => 'Transaction']),
-                '_type' => 'error',
+                '_status'  => false,
+                '_message' => $errorMessage ?: __('messages.records_updation_failed', ['record' => 'Transaction']),
+                '_type'    => 'error',
             ];
         }
-        //-------------
         
         return response()->json($response, 200);
     }
@@ -396,7 +434,8 @@ class TransactionController extends Controller
     public function viewRemark($id)
     {
         $auth_user = auth()->user();
-        $remark      = Transaction::where('id', dv($id))->first();
+        $remarkId = is_numeric($id) ? (int)$id : dv($id);
+        $remark = Transaction::where('id', $remarkId)->first();
 
         // Send view data
         $this->viewData['remark'] = $remark;

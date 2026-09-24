@@ -42,12 +42,6 @@ class CommunityPhotoController extends Controller
         $users = User::where('role_type','users')->select('id' ,DB::raw("If(users.mobile_number is null, users.name, CONCAT(users.name, ' (', users.mobile_number, ')')) as name"))
         ->get();
 
-        // Calculate Upload Statistics
-        $totalUploads = Community::count();
-        $todayUploads = Community::whereDate('created_at', Carbon::today())->count();
-        $weekUploads = Community::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-        $withMessages = Community::whereNotNull('message')->where('message', '!=', '')->count();
-
         // Adding breadcrumb array
         $breadcrumb = [
             __('language.dashboard') => route('adminPanel.dashboard'),
@@ -56,12 +50,16 @@ class CommunityPhotoController extends Controller
 
         // Breadcrumb Button
         $breadcrumbButton = [];
+        // Filter Button
+        $breadcrumbButton[] = [
+            'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
+            'btn_link' => 'javascript:;',
+            'btn_icon' => 'filter',
+            'btn_text' => __('language.filter'),
+            'attributes' => []
+        ];
 
         // View Data
-        $this->viewData['totalUploads'] = $totalUploads;
-        $this->viewData['todayUploads'] = $todayUploads;
-        $this->viewData['weekUploads'] = $weekUploads;
-        $this->viewData['withMessages'] = $withMessages;
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
@@ -91,10 +89,8 @@ class CommunityPhotoController extends Controller
         
         // Filter Parameters
         $filter = array(
-            "name"          => $request->name,
+            "name" => $request->name,
             "mobile_number" => $request->mobile_number,
-            "date"          => $request->date,
-            "sort_order"    => $request->sort_order,
         );
         
         // Getting Community Photos Records
@@ -106,7 +102,7 @@ class CommunityPhotoController extends Controller
         {
             foreach($records as $key => $value)
             {
-                $userName = 'N/A';
+                $name = 'N/A';
                 $message = 'N/A';
                 $date_time = 'N/A';
                 $view_photos = '0';
@@ -130,33 +126,15 @@ class CommunityPhotoController extends Controller
                     $date_time = date("d F Y",strtotime($value->created_at)).' <br> '.date("h:i A",strtotime($value->created_at));
                 }
             
-                $view_photos = '<a href="javascript:void(0);" data-url="' . route('nutritionPanel.community-photos.viewPhotos', ['id' => ev($value->id)]) . '" class="view-photos cursor-pointer" title="View Photos"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Photos</div></a>';
-
-                $images = [];
-                if (!empty($value->community_images)) {
-                    foreach($value->community_images as $img) {
-                        $images[] = get_image_url(config('constants.communities.image_path'), $img->image);
-                    }
-                }
-                $first_image = count($images) > 0 ? $images[0] : '';
-                $user_avatar = !empty($value->user) && !empty($value->user['profile_image']) ? get_image_url(config('constants.users.image_path'), $value->user['profile_image']) : '';
-                $date_formatted = !empty($value->created_at) ? Carbon::parse($value->created_at)->format('d M Y, h:i A') : 'N/A';
-                $relative_time = !empty($value->created_at) ? Carbon::parse($value->created_at)->diffForHumans() : '';
+                $view_photos = '<a herf="#" data-url="' . route('nutritionPanel.community-photos.viewPhotos', ['id' => ev($value->id)]) . '" class="view-photos cursor-pointer" title="View Photos"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Photos</div></a>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"            => $value->id,
                     "name"          => $userName,
-                    "avatar"        => $user_avatar,
                     "message"       => $message,
                     "view_photos"   => $view_photos,
                     "date_time"     => $date_time,
-                    "date_formatted"=> $date_formatted,
-                    "relative_time" => $relative_time,
-                    "images"        => $images,
-                    "first_image"   => $first_image,
-                    "images_count"  => count($images),
-                    "view_photos_url" => route('nutritionPanel.community-photos.viewPhotos', ['id' => ev($value->id)]),
                 );
             }
         }

@@ -59,30 +59,11 @@ class Activity extends Model
             $search = strtolower($search);
             $activities = $activities->whereRaw('(lower(activities.name) LIKE \'%'.$search.'%\' OR lower(activities.activity_type) like \'%'.$search.'%\' OR lower(activities.date) like \'%'.$search.'%\' )');
         }
-
-        // Table filters
-        if (!empty($filter['activity_type']) && $filter['activity_type'] !== 'all') {
-            $activities = $activities->where('activities.activity_type', $filter['activity_type']);
-        }
-
-        if (isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null && $filter['status'] !== 'all') {
-            $activities = $activities->where('activities.status', $filter['status']);
-        }
-
-        if (!empty($filter['date_filter']) && $filter['date_filter'] !== 'all') {
-            if ($filter['date_filter'] === 'today') {
-                $activities = $activities->whereDate('activities.date', \Carbon\Carbon::today());
-            } elseif ($filter['date_filter'] === 'upcoming') {
-                $activities = $activities->where('activities.date', '>=', \Carbon\Carbon::today());
-            } elseif ($filter['date_filter'] === 'past') {
-                $activities = $activities->where('activities.date', '<', \Carbon\Carbon::today());
-            }
-        }
         
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("","name", "activity_type" , "date", "", 'order', "status", "");
+            $arr_fields = array("","name", "activity_type" , "date", 'order', "status", "");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")

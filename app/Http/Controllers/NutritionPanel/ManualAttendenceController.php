@@ -181,99 +181,148 @@ class ManualAttendenceController extends Controller
         $manualAttendence   = null;
         $errorMessage       = null;
 
-        // Begin Transaction
-        DB::beginTransaction();
-
         $user = User::find($request->user_id);
 
-        if (!$user || $user->days < $request->days) {
-            // Set notification
+        if (!$user) {
+            $notification = [
+                '_status' => false,
+                '_message' => 'User not found.',
+                '_type' => 'error',
+            ];
+            return redirect()->back()->with(['notification' => $notification]);
+        }
+
+        $daysToMark = max(1, (int)($request->input('days', 1)));
+
+        if ($user->days <= 0) {
             $notification = [
                 '_status' => false,
                 '_message' => 'Not sufficient days to mark attendance.',
                 '_type' => 'error',
             ];
-            //-----------------
-
             return redirect()->back()->with(['notification' => $notification]);
         }
 
-        $startDate = Carbon::createFromFormat('d-m-Y', $request->date);
-        $daysToMark = (int) $request->days;
-        
-        // Create Manual Attendance
+        // Robust date parsing (supports d-m-Y, Y-m-d, d/m/Y, etc.)
+        $rawDate = trim($request->date ?? '');
+        $startDate = null;
+
+        if (!empty($rawDate)) {
+            try {
+                $startDate = Carbon::createFromFormat('d-m-Y', $rawDate)->startOfDay();
+            } catch (\Exception $e) {
+                try {
+                    $startDate = Carbon::parse($rawDate)->startOfDay();
+                } catch (\Exception $e2) {
+                    $startDate = null;
+                }
+            }
+        }
+
+        if (!$startDate) {
+            $notification = [
+                '_status' => false,
+                '_message' => 'Please provide a valid attendance date.',
+                '_type' => 'error',
+            ];
+            return redirect()->back()->with(['notification' => $notification]);
+        }
+
+        $remark = $request->input('remark') ?? '';
+        $weight = $request->filled('weight') ? (float)$request->input('weight') : null;
+
+        // Begin Transaction
+        DB::beginTransaction();
+
         try {
+            $markedCount = 0;
+            $skippedCount = 0;
+
             for ($i = 0; $i < $daysToMark; $i++) {
                 $date = $startDate->copy()->addDays($i)->format('Y-m-d');
 
                 $exists = Attendance::where('user_id', $user->id)
                     ->where('type', 2)
                     ->whereDate('date', $date)
+                    ->whereNull('deleted_at')
                     ->exists();
 
-                // if ($exists) {
-                //     continue; // already marked, skip
-                // }
+                if ($exists) {
+                    $skippedCount++;
+                    continue; // Skip duplicate check-in to prevent double-deduction
+                }
 
-                Attendance::create([
-                    'franchise_id' => $authUser->id,
+                $attData = [
+                    'franchise_id' => $authUser ? $authUser->id : ($user->created_by ?? 0),
                     'user_id'      => $user->id,
-                    'message'      => $request['remark'],
+                    'message'      => $remark,
                     'date'         => $date,
-                    'type'         => 2
-                ]);
+                    'type'         => 2,
+                ];
 
-                $lastLog = AttendanceLogs::where('user_id', $user->id)
-                    ->orderBy('id', 'DESC')
-                    ->first();
+                if ($weight !== null && $weight > 0) {
+                    $attData['weight'] = $weight;
+                }
 
-                $totalDays = $lastLog
-                    ? $lastLog->total_days - 1
-                    : $user->days - 1;
-
-                AttendanceLogs::create([
-                    'user_id'    => $user->id,
-                    'date'       => $date,
-                    'remark'     => 'Manual Attendance Add',
-                    'message'    => $request['remark'],
-                    'days'       => 1,
-                    'total_days' => $totalDays,
-                    'created_by' => $authUser->id,
-                ]);
-
-                $user->days--;
+                Attendance::create($attData);
+                $markedCount++;
             }
 
-            $user->save();
+            if ($markedCount === 0 && $skippedCount > 0) {
+                DB::rollBack();
+                $notification = [
+                    '_status' => false,
+                    '_message' => 'Attendance for the selected date(s) has already been marked.',
+                    '_type' => 'error',
+                ];
+                return redirect()->back()->with(['notification' => $notification]);
+            }
+
+            // Recalculate pending days automatically based on unique attendance dates
+            $newPendingDays = $user->recalculatePendingDays();
+
+            // Create AttendanceLog
+            AttendanceLogs::create([
+                'user_id'    => $user->id,
+                'date'       => $startDate->format('Y-m-d'),
+                'remark'     => 'Manual Attendance Add',
+                'message'    => $remark ?: ($markedCount . ' day(s) marked'),
+                'days'       => $markedCount,
+                'total_days' => $newPendingDays,
+                'created_by' => $authUser ? $authUser->id : ($user->created_by ?? 0),
+            ]);
+
+            // Update user weight if provided
+            if ($weight !== null && $weight > 0) {
+                $user->current_weight = $weight;
+                $user->save();
+            }
 
             DB::commit();
 
-            // Set notification
+            $msg = $markedCount . ' day(s) attendance marked successfully.';
+            if ($skippedCount > 0) {
+                $msg .= ' (' . $skippedCount . ' already marked date(s) skipped)';
+            }
+
             $notification = [
                 '_status' => true,
-                '_message' => $daysToMark . ' days attendance marked successfully.',
+                '_message' => $msg,
                 '_type' => 'success',
             ];
-            //-----------------
-
             return redirect()->back()->with(['notification' => $notification]);
+
         } catch (\Exception $e) {
-            $manualAttendence   = null;
-            $errorMessage       = $e->getMessage();
             \Log::error('ManualAttendence Error: ' . $e->getMessage());
             DB::rollback();
 
-            // Set notification
             $notification = [
                 '_status' => false,
-                '_message' => 'Something went wrong.',
+                '_message' => 'Something went wrong while marking attendance.',
                 '_type' => 'error',
             ];
-            //-----------------
-
             return redirect()->back()->with(['notification' => $notification]);
         }
-        //------------
     }
 
     /**
@@ -365,32 +414,46 @@ class ManualAttendenceController extends Controller
         $authUser = auth()->user();
         //----------
 
-        $ids                = $request['id'];
-        $lastAttendance     = Attendance::where('id', dv($ids))->first();
-        $manualAttendence   = Attendance::where('id', dv($ids))->delete();
+        $ids            = $request['id'];
+        $attendanceId   = dv($ids);
+        $lastAttendance = Attendance::where('id', $attendanceId)->first();
 
-        $lastLog = AttendanceLogs::where('user_id', $lastAttendance->user_id)->orderBy('id', 'DESC')->first();
+        if (!$lastAttendance) {
+            return response()->json([
+                '_status' => false,
+                '_message' => 'Attendance record not found.',
+                '_type' => 'error',
+            ], 404);
+        }
+
+        $userId = $lastAttendance->user_id;
+        $user   = User::find($userId);
+
+        $manualAttendence = $lastAttendance->delete();
+
+        $newPendingDays = 0;
+        if ($user) {
+            $newPendingDays = $user->recalculatePendingDays();
+        }
 
         AttendanceLogs::create([
-            'user_id'    => $lastAttendance->user_id,
+            'user_id'    => $userId,
             'date'       => date('Y-m-d'),
             'remark'     => 'Attendance Delete',
             'days'       => 1,
-            'total_days' => $lastLog['total_days']+1,
-            'created_by' => $authUser->id,
+            'total_days' => $newPendingDays,
+            'created_by' => $authUser ? $authUser->id : 0,
         ]);
-
-        User::where('id', $lastAttendance->user_id)->increment('days', 1);
         
         // Set response
-        if ($manualAttendence == true) 
+        if ($manualAttendence) 
         {
             $response = [
                 '_status' => true,
                 '_message' => __('messages.record_deleted', ['record' => 'Manual Attendance']),
                 '_type' => 'success',
             ];
-        }  else {
+        } else {
             $response = [
                 '_status' => false,
                 '_message' => __('messages.record_failed', ['record' => 'Manual Attendance']),

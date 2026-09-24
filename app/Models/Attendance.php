@@ -76,7 +76,40 @@ class Attendance extends Model
         // Attendance status filter
         if (!empty($filter) && !empty($filter['attendance_status'])) {
             $status = $filter['attendance_status'];
-            if ($status === 'no_checkins') {
+            if (in_array($status, ['multiple', 'multi', 'multi_attendance', 'multiple_attendances'])) {
+                $targetDate = !empty($filter['date']) ? $filter['date'] : ($month == date('m') && $year == date('Y') ? date('Y-m-d') : null);
+
+                $attendenceRegister->whereIn('users.id', function($subQuery) use ($targetDate, $month, $year) {
+                    $subQuery->select('attendances.user_id')
+                        ->from('attendances')
+                        ->where('attendances.type', 2)
+                        ->whereNull('attendances.deleted_at');
+
+                    if ($targetDate) {
+                        $subQuery->where(function($q) use ($targetDate) {
+                            $q->where('attendances.date', $targetDate)
+                              ->orWhere(function($sub) use ($targetDate) {
+                                  $sub->whereNull('attendances.date')->whereDate('attendances.created_at', $targetDate);
+                              });
+                        });
+                    } else {
+                        $subQuery->where(function($q) use ($month, $year) {
+                            $q->where(function($sub1) use ($month, $year) {
+                                $sub1->whereNotNull('attendances.date')
+                                     ->whereMonth('attendances.date', $month)
+                                     ->whereYear('attendances.date', $year);
+                            })->orWhere(function($sub2) use ($month, $year) {
+                                $sub2->whereNull('attendances.date')
+                                     ->whereMonth('attendances.created_at', $month)
+                                     ->whereYear('attendances.created_at', $year);
+                            });
+                        });
+                    }
+
+                    $subQuery->groupBy('attendances.user_id', DB::raw('COALESCE(attendances.date, DATE(attendances.created_at))'))
+                        ->havingRaw('COUNT(attendances.id) > 1');
+                });
+            } elseif ($status === 'no_checkins') {
                 $attendenceRegister->having('total_present', '=', 0);
             } elseif ($status === 'low') {
                 $maxLow = max(1, floor($totalDays * 0.20));

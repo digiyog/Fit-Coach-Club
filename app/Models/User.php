@@ -394,8 +394,74 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Attendance');
     }
 
+    public function attendance_logs()
+    {
+        return $this->hasMany('App\Models\AttendanceLogs', 'user_id', 'id');
+    }
+
     public function franchise_memberships()
     {
         return $this->hasMany('App\Models\FranchiseMembershipPlan', 'franchise_id', 'id');
     }
+
+    /**
+     * Recalculate and synchronize user pending days based on actual attendance dates and allocated packages.
+     *
+     * @return int
+     */
+    public function recalculatePendingDays()
+    {
+        $uniqueAttended = Attendance::where('user_id', $this->id)
+            ->where('type', 2)
+            ->whereNull('deleted_at')
+            ->distinct('date')
+            ->count('date');
+
+        // Check if the user had an initial allocation from their first log before Add User Days was logged
+        $firstLog = AttendanceLogs::where('user_id', $this->id)->orderBy('id', 'asc')->first();
+        $initialFromFirstLog = 0;
+        if ($firstLog && !preg_match('/add.*days/i', $firstLog->remark)) {
+            $initialFromFirstLog = max(0, (int)($firstLog->total_days + $firstLog->days));
+        }
+
+        $added = (int) AttendanceLogs::where('user_id', $this->id)
+            ->where('remark', 'LIKE', '%Add User Days%')
+            ->sum('days');
+
+        $subtracted = (int) AttendanceLogs::where('user_id', $this->id)
+            ->where(function ($q) {
+                $q->where('remark', 'LIKE', '%Subtract%')
+                  ->orWhere('remark', 'LIKE', '%Substarct%');
+            })
+            ->sum('days');
+
+        $totalAllocated = $initialFromFirstLog + $added;
+
+        // If user has no logged additions yet, initialize baseline so subsequent attendances deduct cleanly
+        if ($totalAllocated == 0 && (int)$this->days > 0) {
+            $initialAllocated = max(0, (int)$this->days) + $uniqueAttended;
+            AttendanceLogs::create([
+                'user_id'    => $this->id,
+                'date'       => $this->start_date ?: date('Y-m-d'),
+                'remark'     => 'Add User Days',
+                'message'    => 'Initial plan allocation baseline',
+                'days'       => $initialAllocated,
+                'total_days' => $initialAllocated,
+                'created_by' => $this->created_by ?: 0,
+            ]);
+            $totalAllocated = $initialAllocated;
+        }
+
+        if ($totalAllocated > 0) {
+            $netAllocated = max(0, $totalAllocated - $subtracted);
+            $this->days = max(0, $netAllocated - $uniqueAttended);
+        } else {
+            $this->days = max(0, (int)$this->days);
+        }
+
+        $this->save();
+
+        return (int)$this->days;
+    }
 }
+

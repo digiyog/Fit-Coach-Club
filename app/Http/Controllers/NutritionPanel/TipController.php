@@ -62,29 +62,7 @@ class TipController extends Controller
             'attributes' => []
         ];
 
-        // Calculate Tips Statistics
-        $totalTips = Tip::where('created_by', $authUser['id'])->count();
-        $coachContributors = Tip::where('created_by', $authUser['id'])
-            ->whereNotNull('coach_name')
-            ->where('coach_name', '!=', '')
-            ->distinct('coach_name')
-            ->count('coach_name');
-        $publishedTips = Tip::where('created_by', $authUser['id'])->where('status', 1)->count();
-        $draftTips = Tip::where('created_by', $authUser['id'])->where('status', 0)->count();
-
-        // Get unique coaches for filter dropdown
-        $coachesList = Tip::where('created_by', $authUser['id'])
-            ->whereNotNull('coach_name')
-            ->where('coach_name', '!=', '')
-            ->distinct()
-            ->pluck('coach_name');
-
         // View Data
-        $this->viewData['totalTips'] = $totalTips;
-        $this->viewData['coachContributors'] = $coachContributors;
-        $this->viewData['publishedTips'] = $publishedTips;
-        $this->viewData['draftTips'] = $draftTips;
-        $this->viewData['coachesList'] = $coachesList;
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
@@ -113,8 +91,6 @@ class TipController extends Controller
         
         // Filter Parameters
         $filter = array(
-            'coach'  => $request->get('coach'),
-            'status' => $request->get('status'),
         );
 
         // Getting Tips Records
@@ -129,42 +105,35 @@ class TipController extends Controller
             {
                 $name               = 'N/A';
                 $coach_name         = 'N/A';
-                $link               = '<span class="text-muted small">No link</span>';
+                $link               = 'N/A';
                 $order              = 'N/A';
                 $status             = '';
                 $action             = '';
 
                 // Preparing Data
                 if(!empty($value->name)){
-                    $name = '<span class="fw-bold text-dark">' . e($value->name) . '</span>';
+                    $name = $value->name;
                 }
 
                 if(!empty($value->coach_name)){
-                    $coach_name = '<span class="tip-coach-pill"><i class="fa fa-user-circle-o text-muted me-1"></i> ' . e($value->coach_name) . '</span>';
+                    $coach_name = $value->coach_name;
                 }
 
                 if(!empty($value->link)){
-                    $link = '<div class="d-flex align-items-center gap-2">
-                        <a href="javascript:void(0);" data-url="' . route('nutritionPanel.tips.viewVideo', ['id' => ev($value->id)]) . '" class="view-video tip-video-pill" title="Watch Video">
-                            <i class="fa fa-youtube-play text-danger me-1"></i> Watch Video
-                        </a>
-                        <a target="_blank" href="' . e($value->link) . '" class="tip-link-external" title="Open in YouTube">
-                            <i class="fa fa-external-link"></i>
-                        </a>
-                    </div>';
+                    $link = '<a herf="#" data-url="' . route('nutritionPanel.tips.viewVideo', ['id' => ev($value->id)]) . '" class="view-video cursor-pointer" title="View Video"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Video</div></a>';
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1 tip-order-input text-center" id="tip_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control numeric pr-1" id="tip_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
                 }
 
                 if ( $value->status == 0 ){
-                    $status = '<span class="tip-table-status tip-status-inactive badge badge-warning">Draft</span>';
+                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
                 } else {
-                    $status = '<span class="tip-table-status tip-status-active badge badge-success">Published</span>';
+                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.tips.edit', ['id' => ev($value->id)]) . '" class="tip-table-action-edit" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<a href="' . route('nutritionPanel.tips.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
 
                 // Array Data
                 $arr_data[] = array(

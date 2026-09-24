@@ -353,24 +353,25 @@ var Transaction = (function() {
          * Add Transaction
          */
         addTransaction: function () {
-            var $source = $(".data-table-container");
-            $('.create-transaction').on("click", function () {
-
+            $(document).on("click", ".create-transaction", function () {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModalMedium");
 
                 $configuration_modal.modal("show");
                 $configuration_modal
                     .find(".modal-content")
-                    .load($this.data("url"), "", function () {
+                    .html('<div class="modal-body p-4 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>')
+                    .load($this.data("url"), "", function (responseText, textStatus, jqXHR) {
+                        if (textStatus === "error") {
+                            $(this).html('<div class="modal-header"><h5 class="modal-title text-danger">Error</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-danger">Failed to load transaction form. Please try again.</div>');
+                            return;
+                        }
+
                         Transaction.initializeComponents();
                         Transaction.validateAddTransactionForm();
 
                         var $filter_form = $(".add-transaction-form");
-
-                        // Bootstrap Select on filter form dropdowns
                         Components.bootstrapSelect($filter_form);
-                        //------------
                     });
 
                 $configuration_modal.on("hidden.bs.modal", function () {
@@ -384,51 +385,39 @@ var Transaction = (function() {
          */
         validateAddTransactionForm: function() {
             var $form = $(".add-transaction-form");
+            if (!$form.length) {
+                return;
+            }
+
+            $form.find(".select-picker").on("change", function () {
+                $(this).valid();
+            });
 
             $form.validate({
                 ignore: "input[type='text']:hidden, .note-editor *",
-                // @validation states + elements
                 errorClass: "invalid-feedback",
                 errorElement: "span",
-                //------------------------------
-
-                // @validation rules
                 rules: {
                     user: {
                         required: true,
                     },
                     amount: {
                         required: true,
+                        number: true,
+                        min: 0,
                     },
                     received_amount: {
                         required: true,
-                    },
-                    title: {
-                        required: true,
+                        number: true,
+                        min: 0,
                     },
                     type: {
                         required: true,
                     },
                 },
-                //------------------
-                //------------------
-                errorPlacement: function (error, element) {
-                    if (element.attr("name") == "check_section") {
-                        error.appendTo(".check-section-error");
-                    } else {
-                        error.insertAfter(element);
-                    }
-                },
-                //------------------
-                // @validation error messages
-                messages: {
-                    
-                },
-                //---------------------------
-
                 highlight: function(element, errorClass, validClass) {
                     $(element)
-                        .closest(".form-group")
+                        .closest(".form-group, .col-md-12")
                         .addClass("has-danger")
                         .removeClass("has-success");
                     $(element)
@@ -437,7 +426,7 @@ var Transaction = (function() {
                 },
                 unhighlight: function(element, errorClass, validClass) {
                     $(element)
-                        .closest(".form-group")
+                        .closest(".form-group, .col-md-12")
                         .addClass("has-success")
                         .removeClass("has-danger");
                     $(element)
@@ -445,23 +434,21 @@ var Transaction = (function() {
                         .removeClass("is-invalid");
                 },
                 errorPlacement: function(error, element) {
-                    if($(element).hasClass('custom-file-input'))
-                    {
+                    if ($(element).hasClass('select-picker')) {
+                        error.insertAfter($(element).parent());
+                    } else if($(element).hasClass('custom-file-input')) {
                         error.appendTo($(element).parents('.input-group').parent());
-                    }
-                    else if($(element).hasClass('image-preview'))
-                    {
+                    } else if($(element).hasClass('image-preview')) {
                         error.appendTo($(element).parents('.dropify-wrapper').parent());
-                    }
-                    else
-                    {
+                    } else {
                         error.insertAfter(element);
                     }
                 },
                 submitHandler: function(form, event) {
                     event.preventDefault();
-                    var $dataTable = $("#dataTable");
-                    var $form = $(".add-transaction-form");
+                    var $form = $(form);
+                    var $submitBtn = $form.find('.btn-submit');
+                    var originalBtnHtml = $submitBtn.html();
 
                     $.ajax({
                         type: "POST",
@@ -469,17 +456,40 @@ var Transaction = (function() {
                         data: $form.serialize(),
                         beforeSend: function() {
                             App.formLoading($form);
+                            $submitBtn.prop('disabled', true);
                         },
                         success: function(response) {
+                            App.formLoaded($form);
+                            $submitBtn.prop('disabled', false).html(originalBtnHtml);
                             App.showNotification(response);
-                            data_table.ajax.reload(null, false);
-                            rows_selected = [];
 
-                            var $configuration_modal = $("#pageModalMedium");
-                            $configuration_modal.modal("hide");
+                            if (response && (response._status === true || response.status === true)) {
+                                if (typeof data_table !== "undefined" && data_table) {
+                                    data_table.ajax.reload(null, false);
+                                }
+                                rows_selected = [];
+                                var $configuration_modal = $("#pageModalMedium");
+                                $configuration_modal.modal("hide");
+                            }
                         },
-                        error: function() {},
+                        error: function(xhr) {
+                            App.formLoaded($form);
+                            $submitBtn.prop('disabled', false).html(originalBtnHtml);
+                            var msg = "An error occurred while saving transaction.";
+                            if (xhr.responseJSON && xhr.responseJSON._message) {
+                                msg = xhr.responseJSON._message;
+                            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            }
+                            App.showNotification({
+                                _status: false,
+                                _type: 'error',
+                                _message: msg
+                            });
+                        },
                         complete: function() {
+                            App.formLoaded($form);
+                            $submitBtn.prop('disabled', false);
                         }
                     });
                 }
@@ -490,19 +500,24 @@ var Transaction = (function() {
          * Update Transaction Form
          */
         updateTransaction: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".update-transaction", function () {
-
+            $(document).on("click", ".update-transaction", function () {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModalMedium");
 
                 $configuration_modal.modal("show");
                 $configuration_modal
                     .find(".modal-content")
-                    .load($this.data("url"), "", function () {
+                    .html('<div class="modal-body p-4 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>')
+                    .load($this.data("url"), "", function (responseText, textStatus, jqXHR) {
+                        if (textStatus === "error") {
+                            $(this).html('<div class="modal-header"><h5 class="modal-title text-danger">Error</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-danger">Failed to load transaction details. Please try again.</div>');
+                            return;
+                        }
+
                         Transaction.initializeComponents();
                         Transaction.validateUpdateTransactionForm();
                     });
+
                 $configuration_modal.on("hidden.bs.modal", function () {
                     App.resetModal($configuration_modal);
                 });
@@ -514,37 +529,29 @@ var Transaction = (function() {
          */
         validateUpdateTransactionForm: function() {
             var $form = $(".update-transaction-form");
+            if (!$form.length) {
+                return;
+            }
 
             $form.validate({
                 ignore: "input[type='text']:hidden, .note-editor *",
-                // @validation states + elements
                 errorClass: "invalid-feedback",
                 errorElement: "span",
-                //------------------------------
-
-                // @validation rules
                 rules: {
+                    amount: {
+                        required: true,
+                        number: true,
+                        min: 0,
+                    },
                     received_amount: {
                         required: true,
+                        number: true,
+                        min: 0,
                     },
                 },
-                //------------------
-                //------------------
-                errorPlacement: function (error, element) {
-                    if (element.attr("name") == "check_section") {
-                        error.appendTo(".check-section-error");
-                    } else {
-                        error.insertAfter(element);
-                    }
-                },
-                //------------------
-                // @validation error messages
-                messages: {},
-                //---------------------------
-
                 highlight: function(element, errorClass, validClass) {
                     $(element)
-                        .closest(".form-group")
+                        .closest(".form-group, .col-md-12")
                         .addClass("has-danger")
                         .removeClass("has-success");
                     $(element)
@@ -553,7 +560,7 @@ var Transaction = (function() {
                 },
                 unhighlight: function(element, errorClass, validClass) {
                     $(element)
-                        .closest(".form-group")
+                        .closest(".form-group, .col-md-12")
                         .addClass("has-success")
                         .removeClass("has-danger");
                     $(element)
@@ -561,23 +568,21 @@ var Transaction = (function() {
                         .removeClass("is-invalid");
                 },
                 errorPlacement: function(error, element) {
-                    if($(element).hasClass('custom-file-input'))
-                    {
+                    if ($(element).hasClass('select-picker')) {
+                        error.insertAfter($(element).parent());
+                    } else if($(element).hasClass('custom-file-input')) {
                         error.appendTo($(element).parents('.input-group').parent());
-                    }
-                    else if($(element).hasClass('image-preview'))
-                    {
+                    } else if($(element).hasClass('image-preview')) {
                         error.appendTo($(element).parents('.dropify-wrapper').parent());
-                    }
-                    else
-                    {
+                    } else {
                         error.insertAfter(element);
                     }
                 },
                 submitHandler: function(form, event) {
                     event.preventDefault();
-                    var $dataTable = $("#dataTable");
-                    var $form = $(".update-transaction-form");
+                    var $form = $(form);
+                    var $submitBtn = $form.find('.btn-submit');
+                    var originalBtnHtml = $submitBtn.html();
 
                     $.ajax({
                         type: "POST",
@@ -585,17 +590,40 @@ var Transaction = (function() {
                         data: $form.serialize(),
                         beforeSend: function() {
                             App.formLoading($form);
+                            $submitBtn.prop('disabled', true);
                         },
                         success: function(response) {
+                            App.formLoaded($form);
+                            $submitBtn.prop('disabled', false).html(originalBtnHtml);
                             App.showNotification(response);
-                            data_table.ajax.reload(null, false);
-                            rows_selected = [];
 
-                            var $configuration_modal = $("#pageModalMedium");
-                            $configuration_modal.modal("hide");
+                            if (response && (response._status === true || response.status === true)) {
+                                if (typeof data_table !== "undefined" && data_table) {
+                                    data_table.ajax.reload(null, false);
+                                }
+                                rows_selected = [];
+                                var $configuration_modal = $("#pageModalMedium");
+                                $configuration_modal.modal("hide");
+                            }
                         },
-                        error: function() {},
+                        error: function(xhr) {
+                            App.formLoaded($form);
+                            $submitBtn.prop('disabled', false).html(originalBtnHtml);
+                            var msg = "An error occurred while updating transaction.";
+                            if (xhr.responseJSON && xhr.responseJSON._message) {
+                                msg = xhr.responseJSON._message;
+                            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            }
+                            App.showNotification({
+                                _status: false,
+                                _type: 'error',
+                                _message: msg
+                            });
+                        },
                         complete: function() {
+                            App.formLoaded($form);
+                            $submitBtn.prop('disabled', false);
                         }
                     });
                 }
@@ -606,19 +634,20 @@ var Transaction = (function() {
          * View Remark.
          */
         viewRemark: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".view-remark", function () {
-
+            $(document).on("click", ".view-remark", function () {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModal");
 
                 $configuration_modal.modal("show");
                 $configuration_modal
                     .find(".modal-content")
-                    .load($this.data("url"), "", function () {
-
-
+                    .html('<div class="modal-body p-4 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>')
+                    .load($this.data("url"), "", function (responseText, textStatus, jqXHR) {
+                        if (textStatus === "error") {
+                            $(this).html('<div class="modal-header"><h5 class="modal-title text-danger">Error</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body text-danger">Failed to load remark. Please try again.</div>');
+                        }
                     });
+
                 $configuration_modal.on("hidden.bs.modal", function () {
                     App.resetModal($configuration_modal);
                 });

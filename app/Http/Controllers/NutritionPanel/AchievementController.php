@@ -65,9 +65,6 @@ class AchievementController extends Controller
         ];
 
         // View Data
-        $totalAchievements = Achievement::where('created_by', $authUser['id'])->count();
-        $this->viewData['totalAchievements'] = $totalAchievements;
-        $this->viewData['activeAchievements'] = Achievement::where('created_by', $authUser['id'])->where('status', 1)->count();
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
@@ -96,10 +93,6 @@ class AchievementController extends Controller
         
         // Filter Parameters
         $filter = array(
-            'type'          => $request->get('type'),
-            'status'        => $request->get('status'),
-            'visibility'    => $request->get('visibility'),
-            'in_app_show'   => $request->get('in_app_show'),
         );
 
         // Getting Achievements Records
@@ -130,30 +123,28 @@ class AchievementController extends Controller
                 }
 
                 if($value->in_app_show == 1){
-                    $in_app_show = '<span class="ach-table-inapp inapp-yes">Yes</span>';
-                } else {
-                    $in_app_show = '<span class="ach-table-inapp inapp-no">No</span>';
+                    $in_app_show = 'Yes';
                 }
 
                 if($value->show_achievement == 1){
-                    $show_achievement = '<span class="ach-table-user-badge">All User</span>';
+                    $show_achievement = 'All User';
                 } else if($value->show_achievement == 2){
-                    $show_achievement = '<span class="ach-table-user-badge">Only Online User</span>';
+                    $show_achievement = 'Only Online User';
                 } else {
-                    $show_achievement = '<span class="ach-table-user-badge">Only Offline User</span>';
+                    $show_achievement = 'Only Offline User';
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1 ach-order-input text-center" id="achievement_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control numeric pr-1" id="achievement_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
                 }
 
                 if ( $value->status == 0 ){
-                    $status = '<span class="ach-table-status ach-status-inactive badge badge-warning">Inactive</span>';
+                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
                 } else {
-                    $status = '<span class="ach-table-status ach-status-active badge badge-success">Active</span>';
+                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.achievements.edit', ['id' => ev($value->id)]) . '" class="ach-table-action-edit" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<a href="' . route('nutritionPanel.achievements.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
 
                 // Array Data
                 $arr_data[] = array(

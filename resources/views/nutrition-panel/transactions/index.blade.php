@@ -61,9 +61,14 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="container-fluid mt2">
-                        <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8">
-                                <h4>Transactions </h4>
+                        <div class="row align-items-center">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-7">
+                                <h4 class="mb-0">Transactions </h4>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-5 text-end">
+                                <a href="javascript:;" class="btn btn-primary create-transaction" data-url="{{ route('nutritionPanel.transactions.addTransaction') }}">
+                                    <i class="fa fa-plus"></i> <span class="d-none d-sm-inline">Add Transaction</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -111,5 +116,5 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/transactions/view.js') }}"></script>
+<script src="{{ asset('admin-assets/js/transactions/view.js') }}?v={{ file_exists(public_path('admin-assets/js/transactions/view.js')) ? filemtime(public_path('admin-assets/js/transactions/view.js')) : time() }}"></script>
 @endpush
