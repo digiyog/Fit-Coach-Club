@@ -411,13 +411,8 @@ class User extends Authenticatable
      */
     public function recalculatePendingDays()
     {
-        $lastLog = AttendanceLogs::where('user_id', $this->id)->orderBy('id', 'desc')->first();
-        if ($lastLog && $lastLog->total_days !== null && $lastLog->total_days >= 0) {
-            $this->days = max(0, (int)$lastLog->total_days);
-        } else {
-            $this->days = max(0, (int)($this->days ?? 0));
-        }
-        $this->save();
+        AttendanceLogs::syncUserAttendanceLogs($this);
+        $this->refresh();
 
         return (int)$this->days;
     }

@@ -168,80 +168,105 @@ class Attendance extends Model
     {
         // Get user
         $authUser = auth()->user();
-        //----------
+        if (!$authUser) {
+            return !empty($limit) ? collect([]) : 0;
+        }
 
-        $shakeIntakes = Attendance::select('users.id', 'users.name', 'users.coach_name','users.days', 'attendances.date');
+        $shakeIntakes = Attendance::select(
+            'attendances.id as attendance_id',
+            'users.id',
+            'users.name',
+            'users.coach_name',
+            'users.days',
+            'attendances.date',
+            'attendances.created_at'
+        );
 
         $shakeIntakes->leftJoin('users', function($join){
             $join->on('attendances.user_id', '=', 'users.id');
         });
 
-        $shakeIntakes->where("users.role_type", 'user')->where('type', 2)->where("attendances.franchise_id", $authUser->id);
+        $shakeIntakes->where("users.role_type", 'user')
+            ->where('attendances.type', 2)
+            ->whereNull('attendances.deleted_at')
+            ->whereNull('users.deleted_at')
+            ->where(function($q) use ($authUser) {
+                $q->where("attendances.franchise_id", $authUser->id)
+                  ->orWhere("users.created_by", $authUser->id);
+            });
 
-        // ->where("users.role_type", 'user')->where("users.created_by", $authUser->id)->with('user_attendence');
-
-        // $shakeIntakes = $shakeIntakes->withCount(['user_attendence as total_absent' => function ($query) use ($filter) {
-        //     $query->where('type', 1)->whereMonth('date', $filter['month'])->whereYear('date', $filter['year']);
-        // }]);
-
-        // $shakeIntakes = $shakeIntakes->withCount(['user_attendence as total_present' => function ($query) use ($filter) {
-        //     $query->where('type', 2)->whereMonth('date', $filter['month'])->whereYear('date', $filter['year']);
-        // }]);
-         
         // Record filter conditions
         $shakeIntakes->where(function ($query) use ($filter) {
-            // Filter
-            if (!empty($filter) && !empty($filter['name'])) 
-            {
-                $query->whereRaw('(lower(users.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.coach_name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.days) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(attendances.date) LIKE \'%'.trim(strtolower($filter['name'])).'%\' )');
+            if (!empty($filter) && !empty($filter['name'])) {
+                $filterName = trim(strtolower($filter['name']));
+                $query->where(function($sub) use ($filterName) {
+                    $sub->whereRaw('lower(users.name) LIKE ?', ["%{$filterName}%"])
+                        ->orWhereRaw('lower(users.coach_name) LIKE ?', ["%{$filterName}%"]);
+                });
             }
 
             if (!empty($filter) && !empty($filter['date_range'])) {
                 $date_range = explode('/', $filter['date_range']);
-                $last_30_days = [
-                    'start_date' => trim($date_range[0]) . ' 00:00:00',
-                    'end_date' => trim($date_range[1]) . ' 00:00:00',
-                ];
-                $query->whereDate('date', '>=', $last_30_days['start_date']);
-                $query->whereDate('date', '<=', $last_30_days['end_date']);
-            } else {
-                $query->whereDate('date', '=', date('Y-m-d'));
+                if (count($date_range) >= 2) {
+                    $start_date = trim($date_range[0]) . ' 00:00:00';
+                    $end_date   = trim($date_range[1]) . ' 23:59:59';
+                    $query->where(function($q) use ($start_date, $end_date) {
+                        $q->whereBetween('attendances.date', [$start_date, $end_date])
+                          ->orWhere(function($sub) use ($start_date, $end_date) {
+                              $sub->whereNull('attendances.date')
+                                  ->whereBetween('attendances.created_at', [$start_date, $end_date]);
+                          });
+                    });
+                }
+            } elseif (!empty($filter['month']) && !empty($filter['year'])) {
+                $m = $filter['month'];
+                $y = $filter['year'];
+                $query->where(function($q) use ($m, $y) {
+                    $q->where(function($sub1) use ($m, $y) {
+                        $sub1->whereNotNull('attendances.date')->whereMonth('attendances.date', $m)->whereYear('attendances.date', $y);
+                    })->orWhere(function($sub2) use ($m, $y) {
+                        $sub2->whereNull('attendances.date')->whereMonth('attendances.created_at', $m)->whereYear('attendances.created_at', $y);
+                    });
+                });
+            } elseif (!empty($filter['year'])) {
+                $y = $filter['year'];
+                $query->where(function($q) use ($y) {
+                    $q->where(function($sub1) use ($y) {
+                        $sub1->whereNotNull('attendances.date')->whereYear('attendances.date', $y);
+                    })->orWhere(function($sub2) use ($y) {
+                        $sub2->whereNull('attendances.date')->whereYear('attendances.created_at', $y);
+                    });
+                });
             }
-
         });
         
         // Table list Search conditions
-        if(!(empty($search)))
-        {
-            $search = strtolower($search);
-            $shakeIntakes = $shakeIntakes->whereRaw('(lower(users.name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.coach_name) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(users.days) LIKE \'%'.trim(strtolower($filter['name'])).'%\' || lower(attendances.date) LIKE \'%'.trim(strtolower($filter['name'])).'%\' )');
+        if (!empty($search)) {
+            $searchStr = trim(strtolower($search));
+            $shakeIntakes = $shakeIntakes->where(function($q) use ($searchStr) {
+                $q->whereRaw('lower(users.name) LIKE ?', ["%{$searchStr}%"])
+                  ->orWhereRaw('lower(users.coach_name) LIKE ?', ["%{$searchStr}%"])
+                  ->orWhereRaw('lower(attendances.date) LIKE ?', ["%{$searchStr}%"])
+                  ->orWhereRaw('lower(CAST(users.days AS CHAR)) LIKE ?', ["%{$searchStr}%"]);
+            });
         }
         
         // Table columns sort conditions
-        if(!(empty($sort)) && $sort['column'] > 0)
-        {
-            $arr_fields = array("", "name", "coach_name", "", "days", "date");
-            for($field = 0; $field < count($arr_fields); $field++)
-            {
-                if($sort['column'] == $field && $arr_fields[$field] != "")
-                {
-                    $shakeIntakes = $shakeIntakes->orderBy($arr_fields[$field], $sort['dir']);
-                }
+        if (!empty($sort) && isset($sort['column']) && intval($sort['column']) > 0) {
+            $arr_fields = array("", "users.name", "users.coach_name", "", "users.days", "attendances.date");
+            $colIdx = intval($sort['column']);
+            if (isset($arr_fields[$colIdx]) && $arr_fields[$colIdx] != "") {
+                $shakeIntakes = $shakeIntakes->orderBy($arr_fields[$colIdx], $sort['dir'] ?? 'DESC');
             }
-        }
-        else
-        {
-            $shakeIntakes = $shakeIntakes->orderBy('date', 'DESC');
+        } else {
+            $shakeIntakes = $shakeIntakes->orderBy(\DB::raw('COALESCE(attendances.date, DATE(attendances.created_at))'), 'DESC')->orderBy('attendances.id', 'DESC');
         }
 
         // Set final limit and records
-        if(!empty($limit))
-        {
+        if (!empty($limit)) {
             $shakeIntakes = $shakeIntakes->skip($offset)->take($limit);
             return $shakeIntakes->get();
-        }
-        else
-        {
+        } else {
             return $shakeIntakes->get()->count();
         }
     }

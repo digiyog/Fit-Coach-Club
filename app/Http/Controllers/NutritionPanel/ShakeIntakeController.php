@@ -85,10 +85,10 @@ class ShakeIntakeController extends Controller
 
         // Ajax Post Parameters
         $draw   = $request->get('draw');
-        $start  = $request->get('start');
-        $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $start  = $request->get('start') ? intval($request->get('start')) : 0;
+        $limit  = $request->get('length') ? intval($request->get('length')) : 20;
+        $sort   = $request->get('order')[0] ?? null;
+        $search = $request->get('search')['value'] ?? null;
         
         // Filter Parameters
         $filter = array(
@@ -103,7 +103,7 @@ class ShakeIntakeController extends Controller
 
         $arr_data = array();
 
-        if(count($records) > 0)
+        if(!empty($records) && count($records) > 0)
         {
             foreach($records as $key => $value)
             {
@@ -122,17 +122,18 @@ class ShakeIntakeController extends Controller
                     $coach_name = $value->coach_name;
                 }
 
-                if(!empty($value->days)){
+                if(!empty($value->days) || $value->days === 0 || $value->days === '0'){
                     $pendingDays = $value->days;
                 }                
 
-                if(!empty($value->date)){
-                    $date = date("d-m-Y",strtotime($value->date));
+                $dVal = !empty($value->date) ? $value->date : (!empty($value->created_at) ? $value->created_at : null);
+                if(!empty($dVal)){
+                    $date = date("d-m-Y", strtotime($dVal));
                 }
 
                 // Array Data
                 $arr_data[] = array(
-                    "id"                => $value->id,
+                    "id"                => $value->id ?? ($value->attendance_id ?? ($start + $key + 1)),
                     "name"              => $name,
                     "coach_name"        => $coach_name,
                     "attendance"        => $attendanceCount,
@@ -142,8 +143,7 @@ class ShakeIntakeController extends Controller
             }
         }
 
-        $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
+        $totalRecords = intval($records_count);
 
         $response = array(
             "draw"                  => intval($draw),
@@ -152,6 +152,6 @@ class ShakeIntakeController extends Controller
             "aaData"                => $arr_data
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 }

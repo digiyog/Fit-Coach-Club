@@ -909,6 +909,7 @@
                     <option value="Manual Attendance Add">Manual Attendance Add</option>
                     <option value="Add User Days">Add User Days</option>
                     <option value="Subtract User Days">Subtract User Days</option>
+                    <option value="Attendance Delete">Attendance Delete</option>
                 </select>
 
                 <!-- Source Filter -->

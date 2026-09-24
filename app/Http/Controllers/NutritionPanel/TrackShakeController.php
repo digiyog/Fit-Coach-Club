@@ -60,7 +60,12 @@ class TrackShakeController extends Controller
             return redirect()->route('nutritionPanel.users.index');
         }
 
+        // Synchronize and reconcile attendance logs with all attendance records
+        AttendanceLogs::syncUserAttendanceLogs($user);
+        $user->refresh();
+
         $attendanceLogs = AttendanceLogs::where('user_id', $user->id)
+            ->whereNull('deleted_at')
             ->orderBy('date', 'ASC')
             ->orderBy('id', 'ASC')
             ->get();
@@ -230,6 +235,9 @@ class TrackShakeController extends Controller
         );
 
         $user = User::where('id', $request->user_id)->first();
+        if ($user) {
+            AttendanceLogs::syncUserAttendanceLogs($user);
+        }
 
         // Getting Track Shake Records
         $records_count  = AttendanceLogs::getAttendences(null, null, $search, $filter, $sort);

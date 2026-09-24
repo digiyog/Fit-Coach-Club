@@ -238,6 +238,8 @@ class ManualAttendenceController extends Controller
             $markedCount = 0;
             $skippedCount = 0;
 
+            $markedDates = [];
+
             for ($i = 0; $i < $daysToMark; $i++) {
                 $date = $startDate->copy()->addDays($i)->format('Y-m-d');
 
@@ -265,6 +267,7 @@ class ManualAttendenceController extends Controller
                 }
 
                 Attendance::create($attData);
+                $markedDates[] = $date;
                 $markedCount++;
             }
 
@@ -279,8 +282,23 @@ class ManualAttendenceController extends Controller
             }
 
             // Decrement user pending days by marked count
-            $newPendingDays = max(0, (int)($user->days ?? 0) - $markedCount);
-            $user->days = $newPendingDays;
+            $runningDays = (int)($user->days ?? 0);
+
+            // Create AttendanceLog for each marked date
+            foreach ($markedDates as $mDate) {
+                $runningDays = max(0, $runningDays - 1);
+                AttendanceLogs::create([
+                    'user_id'    => $user->id,
+                    'date'       => $mDate,
+                    'remark'     => 'Manual Attendance Add',
+                    'message'    => $remark ?: 'Manual Attendance marked',
+                    'days'       => 1,
+                    'total_days' => $runningDays,
+                    'created_by' => $authUser ? $authUser->id : ($user->created_by ?? 0),
+                ]);
+            }
+
+            $user->days = $runningDays;
 
             // Update user weight if provided
             if ($weight !== null && $weight > 0) {
@@ -288,16 +306,8 @@ class ManualAttendenceController extends Controller
             }
             $user->save();
 
-            // Create AttendanceLog
-            AttendanceLogs::create([
-                'user_id'    => $user->id,
-                'date'       => $startDate->format('Y-m-d'),
-                'remark'     => 'Manual Attendance Add',
-                'message'    => $remark ?: ($markedCount . ' day(s) marked'),
-                'days'       => $markedCount,
-                'total_days' => $newPendingDays,
-                'created_by' => $authUser ? $authUser->id : ($user->created_by ?? 0),
-            ]);
+            // Re-sync user attendance logs to ensure 100% ledger consistency
+            AttendanceLogs::syncUserAttendanceLogs($user);
 
             DB::commit();
 
@@ -437,16 +447,19 @@ class ManualAttendenceController extends Controller
             $newPendingDays = (int)($user->days ?? 0) + 1;
             $user->days = $newPendingDays;
             $user->save();
-        }
 
-        AttendanceLogs::create([
-            'user_id'    => $userId,
-            'date'       => date('Y-m-d'),
-            'remark'     => 'Attendance Delete',
-            'days'       => 1,
-            'total_days' => $newPendingDays,
-            'created_by' => $authUser ? $authUser->id : 0,
-        ]);
+            AttendanceLogs::create([
+                'user_id'    => $userId,
+                'date'       => date('Y-m-d'),
+                'remark'     => 'Attendance Delete',
+                'message'    => 'Attendance deleted',
+                'days'       => 1,
+                'total_days' => $newPendingDays,
+                'created_by' => $authUser ? $authUser->id : 0,
+            ]);
+
+            AttendanceLogs::syncUserAttendanceLogs($user);
+        }
         
         // Set response
         if ($manualAttendence) 

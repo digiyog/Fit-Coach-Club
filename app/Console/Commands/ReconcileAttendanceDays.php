@@ -95,17 +95,13 @@ class ReconcileAttendanceDays extends Command
                 ->distinct('date')
                 ->count('date');
 
-            // 3. Recalculate pending days
-            $newDays = $user->recalculatePendingDays();
+            // 3. Recalculate pending days & synchronize logs
             if (!$isDryRun) {
-                // Update the most recent attendance_log total_days to stay in sync
-                $lastLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'desc')->first();
-                if ($lastLog && $lastLog->total_days != $newDays) {
-                    $lastLog->update(['total_days' => $newDays]);
-                }
+                $newDays = AttendanceLogs::syncUserAttendanceLogs($user);
+                $user->refresh();
+                $newDays = (int)$user->days;
             } else {
-                // Revert user object in dry-run
-                $user->days = $oldDays;
+                $newDays = $oldDays;
             }
 
             $hasChanged = ($oldDays !== $newDays || $duplicatesRemovedForUser > 0);
