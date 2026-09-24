@@ -53,6 +53,17 @@ class Achievement extends Model
 
         $achievements = Achievement::select('id', 'title', 'type', 'in_app_show', 'show_achievement', 'order', 'status', 'created_at')->where('created_by', $authUser['id']);
         
+        // Filter conditions
+        if(!empty($filter['type']) && $filter['type'] != 'all') {
+            $achievements = $achievements->where('type', $filter['type']);
+        }
+        if(isset($filter['status']) && $filter['status'] !== '' && $filter['status'] !== null && $filter['status'] != 'all') {
+            $achievements = $achievements->where('status', $filter['status']);
+        }
+        if(!empty($filter['show_achievement']) && $filter['show_achievement'] != 'all') {
+            $achievements = $achievements->where('show_achievement', $filter['show_achievement']);
+        }
+
         // Table list Search conditions
         if(!(empty($search)))
         {

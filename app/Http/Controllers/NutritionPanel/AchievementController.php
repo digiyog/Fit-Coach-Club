@@ -48,14 +48,12 @@ class AchievementController extends Controller
 
         // Adding breadcrumb array
         $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
+            'Achievements & Hub' => '',
             'Achievements' => '',
         ];
 
         // Breadcrumb Button
         $breadcrumbButton = [];
-        // Add Button
-      
         $breadcrumbButton[] = [
             'btn_class' => 'btn btn-primary mt-2 rounded-circle',
             'btn_link' => route('nutritionPanel.achievements.create'),
@@ -64,10 +62,25 @@ class AchievementController extends Controller
             'attributes' => []
         ];
 
+        // Statistics and checklist
+        $totalAchievements = Achievement::where('created_by', $authUser->id)->count();
+        $hasAppShow = Achievement::where('created_by', $authUser->id)->where('in_app_show', 1)->exists();
+        $hasPublished = Achievement::where('created_by', $authUser->id)->where('status', 1)->exists();
+
+        $checklistSteps = [
+            'created' => $totalAchievements > 0,
+            'visibility' => $hasAppShow,
+            'published' => $hasPublished,
+        ];
+        $completedSteps = ($checklistSteps['created'] ? 1 : 0) + ($checklistSteps['visibility'] ? 1 : 0) + ($checklistSteps['published'] ? 1 : 0);
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['totalAchievements'] = $totalAchievements;
+        $this->viewData['checklistSteps'] = $checklistSteps;
+        $this->viewData['completedSteps'] = $completedSteps;
         
         return view('nutrition-panel.achievements.index')->with($this->viewData);
     }
@@ -93,6 +106,9 @@ class AchievementController extends Controller
         
         // Filter Parameters
         $filter = array(
+            'type' => $request->get('filter_type'),
+            'status' => $request->get('filter_status'),
+            'show_achievement' => $request->get('filter_visibility'),
         );
 
         // Getting Achievements Records
@@ -115,36 +131,38 @@ class AchievementController extends Controller
 
                 // Preparing Data
                 if(!empty($value->title)){
-                    $title = $value->title;
+                    $title = '<span class="fw-bold text-dark">' . e($value->title) . '</span>';
                 }
 
                 if(!empty($value->type)){
-                    $type = $value->type;
+                    $type = '<span class="badge bg-light text-primary border border-primary-subtle px-2 py-1 rounded-pill">' . e($value->type) . '</span>';
                 }
 
                 if($value->in_app_show == 1){
-                    $in_app_show = 'Yes';
+                    $in_app_show = '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill"><i class="fa fa-check me-1"></i> Yes</span>';
+                } else {
+                    $in_app_show = '<span class="badge bg-light text-muted border px-2 py-1 rounded-pill">No</span>';
                 }
 
                 if($value->show_achievement == 1){
-                    $show_achievement = 'All User';
+                    $show_achievement = '<span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 rounded-pill">All User</span>';
                 } else if($value->show_achievement == 2){
-                    $show_achievement = 'Only Online User';
+                    $show_achievement = '<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill">Only Online User</span>';
                 } else {
-                    $show_achievement = 'Only Offline User';
+                    $show_achievement = '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 rounded-pill">Only Offline User</span>';
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1" id="achievement_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control text-center numeric achievement-order-input" id="achievement_order_'.$value->id.'" name="order" value="'.$value->order.'" style="max-width: 75px; height: 32px; border-radius: 6px; font-weight: 600;" autocomplete="off" />';
                 }
 
                 if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                    $status = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill">Inactive</span>';
                 } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $status = '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Active</span>';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.achievements.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<a href="' . route('nutritionPanel.achievements.edit', ['id' => ev($value->id)]) . '" class="btn btn-sm btn-outline-primary px-2 py-1 rounded-2 d-inline-flex align-items-center gap-1" title="Edit"><i class="fa fa-pencil"></i> <span>Edit</span></a>';
 
                 // Array Data
                 $arr_data[] = array(
@@ -161,7 +179,6 @@ class AchievementController extends Controller
         }
 
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),
