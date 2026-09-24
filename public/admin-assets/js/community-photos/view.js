@@ -38,19 +38,6 @@ var CommunityPhoto = (function() {
                 data_table.page.len(newLen).draw();
             });
 
-            // View toggle (Gallery / List)
-            $('#btnViewGallery').on('click', function() {
-                activeViewMode = 'gallery';
-                $('.btn-view-toggle').removeClass('active');
-                $(this).addClass('active');
-            });
-
-            $('#btnViewList').on('click', function() {
-                activeViewMode = 'list';
-                $('.btn-view-toggle').removeClass('active');
-                $(this).addClass('active');
-            });
-
             // Refresh buttons
             $('#btnRefreshCommunity, #btnCheckNewPhotos').on('click', function() {
                 var $btn = $(this);

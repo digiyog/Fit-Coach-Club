@@ -853,15 +853,6 @@
                             <option value="desc">Newest first</option>
                             <option value="asc">Oldest first</option>
                         </select>
-
-                        <div class="comm-view-toggle-wrap">
-                            <button type="button" class="btn-view-toggle active" id="btnViewGallery">
-                                <i class="fa fa-th-large"></i> Gallery
-                            </button>
-                            <button type="button" class="btn-view-toggle" id="btnViewList">
-                                <i class="fa fa-list"></i> List
-                            </button>
-                        </div>
                     </div>
 
                     <!-- Toolbar row -->
