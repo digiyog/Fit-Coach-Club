@@ -879,11 +879,11 @@
             </div>
             <div class="fcc-shake-legend-item">
                 <span class="fcc-legend-circle blue"></span>
-                <span>Attendance added</span>
+                <span>Attendance check-in (-1)</span>
             </div>
             <div class="fcc-shake-legend-item">
                 <span class="fcc-legend-circle orange"></span>
-                <span>Attendance deleted</span>
+                <span>Attendance deleted (+1)</span>
             </div>
         </div>
     </div>

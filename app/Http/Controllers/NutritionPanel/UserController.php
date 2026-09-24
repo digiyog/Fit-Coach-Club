@@ -998,18 +998,26 @@ class UserController extends Controller
             $paymentType = ($dueAmount > 0) ? 'Pending' : 'Received';
             $createdById = $authUser ? $authUser->id : null;
 
-            // 1. Attendance Logs
+            // 1. Update user days & dues
+            $newTotalDays = (int)($user->days ?? 0) + $daysToAdd;
+            $user->days = $newTotalDays;
+            if ($dueAmount > 0) {
+                $user->due_amount = (float)($user->due_amount ?? 0) + $dueAmount;
+            }
+            $user->save();
+
+            // 2. Attendance Logs
             $createdLog = AttendanceLogs::create([
                 'user_id'       => $user->id,
                 'date'          => date('Y-m-d'),
                 'remark'        => 'Add User Days',
                 'days'          => $daysToAdd,
                 'message'       => $request->input('remark') ?? '',
-                'total_days'    => 0,
+                'total_days'    => $newTotalDays,
                 'created_by'    => $createdById,
             ]);
 
-            // 2. Transaction
+            // 3. Transaction
             $transaction = [
                 'user_id'           => $user->id,
                 'title'             => 'Add User Days',
@@ -1022,14 +1030,6 @@ class UserController extends Controller
             ];
             Transaction::create($transaction);
 
-            // 3. Recalculate pending days automatically
-            $newPendingDays = $user->recalculatePendingDays();
-            $createdLog->update(['total_days' => $newPendingDays]);
-
-            if ($dueAmount > 0) {
-                $user->due_amount = (float)($user->due_amount ?? 0) + $dueAmount;
-                $user->save();
-            }
             $userUpdate = true;
 
             DB::commit();
@@ -1142,20 +1142,21 @@ class UserController extends Controller
             $daysToSubtract = max(1, (int)($request->input('days', 1)));
             $createdById = $authUser ? $authUser->id : null;
 
-            // 1. Attendance Logs
+            // 1. Decrement user days
+            $newTotalDays = max(0, (int)($user->days ?? 0) - $daysToSubtract);
+            $user->days = $newTotalDays;
+            $user->save();
+
+            // 2. Attendance Logs
             $createdLog = AttendanceLogs::create([
                 'user_id'       => $user->id,
                 'date'          => date('Y-m-d'),
                 'remark'        => 'Subtract User Days',
                 'days'          => $daysToSubtract,
                 'message'       => $request->input('remark') ?? '',
-                'total_days'    => 0,
+                'total_days'    => $newTotalDays,
                 'created_by'    => $createdById,
             ]);
-
-            // 2. Recalculate pending days automatically
-            $newPendingDays = $user->recalculatePendingDays();
-            $createdLog->update(['total_days' => $newPendingDays]);
 
             $userUpdate = true;
 

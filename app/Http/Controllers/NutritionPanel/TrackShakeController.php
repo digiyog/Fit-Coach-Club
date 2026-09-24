@@ -68,15 +68,23 @@ class TrackShakeController extends Controller
         $latestLog = $attendanceLogs->last();
 
         // 1. Current Balance
-        $currentBalance = $user->days ?? ($latestLog->total_days ?? 0);
+        $currentBalance = (int)($user->days ?? ($latestLog->total_days ?? 0));
 
         // 2. Latest Activity Info
         $latestActivityText = 'No activity';
         $latestActivityDate = '';
         if ($latestLog) {
             $daysVal = (int)$latestLog->days;
-            $sign = $daysVal > 0 ? '+' . $daysVal : $daysVal;
-            $latestActivityText = $sign . ' attendance';
+            $r = strtolower($latestLog->remark ?? '');
+            if (str_contains($r, 'add user') || str_contains($r, 'add plan') || (str_contains($r, 'add') && !str_contains($r, 'attendance'))) {
+                $latestActivityText = '+' . $daysVal . ' shakes added';
+            } elseif (str_contains($r, 'delete') || str_contains($r, 'restore')) {
+                $latestActivityText = '+' . $daysVal . ' attendance restored';
+            } elseif (str_contains($r, 'subtract') || str_contains($r, 'substarct')) {
+                $latestActivityText = '-' . $daysVal . ' shakes subtracted';
+            } else {
+                $latestActivityText = '-' . $daysVal . ' attendance marked';
+            }
             $latestActivityDate = !empty($latestLog->date) ? date('d M Y', strtotime($latestLog->date)) : '';
         }
 
@@ -86,15 +94,21 @@ class TrackShakeController extends Controller
         $primarySource = ($appSideCount >= $adminPanelCount && $appSideCount > 0) ? 'App side' : 'Admin panel';
         $primarySourceSubtext = ($primarySource === 'App side') ? 'QR attendance' : 'Manual updates';
 
-        // 4. Calculate Summary Metrics
+        // 4. Calculate Summary Metrics (Accurate additions vs consumptions)
         $totalShakesAdded = 0;
         $totalShakesUsed = 0;
         foreach ($attendanceLogs as $l) {
             $val = (int)$l->days;
-            if ($val > 0) {
+            $r = strtolower($l->remark ?? '');
+            if (str_contains($r, 'add user') || str_contains($r, 'add plan') || (str_contains($r, 'add') && !str_contains($r, 'attendance'))) {
                 $totalShakesAdded += $val;
-            } elseif ($val < 0) {
-                $totalShakesUsed += abs($val);
+            } elseif (str_contains($r, 'delete') || str_contains($r, 'restore')) {
+                $totalShakesAdded += $val;
+            } elseif (str_contains($r, 'subtract') || str_contains($r, 'substarct')) {
+                $totalShakesUsed += $val;
+            } else {
+                // QR Attendance Add, Manual Attendance Add consume shakes
+                $totalShakesUsed += $val;
             }
         }
 
@@ -103,19 +117,29 @@ class TrackShakeController extends Controller
         if ($attendanceLogs->count() > 0) {
             foreach ($attendanceLogs as $log) {
                 $dt = $log->date ? date('Y-m-d', strtotime($log->date)) : date('Y-m-d');
-                $eventType = 'attendance';
-                $color = '#3b46f1';
                 $daysVal = (int)$log->days;
-                
-                if (str_contains(strtolower($log->remark ?? ''), 'add user') || $daysVal > 0) {
+                $r = strtolower($log->remark ?? '');
+
+                if (str_contains($r, 'add user') || str_contains($r, 'add plan') || (str_contains($r, 'add') && !str_contains($r, 'attendance'))) {
                     $eventType = 'add';
                     $color = '#10b981';
-                } elseif (str_contains(strtolower($log->remark ?? ''), 'subtract') || (str_contains(strtolower($log->remark ?? ''), 'delete') && $daysVal < 0)) {
-                    $eventType = 'subtract';
-                    $color = '#ef4444';
-                } elseif (str_contains(strtolower($log->remark ?? ''), 'delete')) {
+                    $change = $daysVal;
+                    $changeText = '+' . $daysVal;
+                } elseif (str_contains($r, 'delete') || str_contains($r, 'restore')) {
                     $eventType = 'delete';
                     $color = '#f59e0b';
+                    $change = $daysVal;
+                    $changeText = '+' . $daysVal;
+                } elseif (str_contains($r, 'subtract') || str_contains($r, 'substarct')) {
+                    $eventType = 'subtract';
+                    $color = '#ef4444';
+                    $change = -$daysVal;
+                    $changeText = '-' . $daysVal;
+                } else {
+                    $eventType = 'attendance';
+                    $color = '#3b46f1';
+                    $change = -$daysVal;
+                    $changeText = '-' . $daysVal;
                 }
 
                 $chartDataPoints[] = [
@@ -125,8 +149,8 @@ class TrackShakeController extends Controller
                     'date_formatted' => date('d M Y', strtotime($dt)),
                     'date_short'     => date('d M', strtotime($dt)),
                     'balance'        => (int)$log->total_days,
-                    'change'         => $daysVal,
-                    'change_text'    => ($daysVal > 0 ? '+' : '') . $daysVal,
+                    'change'         => $change,
+                    'change_text'    => $changeText,
                     'remark'         => !empty($log->remark) ? $log->remark : 'Attendance',
                     'source'         => ($log->remark === 'QR Attendance Add' ? 'App side (QR)' : 'Admin panel'),
                     'event_type'     => $eventType,
@@ -224,21 +248,26 @@ class TrackShakeController extends Controller
                 $remarkRaw  = $value->remark ?? '';
                 $messageRaw = $value->message ?? '';
 
-                // Change pill
-                if ($daysVal > 0) {
+                // Change pill with correct sign & color
+                $r = strtolower($remarkRaw);
+                if (str_contains($r, 'add user') || str_contains($r, 'add plan') || (str_contains($r, 'add') && !str_contains($r, 'attendance'))) {
                     $changeHtml = '<span class="badge" style="background: #dcfce7; color: #15803d; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 6px;">+' . $daysVal . '</span>';
-                } elseif ($daysVal < 0) {
-                    $changeHtml = '<span class="badge" style="background: #fee2e2; color: #b91c1c; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 6px;">' . $daysVal . '</span>';
+                } elseif (str_contains($r, 'delete') || str_contains($r, 'restore')) {
+                    $changeHtml = '<span class="badge" style="background: #fef3c7; color: #b45309; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 6px;">+' . $daysVal . '</span>';
+                } elseif (str_contains($r, 'subtract') || str_contains($r, 'substarct')) {
+                    $changeHtml = '<span class="badge" style="background: #fee2e2; color: #b91c1c; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 6px;">-' . $daysVal . '</span>';
                 } else {
-                    $changeHtml = '<span class="badge" style="background: #f1f5f9; color: #64748b; font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 6px;">0</span>';
+                    // Attendance check-in consumes a shake
+                    $changeHtml = '<span class="badge" style="background: #fee2e2; color: #b91c1c; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 6px;">-' . $daysVal . '</span>';
                 }
 
                 // Activity styling
-                $actBadge = match($remarkRaw) {
-                    'QR Attendance Add' => ['bg' => '#eff6ff', 'color' => '#1d4ed8'],
-                    'Manual Attendance Add' => ['bg' => '#f3e8ff', 'color' => '#7e22ce'],
-                    'Add User Days' => ['bg' => '#dcfce7', 'color' => '#15803d'],
-                    'Subtract User Days', 'Substarct User Days' => ['bg' => '#ffedd5', 'color' => '#c2410c'],
+                $actBadge = match(true) {
+                    $remarkRaw === 'QR Attendance Add' => ['bg' => '#eff6ff', 'color' => '#1d4ed8'],
+                    $remarkRaw === 'Manual Attendance Add' => ['bg' => '#f3e8ff', 'color' => '#7e22ce'],
+                    str_contains($r, 'add user') || str_contains($r, 'add plan') => ['bg' => '#dcfce7', 'color' => '#15803d'],
+                    str_contains($r, 'subtract') || str_contains($r, 'substarct') => ['bg' => '#ffedd5', 'color' => '#c2410c'],
+                    str_contains($r, 'delete') || str_contains($r, 'restore') => ['bg' => '#fef3c7', 'color' => '#b45309'],
                     default => ['bg' => '#f1f5f9', 'color' => '#475569'],
                 };
                 $activityHtml = '<span class="badge" style="background: ' . $actBadge['bg'] . '; color: ' . $actBadge['color'] . '; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 6px;">' . e($remarkRaw ?: 'General Update') . '</span>';

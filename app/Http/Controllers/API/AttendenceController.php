@@ -180,7 +180,11 @@ class AttendenceController extends Controller
 
                 /** @var User $userModel */
                 $userModel = User::find($user['id']);
-                $newPendingDays = $userModel ? $userModel->recalculatePendingDays() : max(0, $user['days'] - 1);
+                $newPendingDays = $userModel ? max(0, (int)($userModel->days ?? 0) - 1) : max(0, (int)($user['days'] ?? 0) - 1);
+                if ($userModel) {
+                    $userModel->days = $newPendingDays;
+                    $userModel->save();
+                }
 
                 $data = [
                     'user_id'       => $user->id,

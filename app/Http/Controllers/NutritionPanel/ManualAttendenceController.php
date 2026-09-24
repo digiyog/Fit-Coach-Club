@@ -278,8 +278,15 @@ class ManualAttendenceController extends Controller
                 return redirect()->back()->with(['notification' => $notification]);
             }
 
-            // Recalculate pending days automatically based on unique attendance dates
-            $newPendingDays = $user->recalculatePendingDays();
+            // Decrement user pending days by marked count
+            $newPendingDays = max(0, (int)($user->days ?? 0) - $markedCount);
+            $user->days = $newPendingDays;
+
+            // Update user weight if provided
+            if ($weight !== null && $weight > 0) {
+                $user->current_weight = $weight;
+            }
+            $user->save();
 
             // Create AttendanceLog
             AttendanceLogs::create([
@@ -291,12 +298,6 @@ class ManualAttendenceController extends Controller
                 'total_days' => $newPendingDays,
                 'created_by' => $authUser ? $authUser->id : ($user->created_by ?? 0),
             ]);
-
-            // Update user weight if provided
-            if ($weight !== null && $weight > 0) {
-                $user->current_weight = $weight;
-                $user->save();
-            }
 
             DB::commit();
 
@@ -433,7 +434,9 @@ class ManualAttendenceController extends Controller
 
         $newPendingDays = 0;
         if ($user) {
-            $newPendingDays = $user->recalculatePendingDays();
+            $newPendingDays = (int)($user->days ?? 0) + 1;
+            $user->days = $newPendingDays;
+            $user->save();
         }
 
         AttendanceLogs::create([

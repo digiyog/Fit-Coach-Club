@@ -96,45 +96,16 @@ class ReconcileAttendanceDays extends Command
                 ->count('date');
 
             // 3. Recalculate pending days
+            $newDays = $user->recalculatePendingDays();
             if (!$isDryRun) {
-                $newDays = $user->recalculatePendingDays();
-
                 // Update the most recent attendance_log total_days to stay in sync
                 $lastLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'desc')->first();
                 if ($lastLog && $lastLog->total_days != $newDays) {
                     $lastLog->update(['total_days' => $newDays]);
                 }
             } else {
-                // Dry run calculation simulation matching recalculatePendingDays()
-                $firstLog = AttendanceLogs::where('user_id', $user->id)->orderBy('id', 'asc')->first();
-                $initialFromFirstLog = 0;
-                if ($firstLog && !preg_match('/add.*days/i', $firstLog->remark)) {
-                    $initialFromFirstLog = max(0, (int)($firstLog->total_days + $firstLog->days));
-                }
-
-                $addedDays = (int) AttendanceLogs::where('user_id', $user->id)
-                    ->where('remark', 'LIKE', '%Add User Days%')
-                    ->sum('days');
-
-                $subtractedDays = (int) AttendanceLogs::where('user_id', $user->id)
-                    ->where(function ($q) {
-                        $q->where('remark', 'LIKE', '%Subtract%')
-                          ->orWhere('remark', 'LIKE', '%Substarct%');
-                    })
-                    ->sum('days');
-
-                $totalAllocated = $initialFromFirstLog + $addedDays;
-
-                if ($totalAllocated == 0 && (int)$user->days > 0) {
-                    $totalAllocated = max(0, (int)$user->days) + $uniqueAttendedDates;
-                }
-
-                if ($totalAllocated > 0) {
-                    $netAllocated = max(0, $totalAllocated - $subtractedDays);
-                    $newDays = max(0, $netAllocated - $uniqueAttendedDates);
-                } else {
-                    $newDays = max(0, (int)$user->days);
-                }
+                // Revert user object in dry-run
+                $user->days = $oldDays;
             }
 
             $hasChanged = ($oldDays !== $newDays || $duplicatesRemovedForUser > 0);

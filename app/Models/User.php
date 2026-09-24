@@ -405,60 +405,40 @@ class User extends Authenticatable
     }
 
     /**
-     * Recalculate and synchronize user pending days based on actual attendance dates and allocated packages.
+     * Recalculate and synchronize user pending days based on actual attendance logs ledger.
      *
      * @return int
      */
     public function recalculatePendingDays()
     {
-        $uniqueAttended = Attendance::where('user_id', $this->id)
-            ->where('type', 2)
-            ->whereNull('deleted_at')
-            ->distinct('date')
-            ->count('date');
-
-        // Check if the user had an initial allocation from their first log before Add User Days was logged
-        $firstLog = AttendanceLogs::where('user_id', $this->id)->orderBy('id', 'asc')->first();
-        $initialFromFirstLog = 0;
-        if ($firstLog && !preg_match('/add.*days/i', $firstLog->remark)) {
-            $initialFromFirstLog = max(0, (int)($firstLog->total_days + $firstLog->days));
+        $logs = AttendanceLogs::where('user_id', $this->id)->orderBy('id', 'asc')->get();
+        if ($logs->isEmpty()) {
+            return (int)($this->days ?? 0);
         }
 
-        $added = (int) AttendanceLogs::where('user_id', $this->id)
-            ->where('remark', 'LIKE', '%Add User Days%')
-            ->sum('days');
-
-        $subtracted = (int) AttendanceLogs::where('user_id', $this->id)
-            ->where(function ($q) {
-                $q->where('remark', 'LIKE', '%Subtract%')
-                  ->orWhere('remark', 'LIKE', '%Substarct%');
-            })
-            ->sum('days');
-
-        $totalAllocated = $initialFromFirstLog + $added;
-
-        // If user has no logged additions yet, initialize baseline so subsequent attendances deduct cleanly
-        if ($totalAllocated == 0 && (int)$this->days > 0) {
-            $initialAllocated = max(0, (int)$this->days) + $uniqueAttended;
-            AttendanceLogs::create([
-                'user_id'    => $this->id,
-                'date'       => $this->start_date ?: date('Y-m-d'),
-                'remark'     => 'Add User Days',
-                'message'    => 'Initial plan allocation baseline',
-                'days'       => $initialAllocated,
-                'total_days' => $initialAllocated,
-                'created_by' => $this->created_by ?: 0,
-            ]);
-            $totalAllocated = $initialAllocated;
-        }
-
-        if ($totalAllocated > 0) {
-            $netAllocated = max(0, $totalAllocated - $subtracted);
-            $this->days = max(0, $netAllocated - $uniqueAttended);
+        $first = $logs->first();
+        $firstRemark = strtolower($first->remark ?? '');
+        if (str_contains($firstRemark, 'add user') || str_contains($firstRemark, 'add plan')) {
+            $running = (int)$first->days;
         } else {
-            $this->days = max(0, (int)$this->days);
+            $running = (int)$first->total_days + (int)$first->days;
         }
 
+        if (!str_contains($firstRemark, 'add user') && !str_contains($firstRemark, 'add plan')) {
+            $running = max(0, $running - (int)$first->days);
+        }
+
+        foreach ($logs->slice(1) as $l) {
+            $r = strtolower($l->remark ?? '');
+            $val = (int)$l->days;
+            if (str_contains($r, 'add user') || str_contains($r, 'add plan') || str_contains($r, 'delete') || str_contains($r, 'restore')) {
+                $running += $val;
+            } else {
+                $running = max(0, $running - $val);
+            }
+        }
+
+        $this->days = $running;
         $this->save();
 
         return (int)$this->days;
