@@ -1,69 +1,73 @@
 var CommunityPhoto = (function() {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
+    var searchTimer;
+    var activeViewMode = 'gallery';
+
     return {
         /**
          * Initialization.
          */
         init: function() {
             CommunityPhoto.getCommunityPhotos();
-            CommunityPhoto.initializeComponents();
-            CommunityPhoto.dataTableCustomFilter();
+            CommunityPhoto.bindCustomEvents();
             CommunityPhoto.viewPhotos();
         },
 
         /**
-         * Initialize components.
+         * Bind custom filter, search, view toggle and refresh events
          */
-        initializeComponents: function() {
-            // Initialize Components
-            var $filter_form = $(".custom-datatable-filter-form");
-            //-------------------
+        bindCustomEvents: function() {
+            // Search Input with debounce
+            $('#community-search-input').on('keyup input', function() {
+                var searchVal = $(this).val();
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function() {
+                    data_table.search(searchVal).draw();
+                }, 300);
+            });
 
-            // Bootstrap Select
-            Components.bootstrapSelect($filter_form);
-            //-------------------
-        },
+            // Date & Sort filter
+            $('#community-filter-date, #community-filter-sort').on('change', function() {
+                data_table.ajax.reload();
+            });
 
-        /**
-         * Updates "Select all" control in a data table
-         */
-        updateDataTableSelectAllCtrl: function(table) {
-            var $table = table.table().node();
-            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-            var $chkbox_checked = $(
-                'tbody input[type="checkbox"]:checked',
-                $table
-            );
-            var chkbox_select_all = $(
-                'thead input[name="select_all"]',
-                $table
-            ).get(0);
+            // Per page dropdown
+            $('#comm-page-length').on('change', function() {
+                var newLen = parseInt($(this).val(), 10) || 20;
+                data_table.page.len(newLen).draw();
+            });
 
-            // If none of the checkboxes are checked
-            if ($chkbox_checked.length === 0) {
-                chkbox_select_all.checked = false;
-
-                if ("indeterminate" in chkbox_select_all) {
-                    chkbox_select_all.indeterminate = false;
+            // View toggle (Gallery / List)
+            $('#btnViewGallery').on('click', function() {
+                activeViewMode = 'gallery';
+                $('.btn-view-toggle').removeClass('active');
+                $(this).addClass('active');
+                if (data_table && data_table.rows().count() > 0) {
+                    $('.data-table-container').hide();
+                    $('#gallery-view-container').show();
                 }
+            });
 
-                // If all of the checkboxes are checked
-            } else if ($chkbox_checked.length === $chkbox_all.length) {
-                chkbox_select_all.checked = true;
-
-                if ("indeterminate" in chkbox_select_all) {
-                    chkbox_select_all.indeterminate = false;
+            $('#btnViewList').on('click', function() {
+                activeViewMode = 'list';
+                $('.btn-view-toggle').removeClass('active');
+                $(this).addClass('active');
+                if (data_table && data_table.rows().count() > 0) {
+                    $('#gallery-view-container').hide();
+                    $('.data-table-container').show();
                 }
+            });
 
-                // If some of the checkboxes are checked
-            } else {
-                chkbox_select_all.checked = true;
-                if ("indeterminate" in chkbox_select_all) {
-                    chkbox_select_all.indeterminate = true;
-                }
-            }
+            // Refresh buttons
+            $('#btnRefreshCommunity, #btnCheckNewPhotos').on('click', function() {
+                var $btn = $(this);
+                $btn.prop('disabled', true).find('i').addClass('fa-spin');
+                data_table.ajax.reload(function() {
+                    setTimeout(function() {
+                        $btn.prop('disabled', false).find('i').removeClass('fa-spin');
+                    }, 400);
+                });
+            });
         },
 
         /**
@@ -73,98 +77,31 @@ var CommunityPhoto = (function() {
             var $dataTable = $("#dataTable");
 
             data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            // .buttons(".buttons-excel")
-                            // .nodes()
-                            // .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-                    // $('.btn-toolbar').append(
-                    //     '<button type="button" title="Change Status" class="btn btn-icon btn-rounded btn-primary btn-outline change-status" disabled> <i class="fa fa-exchange" aria-hidden="true"></i> &nbsp; Change Status </button> '
-                    // );
-
-                    // $('.btn-toolbar').append(
-                    //     '<button type="button" title="Delete" class="btn btn-icon btn-rounded btn-primary btn-outline dt-delete" disabled> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete </button> '
-                    // );
-                },
-                headerCallback: function(e, a, t, n, s) {
-                    e.getElementsByTagName("th")[0].innerHTML =
-                            '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                },
+                headerCallback: function(e, a, t, n, s) {},
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "30px",
-                        className: "",
-                        orderable: !1,
-                        visible: true,
-                        render: function(e, a, t, n) {
-                            return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                        width: "40px",
+                        className: "text-center",
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     }
                 ],
-                buttons: {
-                    buttons: [
-                        // {
-                        //     extend: "excel",
-                        //     className: "current-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "current",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2]
-                        //     }
-                        // },
-                        // {
-                        //     extend: "excel",
-                        //     className: "all-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "all",
-                        //             search: "none"
-                        //         },
-                        //         columns: [1, 2, 3, 4]
-                        //     }
-                        // }
-                    ]
-                },
+                buttons: [],
                 oLanguage: {
                     oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        sPrevious: '<i class="fa fa-angle-left"></i> Previous',
+                        sNext: 'Next <i class="fa fa-angle-right"></i>'
                     },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
+                    sInfo: "Showing _START_ to _END_ of _TOTAL_ photos",
+                    sInfoEmpty: "Showing 0 of 0 photos",
+                    sSearch: "",
+                    sSearchPlaceholder: "Search member or message...",
+                    sLengthMenu: "Results : _MENU_",
+                    sEmptyTable: "No community photos found"
                 },
                 processing: true,
                 serverSide: true,
@@ -173,13 +110,12 @@ var CommunityPhoto = (function() {
                     [20, 50, 75, 100]
                 ],
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 px-2"<"datatable-info-wrap"i><"datatable-paginate-wrap"p>>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
-                        d.name = $("select[name=name]").val();
-                        d.mobile_number = $("input[name=mobile_number]").val();
+                        d.date_filter = $('#community-filter-date').val();
+                        d.sort_order = $('#community-filter-sort').val();
                     }
                 },
                 columns: [
@@ -188,159 +124,77 @@ var CommunityPhoto = (function() {
                         name: "serial_no",
                         searchable: false,
                         sortable: false,
-                        width:50,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
+                        width: 40
                     },
-                    { data: "name", name: "name", width:150 },
+                    { data: "name", name: "name", width: 140 },
                     { data: "message", name: "message" },
-                    { data: "view_photos", name: "view_photos", width:150 },
-                    { data: "date_time", name: "date_time", width:150 },
+                    { data: "view_photos", name: "view_photos", width: 120 },
+                    { data: "date_time", name: "date_time", width: 140 }
                 ],
                 rowCallback: function(row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
+                    $(row).addClass('cursor-pointer');
+                    $(row).on('click', function() {
+                        CommunityPhoto.updatePreviewPane(data);
+                    });
+                },
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var info = api.page.info();
 
-                    // If row ID is in the list of selected row IDs
-                    if ($.inArray(rowId, rows_selected) !== -1) {
-                        $(row)
-                            .find('input[type="checkbox"]')
-                            .prop("checked", true);
-                        $(row).addClass("selected");
+                    // Update count text
+                    $('#comm-record-count-text').text(info.recordsDisplay + ' photos');
+
+                    // Toggle empty state vs data state
+                    if (info.recordsTotal === 0) {
+                        $('#empty-state-view').show();
+                        $('.data-table-container').hide();
+                    } else {
+                        $('#empty-state-view').hide();
+                        if (activeViewMode === 'list') {
+                            $('.data-table-container').show();
+                        } else {
+                            $('.data-table-container').show();
+                        }
                     }
                 }
             });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function(e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
-
-                    // Get row ID
-                    var rowId = data;
-
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    CommunityPhoto.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function(e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle table draw event
-            table.on("draw", function() {
-                // Update state of "Select all" control
-                CommunityPhoto.updateDataTableSelectAllCtrl(table);
-
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-               //----------
-            });
         },
 
         /**
-         * Datatable custom filter.
-        */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
-            });
+         * Update the Right Preview Pane
+         */
+        updatePreviewPane: function(data) {
+            if (!data) return;
+
+            $('#meta-member-val').text(data.name || '—');
+            $('#meta-uploaded-val').html(data.date_time || '—');
+            $('#meta-message-val').text(data.message || '—');
         },
 
         /**
-         * View Photos.
+         * View Photos Modal.
          */
         viewPhotos: function () {
             var $source = $(".data-table-container");
-            $source.on("click", ".view-photos", function () {
-
+            $source.on("click", ".view-photos", function (e) {
+                e.stopPropagation();
                 var $this = $(this);
                 var $configuration_modal = $("#pageModal");
 
                 $configuration_modal.modal("show");
                 $configuration_modal
                     .find(".modal-content")
-                    .load($this.data("url"), "", function () {
-
-                    });
+                    .load($this.data("url"), "", function () {});
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && typeof App.resetModal === "function") {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
-        },
+        }
     };
 })();
 
-CommunityPhoto.init();
+$(document).ready(function() {
+    CommunityPhoto.init();
+});

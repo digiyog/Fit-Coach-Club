@@ -44,26 +44,28 @@ class CommunityPhotoController extends Controller
 
         // Adding breadcrumb array
         $breadcrumb = [
-            __('language.dashboard') => route('adminPanel.dashboard'),
+            'Achievements & Hub' => '',
             'Community Photos' => '',
         ];
 
         // Breadcrumb Button
         $breadcrumbButton = [];
-        // Filter Button
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
-            'btn_link' => 'javascript:;',
-            'btn_icon' => 'filter',
-            'btn_text' => __('language.filter'),
-            'attributes' => []
-        ];
+
+        // Metrics
+        $totalUploads = Community::count();
+        $todayUploads = Community::whereDate('created_at', Carbon::today())->count();
+        $weekUploads = Community::where('created_at', '>=', Carbon::now()->startOfWeek())->count();
+        $withMessagesCount = Community::whereNotNull('message')->where('message', '!=', '')->count();
 
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
         $this->viewData['users'] = $users;
+        $this->viewData['totalUploads'] = $totalUploads;
+        $this->viewData['todayUploads'] = $todayUploads;
+        $this->viewData['weekUploads'] = $weekUploads;
+        $this->viewData['withMessagesCount'] = $withMessagesCount;
         
         return view('nutrition-panel.community-photos.index')->with($this->viewData);
     }
