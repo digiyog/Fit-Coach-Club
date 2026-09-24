@@ -62,10 +62,20 @@ class ActivityController extends Controller
             'attributes' => []
         ];
 
+        // Top Metrics
+        $totalActivities = Activity::where('created_by', $authUser->id)->count();
+        $scheduledActivities = Activity::where('created_by', $authUser->id)->where('activity_type', 2)->count();
+        $publishedActivities = Activity::where('created_by', $authUser->id)->where('status', 1)->count();
+        $notificationsSent = Activity::where('created_by', $authUser->id)->where('status', 1)->count();
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['totalActivities'] = $totalActivities;
+        $this->viewData['scheduledActivities'] = $scheduledActivities;
+        $this->viewData['publishedActivities'] = $publishedActivities;
+        $this->viewData['notificationsSent'] = $notificationsSent;
         
         return view('nutrition-panel.activities.index')->with($this->viewData);
     }
@@ -86,11 +96,14 @@ class ActivityController extends Controller
         $draw   = $request->get('draw');
         $start  = $request->get('start');
         $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $sort   = $request->get('order')[0] ?? [];
+        $search = $request->get('search')['value'] ?? '';
         
         // Filter Parameters
         $filter = array(
+            'activity_type' => $request->get('activity_type'),
+            'status'        => $request->get('status'),
+            'date'          => $request->get('date'),
         );
 
         // Getting Activities Records
@@ -106,37 +119,50 @@ class ActivityController extends Controller
                 $name               = 'N/A';
                 $activity_type      = 'N/A';
                 $date               = 'N/A';
+                $app_notification   = '';
                 $order              = 'N/A';
                 $status             = '';
                 $action             = '';
 
                 // Preparing Data
                 if(!empty($value->name)){
-                    $name = $value->name;
+                    $name = '<span class="act-item-name">' . e($value->name) . '</span>';
                 }
 
                 if($value->activity_type == 1){
-                    $activity_type = 'Old Activity';
+                    $activity_type = '<span class="badge-type-old">Old Activity</span>';
                 } else if($value->activity_type == 2){
-                    $activity_type = 'Upcoming Activity';
+                    $activity_type = '<span class="badge-type-upcoming">Upcoming Activity</span>';
                 }
 
                 if(!empty($value->date))
                 {
-                    $date = date("d-m-Y", strtotime($value->date));
+                    $date = '<span class="act-date-text"><i class="fa fa-calendar-o me-1"></i> ' . date("d M Y", strtotime($value->date)) . '</span>';
+                }
+
+                // App notification column
+                if ($value->status == 1) {
+                    $activityDate = !empty($value->date) ? Carbon::parse($value->date) : null;
+                    if ($activityDate && $activityDate->isFuture()) {
+                        $app_notification = '<span class="badge-notif-scheduled"><i class="fa fa-clock-o me-1"></i> Scheduled</span>';
+                    } else {
+                        $app_notification = '<span class="badge-notif-sent"><i class="fa fa-check me-1"></i> Sent</span>';
+                    }
+                } else {
+                    $app_notification = '<span class="badge-notif-draft"><i class="fa fa-bell-slash-o me-1"></i> Not sent</span>';
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1" id="activity_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control form-control-sm numeric text-center act-order-input" id="activity_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
                 }
 
                 if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                    $status = '<span class="badge-status-inactive">Inactive</span>';
                 } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $status = '<span class="badge-status-active">Active</span>';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.activities.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<div class="d-flex align-items-center justify-content-end gap-1"><a href="' . route('nutritionPanel.activities.edit', ['id' => ev($value->id)]) . '" class="btn-act-edit" title="Edit"><i class="fa fa-pencil"></i> <span>Edit</span></a></div>';
 
                 // Array Data
                 $arr_data[] = array(
@@ -144,6 +170,7 @@ class ActivityController extends Controller
                     "name"              => $name,
                     "activity_type"     => $activity_type,
                     "date"              => $date,
+                    "app_notification"  => $app_notification,
                     "order"             => $order,
                     "status"            => $status,
                     "action"            => $action,
