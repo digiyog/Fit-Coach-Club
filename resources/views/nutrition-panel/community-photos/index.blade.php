@@ -253,16 +253,19 @@
         position: relative;
         flex: 1;
         min-width: 200px;
+        display: flex;
+        align-items: center;
     }
 
     .comm-search-icon {
         position: absolute;
-        left: 12px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
-        font-size: 13px;
+        font-size: 14px;
         pointer-events: none;
+        z-index: 10;
     }
 
     .comm-search-input {
@@ -270,8 +273,8 @@
         height: 38px;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
-        padding-left: 36px;
-        padding-right: 12px;
+        padding-left: 44px !important;
+        padding-right: 14px !important;
         font-size: 13.5px;
         background: #f8fafc;
         transition: all 0.2s ease;
@@ -769,9 +772,9 @@
 
                     <!-- Filter Bar -->
                     <div class="comm-filter-bar">
-                        <div class="comm-search-input-wrap">
-                            <i class="fa fa-search comm-search-icon"></i>
-                            <input type="text" id="community-search-input" class="comm-search-input" placeholder="Search member or message...">
+                        <div class="comm-search-input-wrap" style="position: relative; flex: 1; min-width: 200px; display: flex; align-items: center;">
+                            <i class="fa fa-search comm-search-icon" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; z-index: 10;"></i>
+                            <input type="text" id="community-search-input" class="form-control comm-search-input" placeholder="Search member or message..." style="padding-left: 44px !important; padding-right: 14px !important; height: 38px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; font-size: 13.5px;">
                         </div>
 
                         <select id="community-filter-date" class="comm-filter-select">

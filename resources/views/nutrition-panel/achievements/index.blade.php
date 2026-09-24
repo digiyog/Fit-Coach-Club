@@ -122,7 +122,6 @@
         min-height: 180px;
     }
 
-    /* Decorative glowing accents inside hero */
     .ach-hero-card::before {
         content: '';
         position: absolute;
@@ -447,16 +446,19 @@
         position: relative;
         flex: 1;
         min-width: 220px;
+        display: flex;
+        align-items: center;
     }
 
     .ach-search-icon {
         position: absolute;
-        left: 12px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
-        font-size: 13px;
+        font-size: 14px;
         pointer-events: none;
+        z-index: 10;
     }
 
     .ach-search-input {
@@ -464,8 +466,8 @@
         height: 38px;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
-        padding-left: 36px;
-        padding-right: 12px;
+        padding-left: 44px !important;
+        padding-right: 14px !important;
         font-size: 13.5px;
         background: #f8fafc;
         transition: all 0.2s ease;
@@ -655,7 +657,6 @@
         background-color: #f8fafc !important;
     }
 
-    /* Hide standard DataTables header / controls since we have our custom toolbar */
     .dataTables_wrapper .dt-buttons,
     .dataTables_wrapper .dataTables_filter,
     .dataTables_wrapper .dataTables_length {
@@ -918,9 +919,9 @@
 
         <!-- Filter Bar -->
         <div class="ach-filter-bar">
-            <div class="ach-search-input-wrap">
-                <i class="fa fa-search ach-search-icon"></i>
-                <input type="text" id="custom-search-input" class="ach-search-input" placeholder="Search achievements...">
+            <div class="ach-search-input-wrap" style="position: relative; flex: 1; min-width: 220px; display: flex; align-items: center;">
+                <i class="fa fa-search ach-search-icon" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; z-index: 10;"></i>
+                <input type="text" id="custom-search-input" class="form-control ach-search-input" placeholder="Search achievements..." style="padding-left: 44px !important; padding-right: 14px !important; height: 38px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; font-size: 13.5px;">
             </div>
 
             <select id="filter-type" class="ach-filter-select">
