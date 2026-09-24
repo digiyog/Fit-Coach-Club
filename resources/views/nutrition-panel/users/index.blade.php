@@ -715,6 +715,15 @@
         z-index: 1070 !important;
     }
 
+    /* Lift the active row above all other rows so dropdown doesn't go behind action buttons below */
+    table.dataTable tbody tr {
+        position: relative;
+        z-index: 1;
+    }
+    table.dataTable tbody tr.fcc-dropdown-active {
+        z-index: 1060 !important;
+    }
+
     /* Dropup - Open upwards when static */
     .dropup .dropdown-menu[data-bs-popper="static"],
     .dropdown.dropup .dropdown-menu[data-bs-popper="static"],
@@ -1694,6 +1703,9 @@ $(document).ready(function() {
             // Temporarily allow overflow so dropdown escapes the table wrapper
             $dropdown.closest('.fcc-modern-table-wrap').addClass('has-dropdown-open');
 
+            // Elevate the parent row so dropdown renders above action buttons in rows below
+            $dropdown.closest('tr').addClass('fcc-dropdown-active');
+
             var offset = $dropdown.offset();
             var menuHeight = 360; // Estimated height for action menu
             var windowBottom = $(window).scrollTop() + $(window).height();
@@ -1715,6 +1727,8 @@ $(document).ready(function() {
         $(this).removeClass('dropup');
         // Restore overflow on the table wrapper
         $(this).closest('.fcc-modern-table-wrap').removeClass('has-dropdown-open');
+        // Remove elevated z-index from the row
+        $(this).closest('tr').removeClass('fcc-dropdown-active');
     });
 
     // Close open dropdowns when scrolling table horizontally
