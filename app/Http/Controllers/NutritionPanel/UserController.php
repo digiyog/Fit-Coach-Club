@@ -185,10 +185,14 @@ class UserController extends Controller
                 $avatarCol = $colors[$cIdx];
 
                 $profileImageUrl = null;
-                if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
-                    $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
-                } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
-                    $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                if (!empty($value->profile_image)) {
+                    if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                    } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    } else {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    }
                 }
 
                 if ($profileImageUrl) {
@@ -649,8 +653,8 @@ class UserController extends Controller
             if ($request->hasFile('image'))
             {   
                 // Remove old image
-                if (!is_null($user->image)) {
-                    delete_image(config('constants.users.image_path'), $user->image);
+                if (!is_null($user->profile_image)) {
+                    delete_image(config('constants.users.image_path'), $user->profile_image);
                 }
                 //-----------------
                 $image = $this->uploadImage($request->file('image'), config('constants.users.image_path'), null, 'users-');
@@ -659,6 +663,9 @@ class UserController extends Controller
                     $imageName = $image['_data'];
                     $data['profile_image'] = $imageName;
                 }
+            } elseif ($request->has('image_name') && empty($request->input('image_name')) && !empty($user->profile_image)) {
+                delete_image(config('constants.users.image_path'), $user->profile_image);
+                $data['profile_image'] = null;
             }
             //-------------------
             

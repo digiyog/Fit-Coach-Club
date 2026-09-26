@@ -1,6 +1,6 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title">Edit Transaction</h4>
+        <h4 class="modal-title">Edit Transaction @if(!empty($transaction->user->name)) — <span style="color: #3b46f1;">{{ $transaction->user->name }}</span>@endif</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 

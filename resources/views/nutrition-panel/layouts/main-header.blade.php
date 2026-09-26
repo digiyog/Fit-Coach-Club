@@ -3,6 +3,17 @@ $company = get_company_profile();
 $headerLogo = (isset($company[0]) && isset($company[0]['header_logo_image'])) ? $company[0]['header_logo_image'] : '';
 $authUser = auth()->user();
 $userInitial = !empty($authUser->name) ? strtoupper(substr(trim($authUser->name), 0, 1)) : 'U';
+
+$authUserProfileImage = null;
+if (!empty($authUser->profile_image)) {
+    if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $authUser->profile_image)) {
+        $authUserProfileImage = get_image_url(config('constants.users.image_path_thumb'), $authUser->profile_image);
+    } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $authUser->profile_image)) {
+        $authUserProfileImage = get_image_url(config('constants.users.image_path'), $authUser->profile_image);
+    } else {
+        $authUserProfileImage = get_image_url(config('constants.users.image_path'), $authUser->profile_image);
+    }
+}
 @endphp
 
 <!--  BEGIN NAVBAR  -->
@@ -43,13 +54,26 @@ $userInitial = !empty($authUser->name) ? strtoupper(substr(trim($authUser->name)
             </li>
 
             <li class="nav-item dropdown user-profile-dropdown">
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon shadow-sm p-0" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #eff2fe 0%, #e0e7ff 100%); border: 1.5px solid #c7d2fe; display: flex; align-items: center; justify-content: center; color: #3b46f1 !important; font-weight: 800; font-size: 14px; font-family: 'Outfit', sans-serif;">
-                    {{ $userInitial }}
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon shadow-sm p-0" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #eff2fe 0%, #e0e7ff 100%); border: 1.5px solid #c7d2fe; display: flex; align-items: center; justify-content: center; color: #3b46f1 !important; font-weight: 800; font-size: 14px; font-family: 'Outfit', sans-serif; overflow: hidden;">
+                    @if($authUserProfileImage)
+                        <img src="{{ $authUserProfileImage }}" alt="{{ $authUser->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" />
+                    @else
+                        {{ $userInitial }}
+                    @endif
                 </a>
-                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userProfileDropdown" style="border-radius: 14px; min-width: 215px; padding: 8px; border: 1px solid #e2e8f0 !important; box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.14) !important; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
-                    <div class="px-3 py-2 border-bottom">
-                        <div class="fw-bold text-dark" style="font-size: 13.5px;">{{ $authUser->name }}</div>
-                        <small class="text-muted" style="font-size: 11.5px;">{{ $authUser->email ?? 'Club Coach' }}</small>
+                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userProfileDropdown" style="border-radius: 14px; min-width: 230px; padding: 10px; border: 1px solid #e2e8f0 !important; box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.14) !important; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
+                    <div class="px-3 py-2 border-bottom d-flex align-items-center gap-3">
+                        <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #eff2fe 0%, #e0e7ff 100%); border: 1.5px solid #c7d2fe; display: flex; align-items: center; justify-content: center; color: #3b46f1; font-weight: 800; font-size: 14px; flex-shrink: 0; overflow: hidden;">
+                            @if($authUserProfileImage)
+                                <img src="{{ $authUserProfileImage }}" alt="{{ $authUser->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" />
+                            @else
+                                {{ $userInitial }}
+                            @endif
+                        </div>
+                        <div style="min-width: 0;">
+                            <div class="fw-bold text-dark text-truncate" style="font-size: 13.5px;">{{ $authUser->name }}</div>
+                            <small class="text-muted text-truncate d-block" style="font-size: 11.5px;">{{ $authUser->email ?? 'Club Coach' }}</small>
+                        </div>
                     </div>
                     <div class="pt-2">
                         <div class="dropdown-item p-0">

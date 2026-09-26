@@ -718,7 +718,7 @@
     <div class="fcc-page-header">
         <div>
             <h1 class="fcc-page-title">Shake tracking</h1>
-            <p class="fcc-page-subtitle">{{ $user->name ?? 'Member' }} · Review shake balance and attendance-linked activity</p>
+            <p class="fcc-page-subtitle"><strong style="color: #0f172a; font-weight: 700;">{{ $user->name ?? 'Member' }}</strong> · Review shake balance and attendance-linked activity</p>
         </div>
         <div class="fcc-header-btns">
             <button type="button" class="btn fcc-btn-export" id="fccExportBtn">

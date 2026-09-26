@@ -834,7 +834,7 @@
     <div class="fcc-page-header">
         <div>
             <h1 class="fcc-page-title">Manual attendance</h1>
-            <p class="fcc-page-subtitle">{{ $user->name ?? 'Member' }} · Mark missed sessions and record today's weight</p>
+            <p class="fcc-page-subtitle"><strong style="color: #0f172a; font-weight: 700;">{{ $user->name ?? 'Member' }}</strong> · Mark missed sessions and record today's weight</p>
         </div>
         <div class="fcc-header-btns">
             <a href="{{ route('nutritionPanel.users.viewAttendance', ['id' => $userEncryptedId]) }}" class="btn fcc-btn-history-link">

@@ -1,3 +1,28 @@
+@php
+    $profileImageUrl = null;
+    if (!empty($user->profile_image)) {
+        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$user->profile_image)) {
+            $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
+        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$user->profile_image)) {
+            $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+        } else {
+            $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
+        }
+    }
+
+    $initials = '';
+    if (!empty($user->name)) {
+        $nameWords = explode(' ', trim($user->name));
+        foreach ($nameWords as $w) {
+            if (!empty($w)) {
+                $initials .= strtoupper(substr($w, 0, 1));
+            }
+        }
+        $initials = substr($initials, 0, 2);
+    }
+    if (empty($initials)) $initials = 'U';
+@endphp
+
 <div class="modal-content fcc-ad-modal-content">
     <style type="text/css">
         .fcc-ad-modal-content {
@@ -32,7 +57,7 @@
             flex-shrink: 0;
         }
         .fcc-ad-modal-title {
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 700;
             color: #0f172a;
             margin: 0;
@@ -62,6 +87,89 @@
             color: #0f172a;
             border-color: #cbd5e1;
         }
+
+        /* Member Profile Info Card */
+        .fcc-ad-member-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .fcc-ad-avatar {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #eff2fe 0%, #e0e7ff 100%);
+            border: 1.5px solid #c7d2fe;
+            color: #3b46f1;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .fcc-ad-member-info {
+            flex-grow: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .fcc-ad-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .fcc-ad-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .fcc-ad-status-badge {
+            font-size: 10.5px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .fcc-ad-status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .fcc-ad-status-badge.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .fcc-ad-status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .fcc-ad-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+        .fcc-ad-dot-sep {
+            color: #cbd5e1;
+        }
+
         .fcc-ad-modal-body {
             padding: 24px !important;
             background: #ffffff;
@@ -326,8 +434,8 @@
                 </svg>
             </div>
             <div>
-                <h4 class="fcc-ad-modal-title">Add member days</h4>
-                <p class="fcc-ad-modal-sub">Extend plan access and record payment</p>
+                <h4 class="fcc-ad-modal-title">Add member days — <span style="color: #3b46f1;">{{ $user->name ?? 'Member' }}</span></h4>
+                <p class="fcc-ad-modal-sub">Extend plan access and record payment for <strong>{{ $user->name ?? 'Member' }}</strong></p>
             </div>
         </div>
         <button type="button" class="fcc-ad-btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close">
@@ -344,6 +452,41 @@
         
         <div class="modal-body fcc-ad-modal-body">
             <div class="fcc-ad-form-stack">
+
+                <!-- Member Profile Info Bar -->
+                <div class="fcc-ad-member-card">
+                    <div class="fcc-ad-avatar">
+                        @if($profileImageUrl)
+                            <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" />
+                        @else
+                            <span>{{ $initials }}</span>
+                        @endif
+                    </div>
+                    <div class="fcc-ad-member-info">
+                        <div class="fcc-ad-name-row">
+                            <span class="fcc-ad-name">{{ $user->name ?? 'Member' }}</span>
+                            @if(($user->status ?? 1) == 1)
+                                <span class="fcc-ad-status-badge active">
+                                    <span class="fcc-ad-status-dot"></span>
+                                    <span>Active</span>
+                                </span>
+                            @else
+                                <span class="fcc-ad-status-badge inactive">
+                                    <span class="fcc-ad-status-dot"></span>
+                                    <span>Inactive</span>
+                                </span>
+                            @endif
+                            <span class="badge" style="background: #eff2fe; color: #3b46f1; font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 6px;">{{ $user->user_type ?? 'Regular User' }}</span>
+                        </div>
+                        <div class="fcc-ad-meta-row">
+                            @if(!empty($user->mobile_number))
+                                <span><i class="fa fa-phone me-1" style="font-size: 11px;"></i>{{ $user->mobile_number }}</span>
+                                <span class="fcc-ad-dot-sep">•</span>
+                            @endif
+                            <span><i class="fa fa-clock-o me-1" style="font-size: 11px;"></i>Current balance: <strong>{{ (int)($user->days ?? 0) }} days</strong></span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- 1. Days to add -->
                 <div class="fcc-ad-form-group">

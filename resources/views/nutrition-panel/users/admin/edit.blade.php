@@ -67,6 +67,9 @@
                     else if(!empty($authUser->profile_image) && Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$authUser->profile_image)){
                         $profileImage = get_image_url(config('constants.users.image_path'), $authUser->profile_image);
                     }
+                    else if(!empty($authUser->profile_image)){
+                        $profileImage = get_image_url(config('constants.users.image_path'), $authUser->profile_image);
+                    }
                     else{
                         $profileImage = asset('admin-assets/images/user.png');
                     }

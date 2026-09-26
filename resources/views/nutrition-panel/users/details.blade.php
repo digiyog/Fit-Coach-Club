@@ -621,10 +621,14 @@
 
     // Profile Image
     $profileImage = null;
-    if (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
-        $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
-    } elseif (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
-        $profileImage = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+    if (!empty($user->profile_image)) {
+        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
+            $profileImage = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
+            $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
+        } else {
+            $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
+        }
     }
 
     $initials = '';
@@ -660,7 +664,7 @@
     <div class="fcc-page-header">
         <div>
             <h1 class="fcc-page-title">Member profile</h1>
-            <p class="fcc-page-subtitle">{{ $user->name ?? 'Member' }} · Account, coaching and progress details</p>
+            <p class="fcc-page-subtitle"><strong style="color: #0f172a; font-weight: 700;">{{ $user->name ?? 'Member' }}</strong> · Account, coaching and progress details</p>
         </div>
         <div class="fcc-header-btns">
             <!-- More Actions Dropdown -->

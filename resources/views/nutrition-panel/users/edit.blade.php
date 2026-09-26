@@ -730,10 +730,14 @@
 @section('content')
 @php
     $imagePath = null;
-    if (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
-        $imagePath = get_image_url(config('constants.users.image_path'), $user->profile_image);
-    } elseif (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
-        $imagePath = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+    if (!empty($user->profile_image)) {
+        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
+            $imagePath = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
+            $imagePath = get_image_url(config('constants.users.image_path'), $user->profile_image);
+        } else {
+            $imagePath = get_image_url(config('constants.users.image_path'), $user->profile_image);
+        }
     }
 
     $initials = '';
@@ -755,7 +759,7 @@
     <div class="fcc-ums-header">
         <div>
             <h1 class="fcc-ums-title">Edit member profile</h1>
-            <p class="fcc-ums-subtitle">Update profile, health goals, plan and portal access for {{ $user->name ?? 'Member' }}</p>
+            <p class="fcc-ums-subtitle">Update profile, health goals, plan and portal access for <strong style="color: #0f172a; font-weight: 700;">{{ $user->name ?? 'Member' }}</strong></p>
         </div>
         <div class="fcc-header-actions">
             <a href="{{ route('nutritionPanel.users.details', ['id' => ev($user->id)]) }}" class="fcc-btn-cancel">Cancel</a>
