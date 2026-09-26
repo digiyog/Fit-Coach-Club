@@ -116,7 +116,7 @@ class CommunityPhotoController extends Controller
 
                 if(!empty($value->message)){
                     $full_message = $value->message;
-                    $message = \Illuminate\Support\Str::words($value->message, 100, '...');
+                    $message = \Illuminate\Support\Str::words($value->message, 50, '...');
                 }
 
                 if(!empty($value->created_at))

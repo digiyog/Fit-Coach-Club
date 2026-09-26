@@ -730,6 +730,15 @@
     #dataTable tbody tr:hover td {
         background-color: #f8fafc !important;
     }
+
+    .comm-table-msg {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 380px;
+        display: block;
+        line-height: 1.4;
+    }
 </style>
 @endpush
 

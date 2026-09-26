@@ -135,7 +135,16 @@ var CommunityPhoto = (function() {
                         width: 40
                     },
                     { data: "name", name: "name", width: 140 },
-                    { data: "message", name: "message" },
+                    { 
+                        data: "message", 
+                        name: "message",
+                        render: function(data, type, row) {
+                            if (!data || data === 'N/A') return '<span class="text-muted">N/A</span>';
+                            var rawText = row.full_message || data;
+                            var escapedText = rawText.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                            return '<span class="comm-table-msg" title="' + escapedText + '">' + data + '</span>';
+                        }
+                    },
                     { data: "date_time", name: "date_time", width: 140 }
                 ],
                 drawCallback: function(settings) {
