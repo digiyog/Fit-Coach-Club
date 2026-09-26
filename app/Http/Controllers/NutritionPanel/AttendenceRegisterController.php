@@ -277,9 +277,20 @@ class AttendenceRegisterController extends Controller
                 $bgColor = $colors['bg'];
                 $textColor = $colors['color'];
 
+                $profileImageUrl = get_user_profile_image($value->profile_image ?? null, true);
+
+                if ($profileImageUrl) {
+                    $avatarHtml = '<div class="fcc-avatar-circle" style="position: relative; width: 32px; height: 32px; min-width: 32px; border-radius: 50%; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid #e2e8f0;">
+                        <div style="width: 100%; height: 100%; background-color: ' . $bgColor . '; color: ' . $textColor . '; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-family: Outfit, sans-serif;">' . $initial . '</div>
+                        <img src="' . $profileImageUrl . '" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" alt="' . e($name) . '" onerror="this.remove();" />
+                    </div>';
+                } else {
+                    $avatarHtml = '<div class="fcc-avatar-circle" style="background-color: ' . $bgColor . '; color: ' . $textColor . '; width: 32px; height: 32px; min-width: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; font-family: Outfit, sans-serif; flex-shrink: 0;">' . $initial . '</div>';
+                }
+
                 // 1. Member column with Avatar
                 $memberCol = '<div class="fcc-member-cell d-flex align-items-center gap-2">' .
-                    '<div class="fcc-avatar-circle" style="background-color: ' . $bgColor . '; color: ' . $textColor . ';">' . $initial . '</div>' .
+                    $avatarHtml .
                     '<span class="fcc-member-name">' . e($name) . '</span>' .
                     '</div>';
 

@@ -158,15 +158,26 @@ class CounsellingController extends Controller
                             $initials .= strtoupper(substr($w, 0, 1));
                         }
                     }
-                    $initials = substr($initials, 0, 1);
+                    $initials = substr($initials, 0, 2);
                     if (empty($initials)) $initials = 'M';
 
                     $cIdx = abs(crc32($name)) % count($colors);
                     $avatarCol = $colors[$cIdx];
 
-                    // Member HTML with Initial and Joined Date
-                    $memberHtml = '<div class="d-flex align-items-center gap-2">
-                        <div class="fcc-avatar-circle" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>
+                    $profileImageUrl = get_user_profile_image($value->profile_image, true);
+
+                    if ($profileImageUrl) {
+                        $avatarInner = '<div class="fcc-avatar-circle" style="position: relative; width: 34px; height: 34px; min-width: 34px; border-radius: 50%; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid #e2e8f0;">
+                            <div style="width: 100%; height: 100%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: Outfit, sans-serif;">'.$initials.'</div>
+                            <img src="'.$profileImageUrl.'" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" alt="'.e($name).'" onerror="this.remove();" />
+                        </div>';
+                    } else {
+                        $avatarInner = '<div class="fcc-avatar-circle" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: Outfit, sans-serif; flex-shrink: 0; border: 1.5px solid #e2e8f0;">'.$initials.'</div>';
+                    }
+
+                    // Member HTML with Avatar and Joined Date
+                    $memberHtml = '<div class="d-flex align-items-center gap-2" style="gap: 8px !important;">
+                        '.$avatarInner.'
                         <div>
                             <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 13px; line-height: 1.2;">'.e($name).'</div>
                             <div class="fcc-member-joined text-muted" style="font-size: 11px; margin-top: 2px;">Joined: '.$joinedDate.'</div>
