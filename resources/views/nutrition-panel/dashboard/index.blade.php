@@ -4179,7 +4179,7 @@
                                 </div>
                                 <div class="fcc-pulse-legend-item">
                                     <span class="fcc-legend-line-target"></span>
-                                    <span>Target (70)</span>
+                                    <span>Target ({{ $targetAttendance ?? 0 }})</span>
                                 </div>
                             </div>
                         </div>
@@ -4569,7 +4569,7 @@
                                     <div class="fcc-trend-kpi-lbl">weekly peak</div>
                                 </div>
                                 <div class="fcc-trend-kpi-item">
-                                    <div class="fcc-trend-kpi-val target">70</div>
+                                    <div class="fcc-trend-kpi-val target">{{ $targetAttendance ?? 0 }}</div>
                                     <div class="fcc-trend-kpi-lbl">Target</div>
                                 </div>
                             </div>
@@ -6061,8 +6061,10 @@
     var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
     var maxValInAttendance = Math.max.apply(Math, weeklyPulseAttendance.concat([0]));
-    var dynamicTarget = Math.max(30, Math.ceil(maxValInAttendance > 40 ? 70 : (maxValInAttendance * 1.35)));
-    var dynamicYMax = Math.max(dynamicTarget + 10, Math.ceil((maxValInAttendance + 15) / 10) * 10);
+    var totalMembersCount = {{ (int)($totalUsers ?? 0) }};
+    var targetAttendanceVal = {{ (int)($targetAttendance ?? 0) }};
+    var dynamicTarget = targetAttendanceVal > 0 ? targetAttendanceVal : (totalMembersCount > 0 ? Math.max(1, Math.round(totalMembersCount * 0.8)) : (maxValInAttendance > 0 ? Math.ceil(maxValInAttendance * 1.2) : 10));
+    var dynamicYMax = Math.max(dynamicTarget + 5, Math.ceil((maxValInAttendance + 5) / 5) * 5, 10);
 
     var pulseOptions = {
         chart: {
@@ -6278,13 +6280,13 @@
                 }
             }
         },
-        annotations: {
+        annotations: dynamicTarget > 0 ? {
             yaxis: [{
-                y: 70,
+                y: dynamicTarget,
                 borderColor: '#3b82f6',
                 strokeDashArray: 4,
                 label: {
-                    text: 'Target (70)',
+                    text: 'Target (' + dynamicTarget + ')',
                     borderColor: 'transparent',
                     style: {
                         color: '#3b82f6',
@@ -6297,7 +6299,7 @@
                     textAnchor: 'end'
                 }
             }]
-        },
+        } : {},
         stroke: {
             curve: 'smooth',
             width: 3,
@@ -6359,20 +6361,20 @@
                         formatter: function(val) { return Math.round(val); }
                     }
                 },
-                annotations: {
+                annotations: dynamicTarget > 0 ? {
                     yaxis: [{
-                        y: 70,
+                        y: dynamicTarget,
                         borderColor: '#3b82f6',
                         strokeDashArray: 4,
                         label: {
-                            text: 'Target (70)',
+                            text: 'Target (' + dynamicTarget + ')',
                             borderColor: 'transparent',
                             style: { color: '#3b82f6', background: 'transparent', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif', fontWeight: 600 },
                             position: 'right',
                             textAnchor: 'end'
                         }
                     }]
-                },
+                } : {},
                 tooltip: {
                     style: { fontSize: '12px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
                     y: { formatter: function(val) { return val + ' members'; } }
@@ -6690,7 +6692,7 @@
     var trendData = {!! json_encode($monthAttendanceTrendData ?? [50, 68, 60, 52, 64]) !!};
 
     var maxInTrend = Math.max.apply(Math, trendData.concat([0]));
-    var trendDynamicYMax = Math.max(80, Math.ceil((maxInTrend + 15) / 10) * 10);
+    var trendDynamicYMax = Math.max(dynamicTarget + 5, Math.ceil((maxInTrend + 5) / 5) * 5, 10);
 
     var trendOptions = {
         chart: {
@@ -6730,13 +6732,13 @@
                 formatter: function(val) { return Math.round(val); }
             }
         },
-        annotations: {
+        annotations: dynamicTarget > 0 ? {
             yaxis: [{
-                y: 70,
+                y: dynamicTarget,
                 borderColor: '#3b82f6',
                 strokeDashArray: 4,
                 label: {
-                    text: 'Target (70)',
+                    text: 'Target (' + dynamicTarget + ')',
                     borderColor: '#e2e8f0',
                     style: {
                         color: '#3b82f6',
@@ -6750,7 +6752,7 @@
                     textAnchor: 'end'
                 }
             }]
-        },
+        } : {},
         stroke: { curve: 'smooth', width: 2.5, colors: ['#3b46f1'] },
         markers: {
             size: 4,

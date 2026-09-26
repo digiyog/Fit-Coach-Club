@@ -742,10 +742,13 @@ class DashboardController extends Controller
         $this->viewData['qr_code'] = $plainText;
         $this->viewData['authUser'] = $authUser;
 
+        $targetAttendance = $totalUsers > 0 ? (int)max(1, round($totalUsers * 0.8)) : 0;
+
         $this->viewData['totalUsers'] = $totalUsers;
         $this->viewData['offlineUsers'] = $offlineUsers;
         $this->viewData['onlineUsers'] = $onlineUsers;
         $this->viewData['totalCoaches'] = $totalCoaches;
+        $this->viewData['targetAttendance'] = $targetAttendance;
 
         $this->viewData['coachesData'] = $coachesData;
         $this->viewData['coachMonthlyAttendance'] = $coachMonthlyAttendance;
