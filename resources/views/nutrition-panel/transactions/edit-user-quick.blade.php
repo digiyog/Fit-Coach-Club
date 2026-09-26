@@ -8,16 +8,7 @@
     }
     $initials = substr($initials, 0, 2) ?: 'U';
 
-    $profileImageUrl = null;
-    if (!empty($user->profile_image)) {
-        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$user->profile_image)) {
-            $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
-        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$user->profile_image)) {
-            $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        } else {
-            $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        }
-    }
+    $profileImageUrl = get_user_profile_image($user->profile_image, true);
 @endphp
 
 <div class="modal-content fcc-qe-modal-content">
@@ -328,7 +319,7 @@
             <div class="fcc-qe-member-card">
                 <div class="fcc-qe-avatar">
                     @if($profileImageUrl)
-                        <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+                        <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" onerror="this.onerror=null; this.parentElement.innerHTML='<span>{{ $initials }}</span>';" />
                     @else
                         <span>{{ $initials }}</span>
                     @endif

@@ -620,16 +620,7 @@
     $userEncryptedId = ev($user->id);
 
     // Profile Image
-    $profileImage = null;
-    if (!empty($user->profile_image)) {
-        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
-            $profileImage = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
-        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
-            $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        } else {
-            $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        }
-    }
+    $profileImage = get_user_profile_image($user->profile_image, true);
 
     $initials = '';
     $words = explode(' ', trim($user->name ?? 'User'));
@@ -734,7 +725,7 @@
         <div class="fcc-sidebar-card">
             <div class="fcc-avatar-box">
                 @if($profileImage)
-                    <img src="{{ $profileImage }}" alt="{{ $user->name }}" />
+                    <img src="{{ $profileImage }}" alt="{{ $user->name }}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'fcc-avatar-initials\'>{{ $initials }}</div>';" />
                 @else
                     <div class="fcc-avatar-initials">{{ $initials }}</div>
                 @endif

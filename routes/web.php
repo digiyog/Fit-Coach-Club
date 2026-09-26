@@ -26,6 +26,16 @@ Route::get('privacy-policy', function () {
     return view('privacy_policy');
 });
 
+// Storage File Route (Local & Server fallback)
+Route::get('storage/app/{path}', function ($path) {
+    $filePath = storage_path('app/' . $path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    $mimeType = mime_content_type($filePath) ?: 'image/jpeg';
+    return response()->file($filePath, ['Content-Type' => $mimeType]);
+})->where('path', '.*')->name('storage.app.file');
+
 // Admin Panel
 Route::prefix('admin-panel')->group(function () {
     require __DIR__ . '/auth.php';

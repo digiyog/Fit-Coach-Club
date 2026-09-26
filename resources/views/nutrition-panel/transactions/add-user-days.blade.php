@@ -1,14 +1,5 @@
 @php
-    $profileImageUrl = null;
-    if (!empty($user->profile_image)) {
-        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$user->profile_image)) {
-            $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$user->profile_image)) {
-            $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
-        } else {
-            $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        }
-    }
+    $profileImageUrl = get_user_profile_image($user->profile_image, true);
 
     $initials = '';
     if (!empty($user->name)) {
@@ -457,7 +448,7 @@
                 <div class="fcc-ad-member-card">
                     <div class="fcc-ad-avatar">
                         @if($profileImageUrl)
-                            <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" />
+                            <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" onerror="this.onerror=null; this.parentElement.innerHTML='<span>{{ $initials }}</span>';" />
                         @else
                             <span>{{ $initials }}</span>
                         @endif

@@ -184,21 +184,13 @@ class UserController extends Controller
                 $cIdx = abs(crc32($name)) % count($colors);
                 $avatarCol = $colors[$cIdx];
 
-                $profileImageUrl = null;
-                if (!empty($value->profile_image)) {
-                    if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
-                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
-                    } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
-                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
-                    } else {
-                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
-                    }
-                }
+                $profileImageUrl = get_user_profile_image($value->profile_image, true);
+                $fallbackAvatarHtml = '<div class="fcc-member-avatar" style="width: 24px; height: 24px; min-width: 24px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
 
                 if ($profileImageUrl) {
-                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 24px; height: 24px; min-width: 24px; object-fit: cover;" alt="'.e($name).'" />';
+                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 24px; height: 24px; min-width: 24px; object-fit: cover;" alt="'.e($name).'" onerror="this.onerror=null; this.outerHTML=\''.addslashes($fallbackAvatarHtml).'\';" />';
                 } else {
-                    $avatarInner = '<div class="fcc-member-avatar" style="width: 24px; height: 24px; min-width: 24px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                    $avatarInner = $fallbackAvatarHtml;
                 }
 
                 $memberHtml = '<div class="d-flex align-items-center gap-2" style="gap: 7px !important;">

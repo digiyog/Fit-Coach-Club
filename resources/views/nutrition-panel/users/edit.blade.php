@@ -729,16 +729,7 @@
 
 @section('content')
 @php
-    $imagePath = null;
-    if (!empty($user->profile_image)) {
-        if (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
-            $imagePath = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
-        } elseif (\Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
-            $imagePath = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        } else {
-            $imagePath = get_image_url(config('constants.users.image_path'), $user->profile_image);
-        }
-    }
+    $imagePath = get_user_profile_image($user->profile_image, true);
 
     $initials = '';
     $words = explode(' ', trim($user->name ?? 'User'));
@@ -817,7 +808,7 @@
                         <div class="fcc-avatar-wrap" onclick="$('#imageInput').click();" title="Click to upload profile photo">
                             <div class="fcc-avatar-circle" id="avatarPreviewBox">
                                 @if($imagePath)
-                                    <img src="{{ $imagePath }}" alt="{{ $user->name }}" />
+                                    <img src="{{ $imagePath }}" alt="{{ $user->name }}" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'font-weight: 700; font-size: 22px;\'>{{ $initials }}</span>';" />
                                 @else
                                     <span style="font-weight: 700; font-size: 22px;">{{ $initials }}</span>
                                 @endif
@@ -1075,7 +1066,7 @@
                     <div class="fcc-summary-user">
                         <div class="fcc-summary-avatar" id="umsSummaryAvatar">
                             @if($imagePath)
-                                <img src="{{ $imagePath }}" alt="{{ $user->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+                                <img src="{{ $imagePath }}" alt="{{ $user->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'font-weight: 700; font-size: 16px;\'>{{ $initials }}</span>';" />
                             @else
                                 <span style="font-weight: 700; font-size: 16px;">{{ $initials }}</span>
                             @endif
