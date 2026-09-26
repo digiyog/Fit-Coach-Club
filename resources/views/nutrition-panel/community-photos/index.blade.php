@@ -873,7 +873,6 @@
                                     <th class="checkbox-column" style="width: 40px;"> S.No </th>
                                     <th> Name </th>
                                     <th> Message </th>
-                                    <th style="width: 120px;"> View Photos </th>
                                     <th style="width: 140px;"> Date & Time </th>
                                 </tr>
                             </thead>

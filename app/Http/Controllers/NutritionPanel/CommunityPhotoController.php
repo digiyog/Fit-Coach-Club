@@ -104,10 +104,10 @@ class CommunityPhotoController extends Controller
         {
             foreach($records as $key => $value)
             {
-                $name = 'N/A';
+                $userName = 'N/A';
                 $message = 'N/A';
+                $full_message = 'N/A';
                 $date_time = 'N/A';
-                $view_photos = '0';
 
                 // Preparing Data
                 if(!empty($value->user)){
@@ -115,12 +115,8 @@ class CommunityPhotoController extends Controller
                 }
 
                 if(!empty($value->message)){
-                    $message = $value->message;
-                }
-
-                if(!empty($value->community_images_count))
-                {
-                    $view_photos = $value->community_images_count;
+                    $full_message = $value->message;
+                    $message = \Illuminate\Support\Str::words($value->message, 100, '...');
                 }
 
                 if(!empty($value->created_at))
@@ -137,14 +133,12 @@ class CommunityPhotoController extends Controller
                     }
                 }
 
-                $view_photos = '<button type="button" class="btn btn-sm btn-outline-primary px-2 py-1 rounded-2 view-photos cursor-pointer d-inline-flex align-items-center gap-1" title="View in Preview Pane"><i class="fa fa-eye"></i> <span>View Photos</span></button>';
-
                 // Array Data
                 $arr_data[] = array(
                     "id"            => $value->id,
                     "name"          => $userName,
                     "message"       => $message,
-                    "view_photos"   => $view_photos,
+                    "full_message"  => $full_message,
                     "date_time"     => $date_time,
                     "images"        => $images,
                 );

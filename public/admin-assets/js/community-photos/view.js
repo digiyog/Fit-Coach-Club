@@ -136,7 +136,6 @@ var CommunityPhoto = (function() {
                     },
                     { data: "name", name: "name", width: 140 },
                     { data: "message", name: "message" },
-                    { data: "view_photos", name: "view_photos", width: 120 },
                     { data: "date_time", name: "date_time", width: 140 }
                 ],
                 drawCallback: function(settings) {
@@ -244,7 +243,7 @@ var CommunityPhoto = (function() {
             // Update Metadata Details
             $('#meta-member-val').text(data.name || '—');
             $('#meta-uploaded-val').html(data.date_time || '—');
-            $('#meta-message-val').text(data.message || '—');
+            $('#meta-message-val').text(data.full_message || data.message || '—');
 
             // Footer
             $('#preview-footer-status').html('<i class="fa fa-check-circle text-success me-1"></i> <span>Mobile upload synced</span>');
