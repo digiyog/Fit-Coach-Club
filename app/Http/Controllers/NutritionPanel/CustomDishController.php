@@ -220,7 +220,8 @@ class CustomDishController extends Controller
                 'name'                  => $request['name'],
                 'dish_type_id'          => $request['dish_type_id'],
                 'description'           => $request['description'],
-                'order'                 => $request['order'],
+                'order'                 => $request['order'] ?? 0,
+                'status'                => $request->has('status') ? (int)$request['status'] : 1,
                 'created_by'            => $authUser->id,
                 'created_at'            => Carbon::now()->toDateTimeString(),
                 'updated_at'            => Carbon::now()->toDateTimeString()
@@ -292,6 +293,16 @@ class CustomDishController extends Controller
         
         $customDish = CustomDish::where('id', dv($id))->first();
 
+        if (!$customDish) {
+            $notification = [
+                '_status' => false,
+                '_message' => __('messages.record_not_found', ['record' => 'Custom Dish']),
+                '_type' => 'error',
+            ];
+
+            return redirect()->route('nutritionPanel.custom-dishes.index')->with(['notification' => $notification]);
+        }
+
         $breadcrumb = [
             __('language.dashboard') => route('nutritionPanel.dashboard'),
             'Custom Dishes' => route('nutritionPanel.custom-dishes.index'),
@@ -333,13 +344,27 @@ class CustomDishController extends Controller
             // Update Custom Dish
             $customDish = CustomDish::where('id', dv($id))->first();
 
+            if (!$customDish) {
+                $notification = [
+                    '_status' => false,
+                    '_message' => __('messages.record_not_found', ['record' => 'Custom Dish']),
+                    '_type' => 'error',
+                ];
+
+                return redirect()->route('nutritionPanel.custom-dishes.index')->with(['notification' => $notification]);
+            }
+
             $data = [
                 'name'                  => $request['name'],
                 'dish_type_id'          => $request['dish_type_id'],
                 'description'           => $request['description'],
-                'order'                 => $request['order'],
+                'order'                 => $request['order'] ?? 0,
                 'updated_at'            => Carbon::now()->toDateTimeString()
             ];
+
+            if ($request->has('status')) {
+                $data['status'] = (int)$request['status'];
+            }
 
             // Upload Custom Dish image
             if ($request->hasFile('image')){
@@ -391,7 +416,7 @@ class CustomDishController extends Controller
             ];
             //-----------------
 
-            return redirect()->route('nutritionPanel.custom-dishes.edit', ['id' => ev($id)])->withInput()->with(['notification' => $notification]);
+            return redirect()->route('nutritionPanel.custom-dishes.edit', ['id' => $id])->withInput()->with(['notification' => $notification]);
         }
     }
 
