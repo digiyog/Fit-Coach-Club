@@ -1,6 +1,6 @@
 @extends('nutrition-panel.layouts.main-layout')
 
-@section('page-title', 'Counselling | ' . __('language.page_main_title'))
+@section('page-title', 'Previous Month Counselling (' . $monthYearLabel . ') | ' . __('language.page_main_title'))
 
 @push('styles')
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9,7 +9,6 @@
 <link href="{{ asset('admin-assets/css/forms/theme-checkbox-radio.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/datatables.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet">
-<link href="{{ asset('admin-assets/css/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 
 <style>
     :root {
@@ -78,6 +77,19 @@
         letter-spacing: -0.025em;
         margin-bottom: 4px;
         line-height: 1.2;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .fcc-month-badge {
+        font-size: 13px;
+        font-weight: 700;
+        background: #eef2ff;
+        color: #4338ca;
+        border: 1px solid #c7d2fe;
+        padding: 3px 10px;
+        border-radius: 8px;
+        vertical-align: middle;
     }
     .fcc-page-subtitle {
         font-size: 13.5px;
@@ -89,6 +101,28 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        flex-wrap: wrap;
+    }
+    .fcc-btn-today {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        color: #334155;
+        font-weight: 600;
+        font-size: 13.5px;
+        padding: 9px 18px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: all 0.16s ease;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .fcc-btn-today:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
     }
     .fcc-btn-export {
         background: #ffffff;
@@ -106,50 +140,10 @@
         text-decoration: none;
         cursor: pointer;
     }
-    .fcc-btn-export svg,
-    .fcc-btn-export i {
-        width: 15px;
-        height: 15px;
-        color: #3b46f1;
-    }
     .fcc-btn-export:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
         color: #0f172a;
-    }
-    .fcc-btn-prev-month {
-        background: #eef2ff;
-        border: 1.5px solid #c7d2fe;
-        color: #4338ca !important;
-        font-weight: 600;
-        font-size: 13.5px;
-        padding: 9px 18px;
-        border-radius: 10px;
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        transition: all 0.16s ease;
-        box-shadow: 0 1px 3px rgba(67, 56, 202, 0.08);
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .fcc-btn-prev-month svg,
-    .fcc-btn-prev-month i {
-        width: 15px;
-        height: 15px;
-        color: #4338ca;
-        transition: transform 0.16s ease;
-    }
-    .fcc-btn-prev-month:hover {
-        background: #4338ca;
-        border-color: #4338ca;
-        color: #ffffff !important;
-        box-shadow: 0 4px 14px rgba(67, 56, 202, 0.28);
-        transform: translateY(-1px);
-    }
-    .fcc-btn-prev-month:hover svg,
-    .fcc-btn-prev-month:hover i {
-        color: #ffffff;
     }
     .fcc-btn-start-counselling {
         background: #3b46f1;
@@ -171,6 +165,125 @@
         background: #2d38db;
         border-color: #2d38db;
         box-shadow: 0 6px 16px rgba(59, 70, 241, 0.38);
+    }
+
+    /* Month Selector Strip */
+    .fcc-month-navigator {
+        background: linear-gradient(135deg, #ffffff 0%, #fbfcfe 100%);
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 12px 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    }
+    .fcc-nav-arrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: 8px;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.16s ease;
+    }
+    .fcc-nav-arrow:hover {
+        background: #f1f5f9;
+        color: var(--fcc-primary);
+        border-color: #cbd5e1;
+    }
+    .fcc-month-dropdown-select {
+        height: 38px;
+        border-radius: 10px;
+        border: 1.5px solid #cbd5e1;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #0f172a;
+        padding: 0 16px;
+        background: #ffffff;
+        cursor: pointer;
+        min-width: 220px;
+    }
+    .fcc-month-dropdown-select:focus {
+        border-color: var(--fcc-primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.15);
+    }
+
+    /* KPI Cards Grid */
+    .fcc-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+    .fcc-kpi-card {
+        background: #ffffff;
+        border: 1px solid #edf2f7;
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+    .fcc-kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+    .fcc-kpi-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .fcc-kpi-title {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+    }
+    .fcc-kpi-icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+    .fcc-kpi-icon-indigo { background: #eef2ff; color: #4338ca; }
+    .fcc-kpi-icon-blue   { background: #eff6ff; color: #2563eb; }
+    .fcc-kpi-icon-green  { background: #ecfdf5; color: #059669; }
+    .fcc-kpi-icon-amber  { background: #fffbeb; color: #d97706; }
+    .fcc-kpi-icon-red    { background: #fef2f2; color: #dc2626; }
+
+    .fcc-kpi-value {
+        font-size: 26px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.15;
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+    }
+    .fcc-kpi-sub {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        margin-bottom: 0;
     }
 
     /* 3. Navigation Tabs */
@@ -213,42 +326,7 @@
         border-radius: 3px 3px 0 0;
     }
 
-    /* 4. Horizontal Summary Strip */
-    .fcc-summary-strip {
-        background: #ffffff;
-        border: 1px solid #edf2f7;
-        border-radius: 12px;
-        padding: 12px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 14px;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-        margin-bottom: 18px;
-    }
-    .fcc-summary-item {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        font-size: 13.5px;
-        color: #334155;
-    }
-    .fcc-summary-item i,
-    .fcc-summary-item svg {
-        font-size: 17px;
-    }
-    .fcc-summary-item strong {
-        font-weight: 700;
-        color: #0f172a;
-    }
-    .fcc-summary-sep {
-        height: 20px;
-        width: 1px;
-        background: #e2e8f0;
-    }
-
-    /* 5. Main Card Container */
+    /* Main Card */
     .fcc-counselling-card {
         background: #ffffff;
         border: 1px solid #edf2f7;
@@ -257,7 +335,7 @@
         padding: 20px;
     }
 
-    /* 6. Filter & Search Bar */
+    /* Filter & Search Bar */
     .fcc-filter-bar {
         display: flex;
         align-items: center;
@@ -293,207 +371,113 @@
         background-color: #f8fafc !important;
         border: 1.5px solid #e2e8f0 !important;
         border-radius: 10px !important;
-        padding-left: 42px !important;
+        padding-left: 40px !important;
         padding-right: 14px !important;
         font-size: 13.5px !important;
         color: #0f172a !important;
-        transition: all 0.18s ease !important;
-        box-shadow: none !important;
+        font-weight: 500 !important;
+        transition: all 0.16s ease !important;
     }
     input.fcc-search-input:focus,
     #fccSearchInput:focus {
         background-color: #ffffff !important;
-        border-color: var(--fcc-primary) !important;
-        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
+        border-color: #3b46f1 !important;
         outline: none !important;
+        box-shadow: 0 0 0 3px rgba(59, 70, 241, 0.12) !important;
     }
     .fcc-filters-group {
         display: flex;
         align-items: center;
+        gap: 8px;
         flex-wrap: wrap;
-        gap: 9px;
     }
     .fcc-dropdown-pill {
         background: #ffffff !important;
         border: 1.5px solid #e2e8f0 !important;
         border-radius: 10px !important;
-        padding: 0 14px !important;
-        height: 40px !important;
+        padding: 8px 14px !important;
         font-size: 13px !important;
         font-weight: 600 !important;
-        color: #334155 !important;
+        color: #475569 !important;
         display: inline-flex !important;
         align-items: center !important;
         gap: 8px !important;
-        transition: all 0.16s ease !important;
+        height: 40px !important;
         cursor: pointer !important;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
+        transition: all 0.16s ease !important;
     }
     .fcc-dropdown-pill:hover,
-    .fcc-dropdown-pill[aria-expanded="true"] {
+    .fcc-dropdown-pill.active-filter {
         border-color: #cbd5e1 !important;
         background: #f8fafc !important;
         color: #0f172a !important;
     }
-    .fcc-dropdown-pill.active-filter {
-        background: #eff6ff !important;
-        border-color: #93c5fd !important;
-        color: #1d4ed8 !important;
+    .fcc-btn-reset-filters {
+        background: transparent !important;
+        border: 1.5px dashed #cbd5e1 !important;
+        border-radius: 10px !important;
+        padding: 8px 12px !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        height: 40px !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        transition: all 0.16s ease !important;
     }
-    .fcc-dropdown-pill svg.fcc-chevron {
-        width: 13px !important;
-        height: 13px !important;
-        color: #94a3b8 !important;
+    .fcc-btn-reset-filters:hover {
+        border-color: #ef4444 !important;
+        color: #dc2626 !important;
+        background: #fef2f2 !important;
     }
 
-    /* 7. Table Toolbar */
+    /* Table Toolbar */
     .fcc-table-toolbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        color: #64748b;
     }
     .fcc-count-text {
-        font-size: 14px;
-        font-weight: 700;
+        font-weight: 600;
         color: #0f172a;
     }
     .fcc-page-len-btn {
         background: #ffffff;
-        border: 1.5px solid #e2e8f0;
+        border: 1px solid #e2e8f0;
         border-radius: 8px;
         padding: 4px 10px;
         font-size: 12.5px;
-        font-weight: 600;
+        font-weight: 500;
         color: #475569;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        height: 32px;
+        gap: 6px;
         cursor: pointer;
     }
 
-    /* 8. Table Styling & Pills */
-    .fcc-modern-table-wrap {
-        overflow-x: auto;
-        border: 1px solid #edf2f7;
-        border-radius: 12px;
-        background: #ffffff;
-        margin-bottom: 0 !important;
-        width: 100%;
-    }
-    table.dataTable {
-        margin: 0 !important;
-        border-collapse: separate !important;
-        border-spacing: 0 !important;
-        width: 100% !important;
-        min-width: 1050px !important;
-    }
-    table.dataTable thead th {
-        position: relative !important;
-        background: #f8fafc !important;
-        color: #475569 !important;
-        font-size: 11.5px !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.02em !important;
-        padding: 12px 14px !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-        border-top: none !important;
-        white-space: nowrap !important;
-        vertical-align: middle !important;
-    }
-    table.dataTable tbody td {
-        padding: 12px 14px !important;
-        vertical-align: middle !important;
-        border-bottom: 1px solid #f1f5f9 !important;
-        color: #334155;
-        font-size: 13px;
-        background: transparent;
-        white-space: nowrap !important;
-    }
-    table.dataTable tbody tr:hover td {
-        background: #f8faff !important;
-    }
-    table.dataTable tbody tr.fcc-row-dues-flagged td {
-        background: #fff8f8;
-    }
-    table.dataTable tbody tr.fcc-row-dues-flagged:hover td {
-        background: #fff1f1 !important;
-    }
-
-    /* Custom Checkbox */
-    .fcc-custom-checkbox {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        margin: 0 !important;
-        user-select: none;
-    }
-    .fcc-custom-checkbox input[type="checkbox"] {
-        position: absolute;
-        opacity: 0;
-        width: 0;
-        height: 0;
-        margin: 0;
-    }
-    .fcc-checkbox-control {
-        width: 18px;
-        height: 18px;
-        border: 1.8px solid #cbd5e1;
-        border-radius: 5px;
-        background: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.16s ease;
-    }
-    .fcc-custom-checkbox:hover .fcc-checkbox-control {
-        border-color: var(--fcc-primary);
-        background: #f8faff;
-    }
-    .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control {
-        background: #3b46f1 !important;
-        border-color: #3b46f1 !important;
-    }
-    .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control .fcc-check-icon {
-        opacity: 1;
-        transform: scale(1);
-    }
-    .fcc-check-icon {
-        width: 10px;
-        height: 10px;
-        stroke: #ffffff;
-        stroke-width: 2.4;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        opacity: 0;
-        transform: scale(0.6);
-        transition: all 0.15s ease;
-    }
-
-    /* Table Column Badges & Pills matching image */
+    /* Table Badges & Styling */
     .fcc-att-pill {
         background: #eff6ff;
         color: #2563eb;
         font-weight: 700;
-        font-size: 12.5px;
-        width: 28px;
-        height: 28px;
+        font-size: 12px;
+        padding: 3px 8px;
         border-radius: 7px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
     }
     .fcc-pending-pill {
-        background: #eff6ff;
-        color: #2563eb;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #475569;
         font-weight: 700;
-        font-size: 12.5px;
+        font-size: 12px;
         width: 30px;
         height: 28px;
         border-radius: 7px;
@@ -553,7 +537,6 @@
         align-items: center;
         justify-content: center;
         white-space: nowrap !important;
-        word-break: keep-all;
         transition: all 0.16s ease;
     }
     .fcc-btn-view-meal:hover {
@@ -577,7 +560,57 @@
         background: #eff2fe;
     }
 
-    /* 9. DataTables Footer */
+    /* Checkbox */
+    .fcc-custom-checkbox {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+    }
+    .fcc-custom-checkbox input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        margin: 0;
+    }
+    .fcc-checkbox-control {
+        width: 18px;
+        height: 18px;
+        border: 1.8px solid #cbd5e1;
+        border-radius: 5px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.16s ease;
+    }
+    .fcc-custom-checkbox:hover .fcc-checkbox-control {
+        border-color: var(--fcc-primary);
+        background: #f8faff;
+    }
+    .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control {
+        background: #3b46f1 !important;
+        border-color: #3b46f1 !important;
+    }
+    .fcc-custom-checkbox input[type="checkbox"]:checked + .fcc-checkbox-control .fcc-check-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .fcc-check-icon {
+        width: 10px;
+        height: 10px;
+        stroke: #ffffff;
+        stroke-width: 2.4;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0;
+        transform: scale(0.6);
+        transition: all 0.15s ease;
+    }
+
+    /* DataTables Footer */
     .fcc-dt-footer {
         display: flex !important;
         align-items: center !important;
@@ -628,7 +661,6 @@
         color: #ffffff !important;
         font-weight: 700 !important;
     }
-
     .dataTables_wrapper .dataTables_filter,
     .dataTables_wrapper .dataTables_length,
     .dataTables_wrapper .dt-buttons {
@@ -644,23 +676,28 @@
     <div class="fcc-breadcrumb-nav">
         <a href="javascript:;">Offline system</a>
         <span class="fcc-breadcrumb-sep">/</span>
-        <span class="fcc-breadcrumb-active">Counselling</span>
+        <a href="{{ route('nutritionPanel.counsellings.index') }}">Counselling</a>
+        <span class="fcc-breadcrumb-sep">/</span>
+        <span class="fcc-breadcrumb-active">Previous Month ({{ $monthYearLabel }})</span>
     </div>
 
     <!-- 2. Header & Action Buttons -->
     <div class="fcc-page-header">
         <div class="fcc-header-title-box">
-            <h1 class="fcc-page-title">Counselling</h1>
-            <p class="fcc-page-subtitle">Review completed sessions, member progress and meal follow-ups</p>
+            <h1 class="fcc-page-title">
+                <span>Previous Month Counselling</span>
+                <span class="fcc-month-badge">{{ $monthYearLabel }}</span>
+            </h1>
+            <p class="fcc-page-subtitle">Historical archive of counselling records, weight transformations, and member progress</p>
         </div>
         <div class="fcc-header-btns">
-            <a href="{{ route('nutritionPanel.counsellings.previousMonth') }}" class="btn fcc-btn-prev-month" title="View Previous Month Counselling Records">
-                <i data-feather="calendar"></i>
-                <span>Previous Month Counselling</span>
+            <a href="{{ route('nutritionPanel.counsellings.index') }}" class="btn fcc-btn-today" title="Back to Today's Counselling">
+                <i data-feather="clock"></i>
+                <span>Today's Counselling</span>
             </a>
             <button type="button" class="btn fcc-btn-export" id="fccExportBtn" title="Export data to Excel">
                 <i data-feather="download"></i>
-                <span>Export</span>
+                <span>Export Excel</span>
             </button>
             <a href="{{ route('nutritionPanel.manual-attendances.manual-attendance') }}" class="btn fcc-btn-start-counselling">
                 <i data-feather="plus" style="width: 16px; height: 16px;"></i>
@@ -669,91 +706,134 @@
         </div>
     </div>
 
-    <!-- 3. Navigation Tabs -->
+    <!-- 3. Month & Year Navigator Bar -->
+    <div class="fcc-month-navigator">
+        <a href="{{ route('nutritionPanel.counsellings.previousMonth', ['month' => $prevNav->format('m'), 'year' => $prevNav->format('Y')]) }}" class="fcc-nav-arrow" title="View {{ $prevNav->format('F Y') }}">
+            <i data-feather="chevron-left" style="width: 15px; height: 15px;"></i>
+            <span>{{ $prevNav->format('M Y') }}</span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+            <label for="monthSelectDropdown" class="text-muted fw-bold mb-0 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Switch Month:</label>
+            <select id="monthSelectDropdown" class="fcc-month-dropdown-select" onchange="window.location.href = this.value;">
+                @foreach($monthOptions as $opt)
+                    <option value="{{ route('nutritionPanel.counsellings.previousMonth', ['month' => $opt['month'], 'year' => $opt['year']]) }}" {{ $opt['is_selected'] ? 'selected' : '' }}>
+                        {{ $opt['label'] }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <a href="{{ route('nutritionPanel.counsellings.previousMonth', ['month' => $nextNav->format('m'), 'year' => $nextNav->format('Y')]) }}" class="fcc-nav-arrow" title="View {{ $nextNav->format('F Y') }}">
+            <span>{{ $nextNav->format('M Y') }}</span>
+            <i data-feather="chevron-right" style="width: 15px; height: 15px;"></i>
+        </a>
+    </div>
+
+    <!-- 4. Monthly KPI Metric Cards Grid -->
+    <div class="fcc-kpi-grid">
+        <!-- Sessions Conducted -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <p class="fcc-kpi-title">Monthly Sessions</p>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-indigo">
+                    <i data-feather="calendar" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ number_format($totalMonthlySessions) }}</div>
+            <p class="fcc-kpi-sub">Check-ins in {{ $monthName }}</p>
+        </div>
+
+        <!-- Unique Members -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <p class="fcc-kpi-title">Members Counselled</p>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-blue">
+                    <i data-feather="users" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ number_format($uniqueMembersCount) }}</div>
+            <p class="fcc-kpi-sub">Unique active members</p>
+        </div>
+
+        <!-- Weight Loss Achievers -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <p class="fcc-kpi-title">Weight Loss Achievers</p>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-green">
+                    <i data-feather="trending-down" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ $weightLossCount }}</div>
+            <p class="fcc-kpi-sub">{{ $totalWeightLost }} kg total reduced</p>
+        </div>
+
+        <!-- Active Coaches -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <p class="fcc-kpi-title">Active Coaches</p>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-amber">
+                    <i data-feather="award" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ $activeCoachesCount }}</div>
+            <p class="fcc-kpi-sub">Conducted counselling</p>
+        </div>
+
+        <!-- Dues Flagged -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <p class="fcc-kpi-title">Dues Flagged</p>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-red">
+                    <i data-feather="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value" style="color: #dc2626;">₹{{ number_format($duesFlagged, 0) }}</div>
+            <p class="fcc-kpi-sub">Outstanding among counselled</p>
+        </div>
+    </div>
+
+    <!-- 5. Navigation Tabs -->
     <div class="fcc-counselling-tabs">
-        <a href="javascript:;" class="fcc-tab-item-link" data-tab="today">
-            <span>Today's sessions</span>
+        <a href="javascript:;" class="fcc-tab-item-link active" data-tab="all_sessions">
+            <span>All Month Sessions ({{ $totalMonthlySessions }})</span>
         </a>
-        <a href="javascript:;" class="fcc-tab-item-link active" data-tab="completed">
-            <span>Completed</span>
+        <a href="javascript:;" class="fcc-tab-item-link" data-tab="member_summary">
+            <span>Member Progress Summary ({{ $uniqueMembersCount }})</span>
         </a>
-        <a href="javascript:;" class="fcc-tab-item-link" data-tab="pending">
-            <span>Pending follow-ups</span>
+        <a href="javascript:;" class="fcc-tab-item-link" data-tab="weight_loss">
+            <span>Weight Loss Achievers ({{ $weightLossCount }})</span>
         </a>
-        <a href="{{ route('nutritionPanel.counsellings.previousMonth') }}" class="fcc-tab-item-link" style="margin-left: auto; color: #4338ca; font-weight: 600; gap: 6px;" title="Browse Previous Month Counselling Archive">
-            <i data-feather="clock" style="width: 14px; height: 14px;"></i>
-            <span>Previous Month Counselling &rarr;</span>
+        <a href="javascript:;" class="fcc-tab-item-link" data-tab="pending_dues">
+            <span>Pending Dues</span>
         </a>
     </div>
 
-    <!-- 4. Horizontal Summary Strip -->
-    <div class="fcc-summary-strip">
-        <div class="fcc-summary-item">
-            <i class="fa fa-check-circle" style="color: #10b981;"></i>
-            <span><strong>{{ $todayCompletedCount ?? 12 }}</strong> completed</span>
-        </div>
-        <div class="fcc-summary-sep"></div>
-        <div class="fcc-summary-item">
-            <i class="fa fa-file-text-o" style="color: #8b5cf6;"></i>
-            <span><strong>{{ $mealPlansCount ?? 9 }}</strong> meal plans available</span>
-        </div>
-        <div class="fcc-summary-sep"></div>
-        <div class="fcc-summary-item">
-            <i class="fa fa-exclamation-triangle" style="color: #ef4444;"></i>
-            <span><strong style="color: #ef4444;">₹{{ number_format($duesFlagged ?? 6000, 0) }}</strong> dues flagged</span>
-        </div>
-        <div class="fcc-summary-sep"></div>
-        <div class="fcc-summary-item">
-            <i class="fa fa-clock-o" style="color: #3b46f1;"></i>
-            <span>Last session <strong>{{ $lastSessionTime ?? '09:41 AM' }}</strong></span>
-        </div>
-    </div>
-
-    <!-- 5. Main White Card Container -->
+    <!-- 6. Main Card Container -->
     <div class="fcc-counselling-card">
         
         <!-- Hidden Inputs for Filtering -->
-        <input type="hidden" name="tab" id="active_tab" value="completed" />
+        <input type="hidden" name="tab" id="active_tab" value="all_sessions" />
         <input type="hidden" name="coach_name" id="coach_name" value="" />
         <input type="hidden" name="plan_id" id="plan_id" value="" />
-        <input type="hidden" name="date" id="date" value="{{ date('d-m-Y') }}" />
+        <input type="hidden" name="month" id="selected_month" value="{{ $selectedMonth }}" />
+        <input type="hidden" name="year" id="selected_year" value="{{ $selectedYear }}" />
 
-        <!-- 6. Filter & Search Bar -->
+        <!-- Filter & Search Bar -->
         <div class="fcc-filter-bar">
             <!-- Search Box -->
             <div class="fcc-search-wrap">
                 <i data-feather="search"></i>
-                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search member..." autocomplete="off" />
+                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search member, mobile, coach..." autocomplete="off" />
             </div>
 
             <!-- Filter Dropdowns Group -->
             <div class="fcc-filters-group">
-                <!-- Date Filter Dropdown -->
-                <div class="dropdown">
-                    <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i data-feather="calendar" style="width: 14px; height: 14px; color: var(--fcc-primary);"></i>
-                        <span id="dateFilterLabel">Today, {{ date('d M Y') }}</span>
-                        <i data-feather="chevron-down" class="fcc-chevron"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-3" aria-labelledby="dateFilterDropdown" style="border-radius: 14px; min-width: 290px; border: 1px solid #edf2f7 !important; background: #ffffff;">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span style="font-size: 11.5px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">Select Date</span>
-                            <a href="javascript:;" id="fccResetDateBtn" class="text-primary fw-semibold" style="font-size: 11.5px; text-decoration: none;">Today</a>
-                        </div>
-                        <div class="position-relative mb-2">
-                            <input type="text" name="filter_date" id="filter_date" class="form-control date-picker" placeholder="Select Date..." autocomplete="off" value="{{ date('d-m-Y') }}" style="border-radius: 9px; font-size: 12.5px; height: 38px; padding-left: 12px !important; border: 1.5px solid #e2e8f0;" />
-                        </div>
-                        <div class="d-flex align-items-center gap-2 mt-2">
-                            <button type="button" class="btn btn-primary btn-sm w-100 apply-date-filter" style="border-radius: 8px; font-weight: 600; height: 34px;">Apply Date</button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Coach Filter -->
                 <div class="dropdown">
                     <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="coachFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span id="coachFilterLabel">All coaches</span>
-                        <i data-feather="chevron-down" class="fcc-chevron"></i>
+                        <i data-feather="chevron-down" style="width: 13px; height: 13px;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="coachFilterDropdown" style="border-radius: 12px; min-width: 170px; padding: 6px; border: 1px solid #edf2f7 !important;">
                         <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="coach" data-value="">All coaches</a></li>
@@ -769,7 +849,7 @@
                 <div class="dropdown">
                     <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="planFilterDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span id="planFilterLabel">All meal plans</span>
-                        <i data-feather="chevron-down" class="fcc-chevron"></i>
+                        <i data-feather="chevron-down" style="width: 13px; height: 13px;"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="planFilterDropdown" style="border-radius: 12px; min-width: 200px; padding: 6px; border: 1px solid #edf2f7 !important;">
                         <li><a class="dropdown-item py-2 px-3 rounded-2 active" href="javascript:;" data-filter-type="plan" data-value="">All meal plans</a></li>
@@ -779,17 +859,11 @@
                     </ul>
                 </div>
 
-                <!-- More Filters Dropdown -->
-                <div class="dropdown">
-                    <button class="btn fcc-dropdown-pill dropdown-toggle" type="button" id="moreFiltersDropdown" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i data-feather="filter" style="width: 13px; height: 13px;"></i>
-                        <span>More filters</span>
-                        <i data-feather="chevron-down" class="fcc-chevron"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="moreFiltersDropdown" style="border-radius: 12px; min-width: 170px; padding: 6px; border: 1px solid #edf2f7 !important;">
-                        <li><a class="dropdown-item py-2 px-3 rounded-2" href="javascript:;" id="fccResetAllFiltersBtn"><i class="fa fa-refresh me-2 text-muted"></i> Reset All Filters</a></li>
-                    </ul>
-                </div>
+                <!-- Reset Filters Button -->
+                <button type="button" class="btn fcc-btn-reset-filters" id="fccResetAllFiltersBtn" title="Reset all filters">
+                    <i data-feather="refresh-cw" style="width: 13px; height: 13px;"></i>
+                    <span>Reset</span>
+                </button>
             </div>
         </div>
 
@@ -797,7 +871,7 @@
         <div class="fcc-table-toolbar">
             <div class="d-flex align-items-center gap-2">
                 <span class="fcc-count-text" id="fccTableCountDisplay">
-                    {{ $todayCompletedCount ?? 12 }} completed sessions
+                    {{ $totalMonthlySessions }} sessions
                 </span>
                 
                 <!-- Page Size Selector -->
@@ -818,7 +892,7 @@
 
         <!-- 8. Modern DataTables Table -->
         <div class="data-table-container">
-            <table id="dataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.counsellings.getCounsellings') }}">
+            <table id="previousMonthDataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.counsellings.getPreviousMonthCounsellings') }}">
                 <thead>
                     <tr>
                         <th class="checkbox-column no-sort no-content text-center" style="width: 36px;">
@@ -830,14 +904,14 @@
                             </label>
                         </th>
                         <th>Member</th>
-                        <th style="width: 50px;">Att.</th>
+                        <th style="width: 70px;">Month Att.</th>
                         <th>Coach</th>
                         <th>Plan</th>
                         <th style="width: 65px;">Pending</th>
                         <th>Progress</th>
                         <th style="width: 75px;">Dues</th>
                         <th style="width: 90px;">Meal</th>
-                        <th>Completed at</th>
+                        <th>Session Date</th>
                         <th class="text-end no-sort no-content" style="width: 50px;">Action</th>
                     </tr>
                 </thead>
@@ -855,164 +929,6 @@
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/button-ext/jszip.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script src="{{ asset('admin-assets/js/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/counsellings/view.js') }}?v={{ file_exists(public_path('admin-assets/js/counsellings/view.js')) ? filemtime(public_path('admin-assets/js/counsellings/view.js')) : time() }}"></script>
-
-<script>
-$(document).ready(function() {
-    feather.replace();
-
-    function reloadDataTable() {
-        if ($.fn.DataTable.isDataTable('#dataTable')) {
-            $('#dataTable').DataTable().ajax.reload();
-        }
-    }
-
-    // Tabs navigation
-    $('.fcc-tab-item-link').on('click', function(e) {
-        e.preventDefault();
-        $('.fcc-tab-item-link').removeClass('active');
-        $(this).addClass('active');
-        var tab = $(this).data('tab');
-        $('#active_tab').val(tab);
-        reloadDataTable();
-    });
-
-    // Live search input with debounce
-    var searchTimer;
-    $('#fccSearchInput').on('keyup input', function() {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(function() {
-            reloadDataTable();
-        }, 300);
-    });
-
-    // Coach filter selection
-    $(document).on('click', '[data-filter-type="coach"]', function(e) {
-        e.preventDefault();
-        var val = $(this).data('value');
-        var label = val ? val : 'All coaches';
-        $('#coach_name').val(val);
-        $('#coachFilterLabel').text(label);
-        $('[data-filter-type="coach"]').removeClass('active');
-        $(this).addClass('active');
-        if (val) {
-            $('#coachFilterDropdown').addClass('active-filter');
-        } else {
-            $('#coachFilterDropdown').removeClass('active-filter');
-        }
-        reloadDataTable();
-    });
-
-    // Plan filter selection
-    $(document).on('click', '[data-filter-type="plan"]', function(e) {
-        e.preventDefault();
-        var val = $(this).data('value');
-        var label = $(this).text();
-        $('#plan_id').val(val);
-        $('#planFilterLabel').text(label);
-        $('[data-filter-type="plan"]').removeClass('active');
-        $(this).addClass('active');
-        if (val) {
-            $('#planFilterDropdown').addClass('active-filter');
-        } else {
-            $('#planFilterDropdown').removeClass('active-filter');
-        }
-        reloadDataTable();
-    });
-
-    // Date picker initialization
-    if ($.fn.datepicker) {
-        $('#filter_date').datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true,
-            todayHighlight: true
-        }).on('changeDate', function(e) {
-            var formatted = moment(e.date).format('DD-MM-YYYY');
-            var display = moment(e.date).format('DD MMM YYYY');
-            $('#date').val(formatted);
-            $('#dateFilterLabel').text(display);
-            $('#dateFilterDropdown').addClass('active-filter');
-        });
-    }
-
-    // Apply Date Filter button
-    $('.apply-date-filter').on('click', function(e) {
-        e.preventDefault();
-        var dateVal = $('#filter_date').val();
-        $('#date').val(dateVal);
-        if (dateVal) {
-            var display = moment(dateVal, 'DD-MM-YYYY').format('DD MMM YYYY');
-            $('#dateFilterLabel').text(display);
-            $('#dateFilterDropdown').addClass('active-filter');
-        }
-        reloadDataTable();
-    });
-
-    // Reset date to today
-    $('#fccResetDateBtn').on('click', function(e) {
-        e.preventDefault();
-        var todayStr = moment().format('DD-MM-YYYY');
-        var display = 'Today, ' + moment().format('DD MMM YYYY');
-        $('#filter_date').val(todayStr);
-        $('#date').val(todayStr);
-        $('#dateFilterLabel').text(display);
-        $('#dateFilterDropdown').removeClass('active-filter');
-        reloadDataTable();
-    });
-
-    // Reset all filters
-    $('#fccResetAllFiltersBtn').on('click', function(e) {
-        e.preventDefault();
-        $('#fccSearchInput').val('');
-        $('#coach_name').val('');
-        $('#coachFilterLabel').text('All coaches');
-        $('#coachFilterDropdown').removeClass('active-filter');
-        $('[data-filter-type="coach"]').removeClass('active');
-        $('[data-filter-type="coach"][data-value=""]').addClass('active');
-
-        $('#plan_id').val('');
-        $('#planFilterLabel').text('All meal plans');
-        $('#planFilterDropdown').removeClass('active-filter');
-        $('[data-filter-type="plan"]').removeClass('active');
-        $('[data-filter-type="plan"][data-value=""]').addClass('active');
-
-        var todayStr = moment().format('DD-MM-YYYY');
-        $('#filter_date').val(todayStr);
-        $('#date').val(todayStr);
-        $('#dateFilterLabel').text('Today, ' + moment().format('DD MMM YYYY'));
-        $('#dateFilterDropdown').removeClass('active-filter');
-
-        reloadDataTable();
-    });
-
-    // Page size dropdown selection
-    $(document).on('click', '[data-page-size]', function(e) {
-        e.preventDefault();
-        var size = parseInt($(this).data('page-size'));
-        $('#pageSizeLabel').text(size + ' per page');
-        $('[data-page-size]').removeClass('active');
-        $(this).addClass('active');
-        if ($.fn.DataTable.isDataTable('#dataTable')) {
-            $('#dataTable').DataTable().page.len(size).draw();
-        }
-    });
-
-    // Export button triggers datatable excel export
-    $('#fccExportBtn').on('click', function(e) {
-        e.preventDefault();
-        if ($.fn.DataTable.isDataTable('#dataTable')) {
-            var dt = $('#dataTable').DataTable();
-            dt.button('.buttons-excel').trigger();
-        }
-    });
-
-    // Checkbox select all
-    $('#select-all-counsellings').on('change', function() {
-        var isChecked = $(this).is(':checked');
-        $('.child-chk').prop('checked', isChecked);
-    });
-});
-</script>
+<script src="{{ asset('admin-assets/js/counsellings/previous-month.js') }}?v={{ file_exists(public_path('admin-assets/js/counsellings/previous-month.js')) ? filemtime(public_path('admin-assets/js/counsellings/previous-month.js')) : time() }}"></script>
 @endpush

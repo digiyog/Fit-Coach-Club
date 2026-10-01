@@ -68,6 +68,7 @@ class UserController extends Controller
             ->where('coach_name', '!=', '')
             ->groupBy('coach_name')
             ->pluck('coach_name');
+        //$coachesList = $this->getFranchiseCoachesList($authUser)->pluck('coach_name');
 
         // Meal and Product types
         $mealTypes = MealType::where('status', 1)->orderBy('name')->get();
@@ -336,22 +337,7 @@ class UserController extends Controller
         $productTypes = ProductType::where('status',1)->orderBy('id', 'DESC')->get();
 
         // Coaches list
-        $coachesList = User::where('created_by', $authUser->id)
-            ->whereNotNull('coach_name')
-            ->where('coach_name', '!=', '')
-            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
-            ->groupBy('coach_name')
-            ->orderByDesc('total_members')
-            ->get();
-
-        if ($coachesList->isEmpty() && !empty($authUser->name)) {
-            $coachesList = collect([
-                (object)[
-                    'coach_name' => $authUser->name,
-                    'total_members' => 0
-                ]
-            ]);
-        }
+        $coachesList = $this->getFranchiseCoachesList($authUser);
 
         $selectedUserType = $request->get('user_type');
         if (!$selectedUserType) {
@@ -391,22 +377,7 @@ class UserController extends Controller
         ];
 
         // Coaches list
-        $coachesList = User::where('created_by', $authUser->id)
-            ->whereNotNull('coach_name')
-            ->where('coach_name', '!=', '')
-            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
-            ->groupBy('coach_name')
-            ->orderByDesc('total_members')
-            ->get();
-
-        if ($coachesList->isEmpty() && !empty($authUser->name)) {
-            $coachesList = collect([
-                (object)[
-                    'coach_name' => $authUser->name,
-                    'total_members' => 0
-                ]
-            ]);
-        }
+        $coachesList = $this->getFranchiseCoachesList($authUser);
 
         $this->viewData['breadcrumb']   = $breadcrumb;
         $this->viewData['authUser']     = $authUser;
@@ -569,22 +540,7 @@ class UserController extends Controller
         $productTypes = ProductType::where('status', 1)->orderBy('id', 'DESC')->get();
 
         // Coaches list
-        $coachesList = User::where('created_by', $authUser->id)
-            ->whereNotNull('coach_name')
-            ->where('coach_name', '!=', '')
-            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
-            ->groupBy('coach_name')
-            ->orderByDesc('total_members')
-            ->get();
-
-        if ($coachesList->isEmpty() && !empty($authUser->name)) {
-            $coachesList = collect([
-                (object)[
-                    'coach_name' => $authUser->name,
-                    'total_members' => 0
-                ]
-            ]);
-        }
+        $coachesList = $this->getFranchiseCoachesList($authUser);
         
         // Send view data
         unset($this->viewData['breadcrumb']);
@@ -1679,5 +1635,49 @@ class UserController extends Controller
         $this->viewData['weightDiff'] = $weightDiff;
         
         return view('nutrition-panel.users.details')->with($this->viewData);
+    }
+
+    /**
+     * Helper to fetch all franchise coaches
+     */
+    private function getFranchiseCoachesList($authUser)
+    {
+        $coachesList = collect([]);
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('coaches')) {
+                $coachRecords = \App\Models\Coach::where('franchise_id', $authUser->id)->where('status', 1)->orderBy('name')->get();
+                foreach ($coachRecords as $cr) {
+                    $coachesList->push((object)[
+                        'coach_name' => $cr->name,
+                        'total_members' => 0
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {}
+
+        $userCoaches = User::where('created_by', $authUser->id)
+            ->whereNotNull('coach_name')
+            ->where('coach_name', '!=', '')
+            ->select('coach_name', DB::raw('COUNT(id) as total_members'))
+            ->groupBy('coach_name')
+            ->orderByDesc('total_members')
+            ->get();
+
+        foreach ($userCoaches as $uc) {
+            if (!$coachesList->contains('coach_name', $uc->coach_name)) {
+                $coachesList->push($uc);
+            }
+        }
+
+        if ($coachesList->isEmpty() && !empty($authUser->name)) {
+            $coachesList = collect([
+                (object)[
+                    'coach_name' => $authUser->name,
+                    'total_members' => 0
+                ]
+            ]);
+        }
+
+        return $coachesList;
     }
 }

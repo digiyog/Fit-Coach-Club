@@ -62,12 +62,51 @@
                 </ul>
             </li>
 
+            <!-- Coach Management -->
+            @php
+                $showCoachManagement = 'false';
+                $activeCoachManagement = '';
+                $activeAllCoachList = '';
+                $activeAddCoachList = '';
+
+                if(request()->is(Request::segment(1).'/coaches*')){
+                    $showCoachManagement = 'true';
+                    $activeCoachManagement = 'show';
+                    if(request()->is(Request::segment(1).'/coaches/create')) {
+                        $activeAddCoachList = 'active';
+                    } else {
+                        $activeAllCoachList = 'active';
+                    }
+                }
+            @endphp
+
+            <li class="menu">
+                <a href="#coachManagement" data-bs-toggle="collapse" aria-expanded="{{ $showCoachManagement }}" data-active="{{ $showCoachManagement }}" class="dropdown-toggle collapsed">
+                    <div>
+                        <i data-feather="user-check"></i>
+                        <span>Coach Management</span>
+                    </div>
+                    <div>
+                        <i data-feather="chevron-right"></i>
+                    </div>
+                </a>
+                <ul class="submenu list-unstyled collapse {{ $activeCoachManagement }}" id="coachManagement" data-bs-parent="#accordionExample">
+                    <li class="{{ $activeAllCoachList }}">
+                        <a href="{{ route('nutritionPanel.coaches.index') }}">All Coaches</a>
+                    </li>
+                    <li class="{{ $activeAddCoachList }}">
+                        <a href="{{ route('nutritionPanel.coaches.create') }}">Add Coach</a>
+                    </li>
+                </ul>
+            </li>
+
             <!-- Offline System Management -->
             @php
                 $showOfflineSystemManagement = 'false';
                 $activeOfflineSystemManagement = '';
                 $activeOfflineSystemList = '';
                 $activeCounsellingList = '';
+                $activePreviousMonthCounsellingList = '';
 
                 if(request()->is(Request::segment(1).'/attendance-register*')){
                     $showOfflineSystemManagement = 'true';
@@ -75,7 +114,11 @@
                     $activeOfflineSystemList = 'active';
                 }
 
-                if(request()->is(Request::segment(1).'/counsellings*')){
+                if(request()->is(Request::segment(1).'/counsellings/previous-month*')){
+                    $showOfflineSystemManagement = 'true';
+                    $activeOfflineSystemManagement = 'show';
+                    $activePreviousMonthCounsellingList = 'active';
+                } elseif(request()->is(Request::segment(1).'/counsellings*')){
                     $showOfflineSystemManagement = 'true';
                     $activeOfflineSystemManagement = 'show';
                     $activeCounsellingList = 'active';
@@ -98,6 +141,9 @@
                     </li>
                     <li class="{{ $activeCounsellingList }}">
                         <a href="{{ route('nutritionPanel.counsellings.index') }}">Counsellings ({{ date('d-m-Y') }})</a>
+                    </li>
+                    <li class="{{ $activePreviousMonthCounsellingList }}">
+                        <a href="{{ route('nutritionPanel.counsellings.previousMonth') }}">Previous Month Counselling</a>
                     </li>
                 </ul>
             </li>

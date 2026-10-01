@@ -211,6 +211,19 @@ Route::prefix('nutrition-panel')->group(function () {
     });
     //--------
 
+    // Coaches Management
+    Route::group(['prefix' => 'coaches', 'middleware' => ['checkfranchiseauth']], function () {
+        Route::get('/', [Controllers\NutritionPanel\CoachController::class, 'index'])->name('nutritionPanel.coaches.index');
+        Route::get('/create', [Controllers\NutritionPanel\CoachController::class, 'create'])->name('nutritionPanel.coaches.create');
+        Route::post('/store', [Controllers\NutritionPanel\CoachController::class, 'store'])->name('nutritionPanel.coaches.store');
+        Route::get('/details/{id}', [Controllers\NutritionPanel\CoachController::class, 'details'])->name('nutritionPanel.coaches.details');
+        Route::get('/edit/{id}', [Controllers\NutritionPanel\CoachController::class, 'edit'])->name('nutritionPanel.coaches.edit');
+        Route::post('/update/{id}', [Controllers\NutritionPanel\CoachController::class, 'update'])->name('nutritionPanel.coaches.update');
+        Route::delete('/destroy', [Controllers\NutritionPanel\CoachController::class, 'destroy'])->name('nutritionPanel.coaches.destroy');
+        Route::post('/change-status', [Controllers\NutritionPanel\CoachController::class, 'changeStatus'])->name('nutritionPanel.coaches.changeStatus');
+    });
+    //--------
+
     // Achievements
     Route::group(['prefix' => 'achievements', 'middleware' => ['checkfranchiseauth']], function () {
         Route::get('/index', [Controllers\NutritionPanel\AchievementController::class, 'index'])->name('nutritionPanel.achievements.index');
@@ -341,6 +354,8 @@ Route::prefix('nutrition-panel')->group(function () {
     Route::group(['prefix' => 'counsellings', 'middleware' => ['checkfranchiseauth']], function () {
         Route::get('/', [Controllers\NutritionPanel\CounsellingController::class, 'index'])->name('nutritionPanel.counsellings.index');
         Route::get('/get-counsellings', [Controllers\NutritionPanel\CounsellingController::class, 'getCounsellings'])->name('nutritionPanel.counsellings.getCounsellings');
+        Route::get('/previous-month', [Controllers\NutritionPanel\CounsellingController::class, 'previousMonth'])->name('nutritionPanel.counsellings.previousMonth');
+        Route::get('/get-previous-month-counsellings', [Controllers\NutritionPanel\CounsellingController::class, 'getPreviousMonthCounsellings'])->name('nutritionPanel.counsellings.getPreviousMonthCounsellings');
     });
     //--------
 

@@ -388,6 +388,138 @@ class Attendance extends Model
         }
     }
 
+    // Get Monthly Counsellings list records
+    public function scopeGetMonthlyCounsellings($model, $limit = null, $offset = null, $search = null, $filter = array(), $sort = array())
+    {
+        // Get user
+        $authUser = auth()->user();
+        if (!$authUser) {
+            return !empty($limit) ? collect([]) : 0;
+        }
+
+        $prevCarbon = \Carbon\Carbon::now()->subMonth();
+        $month = !empty($filter['month']) ? intval($filter['month']) : intval($prevCarbon->format('m'));
+        $year  = !empty($filter['year'])  ? intval($filter['year'])  : intval($prevCarbon->format('Y'));
+        $tab   = $filter['tab'] ?? 'all_sessions';
+
+        $counsellings = Attendance::select(
+            'users.id',
+            'users.name',
+            'users.email',
+            'users.mobile_number',
+            'users.profile_image',
+            'users.coach_name',
+            'users.days',
+            'users.user_type',
+            'users.status',
+            'users.due_amount',
+            'users.starting_weight',
+            'users.current_weight',
+            'users.created_at as user_created_at',
+            'attendances.id as attendance_id',
+            'attendances.weight as attendance_weight',
+            'attendances.date',
+            'attendances.created_at as attendance_time',
+            'meal_types.id as meal_type_id',
+            'meal_types.name as meal_type_name',
+            DB::raw('(SELECT COUNT(a2.id) FROM attendances AS a2 WHERE a2.user_id = users.id AND a2.type = 2 AND a2.deleted_at IS NULL) as total_attendance'),
+            DB::raw('(SELECT COUNT(a_m.id) FROM attendances AS a_m WHERE a_m.user_id = users.id AND a_m.type = 2 AND a_m.deleted_at IS NULL AND ( (a_m.date IS NOT NULL AND MONTH(a_m.date) = '.$month.' AND YEAR(a_m.date) = '.$year.') OR (a_m.date IS NULL AND MONTH(a_m.created_at) = '.$month.' AND YEAR(a_m.created_at) = '.$year.') )) as month_attendance_count'),
+            DB::raw('(SELECT a_prev.weight FROM attendances AS a_prev WHERE a_prev.user_id = users.id AND a_prev.type = 2 AND a_prev.deleted_at IS NULL AND a_prev.weight > 0 AND (a_prev.date < attendances.date OR (a_prev.date = attendances.date AND a_prev.id < attendances.id)) ORDER BY a_prev.date DESC, a_prev.id DESC LIMIT 1) as previous_weight'),
+            DB::raw('(SELECT a_first.weight FROM attendances AS a_first WHERE a_first.user_id = users.id AND a_first.type = 2 AND a_first.deleted_at IS NULL AND a_first.weight > 0 AND ( (a_first.date IS NOT NULL AND MONTH(a_first.date) = '.$month.' AND YEAR(a_first.date) = '.$year.') OR (a_first.date IS NULL AND MONTH(a_first.created_at) = '.$month.' AND YEAR(a_first.created_at) = '.$year.') ) ORDER BY a_first.date ASC, a_first.id ASC LIMIT 1) as month_first_weight'),
+            DB::raw('(SELECT a_last.weight FROM attendances AS a_last WHERE a_last.user_id = users.id AND a_last.type = 2 AND a_last.deleted_at IS NULL AND a_last.weight > 0 AND ( (a_last.date IS NOT NULL AND MONTH(a_last.date) = '.$month.' AND YEAR(a_last.date) = '.$year.') OR (a_last.date IS NULL AND MONTH(a_last.created_at) = '.$month.' AND YEAR(a_last.created_at) = '.$year.') ) ORDER BY a_last.date DESC, a_last.id DESC LIMIT 1) as month_last_weight')
+        );
+
+        $counsellings->leftJoin('users', function($join){
+            $join->on('attendances.user_id', '=', 'users.id');
+        });
+
+        $counsellings->leftJoin('meal_types', function($join){
+            $join->on('users.meal_type_id', '=', 'meal_types.id');
+        });
+
+        $counsellings->where("users.role_type", 'user')
+            ->where('attendances.type', 2)
+            ->where("attendances.franchise_id", $authUser->id);
+
+        // Filter by specified month and year
+        $counsellings->where(function($q) use ($month, $year) {
+            $q->where(function($sub1) use ($month, $year) {
+                $sub1->whereNotNull('attendances.date')->whereMonth('attendances.date', $month)->whereYear('attendances.date', $year);
+            })->orWhere(function($sub2) use ($month, $year) {
+                $sub2->whereNull('attendances.date')->whereMonth('attendances.created_at', $month)->whereYear('attendances.created_at', $year);
+            });
+        });
+
+        // Filter conditions
+        $counsellings->where(function ($query) use ($filter, $tab) {
+            if (!empty($filter['name'])) {
+                $nameFilter = trim(strtolower($filter['name']));
+                $query->whereRaw('(lower(users.name) LIKE \'%'.$nameFilter.'%\' || lower(users.coach_name) LIKE \'%'.$nameFilter.'%\' || lower(users.days) LIKE \'%'.$nameFilter.'%\' || lower(attendances.date) LIKE \'%'.$nameFilter.'%\' || lower(meal_types.name) LIKE \'%'.$nameFilter.'%\' )');
+            }
+
+            if (!empty($filter['coach_name'])) {
+                $query->where('users.coach_name', $filter['coach_name']);
+            }
+
+            if (!empty($filter['plan_id'])) {
+                $query->where('users.meal_type_id', $filter['plan_id']);
+            }
+
+            if ($tab == 'pending_dues') {
+                $query->where('users.due_amount', '>', 0);
+            }
+        });
+
+        // Search condition
+        if (!empty($search)) {
+            $searchStr = trim(strtolower($search));
+            $counsellings = $counsellings->whereRaw('(lower(users.name) LIKE \'%'.$searchStr.'%\' || lower(users.coach_name) LIKE \'%'.$searchStr.'%\' || lower(meal_types.name) LIKE \'%'.$searchStr.'%\' || lower(users.mobile_number) LIKE \'%'.$searchStr.'%\' )');
+        }
+
+        // Tab grouping / filtering
+        if ($tab == 'member_summary' || $tab == 'weight_loss') {
+            $counsellings->whereIn('attendances.id', function($sub) use ($authUser, $month, $year) {
+                $sub->select(DB::raw('MAX(a_latest.id)'))
+                    ->from('attendances as a_latest')
+                    ->where('a_latest.franchise_id', $authUser->id)
+                    ->where('a_latest.type', 2)
+                    ->whereNull('a_latest.deleted_at')
+                    ->where(function($q) use ($month, $year) {
+                        $q->where(function($sub1) use ($month, $year) {
+                            $sub1->whereNotNull('a_latest.date')->whereMonth('a_latest.date', $month)->whereYear('a_latest.date', $year);
+                        })->orWhere(function($sub2) use ($month, $year) {
+                            $sub2->whereNull('a_latest.date')->whereMonth('a_latest.created_at', $month)->whereYear('a_latest.created_at', $year);
+                        });
+                    })
+                    ->groupBy('a_latest.user_id');
+            });
+
+            if ($tab == 'weight_loss') {
+                $counsellings->whereRaw('(
+                    (SELECT a_first.weight FROM attendances AS a_first WHERE a_first.user_id = users.id AND a_first.type = 2 AND a_first.deleted_at IS NULL AND a_first.weight > 0 AND ( (a_first.date IS NOT NULL AND MONTH(a_first.date) = '.$month.' AND YEAR(a_first.date) = '.$year.') OR (a_first.date IS NULL AND MONTH(a_first.created_at) = '.$month.' AND YEAR(a_first.created_at) = '.$year.') ) ORDER BY a_first.date ASC, a_first.id ASC LIMIT 1) > 
+                    (SELECT a_last.weight FROM attendances AS a_last WHERE a_last.user_id = users.id AND a_last.type = 2 AND a_last.deleted_at IS NULL AND a_last.weight > 0 AND ( (a_last.date IS NOT NULL AND MONTH(a_last.date) = '.$month.' AND YEAR(a_last.date) = '.$year.') OR (a_last.date IS NULL AND MONTH(a_last.created_at) = '.$month.' AND YEAR(a_last.created_at) = '.$year.') ) ORDER BY a_last.date DESC, a_last.id DESC LIMIT 1)
+                )');
+            }
+        }
+
+        // Sorting
+        if (!empty($sort) && isset($sort['column']) && $sort['column'] > 0) {
+            $arr_fields = array("", "users.name", "month_attendance_count", "total_attendance", "users.coach_name", "meal_types.name", "users.days", "attendances.weight", "users.due_amount", "attendances.date", "");
+            if (isset($arr_fields[$sort['column']]) && $arr_fields[$sort['column']] != "") {
+                $counsellings = $counsellings->orderBy($arr_fields[$sort['column']], $sort['dir'] ?? 'ASC');
+            }
+        } else {
+            $counsellings = $counsellings->orderBy('attendances.date', 'DESC')->orderBy('attendances.created_at', 'DESC');
+        }
+
+        if (!empty($limit)) {
+            $counsellings = $counsellings->skip($offset)->take($limit);
+            return $counsellings->get();
+        } else {
+            return $counsellings->count();
+        }
+    }
+
     // Get Weights list records
     public function scopeGetViewWeights($model, $limit = null, $offset = null, $search = null, $filter = array(), $sort = array())
     {
