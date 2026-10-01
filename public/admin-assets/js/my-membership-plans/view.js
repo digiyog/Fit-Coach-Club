@@ -1,273 +1,184 @@
 var MemberShipPlan = (function() {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
+    var searchTimer = null;
+
     return {
         /**
          * Initialization.
          */
         init: function() {
             MemberShipPlan.getMemberShipPlans();
-            MemberShipPlan.initializeComponents();
-            MemberShipPlan.dataTableCustomFilter();
+            MemberShipPlan.initializeFilters();
         },
 
         /**
-         * Initialize components.
+         * Initialize Filter Controls.
          */
-        initializeComponents: function() {
-            // Initialize Components
-            var $filter_form = $(".custom-datatable-filter-form");
+        initializeFilters: function() {
+            // Date Range Picker initialization
+            var $dateRange = $("#plan_date_range");
+            if ($dateRange.length && typeof $.fn.daterangepicker !== "undefined") {
+                $dateRange.daterangepicker({
+                    autoUpdateInput: false,
+                    opens: "left",
+                    locale: {
+                        cancelLabel: "Clear",
+                        format: "DD-MM-YYYY"
+                    }
+                });
 
-            // Bootstrap Select on filter form dropdowns
-            Components.bootstrapSelect($filter_form);
-            //------------
+                $dateRange.on("apply.daterangepicker", function (ev, picker) {
+                    $(this).val(picker.startDate.format("DD-MM-YYYY") + " - " + picker.endDate.format("DD-MM-YYYY"));
+                    $(this).data("range-value", picker.startDate.format("YYYY-MM-DD") + "/" + picker.endDate.format("YYYY-MM-DD"));
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
 
-            // Enable Button on change filter form elements
-            // Components.enableButton($filter_form);
-            //------------
-
-            $('input[name="date_range"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-
-            $('input[name="date_range"]').on(
-                "apply.daterangepicker",
-                function (ev, picker) {
-                    $(this).val(
-                        picker.startDate.format("YYYY-MM-DD") +
-                        "/" +
-                        picker.endDate.format("YYYY-MM-DD")
-                    );
-                    $(':input[type="submit"]').prop("disabled", false);
-                    $(':input[name="Clear"]').prop("disabled", false);
-                }
-            );
-
-            $('input[name="date_range"]').on(
-                "cancel.daterangepicker",
-                function (ev, picker) {
+                $dateRange.on("cancel.daterangepicker", function (ev, picker) {
                     $(this).val("");
-                }
-            );
-        },
+                    $(this).data("range-value", "");
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
+            }
 
-        /**
-         * Datatable custom filter.
-         */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
+            // Real-time search with debounce
+            $("#plan_search").on("keyup input change", function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function () {
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                }, 350);
+            });
+
+            // Filter dropdown changes
+            $("#plan_id_filter, #plan_payment_status, #plan_amount_type").on("change", function () {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Page length dropdown change
+            $("#plan_page_length").on("change", function () {
+                var len = parseInt($(this).val(), 10) || 20;
+                if (data_table) {
+                    data_table.page.len(len).draw();
+                }
+            });
+
+            // Clear all filters
+            $("#btn_clear_filters").on("click", function (e) {
+                e.preventDefault();
+                $("#plan_search").val("");
+                if ($dateRange.length) {
+                    $dateRange.val("").data("range-value", "");
+                }
+                $("#plan_id_filter").val("");
+                $("#plan_payment_status").val("");
+                $("#plan_amount_type").val("");
+                $("#plan_page_length").val("20");
+
+                if (data_table) {
+                    data_table.page.len(20);
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Toggle filters bar on button click
+            $("#btn_toggle_header_filters, #btn_toggle_more_filters").on("click", function (e) {
+                e.preventDefault();
+                $(".ledger-filters-grid").slideToggle(200);
             });
         },
 
         /**
-         * Updates "Select all" control in a data table
-         */
-        updateDataTableSelectAllCtrl: function(table) {
-        },
-
-        /**
-         * Get MemberShip Plans list.
+         * Get MemberShip Plans list with modern DataTables configuration.
          */
         getMemberShipPlans: function() {
             var $dataTable = $("#dataTable");
 
-            data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-
-                    // $('.btn-toolbar').append(
-                    //     '<button type="button" title="Order Update" class="btn btn-icon btn-rounded btn-primary btn-outline update-order"> &nbsp; Order Update </button> '
-                    // );
-
-                    // $('.btn-toolbar').append(
-                    //     '<button type="button" title="Change Status" class="btn btn-icon btn-rounded btn-primary btn-outline change-status" disabled> <i class="fa fa-exchange" aria-hidden="true"></i> &nbsp; Change Status </button> '
-                    // );
-
-                    // $('.btn-toolbar').append(
-                    //     '<button type="button" title="Delete" class="btn btn-icon btn-rounded btn-primary btn-outline dt-delete" disabled> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete </button> '
-                    // );
-                },
-                headerCallback: function(e, a, t, n, s) {
-                },
-                columnDefs: [
-                ],
-                buttons: {
-                    buttons: [
-                        
-                    ]
-                },
-                oLanguage: {
-                    oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
-                },
+            data_table = $dataTable.DataTable({
                 processing: true,
                 serverSide: true,
-                lengthMenu: [
-                    [20, 50, 75, 100],
-                    [20, 50, 75, 100]
-                ],
+                ordering: true,
+                order: [[3, "desc"]], // Sort by Start Date DESC by default
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"dt-bottom-row"ip>',
+                oLanguage: {
+                    oPaginate: {
+                        sPrevious: '<i class="fa fa-angle-left"></i> Previous',
+                        sNext: 'Next <i class="fa fa-angle-right"></i>'
+                    },
+                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
+                    sEmptyTable: "No membership plans found",
+                    sZeroRecords: "No matching membership plans found"
+                },
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
+                        var searchVal = $("#plan_search").val();
+                        d.search_query = searchVal;
+                        d.membership_plan_id = $("#plan_id_filter").val();
+                        d.payment_status = $("#plan_payment_status").val();
+                        d.amount_type = $("#plan_amount_type").val();
+                        d.filter_date_range = $("#plan_date_range").data("range-value") || "";
                     }
                 },
                 columns: [
-                    { data: "membership_plan_name", name: "membership_plan_name" },
-                    { data: "total_amount", name: "total_amount" },
-                    { data: "payment_status", name: "payment_status" },
-                    { data: "start_date", name: "start_date" },
-                    { data: "end_date", name: "end_date" },
-                    { data: "remark", name: "remark" },
+                    { data: "membership_plan_name", name: "membership_plans.name" },
+                    { data: "total_amount", name: "franchise_memberships.total_amount" },
+                    { data: "payment_status", name: "franchise_memberships.payment_status" },
+                    { data: "start_date", name: "franchise_memberships.start_date" },
+                    { data: "end_date", name: "franchise_memberships.end_date" },
+                    { data: "remark", name: "franchise_memberships.remark" }
                 ],
-                rowCallback: function(row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
+                drawCallback: function(settings) {
+                    var json = settings.json;
+                    var info = this.api().page.info();
+
+                    // Update visible plan count
+                    var visibleCount = (json && typeof json.iTotalDisplayRecords !== "undefined") ? json.iTotalDisplayRecords : info.recordsDisplay;
+                    $("#visible_plan_count").text(visibleCount);
+
+                    // Update KPI cards dynamically if summary was returned
+                    if (json && json.summary) {
+                        var s = json.summary;
+                        if (typeof s.total_records !== "undefined") {
+                            $("#kpi_total_records").text(s.total_records);
+                        }
+                        if (typeof s.recorded_amount_formatted !== "undefined") {
+                            $("#kpi_recorded_amount").text(s.recorded_amount_formatted);
+                        }
+                        if (typeof s.zero_amount_plans !== "undefined") {
+                            $("#kpi_zero_amount_plans").text(s.zero_amount_plans);
+                        }
+                        if (typeof s.completion_text !== "undefined") {
+                            $("#kpi_completion_text").text(s.completion_text);
+                        }
+
+                        // Breakdown bar and legend
+                        if (s.breakdown && Array.isArray(s.breakdown)) {
+                            var barHtml = "";
+                            var legendHtml = "";
+
+                            s.breakdown.forEach(function (b) {
+                                barHtml += '<div class="bar-segment" style="width: ' + b.percent + '%; background-color: ' + b.color + ';" title="' + b.name + ': ' + b.count + '"></div>';
+                                legendHtml += '<span class="legend-item"><span class="legend-dot" style="background-color: ' + b.color + ';"></span> ' + b.name + ' ' + b.count + '</span>';
+                            });
+
+                            $("#kpi_segmented_bar").html(barHtml);
+                            $("#kpi_segmented_legend").html(legendHtml);
+                        }
+                    }
                 }
             });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function(e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
-
-                    // Get row ID
-                    var rowId = data;
-
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    MemberShipPlan.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function(e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle table draw event
-            table.on("draw", function() {
-                // Update state of "Select all" control
-                MemberShipPlan.updateDataTableSelectAllCtrl(table);
-
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-               //----------
-            });
-        },
+        }
     };
 })();
 
-MemberShipPlan.init();
+$(document).ready(function() {
+    MemberShipPlan.init();
+});

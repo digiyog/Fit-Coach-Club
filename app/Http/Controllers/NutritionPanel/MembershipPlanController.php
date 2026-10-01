@@ -7,19 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\MembershipPlan;
 use App\Models\FranchiseMembershipPlan;
-use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Http\Traits\UploadImage;
-use App\Http\Traits\UploadFile;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
    
 class MembershipPlanController extends Controller
 {
-    use UploadImage, UploadFile;
-
-     /**
+    /**
      * @var array
      */
     public $viewData = [];
@@ -39,7 +32,7 @@ class MembershipPlanController extends Controller
      *
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      *
-     * @author Divyasnh
+     * @author Divyansh
      * @created_at 19 Jan 2023
      */
     public function index()
@@ -52,103 +45,107 @@ class MembershipPlanController extends Controller
             'Membership Plans' => '',
         ];
 
-        // Breadcrumb Button
-        $breadcrumbButton = [];
+        // Get membership plans for filter dropdown
+        $plans = MembershipPlan::where('status', 1)->orderBy('name', 'asc')->get();
+
+        $summary = FranchiseMembershipPlan::getMembershipPlansSummary(null, ['franchise_id' => $authUser->id]);
 
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
-        $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['plans'] = $plans;
+        $this->viewData['summary'] = $summary;
 
         return view('nutrition-panel.membership-plans.index')->with($this->viewData);
     }
 
-    public function getMembershipPlans(Request $request){
+    /**
+     * Get Membership Plans list.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMembershipPlans(Request $request)
+    {
         $authUser = auth()->user();
 
         // Ajax Post Parameters
         $draw = $request->get('draw');
         $start = $request->get('start');
         $limit = $request->get('length');
-        $sort = $request->get('order')[0];
-        $search = $request->get('search')['value'];
-        
+        $order = $request->get('order');
+        $sort = (!empty($order) && is_array($order)) ? $order[0] : null;
+
+        $searchVal = $request->get('search');
+        $search = is_array($searchVal) ? ($searchVal['value'] ?? null) : null;
+        if (empty($search) && !empty($request->search_query)) {
+            $search = $request->search_query;
+        }
+
         // Filter Parameters
         $filter = array(
-            "franchise_id" => $authUser->id,
+            "franchise_id"       => $authUser->id,
+            "membership_plan_id" => $request->membership_plan_id,
+            "payment_status"     => $request->payment_status,
+            "amount_type"        => $request->amount_type,
+            "filter_date_range"  => $request->filter_date_range,
         );
 
         // Getting Membership Plans Records
         $records_count = FranchiseMembershipPlan::GetMembershipPlans(null, null, $search, $filter, $sort);
         $records = FranchiseMembershipPlan::GetMembershipPlans($limit, $start, $search, $filter, $sort);
+        $summary = FranchiseMembershipPlan::GetMembershipPlansSummary($search, $filter);
         
         $arr_data = array();
-        if(count($records) > 0)
+        if(!empty($records) && count($records) > 0)
         {
             foreach($records as $key => $value)
             {
-                $membership_plan_name = 'N/A';
-                $payment_status = 'N/A';
-                $total_amount = 'N/A';
-                $start_date = '';
-                $end_date = '';
-                $remark = '----';
-
-                // Preparing Data
-                if(!empty($value->membership_plan_name))
-                {
-                    $membership_plan_name = $value->membership_plan_name;
-                }
-
-                if($value['payment_status'] == 1){
-                    $total_amount = '<span class="text-danger">'.$value['total_amount'].'</span>';
+                $membership_plan_name = !empty($value->membership_plan_name) ? e($value->membership_plan_name) : 'N/A';
+                
+                $totalAmountVal = floatval($value->total_amount ?? 0);
+                if ($totalAmountVal > 0) {
+                    $total_amount = '<span class="plan-amount-paid">' . number_format($totalAmountVal, 0, '', '') . '</span>';
                 } else {
-                    $total_amount = '<span class="text-success">'.$value['total_amount'].'</span>';
+                    $total_amount = '<span class="plan-amount-zero">0</span>';
                 }
 
-                if($value['payment_status'] == 1){
-                    $payment_status = '<label class="badge badge-danger">Pending</label>';
+                if($value->payment_status == 1){
+                    $payment_status = '<span class="badge-plan-status status-pending"><i class="fa fa-clock-o"></i> Pending</span>';
                 } else {
-                    $payment_status = '<label class="badge badge-success">Completed</label>';
+                    $payment_status = '<span class="badge-plan-status status-completed"><i class="fa fa-check-circle"></i> Completed</span>';
                 }
 
-                if(!empty($value->start_date))
-                {
-                    $start_date = date("d-m-Y", strtotime($value->start_date));
-                }
-
-                if(!empty($value->end_date))
-                {
-                    $end_date = date("d-m-Y", strtotime($value->end_date));
-                }
+                $start_date = !empty($value->start_date) ? Carbon::parse($value->start_date)->format('d-m-Y') : 'N/A';
+                $end_date = !empty($value->end_date) ? Carbon::parse($value->end_date)->format('d-m-Y') : 'N/A';
 
                 if(!empty($value->remark))
                 {   
-                    $remark = $value->remark;
+                    $remark = '<span class="plan-remark-bold">' . e($value->remark) . '</span>';
+                } else {
+                    $remark = '<span class="plan-remark-dash">----</span>';
                 }
 
                 // Array Data
                 $arr_data[] = array(
-                    "id"                    => $value->id,
-                    "membership_plan_name"  => $membership_plan_name,
+                    "membership_plan_name"  => '<span class="plan-name-text">' . $membership_plan_name . '</span>',
                     "total_amount"          => $total_amount,
                     "payment_status"        => $payment_status,
-                    "start_date"            => $start_date,
-                    "end_date"              => $end_date,
+                    "start_date"            => '<span class="plan-date-text">' . $start_date . '</span>',
+                    "end_date"              => '<span class="plan-date-text">' . $end_date . '</span>',
                     "remark"                => $remark,
                 );
             }
         }
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
+            "draw"                 => intval($draw),
+            "iTotalRecords"        => $totalRecords,
             "iTotalDisplayRecords" => $totalRecords,
-            "aaData" => $arr_data
+            "aaData"               => $arr_data,
+            "summary"              => $summary,
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 }
