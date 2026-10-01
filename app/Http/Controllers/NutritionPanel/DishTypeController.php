@@ -62,10 +62,20 @@ class DishTypeController extends Controller
             'attributes' => []
         ];
 
+        // Statistics
+        $totalDishTypes = DishType::where('created_by', $authUser->id)->count();
+        $publishedDishTypes = DishType::where('created_by', $authUser->id)->where('status', 1)->count();
+        $hiddenDishTypes = DishType::where('created_by', $authUser->id)->where('status', 0)->count();
+        $draftDishTypes = 0;
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['totalDishTypes'] = $totalDishTypes;
+        $this->viewData['publishedDishTypes'] = $publishedDishTypes;
+        $this->viewData['hiddenDishTypes'] = $hiddenDishTypes;
+        $this->viewData['draftDishTypes'] = $draftDishTypes;
         
         return view('nutrition-panel.dish-types.index')->with($this->viewData);
     }
@@ -104,31 +114,35 @@ class DishTypeController extends Controller
             foreach($records as $key => $value)
             {
                 $name               = 'N/A';
+                $visibility         = '';
                 $order              = 'N/A';
                 $status             = '';
                 $action             = '';
 
                 // Preparing Data
                 if(!empty($value->name)){
-                    $name = $value->name;
+                    $name = '<span class="fw-bold text-dark">' . e($value->name) . '</span>';
                 }
 
                 if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1" id="dish_type_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
+                    $order = '<input type="text" class="form-control text-center numeric dish-type-order-input" id="dish_type_order_'.$value->id.'" name="order" value="'.$value->order.'" style="max-width: 75px; height: 34px; border-radius: 8px; font-weight: 600;" autocomplete="off" />';
                 }
 
-                if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                if ( $value->status == 1 ){
+                    $visibility = '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill"><i class="fa fa-check-circle me-1"></i> Published</span>';
+                    $status = '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Active</span>';
                 } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $visibility = '<span class="badge bg-light text-muted border px-2 py-1 rounded-pill"><i class="fa fa-eye-slash me-1"></i> Hidden</span>';
+                    $status = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill">Inactive</span>';
                 }
 
-                $action = '<a href="' . route('nutritionPanel.dish-types.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<a href="' . route('nutritionPanel.dish-types.edit', ['id' => ev($value->id)]) . '" class="btn btn-sm btn-outline-primary px-2 py-1 rounded-2 d-inline-flex align-items-center gap-1" title="Edit"><i class="fa fa-pencil"></i> <span>Edit</span></a>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"                => $value->id,
                     "name"              => $name,
+                    "visibility"        => $visibility,
                     "order"             => $order,
                     "status"            => $status,
                     "action"            => $action,

@@ -64,7 +64,7 @@ class DishType extends Model
 
         // Table columns sort conditions
         if (!(empty($sort)) && $sort['column'] > 0) {
-            $arr_fields = array("", "name", 'order', "status", "");
+            $arr_fields = array("", "name", "status", 'order', "status", "");
             for ($field = 0; $field < count($arr_fields); $field++) {
                 if ($sort['column'] == $field && $arr_fields[$field] != "") {
                     $dishTypes = $dishTypes->orderBy($arr_fields[$field], $sort['dir']);

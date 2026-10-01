@@ -189,6 +189,7 @@ var DishType = (function() {
                         sortable: false
                     },
                     { data: "name", name: "name" },
+                    { data: "visibility", name: "visibility", searchable: true, sortable: true },
                     { data: "order", name: "order" , width:80  },
                     { data: "status", name: "status" , width:80 },
                     {
@@ -307,7 +308,57 @@ var DishType = (function() {
 
                 // Additional form validation methods
                 Components.additionalValidationMethods();
-               //----------
+
+                // Update counter and toggle empty state if needed
+                var info = table.page.info();
+                $("#tableDishCount").text(info.recordsDisplay);
+                $("#metricTotal").text(info.recordsTotal);
+                
+                if (info.recordsDisplay === 0) {
+                    $(".custom-empty-state-wrap").show();
+                    $("#dataTable").hide();
+                    $(".dataTables_paginate").hide();
+                    $(".dataTables_info").hide();
+                } else {
+                    $(".custom-empty-state-wrap").hide();
+                    $("#dataTable").show();
+                    $(".dataTables_paginate").show();
+                    $(".dataTables_info").show();
+                }
+            });
+
+            // Custom search input
+            $("#customSearchInput").on("keyup input", function() {
+                table.search(this.value).draw();
+            });
+
+            // Custom page length select
+            $("#customPageLength").on("change", function() {
+                table.page.len(parseInt(this.value)).draw();
+            });
+
+            // Visibility filter
+            $("#filterVisibility").on("change", function() {
+                var val = $(this).val();
+                if (val === "all") {
+                    table.column(2).search("").draw();
+                } else if (val === "1") {
+                    table.column(2).search("Published").draw();
+                } else if (val === "0") {
+                    table.column(2).search("Hidden").draw();
+                }
+            });
+
+            // Status filter
+            $("#filterStatus").on("change", function() {
+                var val = $(this).val();
+                if (val === "all") {
+                    table.column(4).search("").draw();
+                } else if (val === "1") {
+                    table.column(4).search("Active").draw();
+                } else if (val === "0") {
+                    table.column(4).search("Inactive").draw();
+                }
             });
 
             // multiCheck($dataTable);
