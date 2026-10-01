@@ -31,44 +31,14 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        // Get users
         $authUser = auth()->user();
-        //----------
 
-        // Adding breadcrumb array
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'View Orders' => '',
-        ];
+        $userId = $request->id ? dv($request->id) : null;
+        $summary = Order::getOrdersSummary(null, ['user_id' => $userId]);
 
-        // Breadcrumb Button
-        $breadcrumbButton = [];
-        // Add Button
-
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
-            'btn_link' => 'javascript:;',
-            'btn_icon' => 'filter',
-            'btn_text' => __('language.filter'),
-            'attributes' => []
-        ];
-
-        // $breadcrumbButton[] = [
-        //     'btn_class' => 'btn btn-primary mt-2 rounded-circle create-order',
-        //     'btn_link' => 'javascript:;',
-        //     'btn_icon' => 'plus',
-        //     'btn_text' => __('language.add_button'),
-        //     'attributes' => ['data-url' => route('nutritionPanel.orders.addOrder')]
-        // ];
-
-        $this->viewData['breadcrumbFilter'] = $breadcrumb;
-        $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
-        if($request->id){
-            $this->viewData['user_id'] = dv($request->id);
-        } else {
-            $this->viewData['user_id'] = $request->id;
-        }
+        $this->viewData['user_id'] = $userId;
+        $this->viewData['summary'] = $summary;
 
         return view('nutrition-panel.orders.index')->with($this->viewData);
     }
@@ -89,8 +59,14 @@ class OrderController extends Controller
         $draw = $request->get('draw');
         $start = $request->get('start');
         $limit = $request->get('length');
-        $sort = $request->get('order')[0] ?? null;
-        $search = $request->get('search')['value'];
+        $order = $request->get('order');
+        $sort = (!empty($order) && is_array($order)) ? $order[0] : null;
+
+        $searchVal = $request->get('search');
+        $search = is_array($searchVal) ? ($searchVal['value'] ?? null) : null;
+        if (empty($search) && !empty($request->search_query)) {
+            $search = $request->search_query;
+        }
 
         // Filter data
         $filter = array(
@@ -104,6 +80,7 @@ class OrderController extends Controller
         // Get Orders list
         $records_count = Order::GetOrders(null, null, $search, $filter, $sort);
         $records = Order::GetOrders($limit, $start, $search, $filter, $sort);
+        $summary = Order::GetOrdersSummary($search, $filter);
 
         $arr_data = array();
 
@@ -114,189 +91,135 @@ class OrderController extends Controller
                 $orderDate      = 'N/A';
                 $orderNumber    = 'N/A';
                 $user_name      = 'N/A';
-                $mobileNumber   = 'N/A';
-                $total_amount   = 'N/A';
-                $discount       = 'N/A';
-                $net_amount     = 'N/A';
+                $mobile_number  = 'N/A';
+                $total_amount   = 0;
+                $discount       = 0;
+                $net_amount     = 0;
                 $payment_status = '';
                 $order_status   = '';
                 $action         = '';
 
-    // 13  payment_status  tinyint(4)          No  1   1- Pending 2- Success 3- Failed     Change Change   Drop Drop   
-    // 14  order_status    tinyint(4)          No  1   1.Order Placed 2. Ready to ship 4. Shipped 5. In Transit 6. Delivered 7. Cancelled 8. Refund
-
                 // Preparing Data
-                $serial = ($key+1);
-
-                // Transaction Info Column
-                if(!empty($value->created_at)){
-                    $created = Carbon::parse($value->created_at)->addMinutes(330)->format('d M, Y h:i A');
-                }
+                $created = !empty($value->created_at) ? Carbon::parse($value->created_at)->addMinutes(330)->format('d M, Y h:i A') : 'N/A';
                 
-                $transactionInfo = 'Date : '.$created;
-                
-                $orderNumber = '<a target="_new" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">';
-                $orderNumber .= '#'.$value->order_number;
-                $orderNumber .= '</a>';
-
-                $transactionInfo .= '<br/>Order Number : '.$orderNumber;
+                $orderDetailUrl = route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]);
+                $transactionInfo = '<div class="order-info-cell">'
+                    . '<div class="order-date-text">Date : ' . $created . '</div>'
+                    . '<div class="order-num-text">Order Number : <a href="' . $orderDetailUrl . '" class="order-link">#' . e($value->order_number) . '</a></div>'
+                    . '</div>';
 
                 // User Info Column
-                $user_name = $value->user_name ?? $user_name;
-                $mobile_number = $value->mobile_number ?? $mobileNumber;
+                $user_name = !empty($value->user_name) ? e($value->user_name) : 'N/A';
+                $mobile_number = !empty($value->mobile_number) ? e($value->mobile_number) : 'N/A';
 
-                $total_amount = $value->total_amount;
-                $discount = $value->discount;
-                $net_amount = $value->net_amount;
+                $total_amount = $value->total_amount ?? 0;
+                $discount = $value->discount ?? 0;
+                $net_amount = $value->net_amount ?? 0;
 
-                if($value->payment_status == 1){
-                    $payment_status = 'Pending';
-                    $color = 'btn-danger';
-                } else if($value->payment_status == 2){
-                    $payment_status = 'Success';
-                    $color = 'btn-success';
+                // Payment Status interactive pill dropdown
+                $statusChangeUrl = route('nutritionPanel.orders.paymentStatusChange');
+                $orderIdEnc = ev($value->id);
+
+                if($value->payment_status == 2){
+                    $payment_status = '
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn-payment-pill pill-success dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Success <i class="fa fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <a class="dropdown-item payment-status-change cursor-pointer" data-payment-status-url="'.$statusChangeUrl.'" data-status="1" data-id="'.$orderIdEnc.'">Pending</a>
+                                <a class="dropdown-item payment-status-change cursor-pointer" data-payment-status-url="'.$statusChangeUrl.'" data-status="2" data-id="'.$orderIdEnc.'">Success</a>
+                            </div>
+                        </div>';
                 } else {
-                    $payment_status = 'Failed';
-                    $color = 'btn-danger';
+                    $payment_status = '
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn-payment-pill pill-pending dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Pending <i class="fa fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <a class="dropdown-item payment-status-change cursor-pointer" data-payment-status-url="'.$statusChangeUrl.'" data-status="1" data-id="'.$orderIdEnc.'">Pending</a>
+                                <a class="dropdown-item payment-status-change cursor-pointer" data-payment-status-url="'.$statusChangeUrl.'" data-status="2" data-id="'.$orderIdEnc.'">Success</a>
+                            </div>
+                        </div>';
                 }
 
-                $payment_status = '
-                    <div class="btn-group">
-                        <button type="button" class="btn '.$color.' btn-sm">'.$payment_status.'</button>
-                        <button type="button" class="btn '.$color.' btn-sm dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                // Order Status Badges
+                if ($value->order_status == 1) {
+                    $order_status = '<span class="badge-order-status status-placed">Order Placed</span>';
+                } else if ($value->order_status == 2) {
+                    $order_status = '<span class="badge-order-status status-ready">Ready to Ship</span>';
+                } else if ($value->order_status == 3) {
+                    $order_status = '<span class="badge-order-status status-return">Return</span>';
+                } else if ($value->order_status == 4) {
+                    $order_status = '<span class="badge-order-status status-shipped">Shipped</span>';
+                } else if ($value->order_status == 5) {
+                    $order_status = '<span class="badge-order-status status-transit">In Transit</span>';
+                } else if ($value->order_status == 6) {
+                    $order_status = '<span class="badge-order-status status-delivered">Delivered</span>';
+                } else if ($value->order_status == 7) {
+                    $order_status = '<span class="badge-order-status status-cancelled">Cancelled</span>';
+                } else if ($value->order_status == 8) {
+                    $order_status = '<span class="badge-order-status status-refund">Refund</span>';
+                } else {
+                    $order_status = '<span class="badge-order-status status-placed">Order Placed</span>';
+                }
+
+                // Action Dropdown with modern icons
+                $changeStatusUrl = route('nutritionPanel.orders.changeStatus');
+                $actionItems = '';
+
+                if ($value->order_status == 1) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="2" data-id="'.$orderIdEnc.'"><i class="fa fa-cube action-item-icon"></i> Ready to Ship</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="3" data-id="'.$orderIdEnc.'"><i class="fa fa-undo action-item-icon"></i> Return</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="4" data-id="'.$orderIdEnc.'"><i class="fa fa-truck action-item-icon"></i> Shipped</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="5" data-id="'.$orderIdEnc.'"><i class="fa fa-compass action-item-icon"></i> In Transit</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="6" data-id="'.$orderIdEnc.'"><i class="fa fa-check-circle action-item-icon"></i> Delivered</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="7" data-id="'.$orderIdEnc.'"><i class="fa fa-times-circle action-item-icon"></i> Cancelled</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="8" data-id="'.$orderIdEnc.'"><i class="fa fa-credit-card action-item-icon"></i> Refund</a>';
+                } else if ($value->order_status == 2) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="3" data-id="'.$orderIdEnc.'"><i class="fa fa-undo action-item-icon"></i> Return</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="4" data-id="'.$orderIdEnc.'"><i class="fa fa-truck action-item-icon"></i> Shipped</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="5" data-id="'.$orderIdEnc.'"><i class="fa fa-compass action-item-icon"></i> In Transit</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="6" data-id="'.$orderIdEnc.'"><i class="fa fa-check-circle action-item-icon"></i> Delivered</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="7" data-id="'.$orderIdEnc.'"><i class="fa fa-times-circle action-item-icon"></i> Cancelled</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="8" data-id="'.$orderIdEnc.'"><i class="fa fa-credit-card action-item-icon"></i> Refund</a>';
+                } else if ($value->order_status == 3) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="8" data-id="'.$orderIdEnc.'"><i class="fa fa-credit-card action-item-icon"></i> Refund</a>';
+                } else if ($value->order_status == 4) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="5" data-id="'.$orderIdEnc.'"><i class="fa fa-compass action-item-icon"></i> In Transit</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="6" data-id="'.$orderIdEnc.'"><i class="fa fa-check-circle action-item-icon"></i> Delivered</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="7" data-id="'.$orderIdEnc.'"><i class="fa fa-times-circle action-item-icon"></i> Cancelled</a>';
+                } else if ($value->order_status == 5) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="6" data-id="'.$orderIdEnc.'"><i class="fa fa-check-circle action-item-icon"></i> Delivered</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="7" data-id="'.$orderIdEnc.'"><i class="fa fa-times-circle action-item-icon"></i> Cancelled</a>';
+                } else if ($value->order_status == 6) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="3" data-id="'.$orderIdEnc.'"><i class="fa fa-undo action-item-icon"></i> Return</a>';
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="8" data-id="'.$orderIdEnc.'"><i class="fa fa-credit-card action-item-icon"></i> Refund</a>';
+                } else if ($value->order_status == 7) {
+                    $actionItems .= '<a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.$changeStatusUrl.'" data-status="8" data-id="'.$orderIdEnc.'"><i class="fa fa-credit-card action-item-icon"></i> Refund</a>';
+                }
+
+                $action = '
+                    <div class="dropdown custom-action-dropdown">
+                        <button type="button" class="btn-action-dots dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuReference1">
-                          <a class="dropdown-item payment-status-change cursor-pointer" data-payment-status-url="'.route('nutritionPanel.orders.paymentStatusChange').'" data-status="1" data-id="'.ev($value->id).'">Pending</a>
-                          <a class="dropdown-item payment-status-change cursor-pointer" data-payment-status-url="'.route('nutritionPanel.orders.paymentStatusChange').'" data-status="2" data-id="'.ev($value->id).'">Success</a>
+                        <div class="dropdown-menu dropdown-menu-end action-dropdown-menu shadow">
+                            ' . $actionItems . '
+                            ' . (!empty($actionItems) ? '<div class="dropdown-divider"></div>' : '') . '
+                            <a class="dropdown-item" href="' . $orderDetailUrl . '"><i class="fa fa-external-link action-item-icon"></i> View Details</a>
                         </div>
-                    </div>
-                ';
+                    </div>';
 
-                if ($value->order_status == 1)  {
-                    $order_status = '<label class="badge badge-dark">Order Placed</label>';
-                } else if ($value->order_status == 2) {
-                    $order_status = '<label class="badge badge-info">Ready to Ship</label>';
-                } else if ($value->order_status == 3) {
-                    $order_status = '<label class="badge badge-warning">Return</label>';
-                } else if ($value->order_status == 4) {
-                    $order_status = '<label class="badge badge-dark">Shipped</label>';
-                } else if ($value->order_status == 5) {
-                    $order_status = '<label class="badge badge-primary">In Transit</label>';
-                } else if ($value->order_status == 6) {
-                    $order_status = '<label class="badge badge-success">Delivered</label>';
-                } else if ($value->order_status == 7) {
-                    $order_status = '<label class="badge badge-danger">Cancelled</label>';
-                } else if ($value->order_status == 8) {
-                    $order_status = '<label class="badge badge-success">Refund</label>';
-                }
-
-                if ($value->order_status == 1)  {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="2" data-id="'.ev($value->id).'">Ready to Ship</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="3" data-id="'.ev($value->id).'">Return</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="4" data-id="'.ev($value->id).'">Shipped</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="5" data-id="'.ev($value->id).'">In Transit</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="6" data-id="'.ev($value->id).'">Delivered</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="7" data-id="'.ev($value->id).'">Cancelled</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="8" data-id="'.ev($value->id).'">Refund</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 2) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="3" data-id="'.ev($value->id).'">Return</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="4" data-id="'.ev($value->id).'">Shipped</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="5" data-id="'.ev($value->id).'">In Transit</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="6" data-id="'.ev($value->id).'">Delivered</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="7" data-id="'.ev($value->id).'">Cancelled</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="8" data-id="'.ev($value->id).'">Refund</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 3) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="8" data-id="'.ev($value->id).'">Refund</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 4) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="5" data-id="'.ev($value->id).'">In Transit</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="6" data-id="'.ev($value->id).'">Delivered</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="7" data-id="'.ev($value->id).'">Cancelled</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 5) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="6" data-id="'.ev($value->id).'">Delivered</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="7" data-id="'.ev($value->id).'">Cancelled</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 6) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="3" data-id="'.ev($value->id).'">Return</a>
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="8" data-id="'.ev($value->id).'">Refund</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 7) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item change-status-single cursor-pointer" data-change-status-url="'.route('nutritionPanel.orders.changeStatus').'" data-status="8" data-id="'.ev($value->id).'">Refund</a>
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                } else if ($value->order_status == 8) {
-                    $action = '<div class="dropdown custom-dropdown">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink6">
-                            <a class="dropdown-item" href="'.route('nutritionPanel.orders.getOrderDetails', ['id' => ev($value->id)]).'">View Details</a>
-                        </div>
-                    </div>';
-                }
-
-                $action .= '</div> </div>';
-                
                 // Array Data
                 $arr_data[] = array(
                     "transaction_info"  => $transactionInfo,
-                    "user_name"         => $user_name,
-                    "mobile_number"     => $mobile_number,
-                    "total_amount"      => $total_amount,
-                    "discount"          => $discount,
-                    "net_amount"        => $net_amount,
+                    "user_name"         => '<span class="order-user-name">' . $user_name . '</span>',
+                    "mobile_number"     => '<span class="order-mobile-num">' . $mobile_number . '</span>',
+                    "total_amount"      => '<span class="order-amount">' . number_format((float)$total_amount, 2, '.', '') . '</span>',
+                    "discount"          => '<span class="order-discount">' . (floatval($discount) > 0 ? number_format((float)$discount, 2, '.', '') : '0') . '</span>',
+                    "net_amount"        => '<span class="order-net-amount">' . number_format((float)$net_amount, 2, '.', '') . '</span>',
                     "payment_status"    => $payment_status,
                     "order_status"      => $order_status,
                     "action"            => $action
@@ -304,16 +227,16 @@ class OrderController extends Controller
             }
         }
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),
             "iTotalRecords"         => $totalRecords,
             "iTotalDisplayRecords"  => $totalRecords,
-            "aaData"                => $arr_data
+            "aaData"                => $arr_data,
+            "summary"               => $summary
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 
     /**
@@ -340,35 +263,35 @@ class OrderController extends Controller
             $orderDetail = Order::where('id', dv($request['ids']))->first();
 
             // Send Push Notifications
-            $receiverData = User::where('id',$orderDetails->user_id)->first();
+            $receiverData = ($orderDetail && !empty($orderDetail->user_id)) ? User::where('id', $orderDetail->user_id)->first() : null;
 
             $senderData['name'] = '';
 
-            if($receiverData['name'] == ''){
-                $receiverData['name'] = 'Anonymous User';
+            if (empty($receiverData) || empty($receiverData['name'])) {
+                $receiverDataName = 'Anonymous User';
             } else {
-                $receiverData['name'] = $receiverData['name'];
+                $receiverDataName = $receiverData['name'];
             }
 
-            if ($orderDetail->order_status == 1)  {
+            if ($orderDetail && $orderDetail->order_status == 1)  {
                 $orderStatus = 'Order Placed';
-            } else if ($orderDetail->order_status == 2) {
+            } else if ($orderDetail && $orderDetail->order_status == 2) {
                 $orderStatus = 'Ready to Ship';
-            } else if ($orderDetail->order_status == 3) {
+            } else if ($orderDetail && $orderDetail->order_status == 3) {
                 $orderStatus = 'Return';
-            } else if ($orderDetail->order_status == 4) {
+            } else if ($orderDetail && $orderDetail->order_status == 4) {
                 $orderStatus = 'Shipped';
-            } else if ($orderDetail->order_status == 5) {
+            } else if ($orderDetail && $orderDetail->order_status == 5) {
                 $orderStatus = 'In Transit';
-            } else if ($orderDetail->order_status == 6) {
+            } else if ($orderDetail && $orderDetail->order_status == 6) {
                 $orderStatus = 'Delivered';
-            } else if ($orderDetail->order_status == 7) {
+            } else if ($orderDetail && $orderDetail->order_status == 7) {
                 $orderStatus = 'Cancelled';
-            } else if ($orderDetail->order_status == 8) {
+            } else if ($orderDetail && $orderDetail->order_status == 8) {
                 $orderStatus = 'Refund';
             }
             //------------
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Order refund Error: ' . $e->getMessage());
         }
 
@@ -402,12 +325,7 @@ class OrderController extends Controller
         ];
 
         // Get Order Details
-        $orderDetails = Order::where('id', dv($id))
-        ->with([
-            'orderDetails' => function ($query) use ($defaultLanguage, $search, $filter, $sort) {
-            }
-        ])
-        ->first();
+        $orderDetails = Order::where('id', dv($id))->first();
         //------------
 
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
@@ -440,18 +358,18 @@ class OrderController extends Controller
             $orderDetail = Order::where('id', dv($request['ids']))->first();
 
             if($request['status'] == 1){
-                Transaction::where('order_id', dv($request['ids']))->where('user_id',$orderDetail['user_id'])->update([
+                Transaction::where('order_id', dv($request['ids']))->where('user_id', $orderDetail['user_id'] ?? null)->update([
                     'payment_type' => 'Pending', 
                 ]);
             } else {
-                Transaction::where('order_id', dv($request['ids']))->where('user_id',$orderDetail['user_id'])->update([
+                Transaction::where('order_id', dv($request['ids']))->where('user_id', $orderDetail['user_id'] ?? null)->update([
                     'payment_type' => 'Received', 
                 ]);
             }
             
             //------------
-        } catch (Exception $e) {
-            \Log::error('Order refund Error: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            \Log::error('Order payment status Error: ' . $e->getMessage());
         }
 
         $response = [

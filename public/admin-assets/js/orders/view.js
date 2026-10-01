@@ -1,15 +1,14 @@
 var Order = (function() {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
+    var searchTimer = null;
+
     return {
         /**
          * Initialization.
          */
         init: function() {
             Order.getOrders();
-            Order.initializeComponents();
-            Order.dataTableCustomFilter();
+            Order.initializeFilters();
             Order.changeStatus();
             Order.paymentStatusChange();
             Order.customValidationMethods();
@@ -21,308 +20,259 @@ var Order = (function() {
         },
 
         /**
-         * Initialize components.
+         * Initialize Filter Controls.
          */
-        initializeComponents: function() {
-            var $filter_form = $(".custom-datatable-filter-form");
+        initializeFilters: function() {
+            // Date Range Picker initialization
+            var $dateRange = $("#order_date_range");
+            if ($dateRange.length && typeof $.fn.daterangepicker !== "undefined") {
+                $dateRange.daterangepicker({
+                    autoUpdateInput: false,
+                    opens: "left",
+                    locale: {
+                        cancelLabel: "Clear",
+                        format: "DD-MM-YYYY"
+                    }
+                });
 
-            // Bootstrap Select on filter form dropdowns
-            Components.bootstrapSelect($filter_form);
-            //------------
+                $dateRange.on("apply.daterangepicker", function(ev, picker) {
+                    $(this).val(picker.startDate.format("DD-MM-YYYY") + " - " + picker.endDate.format("DD-MM-YYYY"));
+                    $(this).data("range-value", picker.startDate.format("YYYY-MM-DD") + "/" + picker.endDate.format("YYYY-MM-DD"));
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
 
-            // Enable Button on change filter form elements
-            Components.enableButton($filter_form);
-            //------------
-
-
-            // Date Range picker
-            var $date_range_picker = $filter_form.find(".filter-date-range-picker");
-
-            if ($date_range_picker.length) {
-                $date_range_picker.flatpickr({
-                    dateFormat: "d-m-Y",
-                    mode: "range",
-                    maxDate: "today",
+                $dateRange.on("cancel.daterangepicker", function(ev, picker) {
+                    $(this).val("");
+                    $(this).data("range-value", "");
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
                 });
             }
-            //----------------
-        },
 
-        /**
-         * Datatable custom filter.
-         */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
+            // Real-time search with debounce
+            $("#order_search").on("keyup input change", function() {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function() {
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                }, 350);
+            });
+
+            // Filter dropdown change
+            $("#order_payment_status, #order_status_filter").on("change", function() {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Page length dropdown change
+            $("#order_page_length").on("change", function() {
+                var len = parseInt($(this).val(), 10) || 10;
+                if (data_table) {
+                    data_table.page.len(len).draw();
+                }
+            });
+
+            // Clear all filters
+            $("#btn_clear_filters").on("click", function(e) {
+                e.preventDefault();
+                $("#order_search").val("");
+                if ($dateRange.length) {
+                    $dateRange.val("").data("range-value", "");
+                }
+                $("#order_payment_status").val("");
+                $("#order_status_filter").val("");
+                $("#order_page_length").val("10");
+
+                if (data_table) {
+                    data_table.page.len(10);
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Toggle filters bar on button click
+            $("#btn_toggle_header_filters, #btn_toggle_more_filters").on("click", function(e) {
+                e.preventDefault();
+                $(".ledger-filters-grid").slideToggle(200);
             });
         },
 
         /**
-         * Updates "Select all" control in a data table
-         */
-        updateDataTableSelectAllCtrl: function(table) {
-            if(viewPermission == 1 && deletePermission == 1){
-                var $table = table.table().node();
-                var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-                var $chkbox_checked = $(
-                    'tbody input[type="checkbox"]:checked',
-                    $table
-                );
-                var chkbox_select_all = $(
-                    'thead input[name="select_all"]',
-                    $table
-                ).get(0);
-
-                // If none of the checkboxes are checked
-                if ($chkbox_checked.length === 0) {
-                    chkbox_select_all.checked = false;
-
-                    if ("indeterminate" in chkbox_select_all) {
-                        chkbox_select_all.indeterminate = false;
-                    }
-
-                    // If all of the checkboxes are checked
-                } else if ($chkbox_checked.length === $chkbox_all.length) {
-                    chkbox_select_all.checked = true;
-
-                    if ("indeterminate" in chkbox_select_all) {
-                        chkbox_select_all.indeterminate = false;
-                    }
-
-                    // If some of the checkboxes are checked
-                } else {
-                    chkbox_select_all.checked = true;
-                    if ("indeterminate" in chkbox_select_all) {
-                        chkbox_select_all.indeterminate = true;
-                    }
-                }
-            }
-        },
-
-        /**
-         * Get Orders list.
+         * Get Orders list with modern DataTables configuration.
          */
         getOrders: function() {
             var $dataTable = $("#dataTable");
 
-            data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-
-                    // $('.btn-toolbar').append(
-                    //     '<a href="'+$dataTable.data('export-csv-url')+'" title="Export CSV" class="btn btn-icon btn-rounded btn-primary btn-outline export-csv-all"> <i class="fa fa-file-text" aria-hidden="true" download></i> &nbsp; Export All </button> '
-                    // );
-                },
-                buttons: {
-                    buttons: [
-                        // {
-                        //     extend: "excel",
-                        //     className: "all-page-button",
-                        //     exportOptions: {
-                        //         modifier: {
-                        //             page: "all",
-                        //             search: "none"
-                        //         },
-                        //         columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-                        //     }
-                        // }
-                    ]
-                },
-                searching: false,
-                oLanguage: {
-                    oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
-                },
+            data_table = $dataTable.DataTable({
                 processing: true,
                 serverSide: true,
-                lengthMenu: [
-                    [10, 20, 50, 75, 100],
-                    [10, 20, 50, 75, 100]
-                ],
-                'aaSorting': [],
+                ordering: true,
+                order: [[0, "desc"]], // Sort by Order Date DESC
                 pageLength: 10,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"dt-bottom-row"ip>',
+                oLanguage: {
+                    oPaginate: {
+                        sPrevious: '<i class="fa fa-angle-left"></i> Previous',
+                        sNext: 'Next <i class="fa fa-angle-right"></i>'
+                    },
+                    sInfo: "Showing _TOTAL_ orders",
+                    sEmptyTable: "No orders found",
+                    sZeroRecords: "No matching orders found"
+                },
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
-                        d.filter = $("#filter").val();
-                        d.filter_date_range = $("#filter_date_range").val();
+                        var searchVal = $("#order_search").val();
+                        d.filter = searchVal;
+                        d.search_query = searchVal;
+                        d.filter_date_range = $("#order_date_range").data("range-value") || "";
                         d.user_id = $("#user_id").val();
-                        d.status_filter = $("select[name=status_filter]").val();
-                        d.payment_status_filter = $("select[name=payment_status_filter]").val();
+                        d.status_filter = $("#order_status_filter").val();
+                        d.payment_status_filter = $("#order_payment_status").val();
                     }
                 },
                 columns: [
-                    { data: "transaction_info", name: "transaction_info", searchable: false, orderable: false },
-                    { data: "user_name", name: "user_name", searchable: false, orderable: false },
-                    { data: "mobile_number", name: "mobile_number", searchable: false, orderable: false },
-                    { data: "total_amount", name: "total_amount", searchable: false, orderable: false },
-                    { data: "discount", name: "discount", searchable: false, orderable: false },
-                    { data: "net_amount", name: "net_amount", searchable: false, orderable: false },
-                    { data: "payment_status", name: "payment_status", searchable: false, orderable: false },
-                    { data: "order_status", searchable: false, orderable: false },
-                    { data: "action", name: "action", searchable: false, orderable: false, align: 'right' }
+                    { data: "transaction_info", name: "created_at" },
+                    { data: "user_name", name: "user_name" },
+                    { data: "mobile_number", name: "mobile_number" },
+                    { data: "total_amount", name: "total_amount" },
+                    { data: "discount", name: "discount" },
+                    { data: "net_amount", name: "net_amount" },
+                    { data: "payment_status", name: "payment_status" },
+                    { data: "order_status", name: "order_status" },
+                    {
+                        data: "action",
+                        name: "action",
+                        searchable: false,
+                        orderable: false,
+                        className: "text-end"
+                    }
                 ],
+                drawCallback: function(settings) {
+                    var json = settings.json;
+                    var info = this.api().page.info();
 
-                footerCallback: function (row, data, start, end, display) {
+                    // Update visible orders counter
+                    var visibleCount = (json && typeof json.iTotalDisplayRecords !== "undefined") ? json.iTotalDisplayRecords : info.recordsDisplay;
+                    $("#visible_order_count").text(visibleCount);
 
-                    let totalAmount = 0;
-                    let discount    = 0;
-                    let netAmount   = 0;
-
-                    data.forEach(function (row) {
-                        // ❌ Cancelled order skip
-                        if (row.order_status === '<label class="badge badge-danger">Cancelled</label>') {
-                            return;
+                    // Update KPI cards dynamically if summary was returned
+                    if (json && json.summary) {
+                        var s = json.summary;
+                        if (typeof s.total_orders_formatted !== "undefined") {
+                            $("#kpi_total_orders").text(s.total_orders_formatted);
+                        }
+                        if (typeof s.net_amount_formatted !== "undefined") {
+                            $("#kpi_net_amount").text(s.net_amount_formatted);
+                        }
+                        if (typeof s.successful_payments_formatted !== "undefined") {
+                            $("#kpi_successful_payments").text(s.successful_payments_formatted);
+                        }
+                        if (typeof s.pending_payments_formatted !== "undefined") {
+                            $("#kpi_pending_payments").text(s.pending_payments_formatted);
                         }
 
-                        totalAmount += parseFloat(row.total_amount) || 0;
-                        discount    += parseFloat(row.discount) || 0;
-                        netAmount   += parseFloat(row.net_amount) || 0;
-                    });
+                        // Progress Bar Segments
+                        if (typeof s.delivered_percent !== "undefined") {
+                            $("#kpi_seg_delivered").css("width", s.delivered_percent + "%");
+                        }
+                        if (typeof s.cancelled_percent !== "undefined") {
+                            $("#kpi_seg_cancelled").css("width", s.cancelled_percent + "%");
+                        }
+                        if (typeof s.order_placed_percent !== "undefined") {
+                            $("#kpi_seg_placed").css("width", s.order_placed_percent + "%");
+                        }
 
-                    $('#total_amount_footer').html(totalAmount.toFixed(2));
-                    $('#discount_footer').html(discount.toFixed(2));
-                    $('#net_amount_footer').html(netAmount.toFixed(2));
-                },
-
-                drawCallback: function(settings){
-                    $source = $(".custom-datatable-filter-form");
-                    if(settings.iDraw > 1)
-                    {
-                        App.stopFilterFormLoading($source);
+                        // Legend Counts
+                        if (typeof s.delivered_orders !== "undefined") {
+                            $("#kpi_legend_delivered").text(s.delivered_orders);
+                        }
+                        if (typeof s.cancelled_orders !== "undefined") {
+                            $("#kpi_legend_cancelled").text(s.cancelled_orders);
+                        }
+                        if (typeof s.order_placed !== "undefined") {
+                            $("#kpi_legend_placed").text(s.order_placed);
+                        }
                     }
-                },
+                }
             });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                $source = $(".custom-datatable-filter-form");
-                data_table.ajax.reload();
-                App.filterFormLoading($source);
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-
-                // Making draw count to 0 to make filters at init state.
-                data_table.settings()[0].iDraw = 0;
-                data_table.ajax.reload();
-
-                // Disable button click on clear filters
-                Components.enableButton($source);
-                
-                e.preventDefault();
-            });
-            //-------------
-
         },
 
         /**
-         * Change Single status.
+         * Change Single order status.
          */
         changeStatus: function() {
-            var $data_table_container = $(".data-table-container");
-            var $dataTable = $(".dataTable");
+            var $dataTable = $("#dataTable");
 
-            // Handle form submission event
-            $dataTable.on("click", ".change-status-single", function(element) {
-                
+            $dataTable.on("click", ".change-status-single", function(e) {
+                e.preventDefault();
                 var statusUrl = $(this).attr('data-change-status-url');
                 var dataStatus = $(this).data("status");
                 var ids = $(this).data("id");
 
-                iziToast.question({
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: "once",
-                    color: "yellow",
-                    id: "question",
-                    zindex: 99999,
-                    title: "Hey!",
-                    message: "Are you sure to want to change status?",
-                    position: "center",
-                    progressBar: false,
-                    buttons: [
-                        [
-                            "<button><b>YES</b></button>",
-                            function(instance, toast) {
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
+                if (typeof iziToast !== "undefined") {
+                    iziToast.question({
+                        timeout: 20000,
+                        close: false,
+                        overlay: true,
+                        displayMode: "once",
+                        color: "yellow",
+                        id: "question",
+                        zindex: 99999,
+                        title: "Hey!",
+                        message: "Are you sure you want to change order status?",
+                        position: "center",
+                        progressBar: false,
+                        buttons: [
+                            [
+                                "<button><b>YES</b></button>",
+                                function(instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
 
-                                $.ajax({
-                                    type: "POST",
-                                    url: statusUrl,
-                                    data: { ids: ids, status: dataStatus},
-                                    success: function(response) {
-                                        App.showNotification(response);
-                                        data_table.ajax.reload(null, false);
-                                        rows_selected = [];
-                                    },
-                                    error: function() {},
-                                });
-                            },
-                            false
-                        ],
-                        [
-                            "<button>NO</button>",
-                            function(instance, toast) {
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
-                            }
+                                    $.ajax({
+                                        type: "POST",
+                                        url: statusUrl,
+                                        data: { ids: ids, status: dataStatus },
+                                        success: function(response) {
+                                            if (typeof App !== "undefined" && App.showNotification) {
+                                                App.showNotification(response);
+                                            }
+                                            if (data_table) {
+                                                data_table.ajax.reload(null, false);
+                                            }
+                                        },
+                                        error: function() {}
+                                    });
+                                },
+                                false
+                            ],
+                            [
+                                "<button>NO</button>",
+                                function(instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                                }
+                            ]
                         ]
-                    ],
-                    onClosing: function(instance, toast, closedBy) {
-                        console.info("Closing | closedBy: " + closedBy);
-                    },
-                    onClosed: function(instance, toast, closedBy) {
-                        console.info("Closed | closedBy: " + closedBy);
-                    }
-                });
+                    });
+                } else if (confirm("Are you sure you want to change order status?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: statusUrl,
+                        data: { ids: ids, status: dataStatus },
+                        success: function(response) {
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
+                            if (data_table) {
+                                data_table.ajax.reload(null, false);
+                            }
+                        }
+                    });
+                }
             });
         },
 
@@ -330,70 +280,73 @@ var Order = (function() {
          * Payment Status Change.
          */
         paymentStatusChange: function() {
-            var $data_table_container = $(".data-table-container");
-            var $dataTable = $(".dataTable");
+            var $dataTable = $("#dataTable");
 
-            // Handle form submission event
-            $dataTable.on("click", ".payment-status-change", function(element) {
-                 
+            $dataTable.on("click", ".payment-status-change", function(e) {
+                e.preventDefault();
                 var statusUrl = $(this).attr('data-payment-status-url');
                 var dataStatus = $(this).data("status");
                 var ids = $(this).data("id");
 
-                iziToast.question({
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: "once",
-                    color: "yellow",
-                    id: "question",
-                    zindex: 99999,
-                    title: "Hey!",
-                    message: "Are you sure to want to change payment status?",
-                    position: "center",
-                    progressBar: false,
-                    buttons: [
-                        [
-                            "<button><b>YES</b></button>",
-                            function(instance, toast) {
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
+                if (typeof iziToast !== "undefined") {
+                    iziToast.question({
+                        timeout: 20000,
+                        close: false,
+                        overlay: true,
+                        displayMode: "once",
+                        color: "yellow",
+                        id: "question",
+                        zindex: 99999,
+                        title: "Hey!",
+                        message: "Are you sure you want to change payment status?",
+                        position: "center",
+                        progressBar: false,
+                        buttons: [
+                            [
+                                "<button><b>YES</b></button>",
+                                function(instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
 
-                                $.ajax({
-                                    type: "POST",
-                                    url: statusUrl,
-                                    data: { ids: ids, status: dataStatus},
-                                    success: function(response) {
-                                        App.showNotification(response);
-                                        data_table.ajax.reload(null, false);
-                                        rows_selected = [];
-                                    },
-                                    error: function() {},
-                                });
-                            },
-                            false
-                        ],
-                        [
-                            "<button>NO</button>",
-                            function(instance, toast) {
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
-                            }
+                                    $.ajax({
+                                        type: "POST",
+                                        url: statusUrl,
+                                        data: { ids: ids, status: dataStatus },
+                                        success: function(response) {
+                                            if (typeof App !== "undefined" && App.showNotification) {
+                                                App.showNotification(response);
+                                            }
+                                            if (data_table) {
+                                                data_table.ajax.reload(null, false);
+                                            }
+                                        },
+                                        error: function() {}
+                                    });
+                                },
+                                false
+                            ],
+                            [
+                                "<button>NO</button>",
+                                function(instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                                }
+                            ]
                         ]
-                    ],
-                    onClosing: function(instance, toast, closedBy) {
-                        console.info("Closing | closedBy: " + closedBy);
-                    },
-                    onClosed: function(instance, toast, closedBy) {
-                        console.info("Closed | closedBy: " + closedBy);
-                    }
-                });
+                    });
+                } else if (confirm("Are you sure you want to change payment status?")) {
+                    $.ajax({
+                        type: "POST",
+                        url: statusUrl,
+                        data: { ids: ids, status: dataStatus },
+                        success: function(response) {
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
+                            if (data_table) {
+                                data_table.ajax.reload(null, false);
+                            }
+                        }
+                    });
+                }
             });
         },
 
@@ -401,6 +354,10 @@ var Order = (function() {
          * Custom validation methods.
          */
         customValidationMethods: function() {
+            if (typeof jQuery.validator === "undefined") {
+                return;
+            }
+
             jQuery.validator.addMethod(
                 "lettersOnly",
                 function(value, element) {
@@ -460,9 +417,7 @@ var Order = (function() {
          * Add Order
          */
         addOrder: function () {
-            var $source = $(".data-table-container");
-            $('.create-order').on("click", function () {
-
+            $(document).on("click", ".create-order", function () {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModalMedium");
 
@@ -470,18 +425,17 @@ var Order = (function() {
                 $configuration_modal
                     .find(".modal-content")
                     .load($this.data("url"), "", function () {
-                        Order.initializeComponents();
+                        if (typeof Components !== "undefined" && Components.bootstrapSelect) {
+                            var $filter_form = $(".add-order-form");
+                            Components.bootstrapSelect($filter_form);
+                        }
                         Order.validateAddOrderForm();
-
-                        var $filter_form = $(".add-order-form");
-
-                        // Bootstrap Select on filter form dropdowns
-                        Components.bootstrapSelect($filter_form);
-                        //------------
                     });
 
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
         },
@@ -491,15 +445,14 @@ var Order = (function() {
          */
         validateAddOrderForm: function() {
             var $form = $(".add-order-form");
+            if (!$form.length || typeof $form.validate === "undefined") {
+                return;
+            }
 
             $form.validate({
                 ignore: "input[type='text']:hidden, .note-editor *",
-                // @validation states + elements
                 errorClass: "invalid-feedback",
                 errorElement: "span",
-                //------------------------------
-
-                // @validation rules
                 rules: {
                     user: {
                         required: true,
@@ -514,23 +467,18 @@ var Order = (function() {
                         required: true,
                     },
                 },
-                //------------------
-                //------------------
                 errorPlacement: function (error, element) {
                     if (element.attr("name") == "check_section") {
                         error.appendTo(".check-section-error");
+                    } else if($(element).hasClass('custom-file-input')) {
+                        error.appendTo($(element).parents('.input-group').parent());
+                    } else if($(element).hasClass('image-preview')) {
+                        error.appendTo($(element).parents('.dropify-wrapper').parent());
                     } else {
                         error.insertAfter(element);
                     }
                 },
-                //------------------
-                // @validation error messages
-                messages: {
-                    
-                },
-                //---------------------------
-
-                highlight: function(element, errorClass, validClass) {
+                highlight: function(element) {
                     $(element)
                         .closest(".form-group")
                         .addClass("has-danger")
@@ -539,7 +487,7 @@ var Order = (function() {
                         .addClass("is-invalid")
                         .removeClass("is-valid");
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function(element) {
                     $(element)
                         .closest(".form-group")
                         .addClass("has-success")
@@ -548,43 +496,31 @@ var Order = (function() {
                         .addClass("is-valid")
                         .removeClass("is-invalid");
                 },
-                errorPlacement: function(error, element) {
-                    if($(element).hasClass('custom-file-input'))
-                    {
-                        error.appendTo($(element).parents('.input-group').parent());
-                    }
-                    else if($(element).hasClass('image-preview'))
-                    {
-                        error.appendTo($(element).parents('.dropify-wrapper').parent());
-                    }
-                    else
-                    {
-                        error.insertAfter(element);
-                    }
-                },
                 submitHandler: function(form, event) {
                     event.preventDefault();
-                    var $dataTable = $("#dataTable");
-                    var $form = $(".add-order-form");
+                    var $form = $(form);
 
                     $.ajax({
                         type: "POST",
                         url: form.action,
                         data: $form.serialize(),
                         beforeSend: function() {
-                            App.formLoading($form);
+                            if (typeof App !== "undefined" && App.formLoading) {
+                                App.formLoading($form);
+                            }
                         },
                         success: function(response) {
-                            App.showNotification(response);
-                            data_table.ajax.reload(null, false);
-                            rows_selected = [];
-
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
+                            if (data_table) {
+                                data_table.ajax.reload(null, false);
+                            }
                             var $configuration_modal = $("#pageModalMedium");
                             $configuration_modal.modal("hide");
                         },
                         error: function() {},
-                        complete: function() {
-                        }
+                        complete: function() {}
                     });
                 }
             });
@@ -594,9 +530,7 @@ var Order = (function() {
          * Update Order Form
          */
         updateOrder: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".update-order", function () {
-
+            $(document).on("click", ".update-order", function () {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModalMedium");
 
@@ -604,11 +538,12 @@ var Order = (function() {
                 $configuration_modal
                     .find(".modal-content")
                     .load($this.data("url"), "", function () {
-                        Order.initializeComponents();
                         Order.validateUpdateOrderForm();
                     });
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
         },
@@ -618,35 +553,31 @@ var Order = (function() {
          */
         validateUpdateOrderForm: function() {
             var $form = $(".update-order-form");
+            if (!$form.length || typeof $form.validate === "undefined") {
+                return;
+            }
 
             $form.validate({
                 ignore: "input[type='text']:hidden, .note-editor *",
-                // @validation states + elements
                 errorClass: "invalid-feedback",
                 errorElement: "span",
-                //------------------------------
-
-                // @validation rules
                 rules: {
                     received_amount: {
                         required: true,
                     },
                 },
-                //------------------
-                //------------------
                 errorPlacement: function (error, element) {
                     if (element.attr("name") == "check_section") {
                         error.appendTo(".check-section-error");
+                    } else if($(element).hasClass('custom-file-input')) {
+                        error.appendTo($(element).parents('.input-group').parent());
+                    } else if($(element).hasClass('image-preview')) {
+                        error.appendTo($(element).parents('.dropify-wrapper').parent());
                     } else {
                         error.insertAfter(element);
                     }
                 },
-                //------------------
-                // @validation error messages
-                messages: {},
-                //---------------------------
-
-                highlight: function(element, errorClass, validClass) {
+                highlight: function(element) {
                     $(element)
                         .closest(".form-group")
                         .addClass("has-danger")
@@ -655,7 +586,7 @@ var Order = (function() {
                         .addClass("is-invalid")
                         .removeClass("is-valid");
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function(element) {
                     $(element)
                         .closest(".form-group")
                         .addClass("has-success")
@@ -664,43 +595,31 @@ var Order = (function() {
                         .addClass("is-valid")
                         .removeClass("is-invalid");
                 },
-                errorPlacement: function(error, element) {
-                    if($(element).hasClass('custom-file-input'))
-                    {
-                        error.appendTo($(element).parents('.input-group').parent());
-                    }
-                    else if($(element).hasClass('image-preview'))
-                    {
-                        error.appendTo($(element).parents('.dropify-wrapper').parent());
-                    }
-                    else
-                    {
-                        error.insertAfter(element);
-                    }
-                },
                 submitHandler: function(form, event) {
                     event.preventDefault();
-                    var $dataTable = $("#dataTable");
-                    var $form = $(".update-order-form");
+                    var $form = $(form);
 
                     $.ajax({
                         type: "POST",
                         url: form.action,
                         data: $form.serialize(),
                         beforeSend: function() {
-                            App.formLoading($form);
+                            if (typeof App !== "undefined" && App.formLoading) {
+                                App.formLoading($form);
+                            }
                         },
                         success: function(response) {
-                            App.showNotification(response);
-                            data_table.ajax.reload(null, false);
-                            rows_selected = [];
-
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
+                            if (data_table) {
+                                data_table.ajax.reload(null, false);
+                            }
                             var $configuration_modal = $("#pageModalMedium");
                             $configuration_modal.modal("hide");
                         },
                         error: function() {},
-                        complete: function() {
-                        }
+                        complete: function() {}
                     });
                 }
             });
@@ -710,26 +629,25 @@ var Order = (function() {
          * View Remark.
          */
         viewRemark: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".view-remark", function () {
-
+            $(document).on("click", ".view-remark", function () {
                 var $this = $(this);
                 var $configuration_modal = $("#pageModal");
 
                 $configuration_modal.modal("show");
                 $configuration_modal
                     .find(".modal-content")
-                    .load($this.data("url"), "", function () {
+                    .load($this.data("url"), "", function () {});
 
-
-                    });
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
         },
-
     };
 })();
 
-Order.init();
+$(document).ready(function() {
+    Order.init();
+});
