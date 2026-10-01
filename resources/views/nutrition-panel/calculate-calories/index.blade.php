@@ -108,9 +108,11 @@
                                 <div class="text-center user-info mt-0 p-5" id="responseHide">
                                     <p><strong>🔥 You’re one step closer to your fitness goal!</strong></p>
                                     <p><strong>Let’s see what your body needs to stay on track 💪</strong></p>
-                                    <!-- <img src="{{$profileImage}}" alt="avatar" class="rounded-circle" width="100" height="100" />
-                                    <p class="mb-1">{{$authUser->name}}</p>
-                                    <p class="m-0"><small>{{ ucwords( Str::replace('-', ' ', $authUser->role_name) ) }}</small></p> -->
+                                    {{--
+                                    <img src="{{ $profileImage ?? '' }}" alt="avatar" class="rounded-circle" width="100" height="100" />
+                                    <p class="mb-1">{{ $authUser->name ?? '' }}</p>
+                                    <p class="m-0"><small>{{ ucwords( Str::replace('-', ' ', $authUser->role_name ?? '') ) }}</small></p>
+                                    --}}
                                 </div>
                                 <div class="text-center user-info mt-0 p-5 d-none" id="responseShow">
                                     <p><strong>🌿 Your health insights are ready.</strong></p>

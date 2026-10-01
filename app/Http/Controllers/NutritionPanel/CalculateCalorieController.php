@@ -53,9 +53,15 @@ class CalculateCalorieController extends Controller
             'Calculate Calories' => '',
         ];
 
+        $profileImage = asset('admin-assets/images/user.png');
+        if (!empty($authUser->profile_image)) {
+            $profileImage = get_image_url(config('constants.users.image_path'), $authUser->profile_image) ?? $profileImage;
+        }
+
         // Send view data
         $this->viewData['breadcrumb'] = $breadcrumb;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['profileImage'] = $profileImage;
 
         return view('nutrition-panel.calculate-calories.index')->with($this->viewData);
     }
