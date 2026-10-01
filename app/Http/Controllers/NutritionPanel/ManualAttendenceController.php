@@ -56,7 +56,7 @@ class ManualAttendenceController extends Controller
         $breadcrumbButton = [];
         // Add Button
 
-        $user = User::where('status',1)->where('id', dv($request->id))->first();
+        $user = User::where('id', dv($request->id))->first();
         $attendanceLogs = AttendanceLogs::where('user_id', dv($request->id))->orderBy('id', 'DESC')->first();
 
         $lastAttendance = Attendance::where('user_id', $user->id ?? 0)

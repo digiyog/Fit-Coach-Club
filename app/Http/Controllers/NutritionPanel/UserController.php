@@ -665,17 +665,51 @@ class UserController extends Controller
     */
     public function changeStatus(Request $request)
     {
-        $language = User::toggleStatus($request['ids']);
+        $ids = $request->input('ids');
+        if (empty($ids) && $request->filled('id')) {
+            $ids = [(int)$request->input('id')];
+        }
 
-        DB::table('personal_access_tokens')->whereIn('tokenable_id',$request['ids'])->delete();
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+
+        $ids = array_values(array_filter(array_map('intval', (array)$ids)));
+
+        if (empty($ids)) {
+            return response()->json([
+                '_status' => false,
+                '_message' => 'Invalid user ID.',
+                '_type' => 'error',
+            ], 200);
+        }
+
+        if ($request->has('status')) {
+            $targetStatus = (int)$request->input('status');
+            $language = User::whereIn('id', $ids)->update(['status' => $targetStatus]);
+        } else {
+            $language = User::toggleStatus($ids);
+        }
+
+        // Revoke active mobile app tokens immediately so the user is signed out
+        DB::table('personal_access_tokens')->whereIn('tokenable_id', $ids)->delete();
         
         // Set response
         if (!is_null($language))
         {
+            $firstUser = User::select('id', 'name', 'status')->whereIn('id', $ids)->first();
+            $newStatus = $firstUser ? (int)$firstUser->status : null;
+            
+            $msg = $newStatus === 1
+                ? 'App access enabled successfully. Member can now log in to the mobile app.'
+                : 'App access disabled successfully. Member has been logged out and cannot log in.';
+
             $response = [
                 '_status' => true,
-                '_message' => __('messages.status_changed'),
+                '_message' => $msg,
                 '_type' => 'success',
+                'new_status' => $newStatus,
+                'user_id' => $firstUser ? $firstUser->id : null,
             ];
         } 
         else 

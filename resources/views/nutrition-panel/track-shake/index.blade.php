@@ -721,6 +721,10 @@
             <p class="fcc-page-subtitle">{{ $user->name ?? 'Member' }} · Review shake balance and attendance-linked activity</p>
         </div>
         <div class="fcc-header-btns">
+            <span class="fcc-header-app-pill {{ ($user->status ?? 1) == 1 ? 'active' : 'inactive' }}" id="fccHeaderAppPill" title="Mobile App Access: {{ ($user->status ?? 1) == 1 ? 'Active (ON)' : 'Inactive (OFF)' }}">
+                <span class="pill-dot"></span>
+                <span class="pill-text">{{ ($user->status ?? 1) == 1 ? 'App: ON' : 'App: OFF' }}</span>
+            </span>
             <button type="button" class="btn fcc-btn-export" id="fccExportBtn">
                 <i data-feather="download"></i>
                 <span>Export</span>
@@ -742,29 +746,35 @@
         </div>
     </div>
 
-    <!-- 3. Sub-Navigation Tabs Ribbon -->
-    <div class="fcc-member-nav-tabs">
-        <a href="{{ route('nutritionPanel.users.viewWeights', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
-            <i data-feather="activity"></i>
-            <span>Weight</span>
-        </a>
-        <a href="{{ route('nutritionPanel.users.viewAttendance', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
-            <i data-feather="calendar"></i>
-            <span>Attendance</span>
-        </a>
-        <a href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
-            <i data-feather="check-square"></i>
-            <span>Manual attendance</span>
-        </a>
-        <a href="{{ route('nutritionPanel.track-shake.index', ['id' => $userEncryptedId]) }}" class="fcc-tab-link active">
-            <i data-feather="coffee"></i>
-            <span>Shake tracking</span>
-        </a>
-        <a href="{{ route('nutritionPanel.orders.index', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
-            <i data-feather="shopping-cart"></i>
-            <span>Purchases</span>
-        </a>
+    <!-- 3. Sub-Navigation Tabs & App Access Ribbon -->
+    <div class="fcc-member-nav-row">
+        <div class="fcc-member-nav-tabs">
+            <a href="{{ route('nutritionPanel.users.viewWeights', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
+                <i data-feather="activity"></i>
+                <span>Weight</span>
+            </a>
+            <a href="{{ route('nutritionPanel.users.viewAttendance', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
+                <i data-feather="calendar"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="{{ route('nutritionPanel.manual-attendances.manual-attendance', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
+                <i data-feather="check-square"></i>
+                <span>Manual attendance</span>
+            </a>
+            <a href="{{ route('nutritionPanel.track-shake.index', ['id' => $userEncryptedId]) }}" class="fcc-tab-link active">
+                <i data-feather="coffee"></i>
+                <span>Shake tracking</span>
+            </a>
+            <a href="{{ route('nutritionPanel.orders.index', ['id' => $userEncryptedId]) }}" class="fcc-tab-link">
+                <i data-feather="shopping-cart"></i>
+                <span>Purchases</span>
+            </a>
+        </div>
+
+        @include('nutrition-panel.users.partials.app-access-widget', ['section' => 'widget'])
     </div>
+
+    @include('nutrition-panel.users.partials.app-access-widget', ['section' => 'banner'])
 
     <!-- 4. Top 3 Metric Cards Grid -->
     <div class="fcc-metric-cards-grid">
