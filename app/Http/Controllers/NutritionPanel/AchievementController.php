@@ -349,6 +349,16 @@ class AchievementController extends Controller
     {
         $achievement = Achievement::where('id', dv($id))->first();
 
+        if (!$achievement) {
+            $notification = [
+                '_status' => false,
+                '_message' => __('messages.record_not_found', ['record' => 'Achievement']),
+                '_type' => 'error',
+            ];
+
+            return redirect()->route('nutritionPanel.achievements.index')->with(['notification' => $notification]);
+        }
+
         $breadcrumb = [
             __('language.dashboard') => route('nutritionPanel.dashboard'),
             'Achievements' => route('nutritionPanel.achievements.index'),
@@ -446,7 +456,7 @@ class AchievementController extends Controller
             ];
             //-----------------
 
-            return redirect()->route('nutritionPanel.achievements.edit', ['id' => ev($id)])->withInput()->with(['notification' => $notification]);
+            return redirect()->route('nutritionPanel.achievements.edit', ['id' => $id])->withInput()->with(['notification' => $notification]);
         }
     }
 
