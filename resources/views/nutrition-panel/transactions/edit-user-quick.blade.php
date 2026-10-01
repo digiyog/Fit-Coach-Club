@@ -8,7 +8,12 @@
     }
     $initials = substr($initials, 0, 2) ?: 'U';
 
-    $profileImageUrl = get_user_profile_image($user->profile_image, true);
+    $profileImageUrl = null;
+    if (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$user->profile_image)) {
+        $profileImageUrl = get_image_url(config('constants.users.image_path'), $user->profile_image);
+    } elseif (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$user->profile_image)) {
+        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+    }
 @endphp
 
 <div class="modal-content fcc-qe-modal-content">
@@ -299,8 +304,8 @@
                 </svg>
             </div>
             <div>
-                <h4 class="fcc-qe-modal-title">Quick edit member — <span style="color: #3b46f1;">{{ $user->name ?? 'Member' }}</span></h4>
-                <p class="fcc-qe-modal-sub">Update plan and account settings for <strong>{{ $user->name ?? 'Member' }}</strong></p>
+                <h4 class="fcc-qe-modal-title">Quick edit member</h4>
+                <p class="fcc-qe-modal-sub">Update plan and account settings for {{ $user->name ?? 'Member' }}</p>
             </div>
         </div>
         <button type="button" class="fcc-qe-btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close">
@@ -319,7 +324,7 @@
             <div class="fcc-qe-member-card">
                 <div class="fcc-qe-avatar">
                     @if($profileImageUrl)
-                        <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" onerror="this.onerror=null; this.parentElement.innerHTML='<span>{{ $initials }}</span>';" />
+                        <img src="{{ $profileImageUrl }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
                     @else
                         <span>{{ $initials }}</span>
                     @endif

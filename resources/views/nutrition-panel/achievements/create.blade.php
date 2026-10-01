@@ -66,7 +66,7 @@
 
                                             <div class="col-md-6 pe-0">
                                                 <label for="type">Achievement Type</label>
-                                                {!! Form::select('type', create_select_options(config('constants.achievement_types'), 'display', 'value', 'Select Achievement Type'), old('type', ''), ['class' => 'form-control select-picker', 'id' => 'type' ]) !!}
+                                                {!! Form::select('type', create_select_options(config('constants.achievement_types'), 'display', 'value', 'Select Achievement Type'), $achievement->type, ['class' => 'form-control select-picker', 'id' => 'type' ]) !!}
                                             </div>
 
                                             <div class="col-md-6">

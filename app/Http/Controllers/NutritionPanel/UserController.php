@@ -184,15 +184,17 @@ class UserController extends Controller
                 $cIdx = abs(crc32($name)) % count($colors);
                 $avatarCol = $colors[$cIdx];
 
-                $profileImageUrl = get_user_profile_image($value->profile_image, true);
+                $profileImageUrl = null;
+                if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                    $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                    $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                }
 
                 if ($profileImageUrl) {
-                    $avatarInner = '<div class="fcc-member-avatar" style="position: relative; width: 24px; height: 24px; min-width: 24px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                        <div style="width: 100%; height: 100%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: Outfit, sans-serif;">'.$initials.'</div>
-                        <img src="'.$profileImageUrl.'" class="rounded-circle" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" alt="'.e($name).'" onerror="this.remove();" />
-                    </div>';
+                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 24px; height: 24px; min-width: 24px; object-fit: cover;" alt="'.e($name).'" />';
                 } else {
-                    $avatarInner = '<div class="fcc-member-avatar" style="width: 24px; height: 24px; min-width: 24px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: Outfit, sans-serif;">'.$initials.'</div>';
+                    $avatarInner = '<div class="fcc-member-avatar" style="width: 24px; height: 24px; min-width: 24px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
                 }
 
                 $memberHtml = '<div class="d-flex align-items-center gap-2" style="gap: 7px !important;">
@@ -647,8 +649,8 @@ class UserController extends Controller
             if ($request->hasFile('image'))
             {   
                 // Remove old image
-                if (!is_null($user->profile_image)) {
-                    delete_image(config('constants.users.image_path'), $user->profile_image);
+                if (!is_null($user->image)) {
+                    delete_image(config('constants.users.image_path'), $user->image);
                 }
                 //-----------------
                 $image = $this->uploadImage($request->file('image'), config('constants.users.image_path'), null, 'users-');
@@ -657,9 +659,6 @@ class UserController extends Controller
                     $imageName = $image['_data'];
                     $data['profile_image'] = $imageName;
                 }
-            } elseif ($request->has('image_name') && empty($request->input('image_name')) && !empty($user->profile_image)) {
-                delete_image(config('constants.users.image_path'), $user->profile_image);
-                $data['profile_image'] = null;
             }
             //-------------------
             

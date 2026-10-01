@@ -620,7 +620,12 @@
     $userEncryptedId = ev($user->id);
 
     // Profile Image
-    $profileImage = get_user_profile_image($user->profile_image, true);
+    $profileImage = null;
+    if (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
+        $profileImage = get_image_url(config('constants.users.image_path'), $user->profile_image);
+    } elseif (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
+        $profileImage = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+    }
 
     $initials = '';
     $words = explode(' ', trim($user->name ?? 'User'));
@@ -655,7 +660,7 @@
     <div class="fcc-page-header">
         <div>
             <h1 class="fcc-page-title">Member profile</h1>
-            <p class="fcc-page-subtitle"><strong style="color: #0f172a; font-weight: 700;">{{ $user->name ?? 'Member' }}</strong> · Account, coaching and progress details</p>
+            <p class="fcc-page-subtitle">{{ $user->name ?? 'Member' }} · Account, coaching and progress details</p>
         </div>
         <div class="fcc-header-btns">
             <!-- More Actions Dropdown -->
@@ -725,7 +730,7 @@
         <div class="fcc-sidebar-card">
             <div class="fcc-avatar-box">
                 @if($profileImage)
-                    <img src="{{ $profileImage }}" alt="{{ $user->name }}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'fcc-avatar-initials\'>{{ $initials }}</div>';" />
+                    <img src="{{ $profileImage }}" alt="{{ $user->name }}" />
                 @else
                     <div class="fcc-avatar-initials">{{ $initials }}</div>
                 @endif

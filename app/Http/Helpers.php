@@ -102,98 +102,54 @@ if (!function_exists('get_image_url')) {
      */
     function get_image_url($path, $name)
     {
-        if (empty($name) || trim($name) === '' || $name === 'null') {
-            return null;
-        }
+        // // // File system
+        // $file_system = config('filesystems.default');
+        // // //------------
 
-        $name = trim($name);
+        // // File system
+        // // $file_system = config('filesystems.root_public');
+        // //------------
+        // $url = $file_system.'/'.$path . str_replace(' ', '%20', $name);
+        // /* $arrContextOptions=array(
+        //   "ssl"=>array(
+        //         "verify_peer"=>false,
+        //         "verify_peer_name"=>false,
+        //     ),
+        // );
+        // if(file_get_contents($url,false, stream_context_create($arrContextOptions))) {
+        //     return $url;
+        // } else {
+        //     return null;
+        // } */
 
-        // If already an absolute URL or data URI
-        if (str_starts_with($name, 'http://') || str_starts_with($name, 'https://') || str_starts_with($name, 'data:image')) {
-            return $name;
-        }
+        // p(Storage::disk($file_system));
 
-        $cleanPath = trim($path ?? '', '/');
-        $cleanName = ltrim($name, '/');
+        // if(!is_null($name) && Storage::disk($file_system)->exists($path . $name)) 
+        // {
+        //     return Storage::disk($file_system)->url($path . $name);
+        // } 
+        // else 
+        // {
+        //     return null;
+        // }
 
-        // Avoid duplicated path if $name already begins with $cleanPath
-        if (!empty($cleanPath) && str_starts_with($cleanName, $cleanPath . '/')) {
-            $relativePath = $cleanName;
-        } elseif (!empty($cleanPath)) {
-            $relativePath = $cleanPath . '/' . $cleanName;
-        } else {
-            $relativePath = $cleanName;
-        }
+        // File system
+        $file_system = env('AWS_CloudFront_URL');
+        //------------
+        $url = $file_system . '/' . $path . str_replace(' ', '%20', $name);
+        // p($url);
+        // $arrContextOptions=array(
+        //   "ssl"=>array(
+        //         "verify_peer"=>false,
+        //         "verify_peer_name"=>false,
+        //     ),
+        // );
 
-        // Encode spaces in filename/path
-        $encodedRelativePath = implode('/', array_map('rawurlencode', explode('/', $relativePath)));
-
-        // Base URL from AWS_CloudFront_URL or storage
-        $file_system = rtrim(env('AWS_CloudFront_URL', ''), '/');
-
-        if (!empty($file_system)) {
-            // In local environment, if live domain is configured but file exists in local storage/app, prefer local storage route
-            if (app()->environment('local') && str_contains($file_system, 'fitcoachclub.com') && file_exists(storage_path('app/' . $relativePath))) {
-                return url('storage/app/' . $encodedRelativePath);
-            }
-            return $file_system . '/' . $encodedRelativePath;
-        }
-
-        if (file_exists(public_path($relativePath))) {
-            return asset($relativePath);
-        }
-
-        if (file_exists(storage_path('app/' . $relativePath))) {
-            return url('storage/app/' . $encodedRelativePath);
-        }
-
-        return asset('storage/' . $encodedRelativePath);
-    }
-}
-
-if (!function_exists('get_user_profile_image')) {
-    /**
-     * Resolve user profile image URL with fallback between thumb and full image.
-     *
-     * @param  string|null  $profileImage
-     * @param  bool  $thumb
-     * @return string|null
-     */
-    function get_user_profile_image($profileImage, $thumb = false)
-    {
-        if (empty($profileImage) || trim($profileImage) === '' || $profileImage === 'null') {
-            return null;
-        }
-
-        $profileImage = trim($profileImage);
-
-        if (str_starts_with($profileImage, 'http://') || str_starts_with($profileImage, 'https://') || str_starts_with($profileImage, 'data:image')) {
-            return $profileImage;
-        }
-
-        $userPath = trim(config('constants.users.image_path', 'uploads/images/users/'), '/');
-        $thumbPath = trim(config('constants.users.image_path_thumb', 'uploads/images/users/thumb/'), '/');
-
-        $filename = $profileImage;
-        if (str_starts_with($filename, $thumbPath . '/')) {
-            $filename = substr($filename, strlen($thumbPath) + 1);
-        } elseif (str_starts_with($filename, $userPath . '/')) {
-            $filename = substr($filename, strlen($userPath) + 1);
-        }
-
-        $disk = config('filesystems.default', 'local');
-
-        if ($thumb) {
-            if (\Storage::disk($disk)->exists($thumbPath . '/' . $filename) || file_exists(storage_path('app/' . $thumbPath . '/' . $filename))) {
-                return get_image_url($thumbPath . '/', $filename);
-            }
-        }
-
-        if (\Storage::disk($disk)->exists($userPath . '/' . $filename) || file_exists(storage_path('app/' . $userPath . '/' . $filename))) {
-            return get_image_url($userPath . '/', $filename);
-        }
-
-        return get_image_url($userPath . '/', $filename);
+        // if(file_get_contents($url,false, stream_context_create($arrContextOptions))) {
+        return $url;
+        // } else {
+        //     return null;
+        // }
     }
 }
 
@@ -201,8 +157,7 @@ if (!function_exists('delete_image')) {
     /**
      * Delete image.
      *
-     * @param  string  $path
-     * @param  string  $name
+     * @param  string  $value
      * @return boolean
      *
      * @author Sumit
@@ -210,33 +165,21 @@ if (!function_exists('delete_image')) {
      */
     function delete_image($path, $name)
     {
-        if (empty($name)) {
+        // File system
+        $file_system = config('filesystems.default');
+        //------------
+
+        if (Storage::disk($file_system)->exists($path . $name)) {
+            $deleted = Storage::disk($file_system)->delete($path . $name);
+
+            if (Storage::disk($file_system)->exists($path . 'thumb/' . $name)) {
+                $deletedThumb = Storage::disk($file_system)->delete($path . 'thumb/' . $name);
+            }
+
+            return $deleted;
+        } else {
             return false;
         }
-
-        $file_system = config('filesystems.default');
-
-        $cleanPath = trim($path ?? '', '/');
-        $cleanName = ltrim($name, '/');
-
-        if (!empty($cleanPath) && str_starts_with($cleanName, $cleanPath . '/')) {
-            $filename = substr($cleanName, strlen($cleanPath) + 1);
-        } else {
-            $filename = $cleanName;
-        }
-
-        $fullPath = (!empty($cleanPath) ? $cleanPath . '/' : '') . $filename;
-        $thumbPath = (!empty($cleanPath) ? $cleanPath . '/thumb/' : 'thumb/') . $filename;
-
-        $deleted = false;
-        if (Storage::disk($file_system)->exists($fullPath)) {
-            $deleted = Storage::disk($file_system)->delete($fullPath);
-        }
-        if (Storage::disk($file_system)->exists($thumbPath)) {
-            Storage::disk($file_system)->delete($thumbPath);
-        }
-
-        return $deleted;
     }
 }
 

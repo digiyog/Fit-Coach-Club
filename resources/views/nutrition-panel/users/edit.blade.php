@@ -729,7 +729,12 @@
 
 @section('content')
 @php
-    $imagePath = get_user_profile_image($user->profile_image, true);
+    $imagePath = null;
+    if (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path') . $user->profile_image)) {
+        $imagePath = get_image_url(config('constants.users.image_path'), $user->profile_image);
+    } elseif (!empty($user->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb') . $user->profile_image)) {
+        $imagePath = get_image_url(config('constants.users.image_path_thumb'), $user->profile_image);
+    }
 
     $initials = '';
     $words = explode(' ', trim($user->name ?? 'User'));
@@ -750,7 +755,7 @@
     <div class="fcc-ums-header">
         <div>
             <h1 class="fcc-ums-title">Edit member profile</h1>
-            <p class="fcc-ums-subtitle">Update profile, health goals, plan and portal access for <strong style="color: #0f172a; font-weight: 700;">{{ $user->name ?? 'Member' }}</strong></p>
+            <p class="fcc-ums-subtitle">Update profile, health goals, plan and portal access for {{ $user->name ?? 'Member' }}</p>
         </div>
         <div class="fcc-header-actions">
             <a href="{{ route('nutritionPanel.users.details', ['id' => ev($user->id)]) }}" class="fcc-btn-cancel">Cancel</a>
@@ -808,7 +813,7 @@
                         <div class="fcc-avatar-wrap" onclick="$('#imageInput').click();" title="Click to upload profile photo">
                             <div class="fcc-avatar-circle" id="avatarPreviewBox">
                                 @if($imagePath)
-                                    <img src="{{ $imagePath }}" alt="{{ $user->name }}" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'font-weight: 700; font-size: 22px;\'>{{ $initials }}</span>';" />
+                                    <img src="{{ $imagePath }}" alt="{{ $user->name }}" />
                                 @else
                                     <span style="font-weight: 700; font-size: 22px;">{{ $initials }}</span>
                                 @endif
@@ -1066,7 +1071,7 @@
                     <div class="fcc-summary-user">
                         <div class="fcc-summary-avatar" id="umsSummaryAvatar">
                             @if($imagePath)
-                                <img src="{{ $imagePath }}" alt="{{ $user->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'font-weight: 700; font-size: 16px;\'>{{ $initials }}</span>';" />
+                                <img src="{{ $imagePath }}" alt="{{ $user->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
                             @else
                                 <span style="font-weight: 700; font-size: 16px;">{{ $initials }}</span>
                             @endif

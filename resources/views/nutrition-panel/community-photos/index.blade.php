@@ -730,15 +730,6 @@
     #dataTable tbody tr:hover td {
         background-color: #f8fafc !important;
     }
-
-    .comm-table-msg {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 380px;
-        display: block;
-        line-height: 1.4;
-    }
 </style>
 @endpush
 
@@ -882,6 +873,7 @@
                                     <th class="checkbox-column" style="width: 40px;"> S.No </th>
                                     <th> Name </th>
                                     <th> Message </th>
+                                    <th style="width: 120px;"> View Photos </th>
                                     <th style="width: 140px;"> Date & Time </th>
                                 </tr>
                             </thead>

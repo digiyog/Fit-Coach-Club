@@ -135,16 +135,8 @@ var CommunityPhoto = (function() {
                         width: 40
                     },
                     { data: "name", name: "name", width: 140 },
-                    { 
-                        data: "message", 
-                        name: "message",
-                        render: function(data, type, row) {
-                            if (!data || data === 'N/A') return '<span class="text-muted">N/A</span>';
-                            var rawText = row.full_message || data;
-                            var escapedText = rawText.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                            return '<span class="comm-table-msg" title="' + escapedText + '">' + data + '</span>';
-                        }
-                    },
+                    { data: "message", name: "message" },
+                    { data: "view_photos", name: "view_photos", width: 120 },
                     { data: "date_time", name: "date_time", width: 140 }
                 ],
                 drawCallback: function(settings) {
@@ -252,7 +244,7 @@ var CommunityPhoto = (function() {
             // Update Metadata Details
             $('#meta-member-val').text(data.name || '—');
             $('#meta-uploaded-val').html(data.date_time || '—');
-            $('#meta-message-val').text(data.full_message || data.message || '—');
+            $('#meta-message-val').text(data.message || '—');
 
             // Footer
             $('#preview-footer-status').html('<i class="fa fa-check-circle text-success me-1"></i> <span>Mobile upload synced</span>');
