@@ -45,36 +45,19 @@ class TransactionController extends Controller
     {
         $authUser = auth()->user();
 
-        // Adding breadcrumb array
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'Transactions' => '',
-        ];
-
-        // Breadcrumb Button
-        $breadcrumbButton = [];
-        // Add Button
-
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
-            'btn_link' => 'javascript:;',
-            'btn_icon' => 'filter',
-            'btn_text' => __('language.filter'),
-            'attributes' => []
-        ];
-
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-primary mt-2 rounded-circle create-transaction',
-            'btn_link' => 'javascript:;',
-            'btn_icon' => 'plus',
-            'btn_text' => __('language.add_button'),
-            'attributes' => ['data-url' => route('nutritionPanel.transactions.addTransaction')]
-        ];
+        // Calculate initial summary stats
+        $summary = Transaction::getTransactionsSummary();
 
         // View Data
-        $this->viewData['breadcrumbFilter'] = $breadcrumb;
-        $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['totalAmount'] = $summary['total_amount'];
+        $this->viewData['receivedAmount'] = $summary['received_amount'];
+        $this->viewData['dueAmount'] = $summary['due_amount'];
+        $this->viewData['collectionRate'] = $summary['collection_rate'];
+        $this->viewData['totalAmountFormatted'] = $summary['total_amount_formatted'];
+        $this->viewData['receivedAmountFormatted'] = $summary['received_amount_formatted'];
+        $this->viewData['dueAmountFormatted'] = $summary['due_amount_formatted'];
+        $this->viewData['collectionRateFormatted'] = $summary['collection_rate_formatted'];
         
         return view('nutrition-panel.transactions.index')->with($this->viewData);
     }
@@ -95,18 +78,27 @@ class TransactionController extends Controller
         $draw   = $request->get('draw');
         $start  = $request->get('start');
         $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $order  = $request->get('order');
+        $sort   = (!empty($order) && is_array($order)) ? $order[0] : null;
+        
+        $searchVal = $request->get('search');
+        $search = is_array($searchVal) ? ($searchVal['value'] ?? null) : null;
+        if (empty($search) && !empty($request->search_query)) {
+            $search = $request->search_query;
+        }
         
         // Filter Parameters
         $filter = array(
-            "name" => $request->name,
-            "date_range" => $request->date_range,
+            "name"              => $request->name,
+            "date_range"        => $request->date_range,
+            "payment_type"      => $request->payment_type,
+            "collection_state"  => $request->collection_state,
         );
 
         // Getting Transactions Records
         $records_count  = Transaction::getTransactions(null, null, $search, $filter, $sort);
         $records        = Transaction::getTransactions($limit, $start, $search, $filter, $sort);
+        $summary        = Transaction::getTransactionsSummary($search, $filter);
 
         $arr_data = array();
 
@@ -127,15 +119,15 @@ class TransactionController extends Controller
 
                 // Preparing Data
                 if(!empty($value->name)){
-                    $user_name = $value->name;
+                    $user_name = e($value->name);
                 }
 
                 if(!empty($value->order_info->order_number)){
-                    $order_number = $value->order_info->order_number;
+                    $order_number = e($value->order_info->order_number);
                 }
 
                 if(!empty($value->title)){
-                    $title = $value->title;
+                    $title = e($value->title);
                 }
 
                 if(!empty($value->total_amount)){
@@ -150,59 +142,73 @@ class TransactionController extends Controller
                     $received_amount = $value->received_amount;
                 }
 
-                // if(!empty($value->payment_type)){
-                //     $payment_type = $value->payment_type;
-                // }
-
+                // Payment type formatting
                 if($value->title == 'Order Placed' || $value->type == 1){
-                    $payment_type = 'Product';
+                    $payment_type_badge = '<span class="badge-type-product">Product</span>';
                 } else {
-                    $payment_type = 'Subscription';
+                    $payment_type_badge = '<span class="badge-type-subscription">Subscription</span>';
                 }
 
+                // Total Amount formatted
+                $total_amount_html = '<span class="amount-total">' . number_format((float)$total_amount, 2, '.', '') . '</span>';
+
+                // Due Amount formatted
+                if(floatval($due_amount) > 0){
+                    $due_display = (floatval($due_amount) == intval($due_amount)) ? intval($due_amount) : number_format($due_amount, 2, '.', '');
+                    $due_amount_html = '<span class="amount-due-active">' . $due_display . '</span>';
+                } else {
+                    $due_amount_html = '<span class="amount-zero">0</span>';
+                }
+
+                // Received Amount formatted
+                if(floatval($received_amount) > 0){
+                    $received_display = (floatval($received_amount) == intval($received_amount)) ? intval($received_amount) : number_format($received_amount, 2, '.', '');
+                    $received_amount_html = '<span class="amount-received-active">' . $received_display . '</span>';
+                } else {
+                    $received_amount_html = '<span class="amount-zero">0</span>';
+                }
+
+                // Remark button / text
                 if(!empty($value->remark)){
-                    $remark = '<a href="javascript:;" data-url="' . route('nutritionPanel.transactions.viewRemark', ['id' => ev($value->id)]) . '" class="view-remark cursor-pointer" title="View Remark"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Remark</div></a>';
+                    $remark = '<a href="javascript:;" data-url="' . route('nutritionPanel.transactions.viewRemark', ['id' => ev($value->id)]) . '" class="view-remark btn-remark-pill" title="View Remark"><i class="fa fa-eye"></i> View remark</a>';
+                } else {
+                    $remark = '<span class="text-muted">N/A</span>';
                 }
 
                 if(!empty($value->created_at)){
                     $date = date('d-m-Y', strtotime($value->created_at));
                 }
 
-                if ($value->payment_type == 'Pending')  {
-                    $order_status = '<label class="badge badge-danger">Pending</label>';
-                } else {
-                    $order_status = '<label class="badge badge-success">Received</label>';
-                }
-
-                $action = '<a class="update-transaction cursor-pointer" data-url="' . route('nutritionPanel.transactions.editTransaction', ['id' => ev($value->id)]) . '"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                // Edit action button
+                $action = '<a href="javascript:;" class="update-transaction btn-edit-action" data-url="' . route('nutritionPanel.transactions.editTransaction', ['id' => ev($value->id)]) . '" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
 
                 // Array Data
                 $arr_data[] = array(
-                    "user_name"         => $user_name,
-                    "order_number"      => $order_number,
-                    "title"             => $title,
-                    "total_amount"      => $total_amount,
-                    "due_amount"        => $due_amount,
-                    "received_amount"   => $received_amount,
-                    "payment_type"      => $payment_type,
+                    "user_name"         => '<span class="user-name-text">' . $user_name . '</span>',
+                    "order_number"      => '<span class="order-number-text">' . $order_number . '</span>',
+                    "title"             => '<span class="title-text">' . $title . '</span>',
+                    "total_amount"      => $total_amount_html,
+                    "due_amount"        => $due_amount_html,
+                    "received_amount"   => $received_amount_html,
+                    "payment_type"      => $payment_type_badge,
                     "remark"            => $remark,
-                    "date"              => $date,
+                    "date"              => '<span class="date-text">' . $date . '</span>',
                     "action"            => $action,
                 );
             }
         }
 
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),
             "iTotalRecords"         => $totalRecords,
             "iTotalDisplayRecords"  => $totalRecords,
-            "aaData"                => $arr_data
+            "aaData"                => $arr_data,
+            "summary"               => $summary,
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 
     /**

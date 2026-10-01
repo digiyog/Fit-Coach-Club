@@ -51,24 +51,26 @@ class BmiCalculator extends Model
         $authUser = auth()->user();
         //----------
 
-        $bmiCalculator = BmiCalculator::select('id', 'name', 'mobile_number', 'age', 'weight', 'height', 'gender', 'bmi', 'body_fat', 'visceral_fat', 'muscle_mass', 'metabolic_rate', 'biologic_age', 'body_age', 'created_by')->where('created_by', $authUser['id']);
+        $userId = $authUser ? ($authUser->id ?? $authUser['id']) : 0;
+        $bmiCalculator = BmiCalculator::select('id', 'name', 'mobile_number', 'age', 'weight', 'height', 'gender', 'bmi', 'body_fat', 'visceral_fat', 'muscle_mass', 'metabolic_rate', 'biologic_age', 'body_age', 'created_by')->where('created_by', $userId);
 
         // Table list Search conditions
         if(!(empty($search)))
         {
-            $search = strtolower($search);
+            $search = strtolower(addslashes($search));
             $bmiCalculator = $bmiCalculator->whereRaw('(lower(name) LIKE \'%'.$search.'%\' OR lower(mobile_number) LIKE \'%'.$search.'%\' OR lower(age) LIKE \'%'.$search.'%\' OR lower(weight) LIKE \'%'.$search.'%\' OR lower(height) LIKE \'%'.$search.'%\' OR lower(gender) LIKE \'%'.$search.'%\' OR lower(bmi) LIKE \'%'.$search.'%\' OR lower(body_fat) LIKE \'%'.$search.'%\' OR lower(visceral_fat) LIKE \'%'.$search.'%\' OR lower(muscle_mass) LIKE \'%'.$search.'%\' OR lower(metabolic_rate) LIKE \'%'.$search.'%\' OR lower(biologic_age) LIKE \'%'.$search.'%\' OR lower(body_age) LIKE \'%'.$search.'%\' )');
         }
         
         // Table columns sort conditions
-        if(!(empty($sort)) && $sort['column'] > 0)
+        if(!(empty($sort)) && isset($sort['column']) && $sort['column'] > 0)
         {
-            $arr_fields = array("", "name", "mobile_number", "age", 'weight', "height", "gender", "bmi", "body_fat", "visceral_fat", "muscle_mass", "metabolic_rate", "biologic_age","");
+            $arr_fields = array("", "name", "mobile_number", "age", "weight", "height", "gender", "bmi", "body_fat", "visceral_fat", "muscle_mass", "metabolic_rate", "biologic_age", "body_age");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")
                 {
-                    $bmiCalculator = $bmiCalculator->orderBy($arr_fields[$field], $sort['dir']);
+                    $sortDir = (isset($sort['dir']) && in_array(strtolower($sort['dir']), ['asc', 'desc'])) ? $sort['dir'] : 'desc';
+                    $bmiCalculator = $bmiCalculator->orderBy($arr_fields[$field], $sortDir);
                 }
             }
         }

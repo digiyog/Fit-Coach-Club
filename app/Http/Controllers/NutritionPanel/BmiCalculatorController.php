@@ -90,12 +90,13 @@ class BmiCalculatorController extends Controller
         $draw   = $request->get('draw');
         $start  = $request->get('start');
         $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $order  = $request->get('order');
+        $sort   = (!empty($order) && isset($order[0])) ? $order[0] : null;
+        $searchParam = $request->get('search');
+        $search = (is_array($searchParam) && isset($searchParam['value'])) ? $searchParam['value'] : null;
         
         // Filter Parameters
-        $filter = array(
-        );
+        $filter = array();
 
         // Getting Bmi Calculator Records
         $records_count  = BmiCalculator::getBmiCalculator(null, null, $search, $filter, $sort);
@@ -103,94 +104,23 @@ class BmiCalculatorController extends Controller
 
         $arr_data = array();
 
-        if(count($records) > 0)
+        if(!empty($records) && count($records) > 0)
         {
             foreach($records as $key => $value)
             {
-                $name               = 'N/A';
-                $mobile_number      = 'N/A';
-                $age                = 'N/A';
-                $weight             = 'N/A';
-                $height             = 'N/A';
-                $gender             = 'N/A';
-                $bmi                = 'N/A';
-                $body_fat           = 'N/A';
-                $visceral_fat       = 'N/A';
-                $muscle_mass        = 'N/A';
-                $metabolic_rate     = 'N/A';
-                $biologic_age       = 'N/A';
-                $body_age           = 'N/A';
-
-                // Preparing Data
-                if(!empty($value->name)){
-                    $name = $value->name;
-                }
-
-                if(!empty($value->mobile_number)){
-                    $mobile_number = $value->mobile_number;
-                }
-
-                if(!empty($value->age)){
-                    $age = $value->age;
-                }
-
-                if(!empty($value->weight)){
-                    $weight = $value->weight;
-                }
-
-                if(!empty($value->height)){
-                    $height = $value->height;
-                }
-
-                if($value->gender == 1){
-                    $gender = 'Male';
-                } else {
-                    $gender = 'Female';
-                }
-
-                if(!empty($value->bmi)){
-                    $bmi = round($value->bmi, 2);
-                }
-
-                if(!empty($value->body_fat)){
-                    $body_fat = round($value->body_fat, 2);
-                }
-
-                if(!empty($value->visceral_fat)){
-                    $visceral_fat = round($value->visceral_fat, 1);
-                }
-
-                if(!empty($value->muscle_mass)){
-                    $muscle_mass = round($value->muscle_mass, 1).' %';
-                }
-
-                if(!empty($value->metabolic_rate)){
-                    $metabolic_rate = round($value->metabolic_rate);
-                }
-
-                if(!empty($value->biologic_age)){
-                    $biologic_age = round($value->biologic_age);
-                }
-
-                if(!empty($value->body_age)){
-                    $body_age = round($value->body_age);
-                }
-
-                if(!empty($value->description)){
-                    $description = '<a herf="#" data-url="' . route('nutritionPanel.custom-dishes.viewDescription', ['id' => ev($value->id)]) . '" class="view-description cursor-pointer" title="View Description"><div class="badge badge-primary"><i class="fa fa-eye"></i> View Description</div></a>';
-                }
-
-                if(!empty($value->order) || $value->order == 0) {
-                    $order = '<input type="text" class="form-control numeric pr-1" id="custom_dish_order_'.$value->id.'" name="order" value="'.$value->order.'" autocomplete="off" />';
-                }
-
-                if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
-                } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
-                }
-
-                $action = '<a href="' . route('nutritionPanel.custom-dishes.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $name               = !empty($value->name) ? $value->name : 'N/A';
+                $mobile_number      = !empty($value->mobile_number) ? $value->mobile_number : 'N/A';
+                $age                = !empty($value->age) ? $value->age : 'N/A';
+                $weight             = !empty($value->weight) ? $value->weight : 'N/A';
+                $height             = !empty($value->height) ? $value->height : 'N/A';
+                $gender             = ($value->gender == 1) ? 'Male' : 'Female';
+                $bmi                = !empty($value->bmi) ? round($value->bmi, 2) : 'N/A';
+                $body_fat           = !empty($value->body_fat) ? round($value->body_fat, 2) : 'N/A';
+                $visceral_fat       = !empty($value->visceral_fat) ? round($value->visceral_fat, 1) : 'N/A';
+                $muscle_mass        = !empty($value->muscle_mass) ? round($value->muscle_mass, 1) . ' %' : 'N/A';
+                $metabolic_rate     = !empty($value->metabolic_rate) ? round($value->metabolic_rate) : 'N/A';
+                $biologic_age       = !empty($value->biologic_age) ? round($value->biologic_age) : 'N/A';
+                $body_age           = !empty($value->body_age) ? round($value->body_age) : 'N/A';
 
                 // Array Data
                 $arr_data[] = array(
@@ -208,13 +138,11 @@ class BmiCalculatorController extends Controller
                     "metabolic_rate"    => $metabolic_rate,
                     "biologic_age"      => $biologic_age,
                     "body_age"          => $body_age,
-                    "action"            => $action,
                 );
             }
         }
 
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),
@@ -223,7 +151,7 @@ class BmiCalculatorController extends Controller
             "aaData"                => $arr_data
         );
 
-        return json_encode($response);
+        return response()->json($response, 200);
     }
 
     /**

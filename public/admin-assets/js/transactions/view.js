@@ -1,15 +1,14 @@
 var Transaction = (function() {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
+    var searchTimer = null;
+
     return {
         /**
          * Initialization.
          */
         init: function() {
             Transaction.getTransactions();
-            Transaction.initializeComponents();
-            Transaction.dataTableCustomFilter();
+            Transaction.initializeFilters();
             Transaction.customValidationMethods();
             Transaction.addTransaction();
             Transaction.validateAddTransactionForm();
@@ -19,274 +18,170 @@ var Transaction = (function() {
         },
 
         /**
-         * Initialize components.
+         * Initialize Filter Controls.
          */
-        initializeComponents: function() {
-            // Initialize Components
-            var $filter_form = $(".custom-datatable-filter-form");
+        initializeFilters: function() {
+            // Date Range Picker initialization
+            var $dateRange = $("#tx_date_range");
+            if ($dateRange.length && typeof $.fn.daterangepicker !== "undefined") {
+                $dateRange.daterangepicker({
+                    autoUpdateInput: false,
+                    opens: "left",
+                    locale: {
+                        cancelLabel: "Clear",
+                        format: "DD-MM-YYYY"
+                    }
+                });
 
-            // Bootstrap Select on filter form dropdowns
-            Components.bootstrapSelect($filter_form);
-            //------------
+                $dateRange.on("apply.daterangepicker", function(ev, picker) {
+                    $(this).val(picker.startDate.format("DD-MM-YYYY") + " - " + picker.endDate.format("DD-MM-YYYY"));
+                    $(this).data("range-value", picker.startDate.format("YYYY-MM-DD") + "/" + picker.endDate.format("YYYY-MM-DD"));
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
 
-            $('input[name="date_range"]').daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
-            });
-
-            $('input[name="date_range"]').on(
-                "apply.daterangepicker",
-                function (ev, picker) {
-                    $(this).val(
-                        picker.startDate.format("YYYY-MM-DD") +
-                        "/" +
-                        picker.endDate.format("YYYY-MM-DD")
-                    );
-                    $(':input[type="submit"]').prop("disabled", false);
-                    $(':input[name="Clear"]').prop("disabled", false);
-                }
-            );
-
-            $('input[name="date_range"]').on(
-                "cancel.daterangepicker",
-                function (ev, picker) {
+                $dateRange.on("cancel.daterangepicker", function(ev, picker) {
                     $(this).val("");
-                }
-            );
-        },
+                    $(this).data("range-value", "");
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
+            }
 
-        /**
-         * Datatable custom filter.
-         */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
+            // Real-time search with debounce
+            $("#tx_search").on("keyup input change", function() {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function() {
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                }, 350);
+            });
+
+            // Filter dropdown change
+            $("#tx_payment_type, #tx_collection_state").on("change", function() {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Page length dropdown change
+            $("#tx_page_length").on("change", function() {
+                var len = parseInt($(this).val(), 10) || 20;
+                if (data_table) {
+                    data_table.page.len(len).draw();
+                }
+            });
+
+            // Clear all filters
+            $("#btn_clear_filters").on("click", function(e) {
+                e.preventDefault();
+                $("#tx_search").val("");
+                if ($dateRange.length) {
+                    $dateRange.val("").data("range-value", "");
+                }
+                $("#tx_payment_type").val("");
+                $("#tx_collection_state").val("");
+                $("#tx_page_length").val("20");
+
+                if (data_table) {
+                    data_table.page.len(20);
+                    data_table.ajax.reload();
+                }
+            });
+
+            // More filters button toggle
+            $("#btn_toggle_more_filters").on("click", function(e) {
+                e.preventDefault();
+                $(this).toggleClass("active");
             });
         },
 
         /**
-         * Get Transactions list.
+         * Get Transactions list with modern DataTables configuration.
          */
         getTransactions: function() {
             var $dataTable = $("#dataTable");
 
-            data_table = table = $dataTable.DataTable({
-                initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-                },
-                headerCallback: function(e, a, t, n, s) {
-                    // e.getElementsByTagName("th")[0].innerHTML =
-                    //         '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                },
-                columnDefs: [
-                ],
-                buttons: {
-                    buttons: [
-                    ]
-                },
-                oLanguage: {
-                    oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
-                },
+            data_table = $dataTable.DataTable({
                 processing: true,
                 serverSide: true,
-                lengthMenu: [
-                    [20, 50, 75, 100],
-                    [20, 50, 75, 100]
-                ],
+                ordering: true,
+                order: [[8, "desc"]], // Sort by Date DESC by default
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"dt-bottom-row"ip>',
+                oLanguage: {
+                    oPaginate: {
+                        sPrevious: '<i class="fa fa-angle-left"></i> Previous',
+                        sNext: 'Next <i class="fa fa-angle-right"></i>'
+                    },
+                    sInfo: "Showing _TOTAL_ transactions",
+                    sEmptyTable: "No transactions found",
+                    sZeroRecords: "No matching transactions found"
+                },
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
-                        d.name = $("#name").val();
-                        d.date_range = $("#date_range").val();
+                        var searchVal = $("#tx_search").val();
+                        d.name = searchVal;
+                        d.search_query = searchVal;
+                        d.date_range = $("#tx_date_range").data("range-value") || "";
+                        d.payment_type = $("#tx_payment_type").val();
+                        d.collection_state = $("#tx_collection_state").val();
                     }
                 },
                 columns: [
-                    { data: "user_name", name: "user_name" },
-                    { data: "order_number", name: "order_number" },
-                    { data: "title", name: "title" },
-                    { data: "total_amount", name: "total_amount" },
-                    { data: "due_amount", name: "due_amount" },
-                    { data: "received_amount", name: "received_amount" },
-                    { data: "payment_type", name: "payment_type" },
-                    { data: "remark", name: "remark" },
-                    { data: "date", name: "date" },
+                    { data: "user_name", name: "users.name" },
+                    { data: "order_number", name: "order_number", orderable: false },
+                    { data: "title", name: "transactions.title" },
+                    { data: "total_amount", name: "transactions.total_amount" },
+                    { data: "due_amount", name: "transactions.due_amount" },
+                    { data: "received_amount", name: "transactions.received_amount" },
+                    { data: "payment_type", name: "transactions.payment_type" },
+                    { data: "remark", name: "remark", orderable: false },
+                    { data: "date", name: "transactions.created_at" },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
-                        sortable: false,
-                        width:50,
-                        className: "text-right"
+                        orderable: false,
+                        className: "text-end"
                     }
                 ],
-                footerCallback: function (row, data, start, end, display) {
+                drawCallback: function(settings) {
+                    var json = settings.json;
+                    var info = this.api().page.info();
 
-                    let totalAmount     = 0;
-                    let dueAmount       = 0;
-                    let receivedAmount  = 0;
+                    // Update visible transactions counter
+                    var visibleCount = (json && typeof json.iTotalDisplayRecords !== "undefined") ? json.iTotalDisplayRecords : info.recordsDisplay;
+                    $("#visible_tx_count").text(visibleCount);
 
-                    data.forEach(function (row) {
-                        totalAmount     += parseFloat(row.total_amount) || 0;
-                        dueAmount       += parseFloat(row.due_amount) || 0;
-                        receivedAmount  += parseFloat(row.received_amount) || 0;
-                    });
+                    // Update KPI cards dynamically if summary was returned
+                    if (json && json.summary) {
+                        var s = json.summary;
+                        if (typeof s.total_amount_formatted !== "undefined") {
+                            $("#kpi-total-amount").text(s.total_amount_formatted);
+                        }
+                        if (typeof s.received_amount_formatted !== "undefined") {
+                            $("#kpi-received-amount").text(s.received_amount_formatted);
+                        }
+                        if (typeof s.due_amount_formatted !== "undefined") {
+                            $("#kpi-due-amount").text(s.due_amount_formatted);
+                        }
+                        if (typeof s.collection_rate_formatted !== "undefined") {
+                            $("#kpi-collection-rate").text(s.collection_rate_formatted);
+                        }
 
-                    $('#total_amount_footer').html(totalAmount.toFixed(2));
-                    $('#due_amount_footer').html(dueAmount.toFixed(2));
-                    $('#received_amount_footer').html(receivedAmount.toFixed(2));
-                },
-                rowCallback: function(row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
+                        // Update SVG Donut stroke-dasharray
+                        var rate = Math.min(100, Math.max(0, s.collection_rate || 0));
+                        $("#kpi-donut-stroke").attr("stroke-dasharray", rate + ", 100");
 
-                    // If row ID is in the list of selected row IDs
-                    if ($.inArray(rowId, rows_selected) !== -1) {
-                        $(row)
-                            .find('input[type="checkbox"]')
-                            .prop("checked", true);
-                        $(row).addClass("selected");
+                        // Update Progress bar fill
+                        $("#kpi-progress-fill").css("width", rate + "%");
                     }
                 }
-            });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function(e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
-
-                    // Get row ID
-                    var rowId = data;
-
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    // Transaction.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function(e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle table draw event
-            table.on("draw", function() {
-                // Update state of "Select all" control
-                // Transaction.updateDataTableSelectAllCtrl(table);
-
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-               //----------
             });
         },
 
@@ -294,6 +189,10 @@ var Transaction = (function() {
          * Custom validation methods.
          */
         customValidationMethods: function() {
+            if (typeof jQuery.validator === "undefined") {
+                return;
+            }
+
             jQuery.validator.addMethod(
                 "lettersOnly",
                 function(value, element) {
@@ -350,7 +249,7 @@ var Transaction = (function() {
         },
 
         /**
-         * Add Transaction
+         * Add Transaction Modal
          */
         addTransaction: function () {
             $(document).on("click", ".create-transaction", function () {
@@ -367,15 +266,17 @@ var Transaction = (function() {
                             return;
                         }
 
-                        Transaction.initializeComponents();
+                        if (typeof Components !== "undefined" && Components.bootstrapSelect) {
+                            var $filter_form = $(".add-transaction-form");
+                            Components.bootstrapSelect($filter_form);
+                        }
                         Transaction.validateAddTransactionForm();
-
-                        var $filter_form = $(".add-transaction-form");
-                        Components.bootstrapSelect($filter_form);
                     });
 
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
         },
@@ -385,7 +286,7 @@ var Transaction = (function() {
          */
         validateAddTransactionForm: function() {
             var $form = $(".add-transaction-form");
-            if (!$form.length) {
+            if (!$form.length || typeof $form.validate === "undefined") {
                 return;
             }
 
@@ -415,7 +316,7 @@ var Transaction = (function() {
                         required: true,
                     },
                 },
-                highlight: function(element, errorClass, validClass) {
+                highlight: function(element) {
                     $(element)
                         .closest(".form-group, .col-md-12")
                         .addClass("has-danger")
@@ -424,7 +325,7 @@ var Transaction = (function() {
                         .addClass("is-invalid")
                         .removeClass("is-valid");
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function(element) {
                     $(element)
                         .closest(".form-group, .col-md-12")
                         .addClass("has-success")
@@ -455,25 +356,32 @@ var Transaction = (function() {
                         url: form.action,
                         data: $form.serialize(),
                         beforeSend: function() {
-                            App.formLoading($form);
+                            if (typeof App !== "undefined" && App.formLoading) {
+                                App.formLoading($form);
+                            }
                             $submitBtn.prop('disabled', true);
                         },
                         success: function(response) {
-                            App.formLoaded($form);
+                            if (typeof App !== "undefined" && App.formLoaded) {
+                                App.formLoaded($form);
+                            }
                             $submitBtn.prop('disabled', false).html(originalBtnHtml);
-                            App.showNotification(response);
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
 
                             if (response && (response._status === true || response.status === true)) {
                                 if (typeof data_table !== "undefined" && data_table) {
                                     data_table.ajax.reload(null, false);
                                 }
-                                rows_selected = [];
                                 var $configuration_modal = $("#pageModalMedium");
                                 $configuration_modal.modal("hide");
                             }
                         },
                         error: function(xhr) {
-                            App.formLoaded($form);
+                            if (typeof App !== "undefined" && App.formLoaded) {
+                                App.formLoaded($form);
+                            }
                             $submitBtn.prop('disabled', false).html(originalBtnHtml);
                             var msg = "An error occurred while saving transaction.";
                             if (xhr.responseJSON && xhr.responseJSON._message) {
@@ -481,14 +389,18 @@ var Transaction = (function() {
                             } else if (xhr.responseJSON && xhr.responseJSON.message) {
                                 msg = xhr.responseJSON.message;
                             }
-                            App.showNotification({
-                                _status: false,
-                                _type: 'error',
-                                _message: msg
-                            });
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification({
+                                    _status: false,
+                                    _type: 'error',
+                                    _message: msg
+                                });
+                            }
                         },
                         complete: function() {
-                            App.formLoaded($form);
+                            if (typeof App !== "undefined" && App.formLoaded) {
+                                App.formLoaded($form);
+                            }
                             $submitBtn.prop('disabled', false);
                         }
                     });
@@ -497,7 +409,7 @@ var Transaction = (function() {
         },
 
         /**
-         * Update Transaction Form
+         * Update Transaction Form Modal
          */
         updateTransaction: function () {
             $(document).on("click", ".update-transaction", function () {
@@ -514,12 +426,13 @@ var Transaction = (function() {
                             return;
                         }
 
-                        Transaction.initializeComponents();
                         Transaction.validateUpdateTransactionForm();
                     });
 
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
         },
@@ -529,7 +442,7 @@ var Transaction = (function() {
          */
         validateUpdateTransactionForm: function() {
             var $form = $(".update-transaction-form");
-            if (!$form.length) {
+            if (!$form.length || typeof $form.validate === "undefined") {
                 return;
             }
 
@@ -549,7 +462,7 @@ var Transaction = (function() {
                         min: 0,
                     },
                 },
-                highlight: function(element, errorClass, validClass) {
+                highlight: function(element) {
                     $(element)
                         .closest(".form-group, .col-md-12")
                         .addClass("has-danger")
@@ -558,7 +471,7 @@ var Transaction = (function() {
                         .addClass("is-invalid")
                         .removeClass("is-valid");
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function(element) {
                     $(element)
                         .closest(".form-group, .col-md-12")
                         .addClass("has-success")
@@ -589,25 +502,32 @@ var Transaction = (function() {
                         url: form.action,
                         data: $form.serialize(),
                         beforeSend: function() {
-                            App.formLoading($form);
+                            if (typeof App !== "undefined" && App.formLoading) {
+                                App.formLoading($form);
+                            }
                             $submitBtn.prop('disabled', true);
                         },
                         success: function(response) {
-                            App.formLoaded($form);
+                            if (typeof App !== "undefined" && App.formLoaded) {
+                                App.formLoaded($form);
+                            }
                             $submitBtn.prop('disabled', false).html(originalBtnHtml);
-                            App.showNotification(response);
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
 
                             if (response && (response._status === true || response.status === true)) {
                                 if (typeof data_table !== "undefined" && data_table) {
                                     data_table.ajax.reload(null, false);
                                 }
-                                rows_selected = [];
                                 var $configuration_modal = $("#pageModalMedium");
                                 $configuration_modal.modal("hide");
                             }
                         },
                         error: function(xhr) {
-                            App.formLoaded($form);
+                            if (typeof App !== "undefined" && App.formLoaded) {
+                                App.formLoaded($form);
+                            }
                             $submitBtn.prop('disabled', false).html(originalBtnHtml);
                             var msg = "An error occurred while updating transaction.";
                             if (xhr.responseJSON && xhr.responseJSON._message) {
@@ -615,14 +535,18 @@ var Transaction = (function() {
                             } else if (xhr.responseJSON && xhr.responseJSON.message) {
                                 msg = xhr.responseJSON.message;
                             }
-                            App.showNotification({
-                                _status: false,
-                                _type: 'error',
-                                _message: msg
-                            });
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification({
+                                    _status: false,
+                                    _type: 'error',
+                                    _message: msg
+                                });
+                            }
                         },
                         complete: function() {
-                            App.formLoaded($form);
+                            if (typeof App !== "undefined" && App.formLoaded) {
+                                App.formLoaded($form);
+                            }
                             $submitBtn.prop('disabled', false);
                         }
                     });
@@ -631,7 +555,7 @@ var Transaction = (function() {
         },
 
         /**
-         * View Remark.
+         * View Remark Modal
          */
         viewRemark: function () {
             $(document).on("click", ".view-remark", function () {
@@ -649,11 +573,15 @@ var Transaction = (function() {
                     });
 
                 $configuration_modal.on("hidden.bs.modal", function () {
-                    App.resetModal($configuration_modal);
+                    if (typeof App !== "undefined" && App.resetModal) {
+                        App.resetModal($configuration_modal);
+                    }
                 });
             });
-        },
+        }
     };
 })();
 
-Transaction.init();
+$(document).ready(function() {
+    Transaction.init();
+});

@@ -433,7 +433,7 @@ var BmiCalculator = (function() {
                 ],
                 rowCallback: function(row, data, dataIndex) {
                     // Get row ID
-                    var rowId = data[0];
+                    var rowId = (typeof data === 'object' && data !== null) ? (data.id || data[0]) : data;
 
                     // If row ID is in the list of selected row IDs
                     if ($.inArray(rowId, rows_selected) !== -1) {
