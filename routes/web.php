@@ -367,6 +367,13 @@ Route::prefix('nutrition-panel')->group(function () {
     });
     //--------
 
+    // Yearly Report
+    Route::group(['prefix' => 'yearly-report', 'middleware' => ['checkfranchiseauth']], function () {
+        Route::get('/', [Controllers\NutritionPanel\YearlyReportController::class, 'index'])->name('nutritionPanel.yearly-report.index');
+        Route::get('/export', [Controllers\NutritionPanel\YearlyReportController::class, 'export'])->name('nutritionPanel.yearly-report.export');
+    });
+    //--------
+
     // Manual Attendances
     Route::group(['prefix' => 'manual-attendances', 'middleware' => ['checkfranchiseauth']], function () {
         Route::get('/index/{user_id?}', [Controllers\NutritionPanel\ManualAttendenceController::class, 'index'])->name('nutritionPanel.manual-attendances.manual-attendance');

@@ -332,6 +332,23 @@
                 </a>
             </li>
 
+            <!-- Yearly Report -->
+            @php
+                $showYearlyReport = 'false';
+                if(request()->is(Request::segment(1).'/yearly-report*')){
+                    $showYearlyReport = 'true';
+                }
+            @endphp
+
+            <li class="menu">
+                <a href="{{ route('nutritionPanel.yearly-report.index') }}" data-active="{{ $showYearlyReport }}" class="dropdown-toggle collapsed">
+                    <div>
+                        <i data-feather="bar-chart-2"></i>
+                        <span>Yearly Report</span>
+                    </div>
+                </a>
+            </li>
+
             <!-- CATEGORY: SETTINGS -->
             <li class="sidebar-category-header">Preferences</li>
 
