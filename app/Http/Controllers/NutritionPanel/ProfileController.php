@@ -224,7 +224,7 @@ class ProfileController extends Controller
             ];
             //-----------------
 
-            return redirect()->route('nutritionPanel.profile')->with(['notification' => $notification]);
+            return redirect()->back()->with(['notification' => $notification]);
         } 
         else 
         {
@@ -236,7 +236,7 @@ class ProfileController extends Controller
             ];
             //-----------------
             
-            return redirect()->route('nutritionPanel.profile.update', ['id' => ev($id)])->withInput()->with(['notification' => $notification]);
+            return redirect()->back()->withInput()->with(['notification' => $notification]);
         }
     }
 

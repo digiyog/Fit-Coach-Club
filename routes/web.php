@@ -177,9 +177,10 @@ Route::prefix('nutrition-panel')->group(function () {
     });
     //---------
 
-    // Nutrition Profile
+    // Nutrition Change Password
     Route::group(['prefix' => 'change-password', 'middleware' => ['checkfranchiseauth']], function () {
-        Route::get('/', [Controllers\NutritionPanel\ProfileController::class, 'index'])->name('nutritionPanel.change-password.index');
+        Route::get('/', [Controllers\NutritionPanel\ProfileController::class, 'changePassword'])->name('nutritionPanel.change-password.index');
+        Route::post('/update', [Controllers\NutritionPanel\ProfileController::class, 'updatePassword'])->name('nutritionPanel.change-password.update');
     });
     //---------
 
