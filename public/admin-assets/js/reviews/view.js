@@ -1,375 +1,347 @@
 var Review = (function () {
-    // Array holding selected row IDs
-    var rows_selected = [];
     var data_table;
+    var searchTimer = null;
+
     return {
         /**
          * Initialization.
          */
         init: function () {
             Review.getReviews();
+            Review.initializeFilters();
             Review.destroyRecord();
-            Review.initializeComponents();
-            Review.dataTableCustomFilter();
+            Review.customValidationMethods();
         },
 
         /**
-         * Initialize components.
+         * Initialize Filter Controls.
          */
-        initializeComponents: function () {
-            // Initialize Components
-            var $filter_form = $(".custom-datatable-filter-form");
+        initializeFilters: function () {
+            // Date Range Picker initialization
+            var $dateRange = $("#review_date_range");
+            if ($dateRange.length && typeof $.fn.daterangepicker !== "undefined") {
+                $dateRange.daterangepicker({
+                    autoUpdateInput: false,
+                    opens: "left",
+                    locale: {
+                        cancelLabel: "Clear",
+                        format: "DD-MM-YYYY"
+                    }
+                });
 
-            // Bootstrap Select on filter form dropdowns
-            Components.bootstrapSelect($filter_form);
-            //------------
-        },
+                $dateRange.on("apply.daterangepicker", function (ev, picker) {
+                    $(this).val(picker.startDate.format("DD-MM-YYYY") + " - " + picker.endDate.format("DD-MM-YYYY"));
+                    $(this).data("range-value", picker.startDate.format("YYYY-MM-DD") + "/" + picker.endDate.format("YYYY-MM-DD"));
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
 
-        /**
-         * Datatable custom filter.
-         */
-        dataTableCustomFilter: function() {
-            $(".filter-button").click(function() {
-                $(".custom-datatable-filters").toggleClass("hide");
+                $dateRange.on("cancel.daterangepicker", function (ev, picker) {
+                    $(this).val("");
+                    $(this).data("range-value", "");
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                });
+            }
+
+            // Real-time search with debounce
+            $("#review_search").on("keyup input change", function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function () {
+                    if (data_table) {
+                        data_table.ajax.reload();
+                    }
+                }, 350);
+            });
+
+            // Filter dropdown change
+            $("#review_rating_filter, #review_message_filter").on("change", function () {
+                if (data_table) {
+                    data_table.ajax.reload();
+                }
+            });
+
+            // Page length dropdown change
+            $("#review_page_length").on("change", function () {
+                var len = parseInt($(this).val(), 10) || 20;
+                if (data_table) {
+                    data_table.page.len(len).draw();
+                }
+            });
+
+            // Toggle filters bar on button click
+            $("#btn_toggle_header_filters, #btn_toggle_more_filters").on("click", function (e) {
+                e.preventDefault();
+                $(".ledger-filters-grid").slideToggle(200);
+            });
+
+            // Handle Select All Checkbox
+            $(document).on("change", "#select_all_reviews", function () {
+                var isChecked = $(this).is(":checked");
+                $("#dataTable tbody .review-chk-native").prop("checked", isChecked);
+                if (isChecked) {
+                    $("#dataTable tbody tr").addClass("selected");
+                } else {
+                    $("#dataTable tbody tr").removeClass("selected");
+                }
+                Review.updateDeleteButton();
+            });
+
+            // Handle Row Checkbox Click
+            $(document).on("change", "#dataTable tbody .review-chk-native", function () {
+                var $row = $(this).closest("tr");
+                if ($(this).is(":checked")) {
+                    $row.addClass("selected");
+                } else {
+                    $row.removeClass("selected");
+                }
+                Review.syncSelectAllHeader();
+                Review.updateDeleteButton();
             });
         },
 
         /**
-         * Updates "Select all" control in a data table
+         * Update state of Delete Selected button based on selection
          */
-        updateDataTableSelectAllCtrl: function (table) {
-            var $table = table.table().node();
-            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-            var $chkbox_checked = $(
-                'tbody input[type="checkbox"]:checked',
-                $table
-            );
-            var chkbox_select_all = $(
-                'thead input[name="select_all"]',
-                $table
-            ).get(0);
-
-            // If none of the checkboxes are checked
-            if ($chkbox_checked.length === 0) {
-                chkbox_select_all.checked = false;
-
-                if ("indeterminate" in chkbox_select_all) {
-                    chkbox_select_all.indeterminate = false;
-                }
-
-                // If all of the checkboxes are checked
-            } else if ($chkbox_checked.length === $chkbox_all.length) {
-                chkbox_select_all.checked = true;
-
-                if ("indeterminate" in chkbox_select_all) {
-                    chkbox_select_all.indeterminate = false;
-                }
-
-                // If some of the checkboxes are checked
+        updateDeleteButton: function () {
+            var checkedCount = $("#dataTable tbody .review-chk-native:checked").length;
+            var $btn = $("#btn_delete_selected");
+            if (checkedCount > 0) {
+                $btn.prop("disabled", false);
+                $btn.html('<i class="fa fa-trash-o"></i> Delete selected (' + checkedCount + ')');
             } else {
-                chkbox_select_all.checked = true;
-                if ("indeterminate" in chkbox_select_all) {
-                    chkbox_select_all.indeterminate = true;
-                }
+                $btn.prop("disabled", true);
+                $btn.html('<i class="fa fa-trash-o"></i> Delete selected');
             }
         },
 
         /**
-         * Get Reviews list.
+         * Sync header Select All checkbox state
+         */
+        syncSelectAllHeader: function () {
+            var totalCheckboxes = $("#dataTable tbody .review-chk-native").length;
+            var checkedCount = $("#dataTable tbody .review-chk-native:checked").length;
+            var $selectAll = $("#select_all_reviews");
+
+            if (totalCheckboxes > 0 && checkedCount === totalCheckboxes) {
+                $selectAll.prop("checked", true).prop("indeterminate", false);
+            } else if (checkedCount > 0) {
+                $selectAll.prop("checked", false).prop("indeterminate", true);
+            } else {
+                $selectAll.prop("checked", false).prop("indeterminate", false);
+            }
+        },
+
+        /**
+         * Reset checkboxes when table redraws
+         */
+        syncCheckboxState: function () {
+            $("#select_all_reviews").prop("checked", false).prop("indeterminate", false);
+            Review.updateDeleteButton();
+        },
+
+        /**
+         * Get Reviews list with modern DataTables configuration.
          */
         getReviews: function () {
             var $dataTable = $("#dataTable");
 
-            data_table = table = $dataTable.DataTable({
-                initComplete: function () {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
-                    $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Delete" class="btn btn-icon btn-rounded btn-primary btn-outline dt-delete" disabled> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete </button> '
-                    );
-                },
-                headerCallback: function (e, a, t, n, s) {
-                    e.getElementsByTagName("th")[0].innerHTML =
-                        '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" name="select_all" class="new-control-input chk-parent select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                },
-                columnDefs: [
-                    {
-                        targets: 0,
-                        width: "30px",
-                        className: "",
-                        orderable: !1,
-                        visible: true,
-                        render: function (e, a, t, n) {
-                            return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
-                        }
-                    }
-                ],
-                buttons: {
-                    buttons: [
-                    ]
-                },
-                oLanguage: {
-                    oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
-                    sLengthMenu: "Results :  _MENU_"
-                },
+            data_table = $dataTable.DataTable({
                 processing: true,
                 serverSide: true,
-                lengthMenu: [
-                    [20, 50, 75, 100],
-                    [20, 50, 75, 100]
-                ],
+                ordering: true,
+                order: [[4, "desc"]], // Sort by Created At DESC by default
                 pageLength: 20,
-                dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                dom: 'rt<"dt-bottom-row"ip>',
+                oLanguage: {
+                    oPaginate: {
+                        sPrevious: '<i class="fa fa-angle-left"></i> Previous',
+                        sNext: 'Next <i class="fa fa-angle-right"></i>'
+                    },
+                    sInfo: "Showing records _START_ to _END_ of _TOTAL_",
+                    sEmptyTable: "No reviews found",
+                    sZeroRecords: "No matching reviews found"
+                },
                 ajax: {
                     url: $dataTable.data("url"),
-                    data: function(d) {
-                        d.user_id = $("select[name=user_id]").val();
+                    data: function (d) {
+                        var searchVal = $("#review_search").val();
+                        d.search_query = searchVal;
+                        d.rating_filter = $("#review_rating_filter").val();
+                        d.message_filter = $("#review_message_filter").val();
+                        d.filter_date_range = $("#review_date_range").data("range-value") || "";
+                        d.user_id = $("#user_id").val();
                     }
                 },
                 columns: [
                     {
-                        data: null,
-                        name: "",
+                        data: "checkbox",
+                        name: "checkbox",
+                        orderable: false,
                         searchable: false,
-                        sortable: false
+                        className: "th-chk text-center"
                     },
-                    { data: "name", name: "name", width: 130 },
-                    { data: "rating", name: "rating", width: 50 },
-                    { data: "message", name: "message" },
-                    { data: "created_at", name: "created_at", width: 120 },
+                    { data: "name", name: "users.name" },
+                    { data: "rating", name: "ratings.rating" },
+                    { data: "message", name: "ratings.message" },
+                    { data: "created_at", name: "ratings.created_at" }
                 ],
-                rowCallback: function (row, data, dataIndex) {
-                    // Get row ID
-                    var rowId = data[0];
+                drawCallback: function (settings) {
+                    var json = settings.json;
+                    var info = this.api().page.info();
 
-                    // If row ID is in the list of selected row IDs
-                    if ($.inArray(rowId, rows_selected) !== -1) {
-                        $(row)
-                            .find('input[type="checkbox"]')
-                            .prop("checked", true);
-                        $(row).addClass("selected");
+                    // Update visible reviews counter
+                    var visibleCount = (json && typeof json.iTotalDisplayRecords !== "undefined") ? json.iTotalDisplayRecords : info.recordsDisplay;
+                    $("#visible_review_count").text(visibleCount);
+
+                    // Update KPI cards dynamically if summary was returned
+                    if (json && json.summary) {
+                        var s = json.summary;
+                        if (typeof s.total_reviews !== "undefined") {
+                            $("#kpi_total_reviews").text(s.total_reviews);
+                        }
+                        if (typeof s.average_rating !== "undefined") {
+                            $("#kpi_average_rating").text(s.average_rating);
+                        }
+                        if (typeof s.five_star_reviews !== "undefined") {
+                            $("#kpi_five_star_reviews").text(s.five_star_reviews);
+                            $("#kpi_breakdown_5_count").text(s.five_star_reviews);
+                        }
+                        if (typeof s.four_star_reviews !== "undefined") {
+                            $("#kpi_breakdown_4_count").text(s.four_star_reviews);
+                        }
+                        if (typeof s.unrated_reviews !== "undefined") {
+                            $("#kpi_breakdown_unrated_count").text(s.unrated_reviews);
+                        }
+                        if (typeof s.written_messages !== "undefined") {
+                            $("#kpi_written_messages").text(s.written_messages);
+                        }
+
+                        // Breakdown bar widths
+                        if (typeof s.five_star_percent !== "undefined") {
+                            $("#kpi_breakdown_5_bar").css("width", s.five_star_percent + "%");
+                        }
+                        if (typeof s.four_star_percent !== "undefined") {
+                            $("#kpi_breakdown_4_bar").css("width", s.four_star_percent + "%");
+                        }
+                        if (typeof s.unrated_percent !== "undefined") {
+                            $("#kpi_breakdown_unrated_bar").css("width", s.unrated_percent + "%");
+                        }
                     }
+
+                    // Reset selection state on page change/draw
+                    Review.syncCheckboxState();
                 }
             });
-
-            // Apply filter
-            $(".apply-filter").on("click", function(e) {
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Clear filter
-            $(".clear-filter").on("click", function(e) {
-                $(".custom-datatable-filter-form")[0].reset();
-                $source = $(".custom-datatable-filter-form");
-                $select = $source.find(".select-picker");
-                $select.selectpicker("refresh");
-                data_table.ajax.reload();
-                e.preventDefault();
-            });
-            //-------------
-
-            // Handle click on checkbox
-            $dataTable
-                .find("tbody")
-                .on("click", 'input[type="checkbox"]', function (e) {
-                    var $row = $(this).closest("tr");
-                    // Get row data
-                    var data = table.row($row).data();
-
-                    // Get row ID
-                    var rowId = data;
-
-                    // Determine whether row ID is in the list of selected row IDs
-                    var index = $.inArray(rowId, rows_selected);
-
-                    // If checkbox is checked and row ID is not in list of selected row IDs
-                    if (this.checked && index === -1) {
-                        rows_selected.push(rowId);
-
-                        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                    } else if (!this.checked && index !== -1) {
-                        rows_selected.splice(index, 1);
-                    }
-
-                    if (
-                        $dataTable.find('tbody input[type="checkbox"]:checked')
-                            .length > 0
-                    ) {
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    if (this.checked) {
-                        $row.addClass("selected");
-                    } else {
-                        $row.removeClass("selected");
-                    }
-
-                    // Update state of "Select all" control
-                    Review.updateDataTableSelectAllCtrl(table);
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle click on "Select all" control
-            $dataTable
-                .find("thead")
-                .on("click", 'input[name="select_all"]', function (e) {
-                    if (this.checked) {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:not(:checked)')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", false);
-                        $(".dt-delete").prop("disabled", false);
-                    } else {
-                        $dataTable
-                            .find('tbody input[type="checkbox"]:checked')
-                            .trigger("click");
-                        $(".change-status").prop("disabled", true);
-                        $(".dt-delete").prop("disabled", true);
-                    }
-
-                    // Prevent click event from propagating to parent
-                    e.stopPropagation();
-                });
-
-            // Handle table draw event
-            table.on("draw", function () {
-                // Update state of "Select all" control
-                Review.updateDataTableSelectAllCtrl(table);
-
-                // Additional form validation methods
-                Components.additionalValidationMethods();
-                //----------
-            });
-
-            // multiCheck($dataTable);
         },
 
         /**
-         * Destroy record.
+         * Destroy selected records.
          */
         destroyRecord: function () {
-            var $data_table_container = $(".data-table-container");
-            var $dataTable = $(".dataTable");
+            var $dataTable = $("#dataTable");
 
-            // Handle form submission event
-            $data_table_container.on("click", ".dt-delete", function () {
-                // Iterate over all selected checkboxes
+            $("#btn_delete_selected").on("click", function (e) {
+                e.preventDefault();
+
                 var ids = [];
-                $.each(rows_selected, function (index, rowId) {
-                    ids.push(rowId.id);
+                $("#dataTable tbody .review-chk-native:checked").each(function () {
+                    ids.push($(this).val());
                 });
 
-                iziToast.question({
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: "once",
-                    color: "yellow",
-                    id: "question",
-                    zindex: 99999,
-                    title: "Hey!",
-                    message: "Are you sure to want to delete?",
-                    position: "center",
-                    progressBar: false,
-                    buttons: [
-                        [
-                            "<button><b>YES</b></button>",
-                            function (instance, toast) {
+                if (ids.length === 0) {
+                    return;
+                }
 
-                                $.ajax({
-                                    type: "DELETE",
-                                    url: $dataTable.data("destroy-url"),
-                                    data: { ids: ids },
-                                    beforeSend: function () {
-                                        $(".dt-delete").prop("disabled", true);
-                                        $(".change-status").prop("disabled", true);
-                                    },
-                                    success: function (response) {
-                                        App.showNotification(response);
-                                        data_table.ajax.reload(null, false);
-                                        rows_selected = [];
-                                    },
-                                    error: function () { },
-                                    complete: function () {
-                                        $(".dt-delete").prop("disabled", true);
-                                        $(".change-status").prop("disabled", true);
-                                    }
-                                });
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
-                            },
-                            true
-                        ],
-                        [
-                            "<button>NO</button>",
-                            function (instance, toast) {
-                                instance.hide(
-                                    { transitionOut: "fadeOut" },
-                                    toast,
-                                    "button"
-                                );
-                            }
+                var count = ids.length;
+                var confirmMsg = "Are you sure you want to delete the selected " + (count > 1 ? count + " reviews" : "review") + "?";
+
+                if (typeof iziToast !== "undefined") {
+                    iziToast.question({
+                        timeout: 20000,
+                        close: false,
+                        overlay: true,
+                        displayMode: "once",
+                        color: "yellow",
+                        id: "question",
+                        zindex: 99999,
+                        title: "Hey!",
+                        message: confirmMsg,
+                        position: "center",
+                        progressBar: false,
+                        buttons: [
+                            [
+                                "<button><b>YES</b></button>",
+                                function (instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+
+                                    $.ajax({
+                                        type: "DELETE",
+                                        url: $dataTable.data("destroy-url"),
+                                        data: { ids: ids },
+                                        beforeSend: function () {
+                                            $("#btn_delete_selected").prop("disabled", true);
+                                        },
+                                        success: function (response) {
+                                            if (typeof App !== "undefined" && App.showNotification) {
+                                                App.showNotification(response);
+                                            }
+                                            if (data_table) {
+                                                data_table.ajax.reload(null, false);
+                                            }
+                                        },
+                                        error: function () {
+                                            $("#btn_delete_selected").prop("disabled", false);
+                                        }
+                                    });
+                                },
+                                true
+                            ],
+                            [
+                                "<button>NO</button>",
+                                function (instance, toast) {
+                                    instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                                }
+                            ]
                         ]
-                    ],
-                    onClosing: function (instance, toast, closedBy) {
-                        console.info("Closing | closedBy: " + closedBy);
-                    },
-                    onClosed: function (instance, toast, closedBy) {
-                        console.info("Closed | closedBy: " + closedBy);
-                    }
-                });
+                    });
+                } else if (confirm(confirmMsg)) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: $dataTable.data("destroy-url"),
+                        data: { ids: ids },
+                        beforeSend: function () {
+                            $("#btn_delete_selected").prop("disabled", true);
+                        },
+                        success: function (response) {
+                            if (typeof App !== "undefined" && App.showNotification) {
+                                App.showNotification(response);
+                            }
+                            if (data_table) {
+                                data_table.ajax.reload(null, false);
+                            }
+                        },
+                        error: function () {
+                            $("#btn_delete_selected").prop("disabled", false);
+                        }
+                    });
+                }
             });
         },
+
+        /**
+         * Custom validation methods if needed.
+         */
+        customValidationMethods: function () {
+            if (typeof jQuery.validator === "undefined") {
+                return;
+            }
+        }
     };
 })();
 
-Review.init();
+$(document).ready(function () {
+    Review.init();
+});

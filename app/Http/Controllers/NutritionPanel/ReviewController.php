@@ -1,13 +1,12 @@
 <?php
 namespace App\Http\Controllers\NutritionPanel;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use DataTables;
 use App\Models\User;
 use App\Models\Rating;
-use Storage;
 
 class ReviewController extends Controller
 {
@@ -46,22 +45,13 @@ class ReviewController extends Controller
 
         $users = User::where('role_type','user')->select('id' ,DB::raw("If(users.mobile_number is null, users.name, CONCAT(users.name, ' (', users.mobile_number, ')')) as name"))->get();
 
-        // Breadcrumb Button
-        $breadcrumbButton = [];
-        // Filter Button
-        $breadcrumbButton[] = [
-            'btn_class' => 'btn btn-dark _mb-2 _mr-2 mt-2 rounded-circle filter-button',
-            'btn_link' => 'javascript:;',
-            'btn_icon' => 'filter',
-            'btn_text' => __('language.filter'),
-            'attributes' => []
-        ];
+        $summary = Rating::getReviewsSummary();
 
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
-        $this->viewData['breadcrumbButton'] = $breadcrumbButton;
         $this->viewData['users'] = $users;
         $this->viewData['authUser'] = $authUser;
+        $this->viewData['summary'] = $summary;
         
         return view('nutrition-panel.reviews.index')->with($this->viewData);
     }
@@ -69,12 +59,12 @@ class ReviewController extends Controller
     /**
      * Get Reviews list.
      *
-     * @return response
+     * @return \Illuminate\Http\JsonResponse
      *
      * @author Mukesh
      * @created_at 23 Jan 2024
      */
-    public function getReviews(Request $request , $id=false)
+    public function getReviews(Request $request, $id = false)
     {
         $authUser = auth()->user();
 
@@ -82,88 +72,124 @@ class ReviewController extends Controller
         $draw = $request->get('draw');
         $start = $request->get('start');
         $limit = $request->get('length');
-        $sort = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $order = $request->get('order');
+        $sort = (!empty($order) && is_array($order)) ? $order[0] : null;
+
+        $searchVal = $request->get('search');
+        $search = is_array($searchVal) ? ($searchVal['value'] ?? null) : null;
+        if (empty($search) && !empty($request->search_query)) {
+            $search = $request->search_query;
+        }
         
         // Filter Parameters
         $filter = array(
             "user_id" => $request->user_id,
+            "rating_filter" => $request->rating_filter,
+            "message_filter" => $request->message_filter,
+            "filter_date_range" => $request->filter_date_range,
         );
         
         // Getting Reviews Records
         $records_count = Rating::GetReviews(null, null, $search, $filter, $sort);
         $records = Rating::GetReviews($limit, $start, $search, $filter, $sort);
+        $summary = Rating::GetReviewsSummary($search, $filter);
 
         $arr_data = array();
 
-        if(count($records) > 0)
+        if(!empty($records) && count($records) > 0)
         {
             foreach($records as $key => $value)
             {   
                 $name       = 'N/A';
-                $rating     = 'N/A';
+                $ratingHtml = '';
                 $message    = 'N/A';
                 $created_at = 'N/A';
-                $action     = '';
 
                 if(!empty($value->name))
                 {
-                    $name = $value->name;
+                    $name = e($value->name);
                 }
 
-                if(!empty($value->rating))
-                {
-                    $rating = $value->rating;
+                $ratingNum = intval($value->rating ?? 0);
+                if ($ratingNum >= 1) {
+                    $starsHtml = '';
+                    for ($s = 1; $s <= 5; $s++) {
+                        if ($s <= $ratingNum) {
+                            $starsHtml .= '<i class="fa fa-star star-filled"></i>';
+                        } else {
+                            $starsHtml .= '<i class="fa fa-star star-empty"></i>';
+                        }
+                    }
+                    $ratingHtml = '<div class="rating-cell"><span class="rating-num">' . $ratingNum . '</span> <span class="stars-gold">' . $starsHtml . '</span></div>';
+                } else {
+                    $ratingHtml = '<span class="badge-unrated">Unrated</span>';
                 }
 
                 if(!empty($value->message))
                 {
-                    $message = $value->message;
+                    $message = e($value->message);
                 }
 
                 if(!empty($value->created_at))
                 {
-                    $created_at = date("d-m-Y", strtotime($value->created_at));
+                    $created_at = Carbon::parse($value->created_at)->format('d-m-Y');
                 }
+
+                $checkbox = '<div class="custom-chk-wrap">'
+                    . '<input type="checkbox" class="review-chk-native" id="chk_' . $value->id . '" value="' . $value->id . '">'
+                    . '</div>';
 
                 // Array Data
                 $arr_data[] = array(
-                    "id" => $value->id,
-                    "name" => $name,
-                    "rating" => $rating,
-                    "message" => $message,
-                    "created_at" => $created_at,
+                    "checkbox"   => $checkbox,
+                    "id"         => $value->id,
+                    "name"       => '<span class="reviewer-name">' . $name . '</span>',
+                    "rating"     => $ratingHtml,
+                    "message"    => '<span class="review-message-text">' . $message . '</span>',
+                    "created_at" => '<span class="review-date-text">' . $created_at . '</span>',
                 );
             }
         }
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
+            "draw"                 => intval($draw),
+            "iTotalRecords"        => $totalRecords,
             "iTotalDisplayRecords" => $totalRecords,
-            "aaData" => $arr_data
+            "aaData"               => $arr_data,
+            "summary"              => $summary
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 
     /**
      * Destroy.
      *
-     * @return boolean
+     * @return \Illuminate\Http\JsonResponse
      *
      * @author Mukesh
      * @created_at 23 Jan 2024
      */
     public function destroy(Request $request)
     {
-        $ids = $request['ids'];
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json([
+                '_status' => false,
+                '_message' => 'Please select at least one review to delete.',
+                '_type' => 'error'
+            ], 200);
+        }
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
         $reviews = Rating::whereIn('id', $ids)->delete();
         
         // Set response
-        if ($reviews == true) 
+        if ($reviews) 
         {
             $response = [
                 '_status' => true,
@@ -179,7 +205,6 @@ class ReviewController extends Controller
                 '_type' => 'error',
             ];
         }
-        //-------------
         
         return response()->json($response, 200);
     }
