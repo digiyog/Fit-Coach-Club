@@ -592,62 +592,158 @@
         white-space: nowrap;
     }
 
-    /* Clean Bottom DataTables Pagination */
+    /* Clean Bottom DataTables Pagination & Info Row */
     .dt-bottom-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 18px;
-        flex-wrap: wrap;
-        gap: 12px;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-top: 20px !important;
+        padding-top: 14px !important;
+        border-top: 1px solid #f1f5f9 !important;
+        flex-wrap: wrap !important;
+        gap: 16px !important;
     }
 
+    /* Reset & format Info text (e.g. "Showing 333 transactions") */
+    div.dataTables_wrapper div.dataTables_info,
+    div.dataTables_wrapper .dataTables_info,
+    .tx-ledger-card .dataTables_info,
     .dataTables_info {
-        font-size: 13px;
-        color: #64748b;
-        font-weight: 500;
-        padding-top: 0 !important;
-    }
-
-    .dataTables_paginate {
-        display: flex;
-        align-items: center;
-        gap: 4px;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
         margin: 0 !important;
+        color: #64748b !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        line-height: normal !important;
     }
 
-    .dataTables_paginate .paginate_button {
-        padding: 6px 12px !important;
+    /* Reset Paginate Container */
+    div.dataTables_wrapper div.dataTables_paginate,
+    .dataTables_wrapper .dataTables_paginate,
+    .dataTables_paginate {
+        margin: 0 !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        float: none !important;
+    }
+
+    /* Reset Paginate UL */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination,
+    .dataTables_paginate ul.pagination {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    /* Reset Paginate LI */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.paginate_button,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item,
+    .dataTables_paginate ul.pagination li {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+
+    /* Style the actual clickable link inside the LI (.page-link) */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item .page-link,
+    div.dataTables_wrapper div.dataTables_paginate .page-link,
+    .dataTables_paginate .page-link,
+    .dataTables_paginate > a.paginate_button {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        padding: 0 10px !important;
         border-radius: 8px !important;
         font-size: 13px !important;
         font-weight: 600 !important;
         border: 1px solid #e2e8f0 !important;
         background: #ffffff !important;
         color: #475569 !important;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        margin: 0 2px;
+        margin: 0 !important;
+        transition: all 0.15s ease !important;
+        text-decoration: none !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        cursor: pointer !important;
+        outline: none !important;
     }
 
-    .dataTables_paginate .paginate_button:hover {
-        background: #f1f5f9 !important;
+    /* Previous & Next buttons */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.previous .page-link,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.next .page-link,
+    .dataTables_paginate > a.previous,
+    .dataTables_paginate > a.next {
+        padding: 0 14px !important;
+        min-width: auto !important;
+        font-weight: 500 !important;
+    }
+
+    /* Hover on clickable items */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item:not(.active):not(.disabled) .page-link:hover,
+    .dataTables_paginate > a.paginate_button:not(.current):not(.disabled):hover {
+        background: #f8fafc !important;
         color: #0f172a !important;
         border-color: #cbd5e1 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06) !important;
     }
 
-    .dataTables_paginate .paginate_button.current,
-    .dataTables_paginate .paginate_button.current:hover {
+    /* Active Page (e.g. page 1) */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item.active .page-link,
+    .dataTables_paginate > a.paginate_button.current {
         background: #2563eb !important;
         color: #ffffff !important;
         border-color: #2563eb !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35) !important;
     }
 
-    .dataTables_paginate .paginate_button.disabled,
-    .dataTables_paginate .paginate_button.disabled:hover {
-        color: #94a3b8 !important;
-        border-color: #f1f5f9 !important;
+    /* Disabled Page (e.g. Previous button when on page 1) */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item.disabled .page-link,
+    .dataTables_paginate > a.paginate_button.disabled {
         background: #f8fafc !important;
-        cursor: not-allowed;
+        color: #94a3b8 !important;
+        border-color: #e2e8f0 !important;
+        box-shadow: none !important;
+        cursor: not-allowed !important;
+        opacity: 0.8 !important;
+        pointer-events: none !important;
+    }
+
+    /* Ellipsis item (...) */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination li.page-item.disabled:not(.previous):not(.next) .page-link,
+    .dataTables_paginate span.ellipsis {
+        background: transparent !important;
+        border-color: transparent !important;
+        color: #94a3b8 !important;
+        box-shadow: none !important;
+        cursor: default !important;
+        min-width: 24px !important;
+    }
+
+    /* In case of span containers in non-bootstrap renderer */
+    .dataTables_paginate > span {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 
     /* Hide default legacy DataTables controls */
