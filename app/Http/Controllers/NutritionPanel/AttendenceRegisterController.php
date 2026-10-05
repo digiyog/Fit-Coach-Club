@@ -270,16 +270,27 @@ class AttendenceRegisterController extends Controller
                 $total_present  = !empty($value->total_present) ? intval($value->total_present) : 0;
                 $total_absent   = max(0, $totalDays - $total_present);
                 $ratePct        = $total_days > 0 ? round(($total_present / $total_days) * 100) : 0;
-                $hasMulti       = in_array($value->id, $userIdsWithMultiple);
-                
                 $colors = $this->getAvatarColor($name);
                 $initial = strtoupper(substr(trim($name), 0, 1) ?: 'U');
                 $bgColor = $colors['bg'];
                 $textColor = $colors['color'];
 
+                $profileImageUrl = null;
+                if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                    $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                    $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                }
+
+                if ($profileImageUrl) {
+                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 32px; height: 32px; min-width: 32px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($name).'" />';
+                } else {
+                    $avatarInner = '<div class="fcc-avatar-circle" style="background-color: ' . $bgColor . '; color: ' . $textColor . ';">' . $initial . '</div>';
+                }
+
                 // 1. Member column with Avatar
                 $memberCol = '<div class="fcc-member-cell d-flex align-items-center gap-2">' .
-                    '<div class="fcc-avatar-circle" style="background-color: ' . $bgColor . '; color: ' . $textColor . ';">' . $initial . '</div>' .
+                    $avatarInner .
                     '<span class="fcc-member-name">' . e($name) . '</span>' .
                     '</div>';
 

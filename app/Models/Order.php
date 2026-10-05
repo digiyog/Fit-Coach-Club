@@ -75,25 +75,26 @@ class Order extends Model
         };
 
         // Get Orders
-        $orders = Order::select('id', 'order_id', 'user_id', 'order_number', 'order_date', 'product_quantity', 'user_name', 'mobile_number', 'total_amount', 'discount','net_amount', 'payment_status', 'order_status', 'created_at')
-            ->where('franchise_id', $authUser->id)
+        $orders = Order::select('orders.id', 'orders.order_id', 'orders.user_id', 'orders.order_number', 'orders.order_date', 'orders.product_quantity', 'orders.user_name', 'orders.mobile_number', 'orders.total_amount', 'orders.discount', 'orders.net_amount', 'orders.payment_status', 'orders.order_status', 'orders.created_at', 'users.profile_image')
+            ->leftJoin('users', 'orders.user_id', '=', 'users.id')
+            ->where('orders.franchise_id', $authUser->id)
             ->where($filterQuery);
 
         // Sort Columns Conditions
         if (!empty($sort) && isset($sort['column'])) {
-            $arr_fields = array("created_at", "user_name", "mobile_number", "total_amount", "discount", "net_amount", "payment_status", "order_status", "");
+            $arr_fields = array("orders.created_at", "orders.user_name", "orders.mobile_number", "orders.total_amount", "orders.discount", "orders.net_amount", "orders.payment_status", "orders.order_status", "");
             $colIdx = intval($sort['column']);
             if (isset($arr_fields[$colIdx]) && !empty($arr_fields[$colIdx])) {
                 $dir = $sort['dir'] ?? 'DESC';
                 $orders->orderBy($arr_fields[$colIdx], $dir);
             } else {
-                $orders->orderBy('id', 'DESC');
+                $orders->orderBy('orders.id', 'DESC');
             }
         } else {
-            $orders->orderBy('id', 'DESC');
+            $orders->orderBy('orders.id', 'DESC');
         }
 
-        $orders->groupBy('id');
+        $orders->groupBy('orders.id');
 
         // Set final limit and records
         if (!empty($limit)) {

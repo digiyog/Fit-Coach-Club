@@ -764,10 +764,6 @@
                 <i data-feather="download"></i>
                 <span>Export Excel</span>
             </button>
-            <a href="{{ route('nutritionPanel.manual-attendances.manual-attendance') }}" class="btn fcc-btn-start-counselling">
-                <i data-feather="plus" style="width: 16px; height: 16px;"></i>
-                <span>Start counselling</span>
-            </a>
         </div>
     </div>
 

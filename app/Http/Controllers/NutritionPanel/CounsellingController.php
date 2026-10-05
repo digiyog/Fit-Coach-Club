@@ -164,9 +164,22 @@ class CounsellingController extends Controller
                     $cIdx = abs(crc32($name)) % count($colors);
                     $avatarCol = $colors[$cIdx];
 
-                    // Member HTML with Initial and Joined Date
+                    $profileImageUrl = null;
+                    if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                    }
+
+                    if ($profileImageUrl) {
+                        $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 34px; height: 34px; min-width: 34px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($name).'" />';
+                    } else {
+                        $avatarInner = '<div class="fcc-avatar-circle" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                    }
+
+                    // Member HTML with Initial/Image and Joined Date
                     $memberHtml = '<div class="d-flex align-items-center gap-2">
-                        <div class="fcc-avatar-circle" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>
+                        '.$avatarInner.'
                         <div>
                             <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 13px; line-height: 1.2;">'.e($name).'</div>
                             <div class="fcc-member-joined text-muted" style="font-size: 11px; margin-top: 2px;">Joined: '.$joinedDate.'</div>
@@ -593,9 +606,22 @@ class CounsellingController extends Controller
                     $cIdx = abs(crc32($name)) % count($colors);
                     $avatarCol = $colors[$cIdx];
 
+                    $profileImageUrl = null;
+                    if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                    }
+
+                    if ($profileImageUrl) {
+                        $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 34px; height: 34px; min-width: 34px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($name).'" />';
+                    } else {
+                        $avatarInner = '<div class="fcc-avatar-circle" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                    }
+
                     // 1. Member HTML
                     $memberHtml = '<div class="d-flex align-items-center gap-2">
-                        <div class="fcc-avatar-circle" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>
+                        '.$avatarInner.'
                         <div>
                             <div class="fcc-member-name fw-bold" style="color: #0f172a; font-size: 13px; line-height: 1.2;">'.e($name).'</div>
                             <div class="fcc-member-joined text-muted" style="font-size: 11px; margin-top: 2px;">Joined: '.$joinedDate.'</div>

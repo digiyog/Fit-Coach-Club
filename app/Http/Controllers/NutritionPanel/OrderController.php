@@ -109,8 +109,49 @@ class OrderController extends Controller
                     . '</div>';
 
                 // User Info Column
-                $user_name = !empty($value->user_name) ? e($value->user_name) : 'N/A';
+                $rawUserName = !empty($value->user_name) ? $value->user_name : 'N/A';
                 $mobile_number = !empty($value->mobile_number) ? e($value->mobile_number) : 'N/A';
+
+                if (!empty($value->user_name)) {
+                    $initials = '';
+                    $nameWords = explode(' ', trim($rawUserName));
+                    foreach ($nameWords as $w) {
+                        if (!empty($w)) {
+                            $initials .= strtoupper(substr($w, 0, 1));
+                        }
+                    }
+                    $initials = substr($initials, 0, 1) ?: 'U';
+
+                    $colors = [
+                        ['bg' => '#eff6ff', 'color' => '#2563eb', 'border' => '#bfdbfe'],
+                        ['bg' => '#f3e8ff', 'color' => '#9333ea', 'border' => '#e9d5ff'],
+                        ['bg' => '#ecfdf5', 'color' => '#059669', 'border' => '#a7f3d0'],
+                        ['bg' => '#fffbeb', 'color' => '#d97706', 'border' => '#fde68a'],
+                        ['bg' => '#fdf2f8', 'color' => '#db2777', 'border' => '#fbcfe8'],
+                    ];
+                    $cIdx = abs(crc32($rawUserName)) % count($colors);
+                    $avatarCol = $colors[$cIdx];
+
+                    $profileImageUrl = null;
+                    if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                    }
+
+                    if ($profileImageUrl) {
+                        $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 28px; height: 28px; min-width: 28px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($rawUserName).'" />';
+                    } else {
+                        $avatarInner = '<div style="width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; border: 1.5px solid '.$avatarCol['border'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                    }
+
+                    $user_name_html = '<div class="d-flex align-items-center gap-2" style="white-space: nowrap;">
+                        '.$avatarInner.'
+                        <span class="order-user-name">'.e($rawUserName).'</span>
+                    </div>';
+                } else {
+                    $user_name_html = '<span class="order-user-name">N/A</span>';
+                }
 
                 $total_amount = $value->total_amount ?? 0;
                 $discount = $value->discount ?? 0;
@@ -215,7 +256,7 @@ class OrderController extends Controller
                 // Array Data
                 $arr_data[] = array(
                     "transaction_info"  => $transactionInfo,
-                    "user_name"         => '<span class="order-user-name">' . $user_name . '</span>',
+                    "user_name"         => $user_name_html,
                     "mobile_number"     => '<span class="order-mobile-num">' . $mobile_number . '</span>',
                     "total_amount"      => '<span class="order-amount">' . number_format((float)$total_amount, 2, '.', '') . '</span>',
                     "discount"          => '<span class="order-discount">' . (floatval($discount) > 0 ? number_format((float)$discount, 2, '.', '') : '0') . '</span>',

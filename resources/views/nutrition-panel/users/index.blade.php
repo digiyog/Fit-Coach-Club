@@ -1218,6 +1218,7 @@
         }
 
         /* Table on mobile */
+        .data-table-container,
         .fcc-modern-table-wrap {
             border-radius: 10px;
             overflow-x: auto !important;
@@ -1506,7 +1507,7 @@
         </div>
 
         <!-- 7. Table Container -->
-        <div class="data-table-container">
+        <div class="data-table-container fcc-modern-table-wrap table-responsive">
             <table id="dataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.users.getUsers') }}" data-change-status-url="{{ route('nutritionPanel.users.changeStatus') }}" data-destroy-url="{{ route('nutritionPanel.users.destroy') }}">
                 <thead>
                     <tr>
