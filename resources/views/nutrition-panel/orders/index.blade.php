@@ -562,11 +562,34 @@
     /* Modern Table Styling */
     .table-container-modern {
         border-radius: 12px;
-        overflow: visible !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #edf2f7;
+    }
+
+    .table-container-modern::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .table-container-modern::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 3px;
+    }
+
+    .table-container-modern::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    .table-container-modern::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
     }
 
     #dataTable {
         width: 100% !important;
+        min-width: 980px !important;
         border-collapse: separate;
         border-spacing: 0;
         border: none;
@@ -575,22 +598,34 @@
     #dataTable thead th {
         background: #f8fafc;
         color: #475569;
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 700;
-        padding: 14px 16px;
+        padding: 12px 10px;
         border-top: 1px solid #e2e8f0;
         border-bottom: 1px solid #e2e8f0;
         letter-spacing: 0.01em;
-        white-space: nowrap;
+        white-space: nowrap !important;
+        vertical-align: middle;
+    }
+
+    #dataTable thead th:first-child,
+    #dataTable tbody td:first-child {
+        padding-left: 14px;
+    }
+
+    #dataTable thead th:last-child,
+    #dataTable tbody td:last-child {
+        padding-right: 14px;
     }
 
     #dataTable tbody td {
-        padding: 14px 16px;
+        padding: 11px 10px;
         vertical-align: middle;
-        font-size: 13.5px;
+        font-size: 13px;
         color: #334155;
         border-bottom: 1px solid #f1f5f9;
         background: #ffffff;
+        white-space: nowrap !important;
     }
 
     #dataTable tbody tr:hover td {
@@ -601,18 +636,20 @@
     .order-info-cell {
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 2px;
+        line-height: 1.25;
     }
 
     .order-date-text {
-        font-size: 13px;
-        color: #475569;
+        font-size: 11.5px;
+        color: #64748b;
         white-space: nowrap;
     }
 
     .order-num-text {
-        font-size: 13px;
-        color: #64748b;
+        font-size: 12.5px;
+        color: #0f172a;
+        font-weight: 600;
         white-space: nowrap;
     }
 
@@ -629,34 +666,43 @@
     .order-user-name {
         font-weight: 600;
         color: #0f172a;
+        font-size: 13px;
+        white-space: nowrap;
     }
 
     .order-mobile-num {
         color: #475569;
-        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 500;
+        white-space: nowrap;
     }
 
     .order-amount, .order-net-amount {
         font-weight: 600;
         color: #0f172a;
+        font-size: 13px;
+        white-space: nowrap;
     }
 
     .order-discount {
         color: #64748b;
+        font-size: 12.5px;
+        white-space: nowrap;
     }
 
     /* Payment Status Pill Dropdowns */
     .btn-payment-pill {
         border-radius: 6px;
-        padding: 4px 12px;
-        font-size: 12px;
+        padding: 3px 9px;
+        font-size: 11.5px;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         border: 1px solid transparent;
         cursor: pointer;
         transition: all 0.15s ease;
+        white-space: nowrap;
     }
 
     .btn-payment-pill.pill-pending {
@@ -684,9 +730,9 @@
     /* Order Status Badges */
     .badge-order-status {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 3px 9px;
         border-radius: 6px;
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 600;
         white-space: nowrap;
     }
@@ -953,6 +999,23 @@
     /* Hide footer row inside table */
     #dataTable tfoot {
         display: none;
+    }
+
+    @media (max-width: 768px) {
+        .order-page-wrapper {
+            padding: 4px 6px 30px 6px;
+        }
+        .order-ledger-card {
+            padding: 16px;
+            border-radius: 12px;
+        }
+        .order-title {
+            font-size: 22px;
+        }
+        .order-summary-card {
+            padding: 16px;
+            border-radius: 12px;
+        }
     }
 </style>
 @endpush
