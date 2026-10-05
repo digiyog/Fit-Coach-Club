@@ -265,6 +265,8 @@ class DashboardController extends Controller
                 ->get();
         }
 
+        $todayAttendences = $todayAttendences->unique('user_id')->values();
+
         $today2Attendences = Attendance::select(
                 'attendances.user_id',
                 'attendances.date',

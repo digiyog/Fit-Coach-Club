@@ -4642,13 +4642,18 @@
                         </div>
 
                         <div class="fcc-audit-list" id="todayAuditContainer">
-                            @if(isset($todayAttendences) && count($todayAttendences) > 0)
-                                @foreach($todayAttendences as $tIndex => $tAtt)
+                            @php
+                                $timelineAttendances = isset($todayAttendences) ? (is_array($todayAttendences) ? collect($todayAttendences) : $todayAttendences)->unique('user_id')->values() : collect([]);
+                            @endphp
+                            @if(count($timelineAttendances) > 0)
+                                @foreach($timelineAttendances as $tIndex => $tAtt)
                                     @php
                                         $tTime = $tAtt->created_at ? date('H:i', strtotime($tAtt->created_at)) : date('H:i');
-                                        $isDouble = (isset($today2Attendences) && $today2Attendences->contains('user_id', $tAtt->user_id));
+                                        $doubleRecord = (isset($today2Attendences) ? $today2Attendences->firstWhere('user_id', $tAtt->user_id) : null);
+                                        $isDouble = !empty($doubleRecord);
+                                        $attCount = $isDouble ? ($doubleRecord->total_attendance ?? 2) : 1;
                                         if ($isDouble) {
-                                            $badgeVal = '+2';
+                                            $badgeVal = '+' . $attCount;
                                             $badgeClass = 'double';
                                             $nodeColor = '#2563eb';
                                         } else {
@@ -4662,7 +4667,7 @@
                                         <div class="d-flex align-items-center flex-wrap">
                                             <span class="text-muted" style="font-size: 11.5px; font-weight: 600;">{{ $tTime }}</span>
                                             <span class="fcc-audit-badge-pill {{ $badgeClass }}">{{ $badgeVal }}</span>
-                                            <strong class="text-dark">{{ $tAtt->remark ?? ($isDouble ? 'Double Attendance' : 'QR Attendance') }}</strong>
+                                            <strong class="text-dark">{{ $isDouble ? ($attCount > 2 ? 'Multiple Attendance (' . $attCount . ')' : 'Double Attendance') : ($tAtt->remark ?? $tAtt->message ?? 'QR Attendance') }}</strong>
                                         </div>
                                         <div class="text-muted" style="font-size: 11px; margin-top: 1px;">
                                             {{ ucfirst($tAtt->name ?? 'Member') }} · {{ $tAtt->coach_name ?? 'Club' }}
@@ -4670,10 +4675,10 @@
                                     </div>
                                 @endforeach
 
-                                @if(count($todayAttendences) > 5)
+                                @if(count($timelineAttendances) > 5)
                                     <div class="fcc-load-more-wrap text-center mt-2">
                                         <button type="button" class="fcc-btn-load-more btn-load-more-generic" data-container="todayAuditContainer" data-item-class="fcc-audit-extra-item">
-                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($todayAttendences) - 5 }} remaining)
+                                            <i class="fa fa-chevron-down"></i> Load more ({{ count($timelineAttendances) - 5 }} remaining)
                                         </button>
                                     </div>
                                 @endif
