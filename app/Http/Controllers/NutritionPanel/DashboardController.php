@@ -127,6 +127,7 @@ class DashboardController extends Controller
 
         $dailyAvgAttendance = count($weeklyPulseAttendance) > 0 ? round(array_sum($weeklyPulseAttendance) / count($weeklyPulseAttendance), 1) : 0;
         $weeklyPeakAttendance = count($weeklyPulseAttendance) > 0 ? max($weeklyPulseAttendance) : 0;
+        $targetAttendance = max(5, (int)ceil($weeklyPeakAttendance > 0 ? $weeklyPeakAttendance * 1.25 : 15));
 
         // 3. Today Stats
         $todayDate = date('Y-m-d');
@@ -760,6 +761,7 @@ class DashboardController extends Controller
         $this->viewData['weeklyPulseRevenue'] = $weeklyPulseRevenue;
         $this->viewData['dailyAvgAttendance'] = $dailyAvgAttendance;
         $this->viewData['weeklyPeakAttendance'] = $weeklyPeakAttendance;
+        $this->viewData['targetAttendance'] = $targetAttendance;
         $this->viewData['weeklyGrowthPct'] = $weeklyGrowthPct;
 
         $this->viewData['todayCounsellingCount'] = $todayCounsellingCount;

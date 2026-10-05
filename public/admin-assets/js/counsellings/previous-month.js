@@ -5,6 +5,9 @@ var PreviousMonthCounsellings = (function() {
          * Initialization.
          */
         init: function() {
+            if (typeof feather !== "undefined") {
+                feather.replace();
+            }
             PreviousMonthCounsellings.getCounsellings();
             PreviousMonthCounsellings.initEvents();
         },

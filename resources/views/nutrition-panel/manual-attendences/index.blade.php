@@ -528,7 +528,8 @@
     #fccHistorySearchInput {
         width: 100% !important;
         height: 36px !important;
-        padding: 0 12px 0 36px !important;
+        padding-left: 40px !important;
+        padding-right: 12px !important;
         border: 1.5px solid #e2e8f0 !important;
         border-radius: 8px !important;
         font-size: 12.5px !important;
@@ -1051,7 +1052,7 @@
                 <!-- Search Box -->
                 <div class="fcc-table-search-box">
                     <i data-feather="search"></i>
-                    <input type="text" id="fccHistorySearchInput" class="fcc-table-search-input" placeholder="Search history..." autocomplete="off" />
+                    <input type="text" id="fccHistorySearchInput" class="fcc-table-search-input" placeholder="Search history..." autocomplete="off" style="padding-left: 40px !important;" />
                 </div>
 
                 <!-- Page Size Dropdown -->
@@ -1097,7 +1098,7 @@
 <script src="{{ asset('admin-assets/js/flatpickr.js') }}"></script>
 <script src="{{ asset('admin-assets/js/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/manual-attendence/view.js') }}"></script>
+<script src="{{ asset('admin-assets/js/manual-attendence/view.js') }}?v={{ file_exists(public_path('admin-assets/js/manual-attendence/view.js')) ? filemtime(public_path('admin-assets/js/manual-attendence/view.js')) : time() }}"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {

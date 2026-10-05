@@ -901,7 +901,7 @@
             <!-- Search Box -->
             <div class="fcc-search-wrap">
                 <i data-feather="search"></i>
-                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search member, mobile, coach..." autocomplete="off" />
+                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search member, mobile, coach..." autocomplete="off" style="padding-left: 42px !important;" />
             </div>
 
             <!-- Filter Dropdowns Group -->

@@ -212,7 +212,7 @@
         height: 38px;
         border-radius: 8px;
         border: 1px solid #cbd5e1;
-        padding: 6px 14px 6px 36px;
+        padding: 6px 14px 6px 38px !important;
         font-size: 13px;
         width: 250px;
         outline: none;
@@ -545,7 +545,7 @@
                 </div>
                 <div class="search-wrapper">
                     <i class="fa fa-search search-icon-left"></i>
-                    <input type="text" id="coachSearchBox" class="coach-search-input" placeholder="Search coach name, phone...">
+                    <input type="text" id="coachSearchBox" class="coach-search-input" placeholder="Search coach name, phone..." style="padding-left: 38px !important;">
                 </div>
             </div>
 

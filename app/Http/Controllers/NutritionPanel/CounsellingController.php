@@ -67,6 +67,30 @@ class CounsellingController extends Controller
             ->where('date', date('Y-m-d'))
             ->count();
 
+        // Total Sessions this month
+        $totalMonthlySessions = Attendance::where('franchise_id', $authUser->id)
+            ->where('type', 2)
+            ->where(function($q) {
+                $q->where(function($s1) {
+                    $s1->whereNotNull('date')->whereMonth('date', date('m'))->whereYear('date', date('Y'));
+                })->orWhere(function($s2) {
+                    $s2->whereNull('date')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'));
+                });
+            })
+            ->count();
+
+        // Pending follow-ups
+        $pendingFollowUpsCount = Attendance::join('users', 'attendances.user_id', '=', 'users.id')
+            ->where('attendances.franchise_id', $authUser->id)
+            ->where('attendances.type', 2)
+            ->where('users.role_type', 'user')
+            ->where(function($q) {
+                $q->where('users.days', '<=', 5)
+                  ->orWhere('users.due_amount', '>', 0);
+            })
+            ->distinct('attendances.user_id')
+            ->count('attendances.user_id');
+
         // Total dues flagged for franchise members
         $duesFlagged = User::where('created_by', $authUser->id)
             ->where('due_amount', '>', 0)
@@ -86,6 +110,8 @@ class CounsellingController extends Controller
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['todayCompletedCount'] = $todayCompletedCount;
+        $this->viewData['totalMonthlySessions'] = $totalMonthlySessions;
+        $this->viewData['pendingFollowUpsCount'] = $pendingFollowUpsCount;
         $this->viewData['mealPlansCount'] = $mealPlansCount;
         $this->viewData['duesFlagged'] = $duesFlagged;
         $this->viewData['lastSessionTime'] = $lastSessionTime;

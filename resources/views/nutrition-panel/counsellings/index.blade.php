@@ -213,39 +213,73 @@
         border-radius: 3px 3px 0 0;
     }
 
-    /* 4. Horizontal Summary Strip */
-    .fcc-summary-strip {
+    /* 4. Multi-Card KPI Metrics Grid */
+    .fcc-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+    .fcc-kpi-card {
         background: #ffffff;
         border: 1px solid #edf2f7;
-        border-radius: 12px;
-        padding: 12px 20px;
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+    .fcc-kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+    .fcc-kpi-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 14px;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-        margin-bottom: 18px;
+        margin-bottom: 10px;
     }
-    .fcc-summary-item {
+    .fcc-kpi-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+    }
+    .fcc-kpi-icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
-        gap: 9px;
-        font-size: 13.5px;
-        color: #334155;
+        justify-content: center;
+        font-size: 16px;
     }
-    .fcc-summary-item i,
-    .fcc-summary-item svg {
-        font-size: 17px;
-    }
-    .fcc-summary-item strong {
-        font-weight: 700;
+    .fcc-kpi-icon-indigo { background: #eef2ff; color: #4338ca; }
+    .fcc-kpi-icon-blue   { background: #eff6ff; color: #2563eb; }
+    .fcc-kpi-icon-green  { background: #ecfdf5; color: #059669; }
+    .fcc-kpi-icon-amber  { background: #fffbeb; color: #d97706; }
+    .fcc-kpi-icon-red    { background: #fef2f2; color: #dc2626; }
+    .fcc-kpi-icon-purple { background: #f5f3ff; color: #7c3aed; }
+
+    .fcc-kpi-value {
+        font-size: 26px;
+        font-weight: 800;
         color: #0f172a;
+        line-height: 1.15;
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
     }
-    .fcc-summary-sep {
-        height: 20px;
-        width: 1px;
-        background: #e2e8f0;
+    .fcc-kpi-sub {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        margin-bottom: 0;
     }
 
     /* 5. Main Card Container */
@@ -718,26 +752,66 @@
         </a>
     </div>
 
-    <!-- 4. Horizontal Summary Strip -->
-    <div class="fcc-summary-strip">
-        <div class="fcc-summary-item">
-            <i class="fa fa-check-circle" style="color: #10b981;"></i>
-            <span><strong>{{ $todayCompletedCount ?? 12 }}</strong> completed</span>
+    <!-- 4. Multi Metric / KPI Stat Cards Grid -->
+    <div class="fcc-kpi-grid">
+        <!-- Completed Today -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <span class="fcc-kpi-title">Completed Today</span>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-green">
+                    <i data-feather="check-circle" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ number_format($todayCompletedCount ?? 0) }}</div>
+            <p class="fcc-kpi-sub">Completed sessions today</p>
         </div>
-        <div class="fcc-summary-sep"></div>
-        <div class="fcc-summary-item">
-            <i class="fa fa-file-text-o" style="color: #8b5cf6;"></i>
-            <span><strong>{{ $mealPlansCount ?? 9 }}</strong> meal plans available</span>
+
+        <!-- Monthly Sessions -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <span class="fcc-kpi-title">Monthly Sessions</span>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-indigo">
+                    <i data-feather="calendar" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ number_format($totalMonthlySessions ?? 0) }}</div>
+            <p class="fcc-kpi-sub">Conducted in {{ date('F Y') }}</p>
         </div>
-        <div class="fcc-summary-sep"></div>
-        <div class="fcc-summary-item">
-            <i class="fa fa-exclamation-triangle" style="color: #ef4444;"></i>
-            <span><strong style="color: #ef4444;">₹{{ number_format($duesFlagged ?? 6000, 0) }}</strong> dues flagged</span>
+
+        <!-- Pending Follow-ups -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <span class="fcc-kpi-title">Pending Follow-ups</span>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-amber">
+                    <i data-feather="clock" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ number_format($pendingFollowUpsCount ?? 0) }}</div>
+            <p class="fcc-kpi-sub">Low days or review due</p>
         </div>
-        <div class="fcc-summary-sep"></div>
-        <div class="fcc-summary-item">
-            <i class="fa fa-clock-o" style="color: #3b46f1;"></i>
-            <span>Last session <strong>{{ $lastSessionTime ?? '09:41 AM' }}</strong></span>
+
+        <!-- Dues Flagged -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <span class="fcc-kpi-title">Dues Flagged</span>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-red">
+                    <i data-feather="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value" style="color: #dc2626;">₹{{ number_format($duesFlagged ?? 0, 0) }}</div>
+            <p class="fcc-kpi-sub">Outstanding member dues</p>
+        </div>
+
+        <!-- Meal Plans Active -->
+        <div class="fcc-kpi-card">
+            <div class="fcc-kpi-top">
+                <span class="fcc-kpi-title">Meal Plans Active</span>
+                <div class="fcc-kpi-icon-box fcc-kpi-icon-purple">
+                    <i data-feather="book-open" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+            <div class="fcc-kpi-value">{{ number_format($mealPlansCount ?? 0) }}</div>
+            <p class="fcc-kpi-sub">Diet regimes available</p>
         </div>
     </div>
 
@@ -755,7 +829,7 @@
             <!-- Search Box -->
             <div class="fcc-search-wrap">
                 <i data-feather="search"></i>
-                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search member..." autocomplete="off" />
+                <input type="text" id="fccSearchInput" class="fcc-search-input" placeholder="Search member..." autocomplete="off" style="padding-left: 42px !important;" />
             </div>
 
             <!-- Filter Dropdowns Group -->

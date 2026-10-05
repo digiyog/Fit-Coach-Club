@@ -95,51 +95,91 @@
         border-color: #1d4ed8;
     }
 
-    /* KPI Summary Card ("Current results") */
-    .order-summary-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 20px 26px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    /* Multi-Card KPI Metrics Grid */
+    .order-kpi-cards-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1.4fr;
+        gap: 16px;
         margin-bottom: 24px;
     }
 
-    .badge-current-results {
-        display: inline-block;
-        background: #e0edff;
-        color: #2563eb;
-        font-size: 11.5px;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 9999px;
-        letter-spacing: 0.02em;
-        margin-bottom: 18px;
-    }
-
-    .order-kpi-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1.6fr;
-        gap: 20px;
-        align-items: center;
-    }
-
     @media (max-width: 1200px) {
-        .order-kpi-grid {
+        .order-kpi-cards-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 768px) {
-        .order-kpi-grid {
+        .order-kpi-cards-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 480px) {
-        .order-kpi-grid {
+        .order-kpi-cards-grid {
             grid-template-columns: 1fr;
         }
+    }
+
+    .order-stat-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .order-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .order-stat-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .order-stat-card-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+    }
+
+    .order-stat-card-val {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 4px;
+    }
+
+    .order-stat-card-sub {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    .order-badge-pill {
+        display: inline-block;
+        background: #e0edff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 9999px;
     }
 
     .order-kpi-item {
@@ -1012,8 +1052,8 @@
         .order-title {
             font-size: 22px;
         }
-        .order-summary-card {
-            padding: 16px;
+        .order-stat-card {
+            padding: 14px 16px;
             border-radius: 12px;
         }
     }
@@ -1043,58 +1083,63 @@
             </div>
         </div>
 
-        <!-- Summary Card ("Current results") -->
-        <div class="order-summary-card">
-            <div>
-                <span class="badge-current-results">Current results</span>
-            </div>
-            <div class="order-kpi-grid">
-                <!-- Total Orders -->
-                <div class="order-kpi-item">
-                    <div class="order-kpi-icon icon-blue">
+        <!-- Multi-Card KPI Metric Grid -->
+        <div class="order-kpi-cards-grid">
+            <!-- Total Orders Card -->
+            <div class="order-stat-card">
+                <div class="order-stat-card-top">
+                    <span class="order-stat-card-title">Total Orders</span>
+                    <div class="order-kpi-icon icon-blue" style="width: 38px; height: 38px; border-radius: 10px; font-size: 15px;">
                         <i class="fa fa-cube"></i>
                     </div>
-                    <div class="order-kpi-data">
-                        <span class="order-kpi-val" id="kpi_total_orders">{{ $summary['total_orders_formatted'] ?? 0 }}</span>
-                        <span class="order-kpi-lbl">Total orders</span>
-                    </div>
                 </div>
+                <div class="order-stat-card-val" id="kpi_total_orders">{{ $summary['total_orders_formatted'] ?? 0 }}</div>
+                <span class="order-stat-card-sub">Placed customer orders</span>
+            </div>
 
-                <!-- Net Amount -->
-                <div class="order-kpi-item">
-                    <div class="order-kpi-icon icon-cyan">
+            <!-- Net Amount Card -->
+            <div class="order-stat-card">
+                <div class="order-stat-card-top">
+                    <span class="order-stat-card-title">Net Amount</span>
+                    <div class="order-kpi-icon icon-cyan" style="width: 38px; height: 38px; border-radius: 10px; font-size: 15px;">
                         <i class="fa fa-file-text-o"></i>
                     </div>
-                    <div class="order-kpi-data">
-                        <span class="order-kpi-val" id="kpi_net_amount">{{ $summary['net_amount_formatted'] ?? 0 }}</span>
-                        <span class="order-kpi-lbl">Net amount</span>
-                    </div>
                 </div>
+                <div class="order-stat-card-val" id="kpi_net_amount">{{ $summary['net_amount_formatted'] ?? 0 }}</div>
+                <span class="order-stat-card-sub">Total sales volume</span>
+            </div>
 
-                <!-- Successful Payments -->
-                <div class="order-kpi-item">
-                    <div class="order-kpi-icon icon-green">
+            <!-- Successful Payments Card -->
+            <div class="order-stat-card">
+                <div class="order-stat-card-top">
+                    <span class="order-stat-card-title">Successful</span>
+                    <div class="order-kpi-icon icon-green" style="width: 38px; height: 38px; border-radius: 10px; font-size: 15px;">
                         <i class="fa fa-check"></i>
                     </div>
-                    <div class="order-kpi-data">
-                        <span class="order-kpi-val" id="kpi_successful_payments">{{ $summary['successful_payments_formatted'] ?? 0 }}</span>
-                        <span class="order-kpi-lbl">Successful payments</span>
-                    </div>
                 </div>
+                <div class="order-stat-card-val" id="kpi_successful_payments" style="color: #059669;">{{ $summary['successful_payments_formatted'] ?? 0 }}</div>
+                <span class="order-stat-card-sub">Paid & verified orders</span>
+            </div>
 
-                <!-- Pending Payments -->
-                <div class="order-kpi-item">
-                    <div class="order-kpi-icon icon-amber">
+            <!-- Pending Payments Card -->
+            <div class="order-stat-card">
+                <div class="order-stat-card-top">
+                    <span class="order-stat-card-title">Pending</span>
+                    <div class="order-kpi-icon icon-amber" style="width: 38px; height: 38px; border-radius: 10px; font-size: 15px;">
                         <i class="fa fa-clock-o"></i>
                     </div>
-                    <div class="order-kpi-data">
-                        <span class="order-kpi-val" id="kpi_pending_payments">{{ $summary['pending_payments_formatted'] ?? 0 }}</span>
-                        <span class="order-kpi-lbl">Pending payments</span>
-                    </div>
                 </div>
+                <div class="order-stat-card-val" id="kpi_pending_payments" style="color: #d97706;">{{ $summary['pending_payments_formatted'] ?? 0 }}</div>
+                <span class="order-stat-card-sub">Awaiting settlement</span>
+            </div>
 
-                <!-- Multi-segment Progress Bar & Legend -->
-                <div class="order-progress-block">
+            <!-- Fulfilment Breakdown Card -->
+            <div class="order-stat-card">
+                <div class="order-stat-card-top">
+                    <span class="order-stat-card-title">Fulfilment Status</span>
+                    <span class="order-badge-pill">Live</span>
+                </div>
+                <div class="order-progress-block mt-1">
                     <div class="order-segmented-bar">
                         <div class="bar-segment seg-delivered" id="kpi_seg_delivered" style="width: {{ $summary['delivered_percent'] ?? 0 }}%;"></div>
                         <div class="bar-segment seg-cancelled" id="kpi_seg_cancelled" style="width: {{ $summary['cancelled_percent'] ?? 0 }}%;"></div>
@@ -1103,7 +1148,7 @@
                     <div class="order-segmented-legend">
                         <span class="legend-item"><span class="legend-dot dot-delivered"></span> <span id="kpi_legend_delivered">{{ $summary['delivered_orders'] ?? 0 }}</span> Delivered</span>
                         <span class="legend-item"><span class="legend-dot dot-cancelled"></span> <span id="kpi_legend_cancelled">{{ $summary['cancelled_orders'] ?? 0 }}</span> Cancelled</span>
-                        <span class="legend-item"><span class="legend-dot dot-placed"></span> <span id="kpi_legend_placed">{{ $summary['order_placed'] ?? 0 }}</span> Order placed</span>
+                        <span class="legend-item"><span class="legend-dot dot-placed"></span> <span id="kpi_legend_placed">{{ $summary['order_placed'] ?? 0 }}</span> Placed</span>
                     </div>
                 </div>
             </div>

@@ -909,7 +909,7 @@
                 <!-- Search Box -->
                 <div class="fcc-table-search-box">
                     <i data-feather="search"></i>
-                    <input type="text" id="fccActivitySearchInput" class="fcc-table-search-input" placeholder="Search activity..." autocomplete="off" />
+                    <input type="text" id="fccActivitySearchInput" class="fcc-table-search-input" placeholder="Search activity..." autocomplete="off" style="padding-left: 42px !important;" />
                 </div>
 
                 <!-- Activity Filter -->

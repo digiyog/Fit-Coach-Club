@@ -437,8 +437,9 @@ var ManualAttendence = (function() {
                                     },
                                     success: function(response) {
                                         App.showNotification(response);
-                                        data_table.ajax.reload(null, false);
-                                        rows_selected = [];
+                                        setTimeout(function() {
+                                            location.reload();
+                                        }, 600);
                                     },
                                     error: function() {},
                                     complete: function() {
@@ -479,8 +480,7 @@ var ManualAttendence = (function() {
          * Delete Attendance.
          */
         deleteAttendence: function () {
-            var $source = $(".data-table-container");
-            $source.on("click", ".delete-attendence", function () {
+            $(document).on("click", ".delete-attendence, .fcc-btn-delete-attendance", function () {
                 var $this = $(this);
 
                 iziToast.question({
@@ -507,8 +507,9 @@ var ManualAttendence = (function() {
                                     },
                                     success: function(response) {
                                         App.showNotification(response);
-                                        data_table.ajax.reload(null, false);
-                                        rows_selected = [];
+                                        setTimeout(function() {
+                                            location.reload();
+                                        }, 600);
                                     },
                                     error: function() {},
                                     complete: function() {

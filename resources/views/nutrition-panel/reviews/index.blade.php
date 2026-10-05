@@ -350,28 +350,37 @@
         pointer-events: none;
     }
 
-    .filter-input-styled {
-        height: 42px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        padding-left: 38px;
-        padding-right: 14px;
-        font-size: 13.5px;
-        color: #0f172a;
-        background-color: #ffffff;
-        transition: all 0.2s ease;
-        width: 100%;
+    .review-ledger-card input.filter-input-styled,
+    .review-ledger-card input#review_search,
+    .review-ledger-card input#review_date_range,
+    input.filter-input-styled {
+        height: 42px !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        padding-left: 42px !important;
+        padding-right: 14px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        color: #0f172a !important;
+        background-color: #f8fafc !important;
+        transition: all 0.2s ease !important;
+        width: 100% !important;
         box-shadow: none !important;
+        outline: none !important;
+        line-height: normal !important;
+        font-family: inherit !important;
     }
 
-    .filter-input-styled:focus {
-        border-color: #2563eb;
+    .review-ledger-card input.filter-input-styled:focus,
+    input.filter-input-styled:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
     }
 
     .filter-date-input {
-        cursor: pointer;
-        padding-right: 32px;
+        cursor: pointer !important;
+        padding-right: 36px !important;
     }
 
     .filter-select-styled {
@@ -875,7 +884,7 @@
                 <!-- Search Input -->
                 <div class="filter-search-wrap">
                     <i class="fa fa-search filter-icon-left"></i>
-                    <input type="text" id="review_search" class="filter-input-styled" placeholder="Search reviewer or message...">
+                    <input type="text" id="review_search" class="filter-input-styled" placeholder="Search reviewer or message..." autocomplete="off" style="padding-left: 42px !important;">
                 </div>
 
                 <!-- Rating Filter -->
@@ -894,7 +903,7 @@
                 <!-- Date Range -->
                 <div class="filter-date-wrap">
                     <i class="fa fa-calendar filter-icon-left"></i>
-                    <input type="text" id="review_date_range" class="filter-input-styled filter-date-input" placeholder="Date range" readonly autocomplete="off">
+                    <input type="text" id="review_date_range" class="filter-input-styled filter-date-input" placeholder="Date range" readonly autocomplete="off" style="padding-left: 42px !important; padding-right: 36px !important;">
                     <i class="fa fa-chevron-down filter-icon-right"></i>
                 </div>
 

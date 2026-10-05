@@ -95,51 +95,91 @@
         box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
     }
 
-    /* KPI Summary Card ("Current results") */
-    .tx-summary-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 20px 26px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    /* Multi-Card KPI Metrics Grid */
+    .tx-kpi-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
         margin-bottom: 24px;
     }
 
-    .badge-current-results {
-        display: inline-block;
-        background: #e0edff;
-        color: #2563eb;
-        font-size: 11.5px;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 9999px;
-        letter-spacing: 0.02em;
-        margin-bottom: 18px;
-    }
-
-    .tx-kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 20px;
-        align-items: center;
-    }
-
     @media (max-width: 1200px) {
-        .tx-kpi-grid {
+        .tx-kpi-cards-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 768px) {
-        .tx-kpi-grid {
+        .tx-kpi-cards-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 480px) {
-        .tx-kpi-grid {
+        .tx-kpi-cards-grid {
             grid-template-columns: 1fr;
         }
+    }
+
+    .tx-stat-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .tx-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .tx-stat-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .tx-stat-card-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+    }
+
+    .tx-stat-card-val {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 4px;
+    }
+
+    .tx-stat-card-sub {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    .tx-badge-pill {
+        display: inline-block;
+        background: #e0edff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 9999px;
     }
 
     .tx-kpi-item {
@@ -883,16 +923,14 @@
             </div>
         </div>
 
-        <!-- Summary Card ("Current results") -->
-        <div class="tx-summary-card">
-            <div>
-                <span class="badge-current-results">Current results</span>
-            </div>
-            <div class="tx-kpi-grid">
-                <!-- Total Amount -->
-                <div class="tx-kpi-item">
-                    <div class="tx-kpi-icon icon-blue">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Multi-Card KPI Metric Grid -->
+        <div class="tx-kpi-cards-grid">
+            <!-- Total Amount Card -->
+            <div class="tx-stat-card">
+                <div class="tx-stat-card-top">
+                    <span class="tx-stat-card-title">Total Amount</span>
+                    <div class="tx-kpi-icon icon-blue" style="width: 38px; height: 38px; border-radius: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -900,60 +938,67 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                     </div>
-                    <div class="tx-kpi-data">
-                        <span class="tx-kpi-val" id="kpi-total-amount">{{ $totalAmountFormatted ?? number_format($totalAmount ?? 0, 0) }}</span>
-                        <span class="tx-kpi-lbl">Total amount</span>
-                    </div>
                 </div>
+                <div class="tx-stat-card-val" id="kpi-total-amount">{{ $totalAmountFormatted ?? number_format($totalAmount ?? 0, 0) }}</div>
+                <span class="tx-stat-card-sub">Invoiced across records</span>
+            </div>
 
-                <!-- Received Amount -->
-                <div class="tx-kpi-item">
-                    <div class="tx-kpi-icon icon-green">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Received Amount Card -->
+            <div class="tx-stat-card">
+                <div class="tx-stat-card-top">
+                    <span class="tx-stat-card-title">Received Amount</span>
+                    <div class="tx-kpi-icon icon-green" style="width: 38px; height: 38px; border-radius: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                             <line x1="1" y1="10" x2="23" y2="10"></line>
                         </svg>
                     </div>
-                    <div class="tx-kpi-data">
-                        <span class="tx-kpi-val" id="kpi-received-amount">{{ $receivedAmountFormatted ?? number_format($receivedAmount ?? 0, 0) }}</span>
-                        <span class="tx-kpi-lbl">Received amount</span>
-                    </div>
                 </div>
+                <div class="tx-stat-card-val" id="kpi-received-amount" style="color: #059669;">{{ $receivedAmountFormatted ?? number_format($receivedAmount ?? 0, 0) }}</div>
+                <span class="tx-stat-card-sub">Successfully collected</span>
+            </div>
 
-                <!-- Outstanding Amount -->
-                <div class="tx-kpi-item">
-                    <div class="tx-kpi-icon icon-amber">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Outstanding Amount Card -->
+            <div class="tx-stat-card">
+                <div class="tx-stat-card-top">
+                    <span class="tx-stat-card-title">Outstanding</span>
+                    <div class="tx-kpi-icon icon-amber" style="width: 38px; height: 38px; border-radius: 10px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
                     </div>
-                    <div class="tx-kpi-data">
-                        <span class="tx-kpi-val" id="kpi-due-amount">{{ $dueAmountFormatted ?? number_format($dueAmount ?? 0, 0) }}</span>
-                        <span class="tx-kpi-lbl">Outstanding amount</span>
-                    </div>
                 </div>
+                <div class="tx-stat-card-val" id="kpi-due-amount" style="color: #d97706;">{{ $dueAmountFormatted ?? number_format($dueAmount ?? 0, 0) }}</div>
+                <span class="tx-stat-card-sub">Pending settlement</span>
+            </div>
 
-                <!-- Collection Rate -->
-                <div class="tx-kpi-item">
-                    <div class="tx-kpi-donut-wrap">
-                        <svg class="tx-kpi-donut-svg" viewBox="0 0 36 36">
+            <!-- Collection Rate Card -->
+            <div class="tx-stat-card">
+                <div class="tx-stat-card-top">
+                    <span class="tx-stat-card-title">Collection Rate</span>
+                    <div class="tx-kpi-donut-wrap" style="width: 38px; height: 38px;">
+                        <svg class="tx-kpi-donut-svg" style="width: 38px; height: 38px;" viewBox="0 0 36 36">
                             <path class="donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="4.5"/>
                             <path id="kpi-donut-stroke" class="donut-stroke" stroke-dasharray="{{ min(100, max(0, $collectionRate ?? 0)) }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="4.5" stroke-linecap="round"/>
                         </svg>
                     </div>
-                    <div class="tx-kpi-data">
-                        <span class="tx-kpi-val" id="kpi-collection-rate">{{ $collectionRateFormatted ?? ($collectionRate . '%') }}</span>
-                        <span class="tx-kpi-lbl">Collection rate</span>
-                    </div>
                 </div>
+                <div class="tx-stat-card-val" id="kpi-collection-rate">{{ $collectionRateFormatted ?? ($collectionRate . '%') }}</div>
+                <span class="tx-stat-card-sub">Payment efficiency</span>
+            </div>
 
-                <!-- Progress Bar: Received versus total amount -->
-                <div class="tx-kpi-progress-item">
+            <!-- Received vs Total Progress Card -->
+            <div class="tx-stat-card">
+                <div class="tx-stat-card-top">
+                    <span class="tx-stat-card-title">Collection Progress</span>
+                    <span class="tx-badge-pill">Live</span>
+                </div>
+                <div class="tx-kpi-progress-item mt-1">
                     <div class="tx-kpi-progress-track">
                         <div class="tx-kpi-progress-fill" id="kpi-progress-fill" style="width: {{ min(100, max(0, $collectionRate ?? 0)) }}%;"></div>
                     </div>
-                    <span class="tx-kpi-lbl mt-2">Received versus total amount</span>
+                    <span class="tx-stat-card-sub mt-2">Received versus total amount</span>
                 </div>
             </div>
         </div>

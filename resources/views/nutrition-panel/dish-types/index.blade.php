@@ -288,21 +288,28 @@
         pointer-events: none;
     }
 
-    .filter-search-input {
-        height: 42px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        padding-left: 38px;
-        padding-right: 14px;
-        font-size: 13.5px;
-        color: #0f172a;
-        background-color: #ffffff;
-        transition: all 0.2s ease;
+    input.filter-search-input,
+    #customSearchInput {
+        height: 42px !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        padding-left: 42px !important;
+        padding-right: 14px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        color: #0f172a !important;
+        background-color: #f8fafc !important;
+        transition: all 0.2s ease !important;
         box-shadow: none !important;
+        outline: none !important;
+        line-height: normal !important;
+        font-family: inherit !important;
     }
 
-    .filter-search-input:focus {
-        border-color: #2563eb;
+    input.filter-search-input:focus,
+    #customSearchInput:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
     }
 
@@ -891,7 +898,7 @@
             <div class="col-lg-5 col-md-12">
                 <div class="filter-search-wrap">
                     <i class="fa fa-search filter-search-icon"></i>
-                    <input type="text" id="customSearchInput" class="form-control filter-search-input" placeholder="Search dish types..." autocomplete="off">
+                    <input type="text" id="customSearchInput" class="form-control filter-search-input" placeholder="Search dish types..." autocomplete="off" style="padding-left: 42px !important;">
                 </div>
             </div>
 

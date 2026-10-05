@@ -1040,7 +1040,7 @@
                 <!-- Search Input -->
                 <div class="fcc-table-search-box">
                     <i data-feather="search"></i>
-                    <input type="text" id="fccHistorySearchInput" class="fcc-table-search-input" placeholder="Search history..." autocomplete="off" />
+                    <input type="text" id="fccHistorySearchInput" class="fcc-table-search-input" placeholder="Search history..." autocomplete="off" style="padding-left: 42px !important;" />
                 </div>
 
                 <!-- Page Size Dropdown -->
