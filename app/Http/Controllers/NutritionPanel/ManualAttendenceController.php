@@ -236,23 +236,10 @@ class ManualAttendenceController extends Controller
 
         try {
             $markedCount = 0;
-            $skippedCount = 0;
-
             $markedDates = [];
 
             for ($i = 0; $i < $daysToMark; $i++) {
                 $date = $startDate->copy()->addDays($i)->format('Y-m-d');
-
-                $exists = Attendance::where('user_id', $user->id)
-                    ->where('type', 2)
-                    ->whereDate('date', $date)
-                    ->whereNull('deleted_at')
-                    ->exists();
-
-                if ($exists) {
-                    $skippedCount++;
-                    continue; // Skip duplicate check-in to prevent double-deduction
-                }
 
                 $attData = [
                     'franchise_id' => $authUser ? $authUser->id : ($user->created_by ?? 0),
@@ -269,16 +256,6 @@ class ManualAttendenceController extends Controller
                 Attendance::create($attData);
                 $markedDates[] = $date;
                 $markedCount++;
-            }
-
-            if ($markedCount === 0 && $skippedCount > 0) {
-                DB::rollBack();
-                $notification = [
-                    '_status' => false,
-                    '_message' => 'Attendance for the selected date(s) has already been marked.',
-                    '_type' => 'error',
-                ];
-                return redirect()->back()->with(['notification' => $notification]);
             }
 
             // Decrement user pending days by marked count
@@ -311,14 +288,9 @@ class ManualAttendenceController extends Controller
 
             DB::commit();
 
-            $msg = $markedCount . ' day(s) attendance marked successfully.';
-            if ($skippedCount > 0) {
-                $msg .= ' (' . $skippedCount . ' already marked date(s) skipped)';
-            }
-
             $notification = [
                 '_status' => true,
-                '_message' => $msg,
+                '_message' => $markedCount . ' day(s) attendance marked successfully.',
                 '_type' => 'success',
             ];
             return redirect()->back()->with(['notification' => $notification]);
