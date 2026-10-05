@@ -21,8 +21,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('points_expire:cron')->everyMinute()->appendOutputTo(base_path('cronlog.log'));
         $schedule->command('mlm_monthly_recharge:cron')->everyMinute()->appendOutputTo(base_path('cronlog.log'));
         $schedule->command('acceptance_rating_reset:cron')->everyMinute()->appendOutputTo(base_path('cronlog.log'));
-        $schedule->command('cron_stylist_booking_no_response:cron')->everyMinute()->appendOutputTo(base_path('cronlog.log'));
-        $schedule->command('cron_document_expire_notification:cron')->appendOutputTo(base_path('cronlog.log'));
+        $schedule->command('cron:pending-amount')->dailyAt('11:00')->appendOutputTo(storage_path('logs/cron_pending_amount.log'));
     }
 
     /**

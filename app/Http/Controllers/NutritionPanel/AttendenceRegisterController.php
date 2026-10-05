@@ -83,7 +83,9 @@ class AttendenceRegisterController extends Controller
     private function calculatePulseStats($month, $year, $coach_name = null)
     {
         $authUser = auth()->user();
-        $totalDays = cal_days_in_month(CAL_GREGORIAN, intval($month), intval($year));
+        $totalDays = function_exists('cal_days_in_month')
+            ? cal_days_in_month(CAL_GREGORIAN, intval($month), intval($year))
+            : (int)\Carbon\Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
         $query = User::where("role_type", 'user')
             ->where("created_by", $authUser->id);
@@ -220,142 +222,159 @@ class AttendenceRegisterController extends Controller
             "date" => $date
         );
 
-        $totalDays = cal_days_in_month(CAL_GREGORIAN, intval($month), intval($year));
-
-        // Getting Attendance Register Records
-        $records_count  = Attendance::getAttendenceRegister(null, null, $search, $filter, $sort);
-        $records        = Attendance::getAttendenceRegister($limit, $start, $search, $filter, $sort);
-
-        // Stats calculation for the current filter/month
-        $stats = $this->calculatePulseStats($month, $year, $coachName);
+        $totalDays = function_exists('cal_days_in_month') 
+            ? cal_days_in_month(CAL_GREGORIAN, intval($month), intval($year)) 
+            : (int)\Carbon\Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
         $arr_data = array();
+        $totalRecords = 0;
+        $stats = [];
 
-        if (count($records) > 0)
-        {
-            $targetDate = !empty($filter['date']) ? $filter['date'] : ($month == date('m') && $year == date('Y') ? date('Y-m-d') : null);
+        try {
+            // Getting Attendance Register Records
+            $records_count  = Attendance::getAttendenceRegister(null, null, $search, $filter, $sort);
+            $records        = Attendance::getAttendenceRegister($limit, $start, $search, $filter, $sort);
+            $totalRecords   = $records_count;
 
-            // Identify users who have multiple attendances on target date / month
-            $multiQuery = Attendance::whereIn('user_id', $records->pluck('id'))
-                ->where('type', 2)
-                ->whereNull('deleted_at');
+            // Stats calculation for the current filter/month
+            $stats = $this->calculatePulseStats($month, $year, $coachName);
 
-            if ($targetDate) {
-                $multiQuery->where(function($q) use ($targetDate) {
-                    $q->where('date', $targetDate)
-                      ->orWhere(function($sub) use ($targetDate) {
-                          $sub->whereNull('date')->whereDate('created_at', $targetDate);
-                      });
-                });
-            } else {
-                $multiQuery->where(function($q) use ($month, $year) {
-                    $q->where(function($sub1) use ($month, $year) {
-                        $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
-                    })->orWhere(function($sub2) use ($month, $year) {
-                        $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
-                    });
-                });
-            }
-
-            $userIdsWithMultiple = $multiQuery->groupBy('user_id', DB::raw('COALESCE(date, DATE(created_at))'))
-                ->havingRaw('COUNT(id) > 1')
-                ->pluck('user_id')
-                ->unique()
-                ->toArray();
-
-            foreach ($records as $key => $value)
+            if (count($records) > 0)
             {
-                $name           = !empty($value->name) ? $value->name : 'N/A';
-                $total_days     = $totalDays;
-                $total_present  = !empty($value->total_present) ? intval($value->total_present) : 0;
-                $total_absent   = max(0, $totalDays - $total_present);
-                $ratePct        = $total_days > 0 ? round(($total_present / $total_days) * 100) : 0;
-                $colors = $this->getAvatarColor($name);
-                $initial = strtoupper(substr(trim($name), 0, 1) ?: 'U');
-                $bgColor = $colors['bg'];
-                $textColor = $colors['color'];
+                $targetDate = !empty($filter['date']) ? $filter['date'] : ($month == date('m') && $year == date('Y') ? date('Y-m-d') : null);
 
-                $profileImageUrl = null;
-                if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
-                    $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
-                } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
-                    $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                // Identify users who have multiple attendances on target date / month
+                $userIdsWithMultiple = [];
+                try {
+                    $multiQuery = Attendance::whereIn('user_id', $records->pluck('id'))
+                        ->where('type', 2)
+                        ->whereNull('deleted_at');
+
+                    if ($targetDate) {
+                        $multiQuery->where(function($q) use ($targetDate) {
+                            $q->where('date', $targetDate)
+                              ->orWhere(function($sub) use ($targetDate) {
+                                  $sub->whereNull('date')->whereDate('created_at', $targetDate);
+                              });
+                        });
+                    } else {
+                        $multiQuery->where(function($q) use ($month, $year) {
+                            $q->where(function($sub1) use ($month, $year) {
+                                $sub1->whereNotNull('date')->whereMonth('date', $month)->whereYear('date', $year);
+                            })->orWhere(function($sub2) use ($month, $year) {
+                                $sub2->whereNull('date')->whereMonth('created_at', $month)->whereYear('created_at', $year);
+                            });
+                        });
+                    }
+
+                    $userIdsWithMultiple = $multiQuery->select('user_id')
+                        ->groupBy('user_id', DB::raw('COALESCE(date, DATE(created_at))'))
+                        ->havingRaw('COUNT(id) > 1')
+                        ->pluck('user_id')
+                        ->unique()
+                        ->toArray();
+                } catch (\Throwable $multiEx) {
+                    \Log::warning('Multi attendance check warning: ' . $multiEx->getMessage());
+                    $userIdsWithMultiple = [];
                 }
 
-                if ($profileImageUrl) {
-                    $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 32px; height: 32px; min-width: 32px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($name).'" />';
-                } else {
-                    $avatarInner = '<div class="fcc-avatar-circle" style="background-color: ' . $bgColor . '; color: ' . $textColor . ';">' . $initial . '</div>';
+                foreach ($records as $key => $value)
+                {
+                    $name           = !empty($value->name) ? $value->name : 'N/A';
+                    $total_days     = $totalDays;
+                    $total_present  = !empty($value->total_present) ? intval($value->total_present) : 0;
+                    $total_absent   = max(0, $totalDays - $total_present);
+                    $ratePct        = $total_days > 0 ? round(($total_present / $total_days) * 100) : 0;
+                    $colors = $this->getAvatarColor($name);
+                    $initial = strtoupper(substr(trim($name), 0, 1) ?: 'U');
+                    $bgColor = $colors['bg'];
+                    $textColor = $colors['color'];
+
+                    $profileImageUrl = null;
+                    if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                    }
+
+                    if ($profileImageUrl) {
+                        $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 32px; height: 32px; min-width: 32px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($name).'" />';
+                    } else {
+                        $avatarInner = '<div class="fcc-avatar-circle" style="background-color: ' . $bgColor . '; color: ' . $textColor . ';">' . $initial . '</div>';
+                    }
+
+                    // 1. Member column with Avatar
+                    $memberCol = '<div class="fcc-member-cell d-flex align-items-center gap-2">' .
+                        $avatarInner .
+                        '<span class="fcc-member-name">' . e($name) . '</span>' .
+                        '</div>';
+
+                    // 2. Attendance with mini progress bar
+                    $barWidth = min(100, max(0, $ratePct));
+                    $attendanceCol = '<div class="fcc-attendance-cell d-flex align-items-center gap-2">' .
+                        '<span class="fcc-attendance-label text-nowrap">' . $total_present . ' of ' . $total_days . ' days</span>' .
+                        '<div class="fcc-mini-progress">' .
+                        '<div class="fcc-mini-bar" style="width: ' . $barWidth . '%;"></div>' .
+                        '</div>' .
+                        '</div>';
+
+                    // 3. Present column with green dot
+                    $presentCol = '<span class="fcc-stat-dot text-nowrap"><span class="fcc-dot fcc-dot-green"></span> ' . $total_present . '</span>';
+
+                    // 4. Absent column with coral dot
+                    $absentCol = '<span class="fcc-stat-dot text-nowrap"><span class="fcc-dot fcc-dot-coral"></span> ' . $total_absent . '</span>';
+
+                    // 5. Rate column
+                    $rateCol = '<span class="fcc-rate-text">' . $ratePct . '%</span>';
+
+                    // 6. Follow-up priority badge
+                    $hasMulti = in_array($value->id, $userIdsWithMultiple);
+                    if ($hasMulti) {
+                        $followUpCol = '<span class="fcc-badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a;" title="Multiple check-ins recorded"><i class="fa fa-exclamation-triangle me-1"></i>Multi attendance</span>';
+                    } elseif ($total_present === 0) {
+                        $followUpCol = '<span class="fcc-badge fcc-badge-danger">No check-ins</span>';
+                    } elseif ($ratePct <= 20) {
+                        $followUpCol = '<span class="fcc-badge fcc-badge-warning">Low</span>';
+                    } elseif ($ratePct <= 50) {
+                        $followUpCol = '<span class="fcc-badge fcc-badge-purple">Building</span>';
+                    } else {
+                        $followUpCol = '<span class="fcc-badge fcc-badge-success">On track</span>';
+                    }
+
+                    // 7. Action column
+                    $actionUrl = route('nutritionPanel.attendance-register.viewAttendance', [
+                        'id' => ev($value->id),
+                        'month' => $month,
+                        'year' => $year
+                    ]);
+                    $actionCol = '<a href="javascript:void(0);" data-url="' . $actionUrl . '" class="fcc-btn-view-attendance view-attendence" title="View Attendance">' .
+                        '<i class="fa fa-eye me-1"></i> View attendance <i class="fa fa-chevron-right ms-1 fcc-chevron-icon"></i>' .
+                        '</a>';
+
+                    // Array Data
+                    $arr_data[] = array(
+                        "member"            => $memberCol,
+                        "attendance"        => $attendanceCol,
+                        "total_present"     => $presentCol,
+                        "total_absent"      => $absentCol,
+                        "rate"              => $rateCol,
+                        "follow_up"         => $followUpCol,
+                        "action"            => $actionCol,
+                        "raw_name"          => $name,
+                        "raw_present"       => $total_present,
+                        "raw_absent"        => $total_absent,
+                        "raw_rate"          => $ratePct,
+                    );
                 }
-
-                // 1. Member column with Avatar
-                $memberCol = '<div class="fcc-member-cell d-flex align-items-center gap-2">' .
-                    $avatarInner .
-                    '<span class="fcc-member-name">' . e($name) . '</span>' .
-                    '</div>';
-
-                // 2. Attendance with mini progress bar
-                $barWidth = min(100, max(0, $ratePct));
-                $attendanceCol = '<div class="fcc-attendance-cell d-flex align-items-center gap-2">' .
-                    '<span class="fcc-attendance-label text-nowrap">' . $total_present . ' of ' . $total_days . ' days</span>' .
-                    '<div class="fcc-mini-progress">' .
-                    '<div class="fcc-mini-bar" style="width: ' . $barWidth . '%;"></div>' .
-                    '</div>' .
-                    '</div>';
-
-                // 3. Present column with green dot
-                $presentCol = '<span class="fcc-stat-dot text-nowrap"><span class="fcc-dot fcc-dot-green"></span> ' . $total_present . '</span>';
-
-                // 4. Absent column with coral dot
-                $absentCol = '<span class="fcc-stat-dot text-nowrap"><span class="fcc-dot fcc-dot-coral"></span> ' . $total_absent . '</span>';
-
-                // 5. Rate column
-                $rateCol = '<span class="fcc-rate-text">' . $ratePct . '%</span>';
-
-                // 6. Follow-up priority badge
-                if ($hasMulti) {
-                    $followUpCol = '<span class="fcc-badge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a;" title="Multiple check-ins recorded"><i class="fa fa-exclamation-triangle me-1"></i>Multi attendance</span>';
-                } elseif ($total_present === 0) {
-                    $followUpCol = '<span class="fcc-badge fcc-badge-danger">No check-ins</span>';
-                } elseif ($ratePct <= 20) {
-                    $followUpCol = '<span class="fcc-badge fcc-badge-warning">Low</span>';
-                } elseif ($ratePct <= 50) {
-                    $followUpCol = '<span class="fcc-badge fcc-badge-purple">Building</span>';
-                } else {
-                    $followUpCol = '<span class="fcc-badge fcc-badge-success">On track</span>';
-                }
-
-                // 7. Action column
-                $actionUrl = route('nutritionPanel.attendance-register.viewAttendance', [
-                    'id' => ev($value->id),
-                    'month' => $month,
-                    'year' => $year
-                ]);
-                $actionCol = '<a href="javascript:void(0);" data-url="' . $actionUrl . '" class="fcc-btn-view-attendance view-attendence" title="View Attendance">' .
-                    '<i class="fa fa-eye me-1"></i> View attendance <i class="fa fa-chevron-right ms-1 fcc-chevron-icon"></i>' .
-                    '</a>';
-
-                // Array Data
-                $arr_data[] = array(
-                    "member"            => $memberCol,
-                    "attendance"        => $attendanceCol,
-                    "total_present"     => $presentCol,
-                    "total_absent"      => $absentCol,
-                    "rate"              => $rateCol,
-                    "follow_up"         => $followUpCol,
-                    "action"            => $actionCol,
-                    "raw_name"          => $name,
-                    "raw_present"       => $total_present,
-                    "raw_absent"        => $total_absent,
-                    "raw_rate"          => $ratePct,
-                );
             }
+        } catch (\Throwable $e) {
+            \Log::error('getAttendenceRegister error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
         }
-
-        $totalRecords = $records_count;
 
         $response = array(
             "draw"                  => intval($draw),
+            "recordsTotal"          => $totalRecords,
+            "recordsFiltered"       => $totalRecords,
             "iTotalRecords"         => $totalRecords,
             "iTotalDisplayRecords"  => $totalRecords,
             "aaData"                => $arr_data,
@@ -395,7 +414,9 @@ class AttendenceRegisterController extends Controller
         $this->viewData['attendances']     = $attendances;
         $this->viewData['month']           = $month;
         $this->viewData['year']            = $year;
-        $this->viewData['daysInMonth']     = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $this->viewData['daysInMonth']     = function_exists('cal_days_in_month')
+            ? cal_days_in_month(CAL_GREGORIAN, intval($month), intval($year))
+            : (int)\Carbon\Carbon::createFromDate($year, $month, 1)->daysInMonth;
         $this->viewData['firstDayOfWeek']  = \Carbon\Carbon::createFromDate($year, $month, 1)->dayOfWeek;
 
         return view('nutrition-panel.attendence-register.view-attendence')->with($this->viewData);

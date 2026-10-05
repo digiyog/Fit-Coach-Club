@@ -4179,7 +4179,7 @@
                                 </div>
                                 <div class="fcc-pulse-legend-item">
                                     <span class="fcc-legend-line-target"></span>
-                                    <span>Target (70)</span>
+                                    <span id="pulseTargetLegendText">Target (30)</span>
                                 </div>
                             </div>
                         </div>
@@ -6069,6 +6069,11 @@
     var dynamicTarget = Math.max(30, Math.ceil(maxValInAttendance > 40 ? 70 : (maxValInAttendance * 1.35)));
     var dynamicYMax = Math.max(dynamicTarget + 10, Math.ceil((maxValInAttendance + 15) / 10) * 10);
 
+    var targetLegendEl = document.getElementById('pulseTargetLegendText');
+    if (targetLegendEl) {
+        targetLegendEl.textContent = 'Target (' + dynamicTarget + ')';
+    }
+
     var pulseOptions = {
         chart: {
             type: 'area',
@@ -6211,15 +6216,14 @@
                 }
 
                 var day = '';
-                if (w && w.globals) {
+                if (typeof weeklyPulseLabels !== 'undefined' && weeklyPulseLabels && weeklyPulseLabels[dataPointIndex]) {
+                    day = weeklyPulseLabels[dataPointIndex];
+                } else if (w && w.globals) {
                     if (w.globals.categoryLabels && w.globals.categoryLabels[dataPointIndex]) {
                         day = w.globals.categoryLabels[dataPointIndex];
                     } else if (w.globals.labels && w.globals.labels[dataPointIndex]) {
                         day = w.globals.labels[dataPointIndex];
                     }
-                }
-                if (!day && typeof weeklyPulseLabels !== 'undefined' && weeklyPulseLabels[dataPointIndex]) {
-                    day = weeklyPulseLabels[dataPointIndex];
                 }
 
                 return '<div style="background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); color: #fff; font-family: Outfit, sans-serif;">' +

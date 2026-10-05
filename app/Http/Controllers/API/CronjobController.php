@@ -17,86 +17,74 @@ class CronjobController extends Controller
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function days10(){
+        $sentCount = 0;
+        $failedCount = 0;
+
         try {
-            // 10 Days
             $users = User::where('days', '=', 10)->where('role_type', 'user')->where('status', 1)->get();
 
-            $senderData = User::find(0);
-
             foreach ($users as $user) {
-                $alreadyNotified = Notification::where('user_id', $user->id)
-                    ->where('notification_type', 2)
-                    ->whereDate('created_at', '=', date('Y-m-d'))
-                    ->exists();
+                try {
+                    $alreadyNotified = Notification::where('user_id', $user->id)
+                        ->where('notification_type', 2)
+                        ->whereDate('created_at', '=', date('Y-m-d'))
+                        ->exists();
 
-                if ($alreadyNotified) {
-                    continue;
+                    if ($alreadyNotified) {
+                        continue;
+                    }
+
+                    $receiverName = !empty($user->name) ? $user->name : 'Member';
+                    $title        = 'Expiry Reminder ⏳';
+                    $notiMessage  = $receiverName . ', Time check—10 days remaining.';
+                    $message      = $notiMessage;
+                    $notificationType = 2;
+
+                    Notification::create([
+                        'user_id'             => $user->id,
+                        'sender_id'           => 0,
+                        'data_id'             => null,
+                        'notification_title'  => $title,
+                        'notification_text'   => $notiMessage,
+                        'sender_name'         => 'System',
+                        'receiver_name'       => $receiverName,
+                        'notification_type'   => $notificationType,
+                        'sent_status'         => 1,
+                        'status'              => 0,
+                    ]);
+
+                    if (!empty($user->fcm_token)) {
+                        push_notification(
+                            $user->id,
+                            $title,
+                            $message,
+                            0,
+                            $notificationType,
+                            $user->fcm_token,
+                            null,
+                            'System',
+                            $receiverName,
+                            $user->device_os
+                        );
+                    }
+
+                    $sentCount++;
+                } catch (\Throwable $userEx) {
+                    $failedCount++;
+                    \Log::error("days10 notification error for User #{$user->id}: " . $userEx->getMessage());
                 }
-
-                // Send Notification
-                $receiverData = $user;
-
-                // Set usernames
-                $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
-                $receiverData['username']   = $receiverData['name'] == '' ? 'Anonymous User' : $receiverData['name'];
-
-                // Notification content
-                $daysLeft = 10;
-                $title = 'Expiry Reminder ⏳';
-                $notiMessage = $receiverData['name'].', Time check—10 days remaining.';
-                $message = $receiverData['name'].', Time check—10 days remaining.';
-                $notificationType = 2;
-
-                Notification::create([
-                    'user_id'             => $receiverData->id,
-                    'sender_id'           => $senderData->id,
-                    'data_id'             => '',
-                    'notification_title'  => $title,
-                    'notification_text'   => $notiMessage,
-                    'sender_name'         => $senderData['name'],
-                    'receiver_name'       => $receiverData['name'],
-                    'notification_type'   => $notificationType,
-                ]);
-
-                $user_id                = $receiverData->id;
-                $notification_title     = $title;
-                $notification_text      = $message;
-                $sender_id              = $senderData->id;
-                $notification_type      = $notificationType;
-                $platform               = $receiverData->device_os;
-                $fcm_token              = $receiverData->fcm_token;
-                $data_id                = '';
-                $sender_name            = $senderData['name'];
-                $receiver_name          = $receiverData['name'];
-
-                push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiver_name, $platform);
-                //---------
             }
 
-        } catch(\Exception $e) {
-            \Log::error('Cronjob Error: ' . $e->getMessage());
-            $countries = [];
-        }
-        //--------------
-
-        // Set response
-        if(!empty($countries)) {
-
-            $response = [
+            return response()->json([
                 '_status'  => true,
-                '_message' => __('messages.record_found', ['record' => 'countries']),
-                '_data'    => $countries,
-            ];
-        } else {
-            $response = [
-                '_status'  => false,
-                '_message' => __('messages.record_not_found', ['record' => 'countries']),
-                '_data'    => null
-            ];
-        }
-        //-------------
+                '_message' => "10-days reminder executed. Sent: {$sentCount}, Failed: {$failedCount}",
+                '_data'    => ['sent' => $sentCount, 'failed' => $failedCount, 'total' => $users->count()]
+            ], 200);
 
-        return response()->json($response, 200);
+        } catch(\Throwable $e) {
+            \Log::error('Cronjob days10 Error: ' . $e->getMessage());
+            return response()->json(['_status' => false, '_message' => $e->getMessage(), '_data' => null], 500);
+        }
     }
 
     /**
@@ -105,86 +93,74 @@ class CronjobController extends Controller
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function days5(){
+        $sentCount = 0;
+        $failedCount = 0;
+
         try {
-            // 5 Days
             $users = User::where('days', '=', 5)->where('role_type', 'user')->where('status', 1)->get();
 
-            $senderData = User::find(0);
-
             foreach ($users as $user) {
-                $alreadyNotified = Notification::where('user_id', $user->id)
-                    ->where('notification_type', 3)
-                    ->whereDate('created_at', '=', date('Y-m-d'))
-                    ->exists();
+                try {
+                    $alreadyNotified = Notification::where('user_id', $user->id)
+                        ->where('notification_type', 3)
+                        ->whereDate('created_at', '=', date('Y-m-d'))
+                        ->exists();
 
-                if ($alreadyNotified) {
-                    continue;
+                    if ($alreadyNotified) {
+                        continue;
+                    }
+
+                    $receiverName = !empty($user->name) ? $user->name : 'Member';
+                    $title        = 'Expiry Reminder ⏳';
+                    $notiMessage  = $receiverName . ', A quick update: 5 days left.';
+                    $message      = $notiMessage;
+                    $notificationType = 3;
+
+                    Notification::create([
+                        'user_id'             => $user->id,
+                        'sender_id'           => 0,
+                        'data_id'             => null,
+                        'notification_title'  => $title,
+                        'notification_text'   => $notiMessage,
+                        'sender_name'         => 'System',
+                        'receiver_name'       => $receiverName,
+                        'notification_type'   => $notificationType,
+                        'sent_status'         => 1,
+                        'status'              => 0,
+                    ]);
+
+                    if (!empty($user->fcm_token)) {
+                        push_notification(
+                            $user->id,
+                            $title,
+                            $message,
+                            0,
+                            $notificationType,
+                            $user->fcm_token,
+                            null,
+                            'System',
+                            $receiverName,
+                            $user->device_os
+                        );
+                    }
+
+                    $sentCount++;
+                } catch (\Throwable $userEx) {
+                    $failedCount++;
+                    \Log::error("days5 notification error for User #{$user->id}: " . $userEx->getMessage());
                 }
-
-                // Send Notification
-                $receiverData = $user;
-
-                // Set usernames
-                $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
-                $receiverData['username']   = $receiverData['name'] == '' ? 'Anonymous User' : $receiverData['name'];
-
-                // Notification content
-                $daysLeft = 5;
-                $title = 'Expiry Reminder ⏳';
-                $notiMessage = $receiverData['name'].', A quick update: 5 days left.';
-                $message = $receiverData['name'].', A quick update: 5 days left.';
-                $notificationType = 3;
-
-                Notification::create([
-                    'user_id'             => $receiverData->id,
-                    'sender_id'           => $senderData->id,
-                    'data_id'             => '',
-                    'notification_title'  => $title,
-                    'notification_text'   => $notiMessage,
-                    'sender_name'         => $senderData['name'],
-                    'receiver_name'       => $receiverData['name'],
-                    'notification_type'   => $notificationType,
-                ]);
-
-                $user_id                = $receiverData->id;
-                $notification_title     = $title;
-                $notification_text      = $message;
-                $sender_id              = $senderData->id;
-                $notification_type      = $notificationType;
-                $platform               = $receiverData->device_os;
-                $fcm_token              = $receiverData->fcm_token;
-                $data_id                = '';
-                $sender_name            = $senderData['name'];
-                $receiver_name          = $receiverData['name'];
-
-                push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiver_name, $platform);
-                //---------
             }
 
-        } catch(\Exception $e) {
-            \Log::error('Cronjob Error: ' . $e->getMessage());
-            $countries = [];
-        }
-        //--------------
-
-        // Set response
-        if(!empty($countries)) {
-
-            $response = [
+            return response()->json([
                 '_status'  => true,
-                '_message' => __('messages.record_found', ['record' => 'countries']),
-                '_data'    => $countries,
-            ];
-        } else {
-            $response = [
-                '_status'  => false,
-                '_message' => __('messages.record_not_found', ['record' => 'countries']),
-                '_data'    => null
-            ];
-        }
-        //-------------
+                '_message' => "5-days reminder executed. Sent: {$sentCount}, Failed: {$failedCount}",
+                '_data'    => ['sent' => $sentCount, 'failed' => $failedCount, 'total' => $users->count()]
+            ], 200);
 
-        return response()->json($response, 200);
+        } catch(\Throwable $e) {
+            \Log::error('Cronjob days5 Error: ' . $e->getMessage());
+            return response()->json(['_status' => false, '_message' => $e->getMessage(), '_data' => null], 500);
+        }
     }
 
     /**
@@ -193,86 +169,74 @@ class CronjobController extends Controller
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function days1(){
+        $sentCount = 0;
+        $failedCount = 0;
+
         try {
-            // 1 Days
             $users = User::where('days', '=', 1)->where('role_type', 'user')->where('status', 1)->get();
 
-            $senderData = User::find(0);
-
             foreach ($users as $user) {
-                $alreadyNotified = Notification::where('user_id', $user->id)
-                    ->where('notification_type', 4)
-                    ->whereDate('created_at', '=', date('Y-m-d'))
-                    ->exists();
+                try {
+                    $alreadyNotified = Notification::where('user_id', $user->id)
+                        ->where('notification_type', 4)
+                        ->whereDate('created_at', '=', date('Y-m-d'))
+                        ->exists();
 
-                if ($alreadyNotified) {
-                    continue;
+                    if ($alreadyNotified) {
+                        continue;
+                    }
+
+                    $receiverName = !empty($user->name) ? $user->name : 'Member';
+                    $title        = 'Expiry Today ⏳';
+                    $notiMessage  = $receiverName . ', One day left in your plan.';
+                    $message      = $notiMessage;
+                    $notificationType = 4;
+
+                    Notification::create([
+                        'user_id'             => $user->id,
+                        'sender_id'           => 0,
+                        'data_id'             => null,
+                        'notification_title'  => $title,
+                        'notification_text'   => $notiMessage,
+                        'sender_name'         => 'System',
+                        'receiver_name'       => $receiverName,
+                        'notification_type'   => $notificationType,
+                        'sent_status'         => 1,
+                        'status'              => 0,
+                    ]);
+
+                    if (!empty($user->fcm_token)) {
+                        push_notification(
+                            $user->id,
+                            $title,
+                            $message,
+                            0,
+                            $notificationType,
+                            $user->fcm_token,
+                            null,
+                            'System',
+                            $receiverName,
+                            $user->device_os
+                        );
+                    }
+
+                    $sentCount++;
+                } catch (\Throwable $userEx) {
+                    $failedCount++;
+                    \Log::error("days1 notification error for User #{$user->id}: " . $userEx->getMessage());
                 }
-
-                // Send Notification
-                $receiverData = $user;
-
-                // Set usernames
-                $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
-                $receiverData['username']   = $receiverData['name'] == '' ? 'Anonymous User' : $receiverData['name'];
-
-                // Notification content
-                $daysLeft = 1;
-                $title = 'Expiry Today ⏳';
-                $notiMessage = $receiverData['name'].', One day left in your plan.';
-                $message = $receiverData['name'].', One day left in your plan.';
-                $notificationType = 4;
-
-                Notification::create([
-                    'user_id'             => $receiverData->id,
-                    'sender_id'           => $senderData->id,
-                    'data_id'             => '',
-                    'notification_title'  => $title,
-                    'notification_text'   => $notiMessage,
-                    'sender_name'         => $senderData['name'],
-                    'receiver_name'       => $receiverData['name'],
-                    'notification_type'   => $notificationType,
-                ]);
-
-                $user_id                = $receiverData->id;
-                $notification_title     = $title;
-                $notification_text      = $message;
-                $sender_id              = $senderData->id;
-                $notification_type      = $notificationType;
-                $platform               = $receiverData->device_os;
-                $fcm_token              = $receiverData->fcm_token;
-                $data_id                = '';
-                $sender_name            = $senderData['name'];
-                $receiver_name          = $receiverData['name'];
-
-                push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiver_name, $platform);
-                //---------
             }
 
-        } catch(\Exception $e) {
-            \Log::error('Cronjob Error: ' . $e->getMessage());
-            $countries = [];
-        }
-        //--------------
-
-        // Set response
-        if(!empty($countries)) {
-
-            $response = [
+            return response()->json([
                 '_status'  => true,
-                '_message' => __('messages.record_found', ['record' => 'countries']),
-                '_data'    => $countries,
-            ];
-        } else {
-            $response = [
-                '_status'  => false,
-                '_message' => __('messages.record_not_found', ['record' => 'countries']),
-                '_data'    => null
-            ];
-        }
-        //-------------
+                '_message' => "1-day reminder executed. Sent: {$sentCount}, Failed: {$failedCount}",
+                '_data'    => ['sent' => $sentCount, 'failed' => $failedCount, 'total' => $users->count()]
+            ], 200);
 
-        return response()->json($response, 200);
+        } catch(\Throwable $e) {
+            \Log::error('Cronjob days1 Error: ' . $e->getMessage());
+            return response()->json(['_status' => false, '_message' => $e->getMessage(), '_data' => null], 500);
+        }
     }
 
     public function mealType()
@@ -485,146 +449,148 @@ class CronjobController extends Controller
     }
 
     public function pendingNotifications(){
+        $sentCount = 0;
+        $failedCount = 0;
+
         try {
             $notifications = Notification::with('user')->where('sent_status', '=', 0)->get();
 
-            $senderData = User::find(0);
-
             foreach ($notifications as $notification) {
-                // Send Notification
-                $receiverData = $notification->user;
+                try {
+                    $receiverData = $notification->user;
+                    if (!$receiverData) {
+                        continue;
+                    }
 
-                // Set usernames
-                $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
-                $receiverData['username']   = $receiverData['name'] == '' ? 'Anonymous User' : $receiverData['name'];
+                    $receiverName = !empty($receiverData->name) ? $receiverData->name : 'Member';
 
-                $user_id                = $receiverData->id;
-                $notification_title     = $notification['notification_title'];
-                $notification_text      = $notification['notification_text'];
-                $sender_id              = $senderData->id;
-                $notification_type      = $notification['notification_type'];
-                $platform               = $receiverData->device_os;
-                $fcm_token              = $receiverData->fcm_token;
-                $data_id                = '';
-                $sender_name            = $senderData['name'];
-                $receiver_name          = $receiverData['name'];
+                    $user_id            = $receiverData->id;
+                    $notification_title = $notification['notification_title'];
+                    $notification_text  = $notification['notification_text'];
+                    $sender_id          = !empty($notification['sender_id']) ? $notification['sender_id'] : 0;
+                    $notification_type  = $notification['notification_type'];
+                    $platform           = $receiverData->device_os;
+                    $fcm_token          = $receiverData->fcm_token;
+                    $data_id            = $notification['data_id'] ?? null;
+                    $sender_name        = !empty($notification['sender_name']) ? $notification['sender_name'] : 'System';
 
-                push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiver_name, $platform);
+                    if (!empty($fcm_token)) {
+                        push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiverName, $platform);
+                    }
 
-                Notification::where('id', $notification['id'])->update([
-                    'sent_status'   => 1,
-                ]);
-                //---------
+                    Notification::where('id', $notification['id'])->update([
+                        'sent_status' => 1,
+                    ]);
+
+                    $sentCount++;
+                } catch (\Throwable $notiEx) {
+                    $failedCount++;
+                    \Log::error("pendingNotifications error for Notification #{$notification->id}: " . $notiEx->getMessage());
+                }
             }
 
-        } catch(\Exception $e) {
-            \Log::error('Cronjob Error: ' . $e->getMessage());
-            $countries = [];
-        }
-        //--------------
-
-        // Set response
-        if(!empty($countries)) {
-
-            $response = [
+            return response()->json([
                 '_status'  => true,
-                '_message' => __('messages.record_found', ['record' => 'countries']),
-                '_data'    => $countries,
-            ];
-        } else {
-            $response = [
-                '_status'  => false,
-                '_message' => __('messages.record_not_found', ['record' => 'countries']),
-                '_data'    => null
-            ];
-        }
-        //-------------
+                '_message' => "Pending notifications processed. Sent: {$sentCount}, Failed: {$failedCount}",
+                '_data'    => ['sent' => $sentCount, 'failed' => $failedCount, 'total' => $notifications->count()]
+            ], 200);
 
-        return response()->json($response, 200);
+        } catch(\Throwable $e) {
+            \Log::error('Cronjob pendingNotifications Error: ' . $e->getMessage());
+            return response()->json(['_status' => false, '_message' => $e->getMessage(), '_data' => null], 500);
+        }
     }
 
     public function pendingAmount(){
-        try {
-            $users = User::where('due_amount', '>', 0)->where('role_type', 'user')->where('status', 1)->get();
+        $sentCount    = 0;
+        $skippedCount = 0;
+        $failedCount  = 0;
 
-            $senderData = User::find(0);
+        try {
+            $users = User::where('due_amount', '>', 0)
+                ->where('role_type', 'user')
+                ->where('status', 1)
+                ->get();
 
             foreach ($users as $user) {
-                $lastNotification = Notification::where('user_id', $user->id)
-                    ->where('notification_type', 10)
-                    ->latest('created_at')
-                    ->first();
+                try {
+                    $lastNotification = Notification::where('user_id', $user->id)
+                        ->where('notification_type', 10)
+                        ->latest('created_at')
+                        ->first();
 
-                if ($lastNotification) {
-                    $nextAllowedDate = $lastNotification->created_at->addDays(3);
+                    if ($lastNotification && $lastNotification->created_at) {
+                        $nextAllowedDate = $lastNotification->created_at->copy()->addDays(3);
 
-                    if (now()->lt($nextAllowedDate)) {
-                        continue; // 3 din complete nahi hue
+                        if (now()->lt($nextAllowedDate)) {
+                            $skippedCount++;
+                            continue; // 3 days have not elapsed yet
+                        }
                     }
+
+                    $receiverName = !empty($user->name) ? $user->name : 'Member';
+                    $dueAmountFormatted = number_format((float)$user->due_amount, 0);
+
+                    // Notification content
+                    $title            = 'Payment Pending Reminder ⏳';
+                    $notiMessage      = 'Hello ' . $receiverName . ', your payment of ₹' . $dueAmountFormatted . ' is pending.';
+                    $message          = $notiMessage;
+                    $notificationType = 10;
+
+                    Notification::create([
+                        'user_id'             => $user->id,
+                        'sender_id'           => 0,
+                        'data_id'             => null,
+                        'notification_title'  => $title,
+                        'notification_text'   => $notiMessage,
+                        'sender_name'         => 'System',
+                        'receiver_name'       => $receiverName,
+                        'notification_type'   => $notificationType,
+                        'sent_status'         => 1,
+                        'status'              => 0,
+                    ]);
+
+                    if (!empty($user->fcm_token)) {
+                        push_notification(
+                            $user->id,
+                            $title,
+                            $message,
+                            0,
+                            $notificationType,
+                            $user->fcm_token,
+                            null,
+                            'System',
+                            $receiverName,
+                            $user->device_os
+                        );
+                    }
+
+                    $sentCount++;
+                } catch (\Throwable $userEx) {
+                    $failedCount++;
+                    \Log::error("Payment pending reminder error for User #{$user->id}: " . $userEx->getMessage());
                 }
-
-                // Send Notification
-                $receiverData = $user;
-
-                // Set usernames
-                $senderData['username']     = $senderData['name'] == '' ? 'Anonymous User' : $senderData['name'];
-                $receiverData['username']   = $receiverData['name'] == '' ? 'Anonymous User' : $receiverData['name'];
-
-                // Notification content
-                $title = 'Payment Pending Reminder ⏳';
-                $notiMessage = 'Hello '.$receiverData['name'].', your payment of ₹'.$receiverData['due_amount'].' is pending.';
-                $message = 'Hello '.$receiverData['name'].', your payment of ₹'.$receiverData['due_amount'].' is pending.';
-                $notificationType = 10;
-
-                Notification::create([
-                    'user_id'             => $receiverData->id,
-                    'sender_id'           => $senderData->id,
-                    'data_id'             => '',
-                    'notification_title'  => $title,
-                    'notification_text'   => $notiMessage,
-                    'sender_name'         => $senderData['name'],
-                    'receiver_name'       => $receiverData['name'],
-                    'notification_type'   => $notificationType,
-                ]);
-
-                $user_id                = $receiverData->id;
-                $notification_title     = $title;
-                $notification_text      = $message;
-                $sender_id              = $senderData->id;
-                $notification_type      = $notificationType;
-                $platform               = $receiverData->device_os;
-                $fcm_token              = $receiverData->fcm_token;
-                $data_id                = '';
-                $sender_name            = $senderData['name'];
-                $receiver_name          = $receiverData['name'];
-
-                push_notification($user_id, $notification_title, $notification_text, $sender_id, $notification_type, $fcm_token, $data_id, $sender_name, $receiver_name, $platform);
-                //---------
             }
 
-        } catch(\Exception $e) {
-            \Log::error('Cronjob Error: ' . $e->getMessage());
-            $countries = [];
-        }
-        //--------------
-
-        // Set response
-        if(!empty($countries)) {
-
-            $response = [
+            return response()->json([
                 '_status'  => true,
-                '_message' => __('messages.record_found', ['record' => 'countries']),
-                '_data'    => $countries,
-            ];
-        } else {
-            $response = [
-                '_status'  => false,
-                '_message' => __('messages.record_not_found', ['record' => 'countries']),
-                '_data'    => null
-            ];
-        }
-        //-------------
+                '_message' => "Payment reminder cron executed. Sent: {$sentCount}, Skipped: {$skippedCount}, Failed: {$failedCount}",
+                '_data'    => [
+                    'sent'    => $sentCount,
+                    'skipped' => $skippedCount,
+                    'failed'  => $failedCount,
+                    'total'   => $users->count(),
+                ]
+            ], 200);
 
-        return response()->json($response, 200);
+        } catch(\Throwable $e) {
+            \Log::error('Cronjob pendingAmount Error: ' . $e->getMessage());
+
+            return response()->json([
+                '_status'  => false,
+                '_message' => 'Pending amount cron failed: ' . $e->getMessage(),
+                '_data'    => null
+            ], 500);
+        }
     }
 }

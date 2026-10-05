@@ -546,79 +546,103 @@ if (!function_exists('push_notification')) {
     function push_notification($user_id = null, $title = null, $message = null, $sender_id = null, $type = null, $fcm_token = null, $data_id = null, $sender_name = null, $receiver_name = null, $platform= null)
     {
         $data = array(
-            'title'             => $title,
-            'body'              => strip_tags($message),
-            'description'       => $message,
-            'notification_type' => $type,
-            'user_id'           => $user_id,
-            'sender_id'         => $sender_id,
-            'data_id'           => $data_id,
-            'sender_name'       => $sender_name,
-            'receiver_name'     => $receiver_name,
+            'title'             => (string)($title ?? ''),
+            'body'              => (string)strip_tags($message ?? ''),
+            'description'       => (string)($message ?? ''),
+            'notification_type' => (string)($type ?? ''),
+            'user_id'           => (string)($user_id ?? ''),
+            'sender_id'         => (string)($sender_id ?? ''),
+            'data_id'           => (string)($data_id ?? ''),
+            'sender_name'       => (string)($sender_name ?? ''),
+            'receiver_name'     => (string)($receiver_name ?? ''),
         );
 
         $data_json = json_encode($data, true);
 
-        if($fcm_token != ''){
-            // Initialize Firebase
-            $firebase  = (new Factory)->withServiceAccount(app_path().'/fit-coach-club-firebase-adminsdk-fbsvc-5dcf602f53.json');
-            $messaging = $firebase->createMessaging();
+        if(!empty($fcm_token)){
+            try {
+                // Initialize Firebase with primary or fallback credentials
+                $serviceAccountPath = app_path('fit-coach-club-firebase-adminsdk-fbsvc-5dcf602f53.json');
+                if (!file_exists($serviceAccountPath)) {
+                    $serviceAccountPath = app_path('fit-coach-club-firebase-adminsdk-fbsvc-9bb58745c0.json');
+                }
 
-            $tokenCollection    = collect([$fcm_token]);
-            $chunkArray         = $tokenCollection->chunk(100)->toArray();
+                if (!file_exists($serviceAccountPath)) {
+                    \Log::error('Firebase service account file not found in app directory.');
+                    return;
+                }
 
-            foreach($chunkArray as $chunk) {
-                foreach ($chunk as $fcmToken) {
-                    try {
-                        if ($platform == 'Android') {
-                            $message = CloudMessage::fromArray([
-                                'notification' => $data,
-                                'data'         => $data,
-                                'token'        => $fcmToken,
-                                'android' => [
-                                    'priority' => 'HIGH',
-                                ],
-                                'apns' => [
-                                    'headers' => [
-                                        'apns-priority' => '10',
+                $firebase  = (new Factory)->withServiceAccount($serviceAccountPath);
+                $messaging = $firebase->createMessaging();
+
+                $tokenCollection = collect([$fcm_token]);
+                $chunkArray      = $tokenCollection->chunk(100)->toArray();
+
+                $isAndroid = (empty($platform) || strcasecmp($platform, 'Android') === 0);
+
+                foreach($chunkArray as $chunk) {
+                    foreach ($chunk as $fcmToken) {
+                        try {
+                            if ($isAndroid) {
+                                $message = CloudMessage::fromArray([
+                                    'notification' => [
+                                        'title' => (string)($title ?? ''),
+                                        'body'  => (string)strip_tags($message ?? ''),
                                     ],
-                                    'payload' => [
-                                        'aps' => [
-                                            'sound' => 'default',
-                                            'badge' => 1,
+                                    'data'         => $data,
+                                    'token'        => $fcmToken,
+                                    'android' => [
+                                        'priority' => 'HIGH',
+                                    ],
+                                    'apns' => [
+                                        'headers' => [
+                                            'apns-priority' => '10',
+                                        ],
+                                        'payload' => [
+                                            'aps' => [
+                                                'sound' => 'default',
+                                                'badge' => 1,
+                                            ],
                                         ],
                                     ],
-                                ],
-                            ]);
-                            $sendReport = $messaging->send($message);
-                        } else {
-                            $message = CloudMessage::fromArray([
-                                'notification' => $data,
-                                'data' => [
-                                    'data' => $data_json,
-                                ],
-                                'token' => $fcmToken,
-                                'android' => [
-                                    'priority' => 'HIGH',
-                                ],
-                                'apns' => [
-                                    'headers' => [
-                                        'apns-priority' => '10',
+                                ]);
+                                $messaging->send($message);
+                            } else {
+                                $message = CloudMessage::fromArray([
+                                    'notification' => [
+                                        'title' => (string)($title ?? ''),
+                                        'body'  => (string)strip_tags($message ?? ''),
                                     ],
-                                    'payload' => [
-                                        'aps' => [
-                                            'sound' => 'default',
-                                            'badge' => 1,
+                                    'data' => [
+                                        'data' => $data_json,
+                                    ],
+                                    'token' => $fcmToken,
+                                    'android' => [
+                                        'priority' => 'HIGH',
+                                    ],
+                                    'apns' => [
+                                        'headers' => [
+                                            'apns-priority' => '10',
+                                        ],
+                                        'payload' => [
+                                            'aps' => [
+                                                'sound' => 'default',
+                                                'badge' => 1,
+                                            ],
                                         ],
                                     ],
-                                ],
-                            ]);
-                            $sendReport = $messaging->send($message);
+                                ]);
+                                $messaging->send($message);
+                            }
+                        } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+                            \Log::error('Firebase message Error: ' . $e->getMessage());
+                        } catch (\Throwable $sendEx) {
+                            \Log::error('Firebase send Error: ' . $sendEx->getMessage());
                         }
-                    } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-                        \Log::error('Firebase message Error: ' . $e->getMessage());
                     }
                 }
+            } catch (\Throwable $firebaseInitEx) {
+                \Log::error('Firebase init Error: ' . $firebaseInitEx->getMessage());
             }
         }   
     }
