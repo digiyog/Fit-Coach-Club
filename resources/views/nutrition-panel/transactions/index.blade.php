@@ -557,7 +557,7 @@
 
     #dataTable {
         width: 100% !important;
-        min-width: 1150px !important;
+        min-width: 1040px !important;
         border-collapse: separate;
         border-spacing: 0;
         border: none;
@@ -566,9 +566,9 @@
     #dataTable thead th {
         background: #f8fafc;
         color: #475569;
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 700;
-        padding: 14px 16px;
+        padding: 11px 12px;
         border-top: 1px solid #e2e8f0;
         border-bottom: 1px solid #e2e8f0;
         letter-spacing: 0.01em;
@@ -576,7 +576,7 @@
     }
 
     #dataTable tbody td {
-        padding: 13px 16px;
+        padding: 11px 12px;
         vertical-align: middle;
         font-size: 13px;
         color: #334155;

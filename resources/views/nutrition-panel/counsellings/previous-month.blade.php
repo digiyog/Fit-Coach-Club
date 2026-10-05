@@ -645,7 +645,7 @@
         border-collapse: separate !important;
         border-spacing: 0 !important;
         width: 100% !important;
-        min-width: 1200px !important;
+        min-width: 1040px !important;
     }
     table.dataTable thead th,
     #previousMonthDataTable thead th {
@@ -654,7 +654,7 @@
         font-size: 11.5px !important;
         font-weight: 700 !important;
         letter-spacing: 0.02em !important;
-        padding: 12px 14px !important;
+        padding: 10px 11px !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-top: none !important;
         white-space: nowrap !important;
@@ -662,7 +662,7 @@
     }
     table.dataTable tbody td,
     #previousMonthDataTable tbody td {
-        padding: 12px 14px !important;
+        padding: 10px 11px !important;
         vertical-align: middle !important;
         border-bottom: 1px solid #f1f5f9 !important;
         color: #334155;

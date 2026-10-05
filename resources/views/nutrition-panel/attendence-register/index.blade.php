@@ -664,6 +664,7 @@
     /* Table Styling */
     .fcc-datatable {
         width: 100% !important;
+        min-width: 1150px !important;
         border-collapse: separate !important;
         border-spacing: 0 !important;
         margin-top: 8px !important;

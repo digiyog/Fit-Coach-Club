@@ -585,6 +585,7 @@
     }
     #dataTable {
         width: 100% !important;
+        min-width: 900px !important;
         border-collapse: separate !important;
         border-spacing: 0 !important;
         margin-bottom: 0 !important;
