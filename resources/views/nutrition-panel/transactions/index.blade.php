@@ -287,10 +287,10 @@
         display: grid;
         grid-template-columns: 2.2fr 1.3fr 1.3fr 1.3fr 1.1fr;
         gap: 12px;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
         .ledger-filters-grid {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -302,162 +302,262 @@
         }
     }
 
-    .filter-search-wrap, .filter-date-wrap {
-        position: relative;
+    .filter-search-wrap,
+    .filter-date-wrap {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
     }
 
     .filter-icon-left {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #94a3b8;
-        font-size: 14px;
-        pointer-events: none;
+        position: absolute !important;
+        left: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #94a3b8 !important;
+        font-size: 14px !important;
+        pointer-events: none !important;
+        z-index: 5 !important;
+        line-height: 1 !important;
     }
 
     .filter-icon-right {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #94a3b8;
-        font-size: 12px;
-        pointer-events: none;
+        position: absolute !important;
+        right: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        color: #94a3b8 !important;
+        font-size: 11px !important;
+        pointer-events: none !important;
+        z-index: 5 !important;
+        line-height: 1 !important;
     }
 
-    .filter-input-styled {
-        height: 42px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        padding-left: 38px;
-        padding-right: 14px;
-        font-size: 13.5px;
-        color: #0f172a;
-        background-color: #ffffff;
-        transition: all 0.2s ease;
-        width: 100%;
+    .tx-ledger-card input.filter-input-styled,
+    .tx-ledger-card input#tx_search,
+    .tx-ledger-card input#tx_date_range,
+    input.filter-input-styled {
+        height: 42px !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        padding-left: 42px !important;
+        padding-right: 14px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        color: #0f172a !important;
+        background-color: #f8fafc !important;
+        transition: all 0.2s ease !important;
+        width: 100% !important;
         box-shadow: none !important;
+        outline: none !important;
+        line-height: normal !important;
+        font-family: inherit !important;
     }
 
-    .filter-input-styled:focus {
-        border-color: #2563eb;
+    .tx-ledger-card input#tx_date_range,
+    input.filter-date-input {
+        padding-right: 36px !important;
+        cursor: pointer !important;
+    }
+
+    .tx-ledger-card input.filter-input-styled:focus,
+    .tx-ledger-card input#tx_search:focus,
+    .tx-ledger-card input#tx_date_range:focus,
+    input.filter-input-styled:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
     }
 
-    .filter-date-input {
-        cursor: pointer;
-        padding-right: 32px;
+    .tx-ledger-card input.filter-input-styled::placeholder,
+    .tx-ledger-card input#tx_search::placeholder,
+    .tx-ledger-card input#tx_date_range::placeholder,
+    input.filter-input-styled::placeholder {
+        color: #94a3b8 !important;
+        font-size: 13.5px !important;
+        font-weight: 400 !important;
+        opacity: 1 !important;
     }
 
-    .filter-select-styled {
-        height: 42px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        font-size: 13.5px;
-        color: #334155;
-        font-weight: 500;
-        background-color: #ffffff;
-        cursor: pointer;
+    .tx-ledger-card select.filter-select-styled,
+    .tx-ledger-card select#tx_payment_type,
+    .tx-ledger-card select#tx_collection_state,
+    select.filter-select-styled {
+        height: 42px !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        font-size: 13.5px !important;
+        color: #334155 !important;
+        font-weight: 500 !important;
+        background-color: #f8fafc !important;
+        cursor: pointer !important;
         box-shadow: none !important;
-        width: 100%;
-        padding: 0 12px;
+        outline: none !important;
+        width: 100% !important;
+        padding: 0 34px 0 14px !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 14px center !important;
+        background-size: 12px !important;
+        transition: all 0.2s ease !important;
+        font-family: inherit !important;
     }
 
-    .filter-select-styled:focus {
-        border-color: #2563eb;
+    .tx-ledger-card select.filter-select-styled:focus,
+    .tx-ledger-card select#tx_payment_type:focus,
+    .tx-ledger-card select#tx_collection_state:focus,
+    select.filter-select-styled:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
     }
 
+    .tx-ledger-card .btn-more-filters,
     .btn-more-filters {
-        height: 42px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        background: #ffffff;
-        color: #475569;
-        font-size: 13.5px;
-        font-weight: 600;
-        padding: 0 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        transition: all 0.2s ease;
-        cursor: pointer;
+        height: 42px !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 13.5px !important;
+        font-weight: 600 !important;
+        padding: 0 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+        outline: none !important;
+        font-family: inherit !important;
     }
 
-    .btn-more-filters:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        color: #0f172a;
+    .tx-ledger-card .btn-more-filters:hover,
+    .tx-ledger-card .btn-more-filters.active,
+    .btn-more-filters:hover,
+    .btn-more-filters.active {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
     }
 
     /* Toolbar Row 2: Counts & Actions */
     .ledger-actions-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 18px;
-        padding-bottom: 14px;
-        border-bottom: 1px solid #f1f5f9;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+        margin-bottom: 18px !important;
+        padding-bottom: 14px !important;
+        border-bottom: 1px solid #f1f5f9 !important;
     }
 
     .ledger-actions-left {
-        display: flex;
-        align-items: center;
-        gap: 14px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 16px !important;
     }
 
     .table-count-text {
-        font-size: 14px;
-        font-weight: 700;
-        color: #0f172a;
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
     }
 
+    .tx-ledger-card .page-len-select,
     .page-len-select {
-        height: 36px;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        font-size: 13px;
-        color: #475569;
-        padding: 4px 10px;
-        font-weight: 500;
-        cursor: pointer;
+        height: 36px !important;
+        border-radius: 8px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        font-size: 12.5px !important;
+        color: #334155 !important;
+        padding: 0 28px 0 10px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        background-color: #ffffff !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 10px center !important;
+        background-size: 10px !important;
         box-shadow: none !important;
+        outline: none !important;
+        transition: all 0.15s ease !important;
     }
 
+    .tx-ledger-card .page-len-select:focus,
+    .page-len-select:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    }
+
+    .tx-ledger-card .btn-clear-pill,
     .btn-clear-pill {
-        background: #ffffff;
-        border-radius: 9px;
-        padding: 7px 16px;
-        font-size: 13px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.15s ease;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        border: 1px solid #cbd5e1;
-        color: #475569;
-        cursor: pointer;
+        background: #ffffff !important;
+        border-radius: 9px !important;
+        padding: 6px 15px !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+        border: 1.5px solid #e2e8f0 !important;
+        color: #475569 !important;
+        cursor: pointer !important;
+        height: 36px !important;
+        outline: none !important;
     }
 
+    .tx-ledger-card .btn-clear-pill:hover,
     .btn-clear-pill:hover {
-        background: #f8fafc;
-        border-color: #94a3b8;
-        color: #0f172a;
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
     }
 
-    /* Modern Table Styling */
+    /* Modern Table Styling with smooth horizontal scrolling */
     .table-container-modern {
         border-radius: 12px;
-        overflow: hidden;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #edf2f7;
+    }
+
+    .table-container-modern::-webkit-scrollbar {
+        height: 7px;
+    }
+
+    .table-container-modern::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 4px;
+    }
+
+    .table-container-modern::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .table-container-modern::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
     }
 
     #dataTable {
         width: 100% !important;
+        min-width: 1150px !important;
         border-collapse: separate;
         border-spacing: 0;
         border: none;
@@ -472,16 +572,17 @@
         border-top: 1px solid #e2e8f0;
         border-bottom: 1px solid #e2e8f0;
         letter-spacing: 0.01em;
-        white-space: nowrap;
+        white-space: nowrap !important;
     }
 
     #dataTable tbody td {
-        padding: 14px 16px;
+        padding: 13px 16px;
         vertical-align: middle;
-        font-size: 13.5px;
+        font-size: 13px;
         color: #334155;
         border-bottom: 1px solid #f1f5f9;
         background: #ffffff;
+        white-space: nowrap !important;
     }
 
     #dataTable tbody tr:hover td {
@@ -870,13 +971,13 @@
                 <!-- Search Input -->
                 <div class="filter-search-wrap">
                     <i class="fa fa-search filter-icon-left"></i>
-                    <input type="text" id="tx_search" class="filter-input-styled" placeholder="Search user, order or title...">
+                    <input type="text" id="tx_search" class="filter-input-styled" placeholder="Search user, order or title..." autocomplete="off" style="padding-left: 42px !important;">
                 </div>
 
                 <!-- Date Range -->
                 <div class="filter-date-wrap">
                     <i class="fa fa-calendar filter-icon-left"></i>
-                    <input type="text" id="tx_date_range" class="filter-input-styled filter-date-input" placeholder="Date range" readonly autocomplete="off">
+                    <input type="text" id="tx_date_range" class="filter-input-styled filter-date-input" placeholder="Date range" readonly autocomplete="off" style="padding-left: 42px !important; padding-right: 36px !important;">
                     <i class="fa fa-chevron-down filter-icon-right"></i>
                 </div>
 

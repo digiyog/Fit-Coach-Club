@@ -610,6 +610,71 @@
         transition: all 0.15s ease;
     }
 
+    /* Modern Table Container with smooth horizontal scrolling */
+    .data-table-container,
+    .fcc-modern-table-wrap {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        background: #ffffff;
+        margin-bottom: 0 !important;
+        width: 100%;
+    }
+    .data-table-container::-webkit-scrollbar,
+    .fcc-modern-table-wrap::-webkit-scrollbar {
+        height: 7px;
+    }
+    .data-table-container::-webkit-scrollbar-track,
+    .fcc-modern-table-wrap::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 4px;
+    }
+    .data-table-container::-webkit-scrollbar-thumb,
+    .fcc-modern-table-wrap::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .data-table-container::-webkit-scrollbar-thumb:hover,
+    .fcc-modern-table-wrap::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    table.dataTable,
+    #previousMonthDataTable {
+        margin: 0 !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        width: 100% !important;
+        min-width: 1200px !important;
+    }
+    table.dataTable thead th,
+    #previousMonthDataTable thead th {
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.02em !important;
+        padding: 12px 14px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-top: none !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+    }
+    table.dataTable tbody td,
+    #previousMonthDataTable tbody td {
+        padding: 12px 14px !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        color: #334155;
+        font-size: 13px;
+        background: transparent;
+        white-space: nowrap !important;
+    }
+    table.dataTable tbody tr:hover td,
+    #previousMonthDataTable tbody tr:hover td {
+        background: #f8faff !important;
+    }
+
     /* DataTables Footer */
     .fcc-dt-footer {
         display: flex !important;
@@ -891,7 +956,7 @@
         </div>
 
         <!-- 8. Modern DataTables Table -->
-        <div class="data-table-container">
+        <div class="data-table-container fcc-modern-table-wrap table-responsive">
             <table id="previousMonthDataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.counsellings.getPreviousMonthCounsellings') }}">
                 <thead>
                     <tr>

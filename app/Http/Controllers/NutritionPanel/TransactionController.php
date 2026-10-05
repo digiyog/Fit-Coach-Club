@@ -118,8 +118,53 @@ class TransactionController extends Controller
                 $action             = '';
 
                 // Preparing Data
+                $user_name_html = '<span class="user-name-text">N/A</span>';
                 if(!empty($value->name)){
-                    $user_name = e($value->name);
+                    $rawName = $value->name;
+                    $email = !empty($value->email) ? $value->email : '';
+
+                    $initials = '';
+                    $nameWords = explode(' ', trim($rawName));
+                    foreach ($nameWords as $w) {
+                        if (!empty($w)) {
+                            $initials .= strtoupper(substr($w, 0, 1));
+                        }
+                    }
+                    $initials = substr($initials, 0, 2);
+                    if (empty($initials)) $initials = 'U';
+
+                    $colors = [
+                        ['bg' => '#eff6ff', 'color' => '#2563eb', 'border' => '#bfdbfe'],
+                        ['bg' => '#f3e8ff', 'color' => '#9333ea', 'border' => '#e9d5ff'],
+                        ['bg' => '#ecfdf5', 'color' => '#059669', 'border' => '#a7f3d0'],
+                        ['bg' => '#fffbeb', 'color' => '#d97706', 'border' => '#fde68a'],
+                        ['bg' => '#fdf2f8', 'color' => '#db2777', 'border' => '#fbcfe8'],
+                    ];
+                    $cIdx = abs(crc32($rawName)) % count($colors);
+                    $avatarCol = $colors[$cIdx];
+
+                    $profileImageUrl = null;
+                    if (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path'), $value->profile_image);
+                    } elseif (!empty($value->profile_image) && \Storage::disk(config('filesystems.default'))->exists(config('constants.users.image_path_thumb').$value->profile_image)) {
+                        $profileImageUrl = get_image_url(config('constants.users.image_path_thumb'), $value->profile_image);
+                    }
+
+                    if ($profileImageUrl) {
+                        $avatarInner = '<img src="'.$profileImageUrl.'" class="rounded-circle" style="width: 32px; height: 32px; min-width: 32px; object-fit: cover; border: 1.5px solid #e2e8f0;" alt="'.e($rawName).'" />';
+                    } else {
+                        $avatarInner = '<div style="width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: '.$avatarCol['bg'].'; color: '.$avatarCol['color'].'; border: 1.5px solid '.$avatarCol['border'].'; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11.5px; font-family: \'Outfit\', sans-serif;">'.$initials.'</div>';
+                    }
+
+                    $emailHtml = !empty($email) ? '<div class="user-email-text" style="font-size: 11px; color: #64748b; line-height: 1.2; margin-top: 1px;">'.e($email).'</div>' : '';
+
+                    $user_name_html = '<div class="d-flex align-items-center gap-2" style="white-space: nowrap;">
+                        '.$avatarInner.'
+                        <div style="line-height: 1.2;">
+                            <span class="user-name-text" style="font-weight: 600; color: #0f172a; font-size: 13px;">'.e($rawName).'</span>
+                            '.$emailHtml.'
+                        </div>
+                    </div>';
                 }
 
                 if(!empty($value->order_info->order_number)){
@@ -184,7 +229,7 @@ class TransactionController extends Controller
 
                 // Array Data
                 $arr_data[] = array(
-                    "user_name"         => '<span class="user-name-text">' . $user_name . '</span>',
+                    "user_name"         => $user_name_html,
                     "order_number"      => '<span class="order-number-text">' . $order_number . '</span>',
                     "title"             => '<span class="title-text">' . $title . '</span>',
                     "total_amount"      => $total_amount_html,

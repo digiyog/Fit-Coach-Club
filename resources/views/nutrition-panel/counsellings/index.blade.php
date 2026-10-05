@@ -375,21 +375,41 @@
         cursor: pointer;
     }
 
-    /* 8. Table Styling & Pills */
+    /* 8. Table Styling & Pills with smooth horizontal scrolling */
+    .data-table-container,
     .fcc-modern-table-wrap {
-        overflow-x: auto;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
         border: 1px solid #edf2f7;
         border-radius: 12px;
         background: #ffffff;
         margin-bottom: 0 !important;
         width: 100%;
     }
+    .data-table-container::-webkit-scrollbar,
+    .fcc-modern-table-wrap::-webkit-scrollbar {
+        height: 7px;
+    }
+    .data-table-container::-webkit-scrollbar-track,
+    .fcc-modern-table-wrap::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 4px;
+    }
+    .data-table-container::-webkit-scrollbar-thumb,
+    .fcc-modern-table-wrap::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .data-table-container::-webkit-scrollbar-thumb:hover,
+    .fcc-modern-table-wrap::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
     table.dataTable {
         margin: 0 !important;
         border-collapse: separate !important;
         border-spacing: 0 !important;
         width: 100% !important;
-        min-width: 1050px !important;
+        min-width: 1200px !important;
     }
     table.dataTable thead th {
         position: relative !important;
@@ -817,7 +837,7 @@
         </div>
 
         <!-- 8. Modern DataTables Table -->
-        <div class="data-table-container">
+        <div class="data-table-container fcc-modern-table-wrap table-responsive">
             <table id="dataTable" class="table table-hover dataTable" data-url="{{ route('nutritionPanel.counsellings.getCounsellings') }}">
                 <thead>
                     <tr>
