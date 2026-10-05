@@ -975,6 +975,23 @@
         gap: 5px;
     }
 
+    .fcc-pulse-legend-target-btn {
+        cursor: pointer;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+    .fcc-pulse-legend-target-btn:hover {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
     .fcc-legend-line-actual {
         width: 14px;
         height: 3px;
@@ -4177,9 +4194,10 @@
                                     <span class="fcc-legend-line-actual"></span>
                                     <span>Actual</span>
                                 </div>
-                                <div class="fcc-pulse-legend-item">
+                                <div class="fcc-pulse-legend-item fcc-pulse-legend-target-btn" id="pulseTargetLegendWrap" title="Click to adjust Target" data-bs-toggle="modal" data-bs-target="#editPulseTargetModal" data-toggle="modal" data-target="#editPulseTargetModal">
                                     <span class="fcc-legend-line-target"></span>
-                                    <span id="pulseTargetLegendText">Target (30)</span>
+                                    <span id="pulseTargetLegendText">Target ({{ $targetAttendance ?? 18 }})</span>
+                                    <i class="fa fa-pencil" style="font-size: 9px; opacity: 0.75; margin-left: 2px;"></i>
                                 </div>
                             </div>
                         </div>
@@ -4568,9 +4586,9 @@
                                     <div class="fcc-trend-kpi-val">{{ $weeklyPeakAttendance ?? 0 }}</div>
                                     <div class="fcc-trend-kpi-lbl">weekly peak</div>
                                 </div>
-                                <div class="fcc-trend-kpi-item">
-                                    <div class="fcc-trend-kpi-val target">70</div>
-                                    <div class="fcc-trend-kpi-lbl">Target</div>
+                                <div class="fcc-trend-kpi-item" id="trendKpiTargetWrap" style="cursor: pointer;" title="Click to adjust Target" data-bs-toggle="modal" data-bs-target="#editPulseTargetModal" data-toggle="modal" data-target="#editPulseTargetModal">
+                                    <div class="fcc-trend-kpi-val target" id="trendKpiTargetVal">{{ $targetAttendance ?? 18 }}</div>
+                                    <div class="fcc-trend-kpi-lbl">Target <i class="fa fa-pencil" style="font-size: 8px; opacity: 0.6;"></i></div>
                                 </div>
                             </div>
 
@@ -6030,6 +6048,62 @@
         </div>
     </div>
 </div>
+
+<!-- EDIT ATTENDANCE TARGET MODAL -->
+<div class="modal fade" id="editPulseTargetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+        <div class="modal-content" style="border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25); overflow: hidden; font-family: 'Outfit', sans-serif;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                        <i class="fa fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" style="color: #0f172a; font-size: 16.5px;">Club Attendance Target</h5>
+                        <p class="text-muted mb-0" style="font-size: 12px;">Dynamic weekly &amp; daily goal line</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body px-4 py-3">
+                <div class="p-3 mb-3" style="background: #f8fafc; border-radius: 14px; border: 1px solid #f1f5f9;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted" style="font-size: 12px;">Auto-calculated dynamic target:</span>
+                        <strong class="text-primary" style="font-size: 13px;">{{ $targetAttendance ?? 18 }} members/day</strong>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted" style="font-size: 12px;">Weekly Peak Attendance:</span>
+                        <strong class="text-dark" style="font-size: 13px;">{{ $weeklyPeakAttendance ?? 0 }} members</strong>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-semibold" style="font-size: 13px; color: #334155;">Daily Target (Members)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white" style="border-color: #cbd5e1; color: #64748b;"><i class="fa fa-users"></i></span>
+                        <input type="number" id="pulseCustomTargetInput" class="form-control" min="1" max="500" placeholder="e.g. {{ $targetAttendance ?? 18 }}" style="border-color: #cbd5e1; font-weight: 600; font-size: 14px;">
+                    </div>
+                    <small class="text-muted mt-1 d-block" style="font-size: 11.5px;">
+                        Set a custom club attendance goal or reset anytime to auto calculation.
+                    </small>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 pb-3 px-4 d-flex justify-content-between align-items-center" style="background: #f8fafc; border-top: 1px solid #f1f5f9;">
+                <button type="button" id="resetPulseTargetBtn" class="btn btn-outline-secondary btn-sm" style="border-radius: 9px; font-weight: 600; font-size: 12px;">
+                    <i class="fa fa-refresh me-1"></i> Reset to Auto
+                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal" data-dismiss="modal" style="border-radius: 9px; font-weight: 600; font-size: 12px;">Cancel</button>
+                    <button type="button" id="savePulseTargetBtn" class="btn btn-primary btn-sm px-3" style="border-radius: 9px; font-weight: 600; font-size: 12px; background: #3b46f1; border-color: #3b46f1;">
+                        <i class="fa fa-check me-1"></i> Apply Target
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -6066,12 +6140,26 @@
     var weeklyPulseRevenue = {!! json_encode($weeklyPulseRevenue ?? [0, 0, 0, 0, 0, 0, 0]) !!};
 
     var maxValInAttendance = Math.max.apply(Math, weeklyPulseAttendance.concat([0]));
-    var dynamicTarget = Math.max(30, Math.ceil(maxValInAttendance > 40 ? 70 : (maxValInAttendance * 1.35)));
-    var dynamicYMax = Math.max(dynamicTarget + 10, Math.ceil((maxValInAttendance + 15) / 10) * 10);
+    var serverDefaultTarget = {{ (int)($targetAttendance ?? 18) }};
+    var savedTarget = parseInt(localStorage.getItem('fcc_club_pulse_target'), 10);
+    var dynamicTarget = (savedTarget && !isNaN(savedTarget) && savedTarget > 0) ? savedTarget : serverDefaultTarget;
+
+    function calculateDynamicYMax(highestVal) {
+        if (highestVal <= 10) return 12;
+        if (highestVal <= 20) return Math.ceil((highestVal + 3) / 5) * 5;
+        if (highestVal <= 50) return Math.ceil((highestVal + 5) / 5) * 5;
+        return Math.ceil((highestVal + 10) / 10) * 10;
+    }
+
+    var dynamicYMax = calculateDynamicYMax(Math.max(maxValInAttendance, dynamicTarget));
 
     var targetLegendEl = document.getElementById('pulseTargetLegendText');
     if (targetLegendEl) {
         targetLegendEl.textContent = 'Target (' + dynamicTarget + ')';
+    }
+    var trendKpiEl = document.getElementById('trendKpiTargetVal');
+    if (trendKpiEl) {
+        trendKpiEl.textContent = dynamicTarget;
     }
 
     var pulseOptions = {
@@ -6238,8 +6326,10 @@
         }
     };
     var pulseElem = document.querySelector("#clubPulseChart");
+    var clubPulseApexChart = null;
     if (pulseElem) {
-        new ApexCharts(pulseElem, pulseOptions).render();
+        clubPulseApexChart = new ApexCharts(pulseElem, pulseOptions);
+        clubPulseApexChart.render();
     }
 
     // 2. Performance Story Area Line Chart
@@ -6274,7 +6364,7 @@
         },
         yaxis: {
             min: 0,
-            max: 100,
+            max: dynamicYMax,
             tickAmount: 4,
             labels: {
                 style: {
@@ -6289,11 +6379,11 @@
         },
         annotations: {
             yaxis: [{
-                y: 70,
+                y: dynamicTarget,
                 borderColor: '#3b82f6',
                 strokeDashArray: 4,
                 label: {
-                    text: 'Target (70)',
+                    text: 'Target (' + dynamicTarget + ')',
                     borderColor: 'transparent',
                     style: {
                         color: '#3b82f6',
@@ -6361,7 +6451,7 @@
                 dataLabels: { enabled: false },
                 yaxis: {
                     min: 0,
-                    max: 100,
+                    max: dynamicYMax,
                     tickAmount: 4,
                     labels: {
                         style: { colors: '#94a3b8', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
@@ -6370,11 +6460,11 @@
                 },
                 annotations: {
                     yaxis: [{
-                        y: 70,
+                        y: dynamicTarget,
                         borderColor: '#3b82f6',
                         strokeDashArray: 4,
                         label: {
-                            text: 'Target (70)',
+                            text: 'Target (' + dynamicTarget + ')',
                             borderColor: 'transparent',
                             style: { color: '#3b82f6', background: 'transparent', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif', fontWeight: 600 },
                             position: 'right',
@@ -6699,7 +6789,7 @@
     var trendData = {!! json_encode($monthAttendanceTrendData ?? [50, 68, 60, 52, 64]) !!};
 
     var maxInTrend = Math.max.apply(Math, trendData.concat([0]));
-    var trendDynamicYMax = Math.max(80, Math.ceil((maxInTrend + 15) / 10) * 10);
+    var trendDynamicYMax = calculateDynamicYMax(Math.max(maxInTrend, dynamicTarget));
 
     var trendOptions = {
         chart: {
@@ -6741,11 +6831,11 @@
         },
         annotations: {
             yaxis: [{
-                y: 70,
+                y: dynamicTarget,
                 borderColor: '#3b82f6',
                 strokeDashArray: 4,
                 label: {
-                    text: 'Target (70)',
+                    text: 'Target (' + dynamicTarget + ')',
                     borderColor: '#e2e8f0',
                     style: {
                         color: '#3b82f6',
@@ -6795,9 +6885,175 @@
     };
 
     var trendElem = document.querySelector("#attendanceTrendChart");
+    var attendanceTrendApexChart = null;
     if (trendElem) {
-        new ApexCharts(trendElem, trendOptions).render();
+        attendanceTrendApexChart = new ApexCharts(trendElem, trendOptions);
+        attendanceTrendApexChart.render();
     }
+
+    // Dynamic Target Sync & Adjustment Handler
+    function updateAllTargetViews(newTarget) {
+        dynamicTarget = parseInt(newTarget, 10);
+        if (isNaN(dynamicTarget) || dynamicTarget <= 0) {
+            dynamicTarget = serverDefaultTarget;
+        }
+        dynamicYMax = calculateDynamicYMax(Math.max(maxValInAttendance, dynamicTarget));
+        var trendYMax = calculateDynamicYMax(Math.max(maxInTrend, dynamicTarget));
+
+        if ($('#pulseTargetLegendText').length) {
+            $('#pulseTargetLegendText').text('Target (' + dynamicTarget + ')');
+        }
+        if ($('#trendKpiTargetVal').length) {
+            $('#trendKpiTargetVal').text(dynamicTarget);
+        }
+        if ($('#pulseCustomTargetInput').length) {
+            $('#pulseCustomTargetInput').val(dynamicTarget);
+        }
+
+        if (clubPulseApexChart) {
+            clubPulseApexChart.updateOptions({
+                yaxis: {
+                    min: 0,
+                    max: dynamicYMax,
+                    tickAmount: 4,
+                    labels: {
+                        style: {
+                            colors: 'rgba(255, 255, 255, 0.75)',
+                            fontSize: '10px',
+                            fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                            fontWeight: 500
+                        },
+                        formatter: function(val) { return Math.round(val); }
+                    }
+                },
+                annotations: {
+                    yaxis: [{
+                        y: dynamicTarget,
+                        borderColor: 'rgba(255, 255, 255, 0.45)',
+                        strokeDashArray: 4,
+                        label: {
+                            text: 'Target (' + dynamicTarget + ')',
+                            borderColor: 'rgba(255, 255, 255, 0.25)',
+                            style: {
+                                color: '#ffffff',
+                                background: 'rgba(30, 38, 109, 0.85)',
+                                fontSize: '9.5px',
+                                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                                fontWeight: 700,
+                                padding: { left: 6, right: 6, top: 2, bottom: 2 }
+                            },
+                            position: 'right',
+                            textAnchor: 'end'
+                        }
+                    }]
+                }
+            });
+        }
+
+        if (performanceStoryChart && $('#storyToggleAttendance').hasClass('active')) {
+            performanceStoryChart.updateOptions({
+                yaxis: {
+                    min: 0,
+                    max: dynamicYMax,
+                    tickAmount: 4,
+                    labels: {
+                        style: { colors: '#94a3b8', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
+                        formatter: function(val) { return Math.round(val); }
+                    }
+                },
+                annotations: {
+                    yaxis: [{
+                        y: dynamicTarget,
+                        borderColor: '#3b82f6',
+                        strokeDashArray: 4,
+                        label: {
+                            text: 'Target (' + dynamicTarget + ')',
+                            borderColor: 'transparent',
+                            style: { color: '#3b82f6', background: 'transparent', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif', fontWeight: 600 },
+                            position: 'right',
+                            textAnchor: 'end'
+                        }
+                    }]
+                }
+            });
+        }
+
+        if (attendanceTrendApexChart) {
+            attendanceTrendApexChart.updateOptions({
+                yaxis: {
+                    min: 0,
+                    max: trendYMax,
+                    tickAmount: 4,
+                    labels: {
+                        style: { colors: '#94a3b8', fontSize: '10.5px', fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif' },
+                        formatter: function(val) { return Math.round(val); }
+                    }
+                },
+                annotations: {
+                    yaxis: [{
+                        y: dynamicTarget,
+                        borderColor: '#3b82f6',
+                        strokeDashArray: 4,
+                        label: {
+                            text: 'Target (' + dynamicTarget + ')',
+                            borderColor: '#e2e8f0',
+                            style: {
+                                color: '#3b82f6',
+                                background: '#ffffff',
+                                fontSize: '10px',
+                                fontFamily: 'Outfit, Plus Jakarta Sans, sans-serif',
+                                fontWeight: 700,
+                                padding: { left: 6, right: 6, top: 2, bottom: 2 }
+                            },
+                            position: 'right',
+                            textAnchor: 'end'
+                        }
+                    }]
+                }
+            });
+        }
+    }
+
+    $('#savePulseTargetBtn').on('click', function() {
+        var val = parseInt($('#pulseCustomTargetInput').val(), 10);
+        if (!val || isNaN(val) || val <= 0) {
+            alert('Please enter a valid target greater than 0.');
+            return;
+        }
+        localStorage.setItem('fcc_club_pulse_target', val);
+        updateAllTargetViews(val);
+        try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editPulseTargetModal'));
+                if (modalInstance) modalInstance.hide();
+                else $('#editPulseTargetModal').modal('hide');
+            } else {
+                $('#editPulseTargetModal').modal('hide');
+            }
+        } catch(e) {
+            $('#editPulseTargetModal').modal('hide');
+        }
+    });
+
+    $('#resetPulseTargetBtn').on('click', function() {
+        localStorage.removeItem('fcc_club_pulse_target');
+        updateAllTargetViews(serverDefaultTarget);
+        try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editPulseTargetModal'));
+                if (modalInstance) modalInstance.hide();
+                else $('#editPulseTargetModal').modal('hide');
+            } else {
+                $('#editPulseTargetModal').modal('hide');
+            }
+        } catch(e) {
+            $('#editPulseTargetModal').modal('hide');
+        }
+    });
+
+    $('#editPulseTargetModal').on('show.bs.modal', function() {
+        $('#pulseCustomTargetInput').val(dynamicTarget);
+    });
 
     // Consistency Radial Gauge Chart
     var consistencyScoreVal = {{ $consistencyScore ?? 76 }};
