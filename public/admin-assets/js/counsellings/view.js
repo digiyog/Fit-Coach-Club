@@ -136,7 +136,7 @@ var Counsellings = (function() {
                     { data: "name", name: "name" },
                     { data: "att", name: "att", width: "50px" },
                     { data: "coach_name", name: "coach_name" },
-                    { data: "plan", name: "plan" },
+                    { data: "plan", name: "plan", className: "col-plan", width: "135px" },
                     { data: "days", name: "days", width: "65px" },
                     { data: "progress", name: "progress", className: "text-nowrap" },
                     { data: "dues", name: "dues", width: "75px", className: "text-nowrap" },

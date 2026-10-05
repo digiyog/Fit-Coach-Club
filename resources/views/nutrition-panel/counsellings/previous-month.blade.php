@@ -485,10 +485,26 @@
         align-items: center;
         justify-content: center;
     }
-    .fcc-coach-name, .fcc-plan-name {
+    .fcc-coach-name {
         font-size: 13px;
         font-weight: 500;
         color: #334155;
+    }
+    .fcc-plan-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: #334155;
+        white-space: normal !important;
+        display: inline-block;
+        line-height: 1.35;
+        min-width: 110px;
+        max-width: 155px;
+    }
+    table.dataTable tbody td.col-plan,
+    table.dataTable thead th.col-plan {
+        white-space: normal !important;
+        min-width: 110px !important;
+        max-width: 155px !important;
     }
     .fcc-weight-val {
         font-size: 13px;
@@ -967,7 +983,7 @@
                         <th>Member</th>
                         <th style="width: 70px;">Month Att.</th>
                         <th>Coach</th>
-                        <th>Plan</th>
+                        <th class="col-plan" style="min-width: 110px; max-width: 155px;">Plan</th>
                         <th style="width: 65px;">Pending</th>
                         <th>Progress</th>
                         <th style="width: 75px;">Dues</th>

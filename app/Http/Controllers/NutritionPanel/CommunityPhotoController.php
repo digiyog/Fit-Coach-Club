@@ -137,16 +137,18 @@ class CommunityPhotoController extends Controller
                     }
                 }
 
-                $view_photos = '<button type="button" class="btn btn-sm btn-outline-primary px-2 py-1 rounded-2 view-photos cursor-pointer d-inline-flex align-items-center gap-1" title="View in Preview Pane"><i class="fa fa-eye"></i> <span>View Photos</span></button>';
+                $photoUrl = route('nutritionPanel.community-photos.viewPhotos', ['id' => ev($value->id)]);
+                $view_photos = '<button type="button" data-url="' . $photoUrl . '" class="btn btn-sm btn-outline-primary px-2 py-1 rounded-2 view-photos cursor-pointer d-inline-flex align-items-center gap-1" title="View Photos"><i class="fa fa-eye"></i> <span>View Photos</span></button>';
 
                 // Array Data
                 $arr_data[] = array(
-                    "id"            => $value->id,
-                    "name"          => $userName,
-                    "message"       => $message,
-                    "view_photos"   => $view_photos,
-                    "date_time"     => $date_time,
-                    "images"        => $images,
+                    "id"              => $value->id,
+                    "name"            => $userName,
+                    "message"         => $message,
+                    "view_photos"     => $view_photos,
+                    "date_time"       => $date_time,
+                    "images"          => $images,
+                    "view_photos_url" => $photoUrl,
                 );
             }
         }
@@ -174,10 +176,13 @@ class CommunityPhotoController extends Controller
     {
         $auth_user = auth()->user();
 
-        // Get Photos
-        $photos = CommunityImage::where('community_id', dv($id))->get();
+        // Get Community & Photos
+        $communityId = dv($id);
+        $community = Community::with(['user', 'community_images'])->find($communityId);
+        $photos = $community ? $community->community_images : CommunityImage::where('community_id', $communityId)->get();
 
         // Send view data
+        $this->viewData['community'] = $community;
         $this->viewData['photos'] = $photos;
 
         return view('nutrition-panel.community-photos.view-photos')->with($this->viewData);

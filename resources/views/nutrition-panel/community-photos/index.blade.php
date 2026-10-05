@@ -919,6 +919,7 @@
                                 <div class="d-flex align-items-center gap-1">
                                     <button type="button" class="comm-nav-arrow-btn" id="btnPrevPhoto" title="Previous photo"><i class="fa fa-chevron-left"></i></button>
                                     <button type="button" class="comm-nav-arrow-btn" id="btnNextPhoto" title="Next photo"><i class="fa fa-chevron-right"></i></button>
+                                    <button type="button" class="comm-nav-arrow-btn" id="btnOpenPhotoModal" title="View in modal popup" disabled><i class="fa fa-expand"></i></button>
                                 </div>
                             </div>
                         </div>

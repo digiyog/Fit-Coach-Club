@@ -193,7 +193,7 @@ class CounsellingController extends Controller
                     $coachHtml = '<span class="fcc-coach-name">'.e($coach_name).'</span>';
 
                     // 4. Plan
-                    $planHtml = '<span class="fcc-plan-name">'.e(!empty($current_meals) ? $current_meals : '21 Days Challenge (Loss)').'</span>';
+                    $planHtml = '<span class="fcc-plan-name">'.$this->formatDoubleLinePlan(!empty($current_meals) ? $current_meals : '21 Days Challenge (Loss)').'</span>';
 
                     // 5. Pending Days
                     $pendingHtml = '<div class="fcc-pending-pill">'.$pendingDays.'</div>';
@@ -638,7 +638,7 @@ class CounsellingController extends Controller
                     $coachHtml = '<span class="fcc-coach-name">'.e($coach_name).'</span>';
 
                     // 4. Plan
-                    $planHtml = '<span class="fcc-plan-name">'.e(!empty($current_meals) ? $current_meals : 'Standard Plan').'</span>';
+                    $planHtml = '<span class="fcc-plan-name">'.$this->formatDoubleLinePlan(!empty($current_meals) ? $current_meals : 'Standard Plan').'</span>';
 
                     // 5. Pending Days
                     $pendingHtml = '<div class="fcc-pending-pill">'.$pendingDays.'</div>';
@@ -761,6 +761,49 @@ class CounsellingController extends Controller
         );
 
         return response()->json($response);
+    }
+
+    /**
+     * Format plan name into double line
+     *
+     * @param string|null $planName
+     * @return string
+     */
+    protected function formatDoubleLinePlan($planName)
+    {
+        if (empty($planName)) {
+            return '21 Days<br>Challenge (Loss)';
+        }
+
+        $planName = trim($planName);
+
+        // If already contains <br>, return as is
+        if (strpos($planName, '<br>') !== false || strpos($planName, '<br/>') !== false || strpos($planName, '<br />') !== false) {
+            return $planName;
+        }
+
+        $words = preg_split('/\s+/', $planName);
+        if (count($words) <= 1) {
+            return e($planName);
+        }
+
+        if (count($words) === 2) {
+            return e($words[0]) . '<br>' . e($words[1]);
+        }
+
+        // If starts with number + Days (e.g. "21 Days Weight loss Program", "30 Days Challenge")
+        if (count($words) >= 3 && is_numeric($words[0]) && strtolower($words[1]) === 'days') {
+            $line1 = $words[0] . ' ' . $words[1];
+            $line2 = implode(' ', array_slice($words, 2));
+            return e($line1) . '<br>' . e($line2);
+        }
+
+        // Otherwise split into two balanced lines
+        $half = (int)ceil(count($words) / 2);
+        $line1 = implode(' ', array_slice($words, 0, $half));
+        $line2 = implode(' ', array_slice($words, $half));
+
+        return e($line1) . '<br>' . e($line2);
     }
 }
 
