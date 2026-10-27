@@ -52,6 +52,10 @@
                 var element = this;
                 var instance;
 
+                if (name === "Dropdown" && (element.classList.contains("selectpicker") || closestByClass(element, "bootstrap-select"))) {
+                    return;
+                }
+
                 if (method) {
                     instance = Component.getInstance ? Component.getInstance(element) : null;
 
@@ -119,6 +123,10 @@
 
     $(document).on("click.bs4compat", "[data-toggle='dropdown']", function (e) {
         if (hasBsToggle(this)) {
+            return;
+        }
+        // Exclude bootstrap-select dropdown toggle buttons to prevent Bootstrap 5 Popper conflict
+        if (this.classList.contains("selectpicker") || closestByClass(this, "bootstrap-select")) {
             return;
         }
         e.preventDefault();
