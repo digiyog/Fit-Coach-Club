@@ -133,6 +133,88 @@
         bootstrap.Dropdown.getOrCreateInstance(this).toggle();
     });
 
+    /* ------------------------------------------------------------------
+     * Dedicated Bootstrap-Select Toggle & Dismiss for Bootstrap 5
+     * ------------------------------------------------------------------ */
+    $(document).on("click", ".bootstrap-select > .dropdown-toggle", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var $btn = $(this);
+        var $select = $btn.closest(".bootstrap-select");
+        var $menu = $select.find("> .dropdown-menu");
+        var isOpen = $select.hasClass("show") || $select.hasClass("open");
+
+        // Close any other open bootstrap-select instances
+        $(".bootstrap-select.show, .bootstrap-select.open").not($select).each(function () {
+            var $other = $(this);
+            $other.removeClass("show open");
+            $other.find("> .dropdown-menu").removeClass("show open");
+            $other.trigger("hide.bs.dropdown").trigger("hidden.bs.dropdown");
+            $other.find("select").trigger("hidden.bs.select");
+        });
+
+        if (isOpen) {
+            $select.removeClass("show open");
+            $menu.removeClass("show open");
+            $select.trigger("hide.bs.dropdown").trigger("hidden.bs.dropdown");
+            $select.find("select").trigger("hidden.bs.select");
+        } else {
+            $select.addClass("show open");
+            $menu.addClass("show open");
+            $select.trigger("show.bs.dropdown").trigger("shown.bs.dropdown");
+            $select.find("select").trigger("shown.bs.select");
+
+            var $searchInput = $menu.find(".bs-searchbox input");
+            if ($searchInput.length) {
+                setTimeout(function () {
+                    $searchInput.focus();
+                }, 50);
+            }
+        }
+    });
+
+    // Close bootstrap-select on click outside or after selecting a single option
+    $(document).on("click", function (e) {
+        var $target = $(e.target);
+
+        // Keep open if interacting with searchbox, actionsbox, or donebutton
+        if ($target.closest(".bootstrap-select .bs-searchbox, .bootstrap-select .bs-actionsbox").length) {
+            return;
+        }
+
+        // For multiple selects, keep open unless clicking outside the component
+        var $bs = $target.closest(".bootstrap-select");
+        if ($bs.length) {
+            var isMultiple = $bs.find("select").prop("multiple");
+            if (isMultiple && !$target.closest(".bs-donebutton").length) {
+                return;
+            }
+        }
+
+        // Close all open bootstrap-select dropdowns
+        $(".bootstrap-select.show, .bootstrap-select.open").each(function () {
+            var $s = $(this);
+            $s.removeClass("show open");
+            $s.find("> .dropdown-menu").removeClass("show open");
+            $s.trigger("hide.bs.dropdown").trigger("hidden.bs.dropdown");
+            $s.find("select").trigger("hidden.bs.select");
+        });
+    });
+
+    // Close bootstrap-select on Escape key
+    $(document).on("keydown", function (e) {
+        if (e.which === 27) { // Escape
+            $(".bootstrap-select.show, .bootstrap-select.open").each(function () {
+                var $s = $(this);
+                $s.removeClass("show open");
+                $s.find("> .dropdown-menu").removeClass("show open");
+                $s.trigger("hide.bs.dropdown").trigger("hidden.bs.dropdown");
+                $s.find("select").trigger("hidden.bs.select");
+            });
+        }
+    });
+
     $(document).on("click.bs4compat", "[data-toggle='button']", function () {
         if (hasBsToggle(this)) {
             return;

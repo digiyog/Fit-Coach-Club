@@ -6,12 +6,7 @@
 <link href="{{ asset('admin-assets/css/forms/theme-checkbox-radio.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/datatables.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet">
-<style>
-    .dropdown-menu.show
-    {
-        transform:unset !important;
-    }
-</style>
+
 @endpush
 
 @section('content')
