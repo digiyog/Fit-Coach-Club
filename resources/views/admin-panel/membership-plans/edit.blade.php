@@ -7,15 +7,6 @@
 <link href="{{ asset('admin-assets/css/plugins/dropify/dropify.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/js/plugins/summernote/summernote-bs4.min.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet">
-
-<style>
-    .dropify-wrapper
-    {
-        width:100% !important;
-        margin-bottom: unset !important;
-        height: 213px;
-    }
-</style>
 @endpush
 
 @section('content')
@@ -28,40 +19,59 @@
                 <!-- / Validation error -->
 
                 <div class="widget-content widget-content-area br-6">
-                    <div class="container-fluid mt2">
-                        <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8">
-                                <h4> Edit Membership Plan </h4>
-                            </div>
+                    <div class="admin-card-header">
+                        <div>
+                            <h4 class="admin-card-title">
+                                <i data-feather="edit" class="text-primary" style="width: 22px; height: 22px;"></i>
+                                Edit Membership Plan
+                            </h4>
+                            <p class="admin-card-subtitle">Update pricing, validity, or name of this membership plan.</p>
                         </div>
+                        <div>
+                            <a href="{{ route('adminPanel.membership-plans.index') }}" class="btn-back-link">
+                                <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                                Back to Membership Plans
+                            </a>
+                        </div>
+                    </div>
 
-                        <div class="form pb-2">
-                            {!! Form::open(['class' => 'membership-plan-form', 'method' => 'post', 'url' => route('adminPanel.membership-plans.update', ['id' => ev($membershipPlan->id)]), 'enctype' => 'multipart/form-data', 'autocomplete' => 'off' ]) !!}
-                                <div class="row mb-3">
-                                    <div class="col-md-6 mt-3">
-                                        <label for="name">Name <span class="text-danger">*</span></label>
-                                        {!! Form::text('name', $membershipPlan->name, ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}
-                                    </div>
-
-                                    <div class="col-md-6 mt-3">
-                                        <label for="price">Price <span class="text-danger">*</span></label>
-                                        {!! Form::text('price', $membershipPlan->price, ['class' => 'form-control', 'id' => 'price', 'placeholder' => 'Price', ]) !!}
-                                    </div>
-
-                                    <div class="col-md-6 mt-3">
-                                        <label for="days">Days <span class="text-danger">*</span></label>
-                                        {!! Form::text('days', $membershipPlan->days, ['class' => 'form-control', 'id' => 'days', 'placeholder' => 'Days', ]) !!}
-                                    </div>
-
-                                    <div class="col-md-6 mt-3">
-                                        <label for="order"> Order <span class="text-danger">*</span></label>
-                                        {!! Form::text('order', $membershipPlan->order, ['class' => 'form-control numeric', 'id' => 'order', 'placeholder' => 'Order', ]) !!}
+                    <div class="form pb-2">
+                        {!! Form::open(['class' => 'membership-plan-form', 'method' => 'post', 'url' => route('adminPanel.membership-plans.update', ['id' => ev($membershipPlan->id)]), 'enctype' => 'multipart/form-data', 'autocomplete' => 'off' ]) !!}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Plan Name <span class="text-danger">*</span></label>
+                                        {!! Form::text('name', $membershipPlan->name, ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Enter plan name', ]) !!}
                                     </div>
                                 </div>
 
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="price">Price (₹) <span class="text-danger">*</span></label>
+                                        {!! Form::text('price', $membershipPlan->price, ['class' => 'form-control numeric', 'id' => 'price', 'placeholder' => 'Enter price', ]) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="days">Duration (Days) <span class="text-danger">*</span></label>
+                                        {!! Form::text('days', $membershipPlan->days, ['class' => 'form-control numeric', 'id' => 'days', 'placeholder' => 'Enter duration in days', ]) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="order">Display Order <span class="text-danger">*</span></label>
+                                        {!! Form::text('order', $membershipPlan->order, ['class' => 'form-control numeric', 'id' => 'order', 'placeholder' => 'Enter display order', ]) !!}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="admin-form-actions">
                                 {{ Form::button( '<i class="fa fa-save"></i> &nbsp;'. __('language.update'), ['class' => 'btn btn-primary btn-submit', 'type' => 'submit', 'title' => __('language.update')] )}}
-                            {!! Form::close() !!}
-                        </div>
+                                <a href="{{ route('adminPanel.membership-plans.index') }}" class="btn-back-link">Cancel</a>
+                            </div>
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>
@@ -79,5 +89,11 @@
 <script src="{{ asset('admin-assets/js/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
 <script src="{{ asset('admin-assets/js/membership-plans/membership-plans.js') }}"></script>
-
+<script>
+    $(document).ready(function() {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    });
+</script>
 @endpush

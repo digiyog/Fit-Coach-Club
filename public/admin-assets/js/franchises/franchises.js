@@ -204,7 +204,13 @@ var Franchise = (function() {
                     }
                     else if($(element).attr('id') == 'mobile_number')
                     {
-                        error.appendTo($(element).parent().parent());
+                        if ($(element).parents('.input-group').length) {
+                            error.appendTo($(element).parents('.input-group').parent());
+                        } else if ($(element).parents('.iti').length) {
+                            error.appendTo($(element).parents('.iti').parent());
+                        } else {
+                            error.insertAfter(element);
+                        }
                     }
                     else
                     {

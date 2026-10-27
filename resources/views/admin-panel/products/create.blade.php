@@ -10,18 +10,18 @@
 <link href="{{ asset('admin-assets/css/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet">
 
 <style>
-    .dropify-wrapper
-    {
-        width:100% !important;
+    .dropify-wrapper {
+        width: 100% !important;
         margin-bottom: unset !important;
-        height: 220px;
+        height: 240px;
     }
-    .textarea-height{
-        resize: none;
+    .textarea-height {
+        resize: vertical;
     }
-    .custom-file-container__image-multi-preview{
-        height: 130px !important;
-        width: 130px;
+    .custom-file-container__image-multi-preview {
+        height: 120px !important;
+        width: 120px;
+        border-radius: 8px;
     }
 </style>
 @endpush
@@ -36,114 +36,131 @@
                 <!-- / Validation error -->
 
                 <div class="widget-content widget-content-area br-6">
-                    <div class="container-fluid mt2">
-                        <div class="row">
-                            <div class="col-xl-8 col-lg-8 col-md-8 col-8">
-                                <h4> Create Product </h4>
-                            </div>
+                    <div class="admin-card-header">
+                        <div>
+                            <h4 class="admin-card-title">
+                                <i data-feather="package" class="text-primary" style="width: 22px; height: 22px;"></i>
+                                Create Product
+                            </h4>
+                            <p class="admin-card-subtitle">Add a new store product with pricing, media, and descriptions.</p>
                         </div>
+                        <div>
+                            <a href="{{ route('adminPanel.products.index') }}" class="btn-back-link">
+                                <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                                Back to Products
+                            </a>
+                        </div>
+                    </div>
 
-                        <div class="form pb-2">
-                            {!! Form::open(['class' => 'product-form', 'method' => 'post', 'url' => route('adminPanel.products.store'), 'enctype' => 'multipart/form-data', 'autocomplete' => 'off' ]) !!}
-                                <div class="row mb-4">
-                                    <div class="col-md-3">
+                    <div class="form pb-2">
+                        {!! Form::open(['class' => 'product-form', 'method' => 'post', 'url' => route('adminPanel.products.store'), 'enctype' => 'multipart/form-data', 'autocomplete' => 'off' ]) !!}
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 mb-4">
+                                    <div class="form-group">
                                         <div class="custom-dropify">
-                                            <label class="form-control-label" for="image">@lang('language.image') <span class="text-danger">*</span></label>
+                                            <label class="form-control-label" for="image">Featured Image <span class="text-danger">*</span></label>
                                             {!! Form::file('image', ['class' => 'image-preview', 'id' => 'image', 'autocomplete' => 'off', 'data-show-remove' => 'false', 'accept' => 'image/*', "data-default-file" => '', ]) !!}
-
                                             {!! Form::hidden('image_name', '' ,['class' => 'form-control','id' => 'image_name']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="row pe-3">
-                                            <div class="col-md-12">
-                                                <label for="name">Name <span class="text-danger">*</span></label>
-                                                {!! Form::text('name', '', ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Name', ]) !!}
-                                            </div>
-
-                                            <div class="col-md-6 mt-3">
-                                                <label for="price"> Price <span class="text-danger">*</span></label>
-                                                {!! Form::text('price', '', ['class' => 'form-control numeric', 'id' => 'price', 'placeholder' => 'Price', ]) !!}
-                                            </div>
-
-                                            <div class="col-md-6 mt-3">
-                                                <div class="form-group">
-                                                    <label>Select Franchise <span class="text-danger">*</span></label>
-                                                    <select name="franchises[]" id="franchises" class="form-control filter-field select-picker" multiple>
-                                                        <!-- <option value=""> Select Franchises </option> -->
-                                                        @foreach($franchises as $key => $value)
-                                                            <option value="{{$value['id']}}">{{ $value['name'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Select Product Type <span class="text-danger">*</span></label>
-                                                    <select name="product_type" id="product_type" class="form-control filter-field select-picker">
-                                                        <option value=""> Select Product Type </option>
-                                                        @foreach($productTypes as $key => $value)
-                                                            <option value="{{$value['id']}}">{{ $value['name'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <label for="order"> Order <span class="text-danger">*</span></label>
-                                                {!! Form::text('order', 0, ['class' => 'form-control numeric', 'id' => 'order', 'placeholder' => 'Order', ]) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row col-md-12 layout-top-spacing pe-0">
-                                        <div id="fuMultipleFile" class="col-lg-12">
-                                            <div class="statbox widget box box-shadow">
-                                                <div class="widget-header">
-                                                    <div class="row">
-                                                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                                            <h4>Multiple Image Upload</h4>
-                                                        </div>      
-                                                    </div>
-                                                </div>
-                                                <div class="widget-content widget-content-area">
-                                                    <div class="custom-file-container" data-upload-id="mySecondImage">
-                                                        <label>Upload (Allow Multiple) 
-                                                            <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">x</a>
-                                                        </label>
-                                                        <label class="custom-file-container__custom-file">
-                                                            <input type="file" id="file-input" name="multiple_images[images][]" accept="image/*" class="custom-file-container__custom-file__custom-file-input w-100" required="required" multiple>
-                                                            <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-                                                            <span class="custom-file-container__custom-file__custom-file-control"></span>
-                                                        </label>
-                                                        <div id="image-preview" class="custom-file-container__image-preview"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 mt-3">
-                                        <div class="form-group">
-                                            <label class="form-control-label" for="short_description">Short Description</label>
-                                            {!! Form::textarea('short_description', '', ['class' => 'form-control textarea-height', 'id' => 'short_description', 'placeholder' => 'Short Description', 'rows' => 5 , "cols" => 40 ]) !!}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 mt-1">
-                                        <div class="form-group">
-                                            <label class="form-control-label" for="description">Description</label>
-                                            {!! Form::textarea('description', '', ['class' => 'form-control textarea-height editor-textarea', 'id' => 'description', 'placeholder' => 'Description', 'rows' => 5 , "cols" => 40 ]) !!}
                                         </div>
                                     </div>
                                 </div>
 
-                                {{ Form::button( '<i class="fa fa-save"></i> &nbsp;'. __('language.save'), ['class' => 'btn btn-primary btn-submit', 'type' => 'submit', 'title' => __('language.save')] )}}
-                            {!! Form::close() !!}
-                        </div>
-                    </div>
+                                <div class="col-lg-9 col-md-8">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="name">Product Name <span class="text-danger">*</span></label>
+                                                {!! Form::text('name', '', ['class' => 'form-control', 'id' => 'name', 'placeholder' => 'Enter product name', ]) !!}
+                                            </div>
+                                        </div>
 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="price">Price (₹) <span class="text-danger">*</span></label>
+                                                {!! Form::text('price', '', ['class' => 'form-control numeric', 'id' => 'price', 'placeholder' => 'Enter price', ]) !!}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="order">Display Order <span class="text-danger">*</span></label>
+                                                {!! Form::text('order', 0, ['class' => 'form-control numeric', 'id' => 'order', 'placeholder' => 'Enter display order', ]) !!}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="product_type">Product Type <span class="text-danger">*</span></label>
+                                                <select name="product_type" id="product_type" class="form-control filter-field select-picker" data-live-search="true" title="Select Product Type">
+                                                    <option value="">Select Product Type</option>
+                                                    @foreach($productTypes as $key => $value)
+                                                        <option value="{{$value['id']}}">{{ $value['name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="franchises">Select Franchises <span class="text-danger">*</span></label>
+                                                <select name="franchises[]" id="franchises" class="form-control filter-field select-picker" multiple data-live-search="true" title="Select Franchises">
+                                                    @foreach($franchises as $key => $value)
+                                                        <option value="{{$value['id']}}">{{ $value['name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Multiple Gallery Images Upload Section -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="card p-3 mb-4" style="border: 1px solid #e2e8f0; border-radius: 10px; background: #fafbfc;">
+                                        <h6 class="admin-section-title mt-0 mb-3" style="border-bottom: none;">
+                                            <i data-feather="images" style="width: 16px; height: 16px;"></i>
+                                            Multiple Gallery Images
+                                        </h6>
+                                        <div class="custom-file-container" data-upload-id="mySecondImage">
+                                            <label class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="text-muted fs-13">Upload additional photos (Click 'x' to clear selection)</span>
+                                                <a href="javascript:void(0)" class="custom-file-container__image-clear badge badge-danger" title="Clear Image">Clear all</a>
+                                            </label>
+                                            <label class="custom-file-container__custom-file">
+                                                <input type="file" id="file-input" name="multiple_images[images][]" accept="image/*" class="custom-file-container__custom-file__custom-file-input w-100" multiple>
+                                                <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                            </label>
+                                            <div id="image-preview" class="custom-file-container__image-preview mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Descriptions Section -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="short_description">Short Description</label>
+                                        {!! Form::textarea('short_description', '', ['class' => 'form-control textarea-height', 'id' => 'short_description', 'placeholder' => 'Enter brief overview...', 'rows' => 3 ]) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="description">Full Description</label>
+                                        {!! Form::textarea('description', '', ['class' => 'form-control textarea-height editor-textarea', 'id' => 'description', 'placeholder' => 'Detailed product description...', 'rows' => 5 ]) !!}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="admin-form-actions">
+                                {{ Form::button( '<i class="fa fa-save"></i> &nbsp;'. __('language.save'), ['class' => 'btn btn-primary btn-submit', 'type' => 'submit', 'title' => __('language.save')] )}}
+                                <a href="{{ route('adminPanel.products.index') }}" class="btn-back-link">Cancel</a>
+                            </div>
+                        {!! Form::close() !!}
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,6 +181,10 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+
         document.querySelectorAll(".custom-file-container").forEach(container => {
             let uploadId = container.getAttribute("data-upload-id");
             let fileInput = document.querySelector(`#file-input`);
@@ -173,35 +194,28 @@
             new FileUploadWithPreview(uploadId);
 
             if (!fileInput || !imagePreview || !clearButton) {
-                console.warn(`Elements missing for uploadId: ${uploadId}`);
-                return; // Skip this iteration if elements are missing
+                return;
             }
 
-            let removedFiles = []; // Store removed files
+            let removedFiles = [];
 
-            // Clear button click event
             clearButton.addEventListener("click", function () {
-                imagePreview.innerHTML = ""; // Clear preview
-                removedFiles = [...fileInput.files]; // Store removed files
-
-                // Reset the file input (Remove all selected files)
+                imagePreview.innerHTML = "";
+                removedFiles = [...fileInput.files];
                 fileInput.value = "";
             });
 
-            // Before form submission, update the file input
             fileInput.addEventListener("change", function () {
                 let files = Array.from(fileInput.files);
-                files = files.filter(file => !removedFiles.includes(file)); // Remove deleted files
+                files = files.filter(file => !removedFiles.includes(file));
 
-                // Update file input manually
                 let dataTransfer = new DataTransfer();
                 files.forEach(file => dataTransfer.items.add(file));
                 fileInput.files = dataTransfer.files;
 
-                removedFiles = []; // Reset removed files
+                removedFiles = [];
             });
         });
     });
 </script>
-
 @endpush
