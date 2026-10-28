@@ -134,6 +134,7 @@
 
     .input-with-icon {
         position: relative;
+        display: block;
     }
 
     .input-with-icon .input-icon-left {
@@ -143,22 +144,35 @@
         transform: translateY(-50%);
         color: #64748b;
         font-size: 15px;
+        line-height: 1;
         pointer-events: none;
         z-index: 2;
+    }
+
+    .input-with-icon .input-field-styled,
+    .input-with-icon input.form-control,
+    .input-with-icon input {
+        padding-left: 44px !important;
+        padding-right: 14px !important;
     }
 
     .input-field-styled {
         height: 44px;
         border-radius: 10px;
         border: 1px solid #e2e8f0;
-        padding-left: 42px;
-        padding-right: 14px;
+        padding-left: 44px !important;
+        padding-right: 14px !important;
         font-size: 14px;
         color: #0f172a;
         background-color: #ffffff;
         transition: all 0.2s ease;
         width: 100%;
         box-shadow: none !important;
+    }
+
+    select.input-field-styled {
+        padding-left: 14px !important;
+        padding-right: 28px !important;
     }
 
     .input-field-styled:focus {
@@ -241,7 +255,7 @@
     <div class="coach-form-wrapper">
         <!-- Breadcrumbs -->
         <div class="fcc-breadcrumb-nav">
-            <a href="{{ route('nutritionPanel.dashboard') }}">Member & Club</a>
+            <a href="{{ route('nutritionPanel.dashboard') }}">Dashboard</a>
             <span class="fcc-breadcrumb-sep">/</span>
             <a href="{{ route('nutritionPanel.coaches.index') }}">Coach Management</a>
             <span class="fcc-breadcrumb-sep">/</span>

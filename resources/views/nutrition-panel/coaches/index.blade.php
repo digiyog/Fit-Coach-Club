@@ -472,7 +472,7 @@
     <div class="coaches-page-wrap">
         <!-- Breadcrumbs -->
         <div class="fcc-breadcrumb-nav">
-            <a href="{{ route('nutritionPanel.dashboard') }}">Member & Club</a>
+            <a href="{{ route('nutritionPanel.dashboard') }}">Dashboard</a>
             <span class="fcc-breadcrumb-sep">/</span>
             <span class="fcc-breadcrumb-active">Coach Management</span>
         </div>

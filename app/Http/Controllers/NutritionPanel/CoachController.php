@@ -136,13 +136,8 @@ class CoachController extends Controller
         $activeCoaches = $coaches->where('status', 1)->count();
         $avgMembersPerCoach = $totalCoaches > 0 ? round($totalAssignedMembers / $totalCoaches) : 0;
 
-        // Breadcrumb
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'Coach Management' => '',
-        ];
-
-        $this->viewData['breadcrumb'] = $breadcrumb;
+        // Legacy breadcrumb unset so modern in-page breadcrumbs are used
+        unset($this->viewData['breadcrumb']);
         $this->viewData['authUser'] = $authUser;
         $this->viewData['coaches'] = $coaches;
         $this->viewData['totalCoaches'] = $totalCoaches;
@@ -161,13 +156,7 @@ class CoachController extends Controller
     {
         $authUser = auth()->user();
 
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'Coach Management' => route('nutritionPanel.coaches.index'),
-            'Add Coach' => '',
-        ];
-
-        $this->viewData['breadcrumb'] = $breadcrumb;
+        unset($this->viewData['breadcrumb']);
         $this->viewData['authUser'] = $authUser;
 
         return view('nutrition-panel.coaches.create')->with($this->viewData);
@@ -206,8 +195,10 @@ class CoachController extends Controller
 
         // Profile Image Upload
         if ($request->hasFile('profile_image')) {
-            $imageName = $this->uploadImage($request->file('profile_image'), config('constants.users.image_path'));
-            $data['profile_image'] = $imageName;
+            $uploaded = $this->uploadImage($request->file('profile_image'), config('constants.users.image_path'), null, 'coach-');
+            if (!empty($uploaded['_status']) && !empty($uploaded['_data'])) {
+                $data['profile_image'] = $uploaded['_data'];
+            }
         }
 
         Coach::create($data);
@@ -244,13 +235,7 @@ class CoachController extends Controller
         $offlineMembers = User::where('created_by', $authUser->id)->where('coach_name', $coach->name)->where('user_state', 'Offline')->count();
         $totalDueAmount = User::where('created_by', $authUser->id)->where('coach_name', $coach->name)->sum('due_amount');
 
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'Coach Management' => route('nutritionPanel.coaches.index'),
-            $coach->name => '',
-        ];
-
-        $this->viewData['breadcrumb'] = $breadcrumb;
+        unset($this->viewData['breadcrumb']);
         $this->viewData['authUser'] = $authUser;
         $this->viewData['coach'] = $coach;
         $this->viewData['members'] = $members;
@@ -272,13 +257,7 @@ class CoachController extends Controller
         $coachId = dv($id);
         $coach = Coach::where('franchise_id', $authUser->id)->findOrFail($coachId);
 
-        $breadcrumb = [
-            __('language.dashboard') => route('nutritionPanel.dashboard'),
-            'Coach Management' => route('nutritionPanel.coaches.index'),
-            'Edit ' . $coach->name => '',
-        ];
-
-        $this->viewData['breadcrumb'] = $breadcrumb;
+        unset($this->viewData['breadcrumb']);
         $this->viewData['authUser'] = $authUser;
         $this->viewData['coach'] = $coach;
 
@@ -319,8 +298,10 @@ class CoachController extends Controller
 
         // Profile Image Upload
         if ($request->hasFile('profile_image')) {
-            $imageName = $this->uploadImage($request->file('profile_image'), config('constants.users.image_path'));
-            $data['profile_image'] = $imageName;
+            $uploaded = $this->uploadImage($request->file('profile_image'), config('constants.users.image_path'), null, 'coach-');
+            if (!empty($uploaded['_status']) && !empty($uploaded['_data'])) {
+                $data['profile_image'] = $uploaded['_data'];
+            }
         }
 
         $coach->update($data);
