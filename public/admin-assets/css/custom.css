@@ -404,3 +404,418 @@ textarea.form-control {
 
 
 
+
+
+/* ==========================================================================
+   Super Admin Universal Modern Table Design System
+   ========================================================================== */
+
+/* 1. Card Container & Wrapper */
+.widget-content.widget-content-area.br-6,
+.layout-spacing .widget-content.widget-content-area,
+.data-table-container {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02) !important;
+    padding: 20px 24px !important;
+    transition: all 0.25s ease !important;
+}
+
+.widget-content.widget-content-area:hover {
+    box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
+}
+
+.widget-content.widget-content-area h4 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin-bottom: 6px !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* 2. Global Table Architecture */
+table.dataTable,
+.table-hover,
+.table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+    margin-bottom: 16px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* Table Header */
+table.dataTable thead th,
+.table thead th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    padding: 14px 16px !important;
+    border-top: none !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after {
+    bottom: 12px !important;
+    opacity: 0.3 !important;
+}
+
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_desc:after {
+    opacity: 1 !important;
+    color: #3246d3 !important;
+}
+
+/* Table Body Rows & Cells */
+table.dataTable tbody td,
+.table tbody td {
+    padding: 14px 16px !important;
+    vertical-align: middle !important;
+    font-size: 13.5px !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    border-top: none !important;
+    transition: background-color 0.15s ease !important;
+}
+
+/* Remove jittery scale effect and use clean slate background hover */
+table.dataTable tbody tr:hover td,
+.table-hover tbody tr:hover td,
+.table-hover:not(.table-dark) tbody tr:hover {
+    background-color: #f8fafc !important;
+    transform: none !important;
+}
+
+.table>tbody:before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Table links & typography */
+table.dataTable td a,
+.dataTable td a {
+    color: #3246d3 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+table.dataTable td a:hover,
+.dataTable td a:hover {
+    color: #1e266d !important;
+}
+
+/* 3. Universal Status Badges & Action Buttons inside Tables */
+table.dataTable tbody td .badge,
+.table tbody td .badge,
+.badge {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    letter-spacing: 0.02em !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    line-height: 1.2 !important;
+    box-shadow: none !important;
+    text-transform: capitalize !important;
+}
+
+.badge-success,
+label.badge-success {
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1px solid #a7f3d0 !important;
+}
+
+.badge-warning,
+label.badge-warning {
+    background-color: #fffbeb !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a !important;
+}
+
+.badge-danger,
+label.badge-danger {
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca !important;
+}
+
+.badge-primary,
+div.badge-primary {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+a:hover div.badge-primary,
+div.badge-primary:hover {
+    background-color: #3246d3 !important;
+    color: #ffffff !important;
+    border-color: #3246d3 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(50, 70, 211, 0.25) !important;
+}
+
+.badge-info {
+    background-color: #f0fdf4 !important;
+    color: #0284c7 !important;
+    border: 1px solid #bae6fd !important;
+}
+
+.badge-dark,
+.badge-secondary {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* 4. DataTables Controls, Length, & Search Input */
+.dataTables_wrapper {
+    padding: 8px 0 !important;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    text-align: right !important;
+    margin-bottom: 8px !important;
+}
+
+.dataTables_wrapper .dataTables_filter label {
+    font-weight: 600 !important;
+    color: #64748b !important;
+    font-size: 13px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    height: 38px !important;
+    width: 220px !important;
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    background-color: #f8fafc !important;
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    transition: all 0.2s ease !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    background-color: #ffffff !important;
+    border-color: #3246d3 !important;
+    box-shadow: 0 0 0 3px rgba(50, 70, 211, 0.12) !important;
+    outline: none !important;
+}
+
+.dataTables_wrapper .dataTables_length {
+    float: left !important;
+    margin-bottom: 8px !important;
+}
+
+.dataTables_wrapper .dataTables_length label {
+    font-weight: 600 !important;
+    color: #64748b !important;
+    font-size: 13px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_length select.form-control {
+    height: 38px !important;
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    background-color: #f8fafc !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    outline: none !important;
+}
+
+/* Toolbar Buttons (Export, Change Status, Delete, etc.) */
+.dataTables_wrapper .btn-toolbar,
+.dataTables_wrapper .dt-buttons {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 4px !important;
+}
+
+.dataTables_wrapper .btn-toolbar .btn,
+.dataTables_wrapper .dt-buttons .btn,
+.btn-toolbar .btn-icon,
+.update-order,
+.change-status,
+.dt-delete {
+    border-radius: 8px !important;
+    padding: 7px 14px !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #475569 !important;
+    transition: all 0.2s ease !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.dataTables_wrapper .btn-toolbar .btn:hover:not(:disabled),
+.dataTables_wrapper .dt-buttons .btn:hover:not(:disabled),
+.change-status:hover:not(:disabled),
+.dt-delete:hover:not(:disabled) {
+    background: #f1f5f9 !important;
+    color: #3246d3 !important;
+    border-color: #3246d3 !important;
+    transform: translateY(-1px) !important;
+}
+
+.dataTables_wrapper .btn-toolbar .btn:disabled,
+.change-status:disabled,
+.dt-delete:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    background: #f8fafc !important;
+    color: #94a3b8 !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* 5. Pagination & Info Footer */
+div.dataTables_wrapper div.dataTables_info {
+    border: none !important;
+    color: #64748b !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 14px 4px !important;
+    background: transparent !important;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    padding-top: 10px !important;
+    float: right !important;
+}
+
+.dataTables_paginate .pagination,
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+.dataTables_paginate .pagination li a,
+.paginate_button,
+.page-link {
+    border-radius: 8px !important;
+    padding: 7px 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    color: #475569 !important;
+    transition: all 0.2s ease !important;
+    margin: 0 2px !important;
+}
+
+.dataTables_paginate .pagination li.active a,
+.paginate_button.current,
+.page-item.active .page-link {
+    background-color: #3246d3 !important;
+    border-color: #3246d3 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(50, 70, 211, 0.25) !important;
+}
+
+.dataTables_paginate .pagination li a:hover:not(.active),
+.page-link:hover {
+    background-color: #f1f5f9 !important;
+    color: #3246d3 !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* 6. Checkbox column centering */
+table.dataTable th.checkbox-column,
+table.dataTable td.checkbox-column {
+    text-align: center !important;
+    width: 36px !important;
+    padding: 14px 8px !important;
+}
+
+.new-control.new-checkbox .new-control-indicator {
+    border-radius: 5px !important;
+    border: 1.5px solid #cbd5e1 !important;
+}
+
+.new-control.new-checkbox input:checked ~ .new-control-indicator {
+    background-color: #3246d3 !important;
+    border-color: #3246d3 !important;
+}
+
+/* 7. Advanced Filter Card on All Table Pages */
+.custom-datatable-filters .widget-content.widget-content-area {
+    border-radius: 16px !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+    padding: 20px 24px !important;
+    margin-bottom: 20px !important;
+}
+
+.custom-datatable-filter h6 {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    color: #3246d3 !important;
+    margin-bottom: 14px !important;
+}
+
+.custom-datatable-filter .form-control {
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    font-size: 13.5px !important;
+    padding: 8px 14px !important;
+    height: 40px !important;
+}
+
+.custom-datatable-filter .form-control:focus {
+    background: #ffffff !important;
+    border-color: #3246d3 !important;
+    box-shadow: 0 0 0 3px rgba(50, 70, 211, 0.12) !important;
+}
+
+.custom-datatable-filter label {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+    margin-bottom: 6px !important;
+}
+
+.custom-datatable-filter .btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 9px 22px !important;
+    font-size: 13px !important;
+}

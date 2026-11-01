@@ -658,10 +658,10 @@
 
             <div class="fcc-hero-actions">
                 <a href="{{ route('adminPanel.franchises.create') }}" class="fcc-action-btn fcc-action-btn-primary">
-                    <i data-feather="user-plus" style="width: 16px; height: 16px;"></i> + Add Franchise Coach
+                    <i data-feather="user-plus" style="width: 16px; height: 16px;"></i> Add Franchise Coach
                 </a>
                 <a href="{{ route('adminPanel.franchise-membership-plans.create') }}" class="fcc-action-btn fcc-action-btn-glass">
-                    <i data-feather="credit-card" style="width: 16px; height: 16px;"></i> + Assign Plan
+                    <i data-feather="credit-card" style="width: 16px; height: 16px;"></i> Assign Plan
                 </a>
                 <button type="button" class="fcc-action-btn fcc-action-btn-glass filter-button" id="toggleFilterBtn">
                     <i data-feather="filter" style="width: 16px; height: 16px;"></i> Filter Dates
@@ -1394,7 +1394,7 @@
                                                 </td>
                                                 <td class="text-end">
                                                     <a href="{{ route('adminPanel.franchise-membership-plans.create') }}?franchise_id={{ $nFranchise->id }}" class="fcc-mini-btn fcc-mini-btn-light">
-                                                        + Assign Plan
+                                                        Assign Plan
                                                     </a>
                                                     <a href="{{ route('adminPanel.franchises.edit', $nFranchise->id) }}" class="fcc-mini-btn fcc-mini-btn-light">
                                                         Edit
