@@ -258,13 +258,7 @@ $constants['users'] = [
             'caption' => 'Super Admin',
             'key' => 'SUPER_ADMIN',
             'type' => 'super-admin',
-        ],
-        'FRANCHISE' => [
-            'value' => 2,
-            'caption' => 'Franchise',
-            'key' => 'FRANCHISE',
-            'type' => 'franchise',
-        ],
+        ]
     ],
     //------
 

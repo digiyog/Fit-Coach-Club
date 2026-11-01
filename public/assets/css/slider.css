@@ -1,0 +1,1205 @@
+/* ==========================================================================
+   Advaita School of Excellence - Hero Slider Component Stylesheet
+   Design: Hero slider with floating polaroid photo cards, realistic masking tape,
+           action pills, and integrated bottom stats strip.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Slider Main Container
+   -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   Slider Main Container
+   -------------------------------------------------------------------------- */
+.adv-hero-slider-section {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1024 / 373;
+    height: auto;
+    max-height: 720px;
+    background-color: #051633;
+    overflow: hidden;
+    user-select: none;
+}
+
+.adv-slider-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.adv-slider-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Slide Item & Banner Wrapper
+   -------------------------------------------------------------------------- */
+.adv-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s ease;
+    z-index: 1;
+}
+
+.adv-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+}
+
+.adv-slide-banner-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #06193b;
+    container-type: inline-size;
+}
+
+/* Ambient left-side vignette gradient for extra contrast & depth */
+.adv-slide-banner-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            rgba(5, 22, 51, 0.85) 0%,
+            rgba(5, 22, 51, 0.72) min(38%, 680px),
+            rgba(5, 22, 51, 0.35) 55%,
+            transparent 70%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.adv-slide-banner-wrap.no-vignette::before,
+.adv-slide.slide-pure-banner .adv-slide-banner-wrap::before {
+    display: none !important;
+}
+
+.adv-slide-banner-wrap.no-vignette,
+.adv-slide.slide-pure-banner .adv-slide-banner-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #051633;
+}
+
+/* Dot Grid Matrix Patterns (Top Left & Bottom Right) */
+.adv-hero-dots-decor {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.42) 1.5px, transparent 1.5px);
+    background-size: 14px 14px;
+}
+
+.adv-hero-dots-decor.top-left {
+    top: clamp(16px, 4cqi, 36px);
+    left: max(24px, calc((100% - 1320px) / 2 + 24px));
+    width: clamp(80px, 11cqi, 115px);
+    height: clamp(34px, 4.5cqi, 46px);
+}
+
+.adv-hero-dots-decor.bottom-right {
+    bottom: clamp(16px, 3.8cqi, 36px);
+    right: clamp(35px, 6.5cqi, 75px);
+    width: clamp(65px, 8.5cqi, 95px);
+    height: clamp(34px, 4.5cqi, 46px);
+}
+
+.adv-slide-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Standalone graphic banners fit 100% without cropping */
+.adv-slide-banner-wrap.no-vignette .adv-slide-banner-img,
+.adv-slide.slide-pure-banner .adv-slide-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    object-position: center center !important;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.adv-slide-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Text Overlay (Aligned with Site Container & About Section Grid)
+   -------------------------------------------------------------------------- */
+.adv-hero-text-overlay {
+    position: absolute;
+    top: 50%;
+    left: max(24px, calc((100% - 1320px) / 2 + 24px));
+    margin-left: 0;
+    transform: translateY(-50%);
+    width: min(530px, 48cqi);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    text-align: left;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. Milestone Row with Badge & Flying Paper Airplane */
+.adv-hero-milestone-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.5cqi, 18px);
+    position: relative;
+    width: 100%;
+}
+
+.adv-hero-milestone-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(8px, 1.1cqi, 12px);
+}
+
+.adv-milestone-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+}
+
+.adv-milestone-bars .bar-top,
+.adv-milestone-bars .bar-bottom {
+    display: block;
+    width: clamp(18px, 2.4cqi, 28px);
+    height: 2.5px;
+    background: #F37021;
+    border-radius: 2px;
+}
+
+.adv-hero-milestone-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #061938;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(0.82rem, 1.05cqi, 0.95rem);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: clamp(6px, 0.7cqi, 8px) clamp(18px, 1.8cqi, 22px);
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+}
+
+/* Flying Paper Airplane Doodle */
+.adv-hero-paper-plane {
+    width: clamp(70px, 8.5cqi, 105px);
+    height: auto;
+    opacity: 0.92;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    flex-shrink: 0;
+}
+
+.adv-hero-paper-plane svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 2. Taglines: Building Curious Minds. Shaping Confident Futures. */
+.adv-hero-taglines {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.65rem, 2.95cqi, 2.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0;
+}
+
+.adv-hero-taglines .tagline-white {
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.adv-hero-taglines .tagline-orange {
+    color: #F37021;
+    letter-spacing: -0.3px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    font-size: clamp(1.25rem, 2.2cqi, 1.85rem);
+}
+
+/* Backward compatibility for previous classes */
+.adv-hero-taglines .tagline-blue {
+    color: #ffffff;
+}
+
+/* Orange Underline Accent Bar under headline */
+.adv-hero-title-bar {
+    width: clamp(38px, 4.8cqi, 52px);
+    height: 3.5px;
+    background: #F37021;
+    border-radius: 2px;
+    margin-top: clamp(8px, 1.1cqi, 14px);
+    margin-bottom: clamp(10px, 1.3cqi, 16px);
+    box-shadow: 0 2px 6px rgba(243, 112, 33, 0.4);
+}
+
+/* 3. Paragraph Description */
+p.adv-hero-lead-desc {
+    text-align: left;
+    color: rgba(255, 255, 255, 0.92);
+    font-weight: 400;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(0.85rem, 1.15cqi, 1.02rem);
+    line-height: 1.55;
+    max-width: 440px;
+    margin: 0 0 clamp(16px, 2.2cqi, 24px) 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* 4. Action CTAs Group */
+.adv-hero-actions-group {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.4cqi, 16px);
+    margin-top: 0;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Right Sky Script Tag Accent */
+.adv-hero-sky-badge {
+    position: absolute;
+    top: clamp(16px, 3.8cqi, 45px);
+    right: clamp(18px, 4.8cqi, 65px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+    pointer-events: none;
+    transform: rotate(-4deg);
+}
+
+.adv-sky-script {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.4rem, 2.3cqi, 2.1rem);
+    font-weight: 700;
+    color: #082D64;
+    line-height: 1.05;
+    text-align: center;
+    white-space: nowrap;
+    text-shadow:
+        0 2px 10px rgba(255, 255, 255, 0.95),
+        0 1px 3px rgba(0, 39, 92, 0.25);
+}
+
+.adv-sky-swoosh {
+    width: clamp(70px, 9cqi, 115px);
+    height: auto;
+    margin-top: 1px;
+    filter: drop-shadow(0 2px 4px rgba(243, 112, 33, 0.4));
+}
+
+/* Buttons Row */
+.adv-hero-real-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.82rem, 1.05cqi, 0.95rem);
+    padding: clamp(10px, 1.25cqi, 13px) clamp(20px, 2.2cqi, 28px);
+    line-height: 1.25;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. Primary "Apply for Admission" - Vibrant Orange Pill with Arrow */
+.adv-hero-btn-apply {
+    background: linear-gradient(135deg, #F37021 0%, #ea580c 100%);
+    color: #ffffff !important;
+    border: none;
+    box-shadow: 0 4px 18px rgba(243, 112, 33, 0.45), 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.adv-hero-btn-apply i {
+    font-size: 0.88em;
+    transition: transform 0.25s ease;
+}
+
+.adv-hero-btn-apply:hover {
+    background: linear-gradient(135deg, #ff7e33 0%, #f37021 100%);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(243, 112, 33, 0.58), 0 4px 10px rgba(0, 0, 0, 0.16);
+}
+
+.adv-hero-btn-apply:hover i {
+    transform: translateX(4px);
+}
+
+.adv-hero-btn-apply:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(243, 112, 33, 0.35);
+}
+
+/* 2. Secondary "Explore Our School" - Frosted Translucent Pill with White Play Circle */
+.adv-hero-btn-explore {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+.adv-hero-play-circle {
+    width: clamp(22px, 2.4cqi, 26px);
+    height: clamp(22px, 2.4cqi, 26px);
+    border-radius: 50%;
+    background: #ffffff;
+    color: #071D49;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.55rem, 0.68cqi, 0.65rem);
+    padding-left: 2px;
+    flex-shrink: 0;
+    margin-right: 2px;
+    transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.adv-hero-btn-explore:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: #ffffff;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.adv-hero-btn-explore:hover .adv-hero-play-circle {
+    transform: scale(1.1);
+}
+
+.adv-hero-btn-explore:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Slide 2 Rich Content Overlays */
+.adv-slide-overlay-rich {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(3, 28, 61, 0.88) 0%, rgba(3, 28, 61, 0.65) 50%, rgba(3, 28, 61, 0.2) 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 clamp(20px, 6vw, 80px);
+    z-index: 5;
+}
+
+.adv-slide-content-rich {
+    max-width: 650px;
+    color: #ffffff;
+}
+
+.adv-slide-title-rich {
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.adv-slide-title-rich .highlight {
+    color: var(--adv-accent-gold);
+}
+
+.adv-slide-lead-rich {
+    font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.adv-slider-actions-rich {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Mobile Quick CTA Bar */
+.adv-mobile-hero-cta-bar {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.adv-mobile-hero-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.84375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: var(--header-transition);
+}
+
+.adv-mobile-hero-btn.primary {
+    background: linear-gradient(135deg, #f58220 0%, var(--adv-accent-orange) 100%);
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(243, 112, 33, 0.3);
+}
+
+.adv-mobile-hero-btn.secondary {
+    background: #f1f5f9;
+    color: var(--adv-primary);
+    border: 1px solid #cbd5e1;
+}
+
+.adv-hero-pill-tag .tag-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--adv-accent-orange);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 10px var(--adv-accent-orange);
+    animation: advPulse 2s infinite ease-in-out;
+}
+
+@keyframes advPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.35);
+        opacity: 0.7;
+    }
+}
+
+/* Main Hero Heading */
+.adv-slide-title {
+    font-size: clamp(1.85rem, 3.8vw, 3.2rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.18;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65), 0 4px 30px rgba(8, 59, 122, 0.5);
+    letter-spacing: -0.5px;
+}
+
+.adv-slide-title .highlight {
+    color: #ffd166;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(243, 112, 33, 0.4);
+    display: inline-block;
+}
+
+/* Subtitle */
+.adv-slide-lead {
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-weight: 500;
+}
+
+/* Feature tags in slider */
+.adv-slider-features {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.adv-slider-feature-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(3, 28, 61, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    color: #f1f5f9;
+    font-weight: 600;
+}
+
+.adv-slider-feature-item i {
+    color: var(--adv-accent-gold);
+    font-size: 0.875rem;
+}
+
+/* Action CTAs Group matching screenshot */
+.adv-slider-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+/* Pill 1: Admission Open badge button */
+.adv-btn-admission-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(243, 112, 33, 0.18);
+    color: #ffedd5;
+    border: 1.5px solid rgba(243, 112, 33, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.84375rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    transition: var(--header-transition);
+}
+
+.adv-btn-admission-pill .pulsing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--adv-accent-orange);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px var(--adv-accent-orange);
+    animation: advPulse 1.8s infinite;
+}
+
+.adv-btn-admission-pill:hover {
+    background: rgba(243, 112, 33, 0.3);
+    border-color: var(--adv-accent-orange);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 112, 33, 0.35);
+}
+
+/* Pill 2: Primary Apply Now Button */
+.adv-btn-hero-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f37021 0%, #e05b0d 100%);
+    color: #ffffff;
+    padding: 11px 24px;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 18px rgba(243, 112, 33, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: var(--header-transition);
+    border: none;
+}
+
+.adv-btn-hero-primary i {
+    transition: transform 0.25s ease;
+    font-size: 0.8125rem;
+}
+
+.adv-btn-hero-primary:hover {
+    background: linear-gradient(135deg, #ff7e33 0%, #f37021 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(243, 112, 33, 0.65);
+    color: #ffffff;
+}
+
+.adv-btn-hero-primary:hover i {
+    transform: translateX(4px);
+}
+
+/* Pill 3: Secondary Tour Button */
+.adv-btn-hero-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(8, 59, 122, 0.5);
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    transition: var(--header-transition);
+}
+
+.adv-btn-hero-secondary i {
+    color: var(--adv-accent-gold);
+    font-size: 0.8125rem;
+}
+
+.adv-btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+    transform: translateY(-2px);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Floating Polaroid Cards (Taped on the sides)
+   -------------------------------------------------------------------------- */
+.adv-slider-polaroid {
+    position: absolute;
+    z-index: 6;
+    width: 220px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 10px 14px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+/* Realistic Masking Tape at Top of Polaroid */
+.adv-polaroid-tape {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 22px;
+    background-color: rgba(234, 222, 194, 0.88);
+    background-image: linear-gradient(45deg,
+            rgba(255, 255, 255, 0.2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.2) 75%,
+            transparent 75%,
+            transparent);
+    background-size: 10px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+    border-left: 2px dashed rgba(180, 160, 130, 0.4);
+    border-right: 2px dashed rgba(180, 160, 130, 0.4);
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0.92;
+}
+
+/* Left Card Positioning */
+.adv-slider-polaroid.left-card {
+    left: 4.5%;
+    top: 14%;
+    transform: rotate(-5deg);
+    animation: floatLeftCard 6s ease-in-out infinite alternate;
+}
+
+.adv-slider-polaroid.left-card:hover {
+    transform: rotate(0deg) scale(1.06) translateY(-8px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+/* Right Card Positioning */
+.adv-slider-polaroid.right-card {
+    right: 4.5%;
+    top: 14%;
+    transform: rotate(5.5deg);
+    animation: floatRightCard 6.5s ease-in-out infinite alternate;
+}
+
+.adv-slider-polaroid.right-card:hover {
+    transform: rotate(0deg) scale(1.06) translateY(-8px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+@keyframes floatLeftCard {
+    0% {
+        transform: rotate(-5deg) translateY(0px);
+    }
+
+    100% {
+        transform: rotate(-3.5deg) translateY(-8px);
+    }
+}
+
+@keyframes floatRightCard {
+    0% {
+        transform: rotate(5.5deg) translateY(0px);
+    }
+
+    100% {
+        transform: rotate(4deg) translateY(-8px);
+    }
+}
+
+/* Inside Polaroid Card */
+.adv-polaroid-image-wrap {
+    position: relative;
+    width: 100%;
+    height: 155px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+}
+
+.adv-polaroid-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.adv-slider-polaroid:hover .adv-polaroid-image-wrap img {
+    transform: scale(1.08);
+}
+
+.adv-polaroid-caption {
+    padding: 10px 4px 2px;
+    text-align: left;
+}
+
+.adv-polaroid-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    color: var(--adv-accent-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+}
+
+.adv-polaroid-tag .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    box-shadow: 0 0 6px #ef4444;
+    animation: advPulse 1.5s infinite;
+}
+
+.adv-polaroid-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.25;
+    margin-bottom: 3px;
+}
+
+.adv-polaroid-sub {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.35;
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Stats Strip (Integrated inside Slider)
+   -------------------------------------------------------------------------- */
+.adv-slider-stats-strip {
+    position: relative;
+    z-index: 6;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 14px;
+    margin-top: auto;
+}
+
+.adv-slider-stats-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(16px, 3vw, 36px);
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.adv-slider-stat-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.adv-slider-stat-node i {
+    color: var(--adv-accent-gold);
+    font-size: 0.9375rem;
+}
+
+.adv-slider-stat-sep {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   Slider Navigation Controls (Arrows & Indicators)
+   -------------------------------------------------------------------------- */
+.adv-slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(36px, 4cqi, 44px);
+    height: clamp(36px, 4cqi, 44px);
+    border-radius: 50%;
+    background: rgba(10, 25, 50, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.85rem, 1cqi, 1rem);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.adv-slider-arrow:hover {
+    background: rgba(243, 112, 33, 0.95);
+    border-color: #F37021;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 6px 20px rgba(243, 112, 33, 0.5);
+}
+
+.adv-slider-arrow.prev-arrow {
+    left: clamp(14px, 2.2cqi, 28px);
+}
+
+.adv-slider-arrow.next-arrow {
+    right: clamp(14px, 2.2cqi, 28px);
+}
+
+/* Dots Pagination */
+.adv-slider-dots {
+    position: absolute;
+    bottom: clamp(14px, 2.5cqi, 22px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 12;
+}
+
+.adv-slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.72);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+}
+
+.adv-slider-dot:hover {
+    background: #ffffff;
+}
+
+.adv-slider-dot.active {
+    width: 30px;
+    height: 8px;
+    border-radius: 4px;
+    background: #F37021;
+    box-shadow: 0 0 10px rgba(243, 112, 33, 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Rules
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+    .adv-hero-real-btn {
+        padding: 10px 22px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 991px) {
+    .adv-hero-slider-section {
+        height: auto;
+        aspect-ratio: auto;
+        min-height: 520px;
+        max-height: unset;
+    }
+
+    .adv-slide-banner-wrap {
+        min-height: 520px;
+    }
+
+    .adv-slide-banner-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: right 30%;
+    }
+
+    .adv-slide-banner-wrap::before {
+        display: block !important;
+        background: linear-gradient(90deg,
+                rgba(8, 26, 56, 0.96) 0%,
+                rgba(8, 26, 56, 0.92) 50%,
+                rgba(8, 26, 56, 0.65) 75%,
+                rgba(8, 26, 56, 0) 100%);
+    }
+
+    .adv-slide-banner-wrap.no-vignette::before,
+    .adv-slide.slide-pure-banner .adv-slide-banner-wrap::before {
+        display: none !important;
+    }
+
+    .adv-slide-banner-wrap.no-vignette .adv-slide-banner-img,
+    .adv-slide.slide-pure-banner .adv-slide-banner-img {
+        object-fit: contain !important;
+        object-position: center center !important;
+    }
+
+    .adv-hero-text-overlay {
+        width: min(520px, calc(100% - 48px));
+        left: 24px;
+        margin-left: 0;
+        padding: 0;
+        gap: 10px;
+    }
+
+    .adv-hero-dots-decor.top-left {
+        left: 24px;
+    }
+
+    .adv-mobile-hero-cta-bar {
+        display: none !important;
+    }
+
+    .adv-slider-arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 0.9rem;
+    }
+
+    .adv-slider-arrow.prev-arrow {
+        left: 10px;
+    }
+
+    .adv-slider-arrow.next-arrow {
+        right: 10px;
+    }
+
+    .adv-slider-dots {
+        bottom: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .adv-hero-slider-section {
+        height: auto;
+        aspect-ratio: auto;
+        min-height: 480px;
+    }
+
+    .adv-slide-banner-wrap {
+        min-height: 480px;
+        align-items: center;
+        display: flex;
+    }
+
+    .adv-slide-banner-wrap::before {
+        display: block !important;
+        background: linear-gradient(180deg,
+                rgba(8, 26, 56, 0.95) 0%,
+                rgba(8, 26, 56, 0.90) 65%,
+                rgba(8, 26, 56, 0.70) 100%);
+    }
+
+    .adv-slide-banner-wrap.no-vignette::before,
+    .adv-slide.slide-pure-banner .adv-slide-banner-wrap::before {
+        display: none !important;
+    }
+
+    .adv-slide-banner-wrap.no-vignette .adv-slide-banner-img,
+    .adv-slide.slide-pure-banner .adv-slide-banner-img {
+        object-fit: contain !important;
+        object-position: center center !important;
+    }
+
+    .adv-hero-text-overlay {
+        position: relative;
+        top: unset;
+        left: unset;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 24px 0;
+        padding: 0 16px;
+        box-sizing: border-box;
+        border-radius: 0;
+        box-shadow: none;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        gap: 8px;
+    }
+
+    .adv-hero-dots-decor.top-left {
+        display: none !important;
+    }
+
+    .adv-hero-taglines {
+        font-size: clamp(1.4rem, 5.5vw, 1.85rem);
+    }
+
+    .adv-hero-taglines .tagline-orange {
+        font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+    }
+
+    p.adv-hero-lead-desc {
+        max-width: 100%;
+        font-size: 0.875rem;
+        line-height: 1.55;
+        margin-bottom: 16px;
+    }
+
+    .adv-hero-actions-group {
+        display: flex !important;
+        gap: 10px;
+    }
+
+    .adv-hero-sky-badge {
+        display: none !important;
+    }
+
+    .adv-mobile-hero-cta-bar {
+        display: none !important;
+    }
+
+    .adv-mobile-hero-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 11px 12px;
+        font-size: 0.84375rem;
+        font-weight: 700;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+    .adv-slider-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75rem;
+        background: rgba(3, 28, 61, 0.55);
+    }
+
+    .adv-slider-arrow.prev-arrow {
+        left: 6px;
+    }
+
+    .adv-slider-arrow.next-arrow {
+        right: 6px;
+    }
+
+    .adv-slider-dots {
+        bottom: 8px;
+        gap: 6px;
+    }
+
+    .adv-slider-dot {
+        width: 7px;
+        height: 7px;
+    }
+
+    .adv-slider-dot.active {
+        width: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .adv-hero-text-overlay {
+        padding: 0 16px;
+        margin: 16px 0;
+    }
+
+    .adv-hero-taglines {
+        font-size: clamp(1.28rem, 5.8vw, 1.55rem);
+    }
+
+    .adv-hero-taglines .tagline-orange {
+        font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+    }
+
+    .adv-mobile-hero-cta-bar {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 10px 14px;
+    }
+
+    .adv-mobile-hero-btn {
+        padding: 12px 14px;
+        font-size: 0.875rem;
+    }
+}

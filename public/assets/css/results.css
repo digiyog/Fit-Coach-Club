@@ -1,0 +1,919 @@
+/* ==========================================================================
+   RESULTS PAGE DEDICATED STYLES (Programmes > Results)
+   Strictly 1:1 match with official design mockup (media_1790710565135.jpg)
+   Clean Semantic CSS - Responsive across Desktop, Tablet & Mobile
+   ========================================================================== */
+
+/* Page Wrapper & Global Canvas */
+.results-page-wrapper {
+    background-color: #FAF8F5;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 60px;
+    font-family: 'Plus Jakarta Sans', var(--adv-font-body, system-ui, sans-serif);
+    color: #1e293b;
+}
+
+/* Background Decorative Doodle SVGs */
+.results-page-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 20px;
+    width: 28px;
+    height: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B' opacity='0.55'%3E%3Cpath d='M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.results-page-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 240px;
+    left: 15px;
+    width: 44px;
+    height: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none' stroke='%23F59E0B' stroke-width='2' opacity='0.45'%3E%3Cpath d='M5 25C15 15 25 35 35 20' stroke-linecap='round'/%3E%3Ccircle cx='12' cy='8' r='3' fill='%23F37021'/%3E%3Ccircle cx='32' cy='30' r='2' fill='%23F59E0B'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 1. HERO SECTION (Edge-to-edge on warm bg, left text, right campus visual) */
+.results-hero-section {
+    padding: 24px 0 16px;
+    position: relative;
+    background: transparent;
+}
+
+.results-hero-container {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.results-hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: 32px;
+}
+
+/* Hero Left: Text Content */
+.results-hero-text {
+    position: relative;
+    z-index: 2;
+}
+
+.results-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: #94a3b8;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.results-breadcrumb a {
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.results-breadcrumb a:hover {
+    color: #083B7A;
+}
+
+.results-breadcrumb .sep {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.results-breadcrumb .active {
+    color: #083B7A;
+    font-weight: 600;
+}
+
+/* Eyebrow */
+.results-eyebrow {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #F37021;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.results-eyebrow-line {
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background-color: #F37021;
+    border-radius: 2px;
+}
+
+/* Main Headline */
+.results-hero-title {
+    font-family: 'Fraunces', serif, Georgia;
+    font-size: clamp(34px, 3.8vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    color: #083B7A;
+    margin: 0 0 16px;
+    letter-spacing: -0.5px;
+}
+
+.results-title-orange {
+    color: #F37021;
+    display: block;
+}
+
+.results-hero-desc {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: #64748b;
+    max-width: 480px;
+    margin: 0;
+}
+
+/* Hero Right: Campus facade with swoop border & handwritten script */
+.results-hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 2;
+}
+
+.results-hero-campus-img {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 6px 20px rgba(8, 59, 122, 0.06));
+}
+
+/* 2. MAIN CONTAINER */
+.results-container {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 3;
+}
+
+/* 3. FOUR STAT CARDS (Metrics Bar) */
+.results-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 14px;
+    margin-bottom: 34px;
+}
+
+.results-stat-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #edf2f7;
+    box-shadow: 0 4px 18px rgba(8, 59, 122, 0.04);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.results-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(8, 59, 122, 0.08);
+}
+
+.results-stat-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    border-radius: 50%;
+    background: #FFF3E8;
+    color: #F37021;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.results-stat-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.results-stat-kicker {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.results-stat-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: #083B7A;
+    letter-spacing: -0.2px;
+    margin: 2px 0;
+}
+
+.results-stat-sub {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* 4. YEAR SELECTOR TABS WITH RADIANT SUNBURSTS */
+.results-year-switcher-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    gap: 12px;
+}
+
+.results-rays-left,
+.results-rays-right {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.results-year-pills {
+    display: inline-flex;
+    align-items: center;
+    background: #EEF2F6;
+    border-radius: 50px;
+    padding: 4px;
+    gap: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.results-year-btn {
+    border: none;
+    background: transparent;
+    padding: 10px 22px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #083B7A;
+    transition: all 0.25s ease;
+}
+
+.results-year-btn .y-main {
+    font-weight: 700;
+}
+
+.results-year-btn .y-sub {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.results-year-btn i {
+    font-size: 14px;
+    color: #083B7A;
+}
+
+.results-year-btn.active {
+    background: linear-gradient(135deg, #F37021 0%, #ff8533 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(243, 112, 33, 0.35);
+}
+
+.results-year-btn.active .y-sub {
+    color: #ffffff;
+    opacity: 0.95;
+}
+
+.results-year-btn.active i {
+    color: #ffffff;
+}
+
+/* 5. MAIN RESULTS SHOWCASE CARD */
+.results-main-showcase-card {
+    background: #ffffff;
+    border-radius: 28px;
+    border: 1px solid #edf2f7;
+    box-shadow: 0 10px 40px rgba(8, 59, 122, 0.05);
+    padding: 36px 40px 32px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+/* Showcase Header */
+.results-showcase-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.results-showcase-title-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.results-trophy-symbol {
+    color: #F59E0B;
+    font-size: 40px;
+    line-height: 1;
+    min-width: 44px;
+    filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.3));
+    margin-top: 4px;
+}
+
+.results-showcase-heading-wrap {
+    flex: 1;
+}
+
+.results-showcase-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #083B7A;
+    margin: 0 0 6px;
+    letter-spacing: -0.3px;
+}
+
+.results-showcase-title .highlight-orange {
+    color: #F37021;
+}
+
+.results-showcase-tagline {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 6px;
+}
+
+.results-showcase-desc {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 620px;
+}
+
+/* Laurel Wreath Badge */
+.results-laurel-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+    padding: 4px 12px;
+}
+
+.laurel-branch {
+    width: 32px;
+    height: 68px;
+}
+
+.results-laurel-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+}
+
+.laurel-number {
+    font-size: 36px;
+    font-weight: 900;
+    color: #F37021;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.laurel-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #083B7A;
+    white-space: nowrap;
+}
+
+/* 6. POSTER SHOWCASE SLIDER VIEWPORT */
+.results-slider-box {
+    position: relative;
+    margin-top: 10px;
+}
+
+/* Floating Circular Prev & Next Buttons */
+.results-arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #334155;
+    font-size: 15px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.22s ease;
+}
+
+.results-arrow-btn.prev {
+    left: -22px;
+}
+
+.results-arrow-btn.next {
+    right: -22px;
+}
+
+.results-arrow-btn:hover {
+    background: #083B7A;
+    color: #ffffff;
+    border-color: #083B7A;
+    box-shadow: 0 6px 20px rgba(8, 59, 122, 0.3);
+    transform: translateY(-50%) scale(1.06);
+}
+
+/* Two Posters Grid */
+.results-posters-container {
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+.results-posters-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.results-poster-frame {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.results-poster-frame:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(8, 59, 122, 0.12);
+}
+
+.results-poster-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.results-poster-frame:hover img {
+    transform: scale(1.015);
+}
+
+.poster-overlay-hint {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(8, 59, 122, 0.88);
+    color: #ffffff;
+    backdrop-filter: blur(4px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+}
+
+.results-poster-frame:hover .poster-overlay-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 5 Pagination Dots (Active is orange pill) */
+.results-dots-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.dot-item {
+    border: none;
+    padding: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.dot-item.active {
+    width: 24px;
+    border-radius: 4px;
+    background: #F37021;
+}
+
+/* 7. CONSISTENT ACADEMIC EXCELLENCE & PDF DOWNLOAD BANNER */
+.results-excellence-banner {
+    background: linear-gradient(90deg, #FFF9F3 0%, #FFFFFF 100%);
+    border: 1px solid #FED7AA;
+    border-radius: 18px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(243, 112, 33, 0.05);
+}
+
+.results-excellence-banner::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, #F37021 0%, #083B7A 100%);
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+.excellence-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.excellence-medal-badge {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    border-radius: 50%;
+    background: #FFF0E2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #F37021;
+}
+
+.excellence-copy {
+    flex: 1;
+}
+
+.excellence-title {
+    font-size: 17.5px;
+    font-weight: 800;
+    color: #083B7A;
+    margin: 0 0 4px;
+    letter-spacing: -0.2px;
+}
+
+.excellence-desc {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 650px;
+}
+
+.btn-excellence-download {
+    background: linear-gradient(135deg, #F37021 0%, #ff8533 100%);
+    color: #ffffff;
+    padding: 12px 26px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(243, 112, 33, 0.35);
+    white-space: nowrap;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.btn-excellence-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 112, 33, 0.45);
+    color: #ffffff;
+}
+
+/* 8. PRE-FOOTER CTA (HAVE QUESTIONS?) */
+.results-bottom-cta {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #edf2f7;
+    box-shadow: 0 6px 25px rgba(8, 59, 122, 0.05);
+    padding: 26px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.results-bottom-cta::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: #F37021;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+.cta-left {
+    flex: 1;
+}
+
+.cta-pill-tag {
+    background: #081d3d;
+    color: #ffb84d;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.cta-heading {
+    font-size: 21px;
+    font-weight: 800;
+    color: #083B7A;
+    margin: 0 0 5px;
+    letter-spacing: -0.2px;
+}
+
+.cta-heading .highlight-orange {
+    color: #F37021;
+}
+
+.cta-sub {
+    font-size: 13.5px;
+    color: #64748b;
+    margin: 0;
+}
+
+.cta-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.btn-cta-office {
+    background: linear-gradient(135deg, #F37021 0%, #ff8533 100%);
+    color: #ffffff;
+    border-radius: 50px;
+    padding: 11px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(243, 112, 33, 0.3);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-cta-office:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(243, 112, 33, 0.4);
+    color: #ffffff;
+}
+
+.btn-cta-wa {
+    background: #ffffff;
+    color: #083B7A;
+    border: 1.5px solid #083B7A;
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-cta-wa:hover {
+    background: #083B7A;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* 9. LIGHTBOX PREVIEW MODAL */
+.results-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(8, 29, 61, 0.88);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 24px;
+}
+
+.results-modal-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.results-modal-content {
+    position: relative;
+    max-width: 1000px;
+    max-height: 90vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.results-modal-img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    display: block;
+}
+
+.results-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(8, 59, 122, 0.85);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.results-modal-close:hover {
+    background: #F37021;
+    transform: scale(1.08);
+}
+
+/* 10. RESPONSIVE BREAKPOINTS */
+@media (max-width: 1080px) {
+    .results-hero-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .results-hero-visual {
+        justify-content: center;
+    }
+    .results-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .results-showcase-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .results-laurel-badge {
+        align-self: flex-start;
+    }
+    .results-excellence-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .btn-excellence-download {
+        width: 100%;
+        justify-content: center;
+    }
+    .results-bottom-cta {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 20px;
+    }
+    .cta-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    .btn-cta-office,
+    .btn-cta-wa {
+        width: 100%;
+        justify-content: center;
+    }
+    .results-arrow-btn.prev {
+        left: -10px;
+    }
+    .results-arrow-btn.next {
+        right: -10px;
+    }
+}
+
+@media (max-width: 720px) {
+    .results-stats-row {
+        grid-template-columns: 1fr;
+    }
+    .results-posters-pair {
+        grid-template-columns: 1fr;
+    }
+    .results-main-showcase-card {
+        padding: 24px 18px 20px;
+    }
+    .results-year-pills {
+        flex-wrap: wrap;
+        border-radius: 18px;
+        justify-content: center;
+    }
+    .results-year-btn {
+        padding: 8px 16px;
+        font-size: 12.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .results-hero-title {
+        font-size: clamp(1.45rem, 5.5vw, 1.95rem) !important;
+    }
+    .results-main-showcase-card {
+        padding: 18px 14px 16px;
+        border-radius: 16px;
+    }
+    .results-year-btn {
+        padding: 6px 12px;
+        font-size: 11.5px;
+    }
+    .results-poster-card {
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 360px) {
+    .results-hero-title {
+        font-size: 1.35rem !important;
+    }
+    .results-year-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+}

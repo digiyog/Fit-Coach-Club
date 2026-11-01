@@ -1,0 +1,24 @@
+<svg viewBox="0 0 360 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Dotted Loop Flight Path -->
+    <path d="M 15 205 C 70 150, 110 98, 165 98 C 215 98, 235 145, 205 165 C 175 180, 178 125, 255 58" 
+          stroke="#0284C7" 
+          stroke-width="2.4" 
+          stroke-dasharray="6 6" 
+          stroke-linecap="round" 
+          opacity="0.85" />
+
+    <!-- Classic Straight Paper Airplane (Aligned with the flight path trajectory) -->
+    <g transform="translate(255, 58) rotate(-38)">
+        <!-- Top Left Wing (Light Sky Blue) -->
+        <polygon points="46,0 0,-18 16,0" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.8" stroke-linejoin="round"/>
+        
+        <!-- Bottom Right Wing (Vibrant Sky Blue) -->
+        <polygon points="46,0 16,0 0,18" fill="#38BDF8" stroke="#0284C7" stroke-width="1.8" stroke-linejoin="round"/>
+        
+        <!-- Under Keel / Shadow Fold -->
+        <polygon points="16,0 0,18 6,6" fill="#0284C7" stroke="#0284C7" stroke-width="1.2" stroke-linejoin="round"/>
+        
+        <!-- Center Spine Line -->
+        <line x1="46" y1="0" x2="16" y2="0" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+</svg>
