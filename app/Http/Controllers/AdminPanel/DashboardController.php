@@ -104,7 +104,7 @@ class DashboardController extends Controller
             'users.created_at'
         )
         ->where('role_type', 'franchise')
-        ->whereDate('end_date', '>=', now()) // ✅ active
+        ->whereDate('end_date', '>=', now()) // active
         ->withSum([
             'franchise_memberships as total_amount_sum' => function ($q) {
                 $q->whereMonth('created_at', now()->month)
@@ -127,7 +127,7 @@ class DashboardController extends Controller
             'users.created_at'
         )
         ->where('role_type', 'franchise')
-        ->whereDate('end_date', '<', now()) // ❌ inactive
+        ->whereDate('end_date', '<', now()) // inactive
         ->withSum([
             'franchise_memberships as total_amount_sum' => function ($q) {
                 $q->whereMonth('created_at', now()->month)
@@ -165,11 +165,58 @@ class DashboardController extends Controller
             'users.created_at'
         )
         ->where('role_type', 'franchise')
-        ->whereDate('end_date', '>=', now()) // ✅ active
+        ->whereDate('end_date', '>=', now()) // active
         ->orderByDesc('users.id')
         ->get();
 
         $franchiseLifeCycle = $franchises;
+
+        // Executive & Analytical Aggregates
+        $activeFranchiseCount = User::where('role_type', 'franchise')
+            ->whereDate('end_date', '>=', now())
+            ->count();
+        $inactiveFranchiseCount = max(0, $totalFranchise - $activeFranchiseCount);
+
+        $expiringSoonCount = 0;
+        foreach ($franchises as $f) {
+            if (!empty($f->end_date)) {
+                $endDate = \Carbon\Carbon::parse($f->end_date)->startOfDay();
+                $diff = \Carbon\Carbon::today()->diffInDays($endDate, false);
+                if ($diff >= 0 && $diff <= 10) {
+                    $expiringSoonCount++;
+                }
+            }
+        }
+
+        $totalPlatformUsers = User::where('role_type', '!=', 'franchise')
+            ->whereNotNull('created_by')
+            ->count();
+
+        $newPlatformUsersThisMonth = User::where('role_type', '!=', 'franchise')
+            ->whereNotNull('created_by')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        // 6-month historical trends for ApexCharts
+        $trendMonths = [];
+        $trendRevenue = [];
+        $trendReceived = [];
+        $trendFranchises = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthDate = Carbon::now()->subMonths($i);
+            $trendMonths[] = $monthDate->format('M Y');
+            $trendRevenue[] = (float) FranchiseMembershipPlan::whereMonth('created_at', $monthDate->month)
+                ->whereYear('created_at', $monthDate->year)
+                ->sum('total_amount');
+            $trendReceived[] = (float) FranchiseMembershipPlan::whereMonth('created_at', $monthDate->month)
+                ->whereYear('created_at', $monthDate->year)
+                ->sum('received_amount');
+            $trendFranchises[] = (int) User::where('role_type', 'franchise')
+                ->whereMonth('created_at', $monthDate->month)
+                ->whereYear('created_at', $monthDate->year)
+                ->count();
+        }
 
         $breadcrumb = [
             __('language.dashboard_menu') => ''
@@ -177,6 +224,15 @@ class DashboardController extends Controller
 
         $this->viewData['breadcrumb'] = $breadcrumb;
         $this->viewData['totalFranchise'] = $totalFranchise;
+        $this->viewData['activeFranchiseCount'] = $activeFranchiseCount;
+        $this->viewData['inactiveFranchiseCount'] = $inactiveFranchiseCount;
+        $this->viewData['expiringSoonCount'] = $expiringSoonCount;
+        $this->viewData['totalPlatformUsers'] = $totalPlatformUsers;
+        $this->viewData['newPlatformUsersThisMonth'] = $newPlatformUsersThisMonth;
+        $this->viewData['trendMonths'] = $trendMonths;
+        $this->viewData['trendRevenue'] = $trendRevenue;
+        $this->viewData['trendReceived'] = $trendReceived;
+        $this->viewData['trendFranchises'] = $trendFranchises;
         $this->viewData['totalAmount'] = $totalAmount;
         $this->viewData['receivedAmount'] = $receivedAmount;
         $this->viewData['pendingAmount'] = $pendingAmount;
