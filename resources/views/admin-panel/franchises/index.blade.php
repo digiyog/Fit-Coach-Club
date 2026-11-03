@@ -45,159 +45,214 @@
 
     /* ===== 1. Page Hero Banner ===== */
     .fcc-page-hero {
-        background: linear-gradient(135deg, #071938 0%, #0c2d64 55%, #1e40af 100%);
-        border-radius: 18px;
-        padding: 24px 28px;
+        background: linear-gradient(135deg, #020617 0%, #0c1e4a 30%, #1e3a8a 65%, #2563eb 100%);
+        border-radius: 20px;
+        padding: 28px 32px;
         color: #ffffff;
         margin-bottom: 22px;
-        box-shadow: 0 12px 30px -4px rgba(7, 25, 56, 0.35);
+        box-shadow: 0 16px 40px -6px rgba(2, 6, 23, 0.55), 0 0 0 1px rgba(59, 130, 246, 0.15);
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 22px;
         position: relative;
         overflow: hidden;
     }
 
+    /* Top-right bright orb glow */
+    .fcc-page-hero::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        right: -50px;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(99, 102, 241, 0.12) 40%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Bottom-left subtle purple orb */
     .fcc-page-hero::after {
         content: '';
         position: absolute;
-        top: -60px;
-        right: -40px;
-        width: 320px;
-        height: 320px;
-        background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%);
+        bottom: -60px;
+        left: -40px;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, transparent 65%);
         border-radius: 50%;
         pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Animated shimmer sweep across the banner */
+    .fcc-hero-shimmer {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 60%, transparent 100%);
+        animation: fccShimmerSweep 6s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    @keyframes fccShimmerSweep {
+        0% { left: -100%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+    }
+
+    /* Decorative grid dot pattern */
+    .fcc-hero-grid {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background-image: radial-gradient(circle, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.6;
     }
 
     .fcc-hero-content {
         position: relative;
-        z-index: 2;
-        max-width: 480px;
+        z-index: 3;
+        max-width: 440px;
     }
 
     .fcc-hero-pill {
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        color: #e2e8f0;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(59, 130, 246, 0.12) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(16, 185, 129, 0.30);
+        color: #a5f3fc;
         font-size: 11.5px;
-        font-weight: 600;
-        padding: 4px 12px;
+        font-weight: 700;
+        padding: 5px 14px;
         border-radius: 30px;
-        margin-bottom: 10px;
-        letter-spacing: 0.02em;
+        margin-bottom: 12px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
     }
 
     .fcc-hero-pill .fcc-pulse-dot {
-        width: 7px;
-        height: 7px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        background-color: #10b981;
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        background-color: #34d399;
+        box-shadow: 0 0 6px rgba(52, 211, 153, 0.8);
         animation: fccPulse 2s infinite;
     }
 
     @keyframes fccPulse {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        0% { transform: scale(0.95); box-shadow: 0 0 4px rgba(52, 211, 153, 0.8); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 4px rgba(52, 211, 153, 0); }
     }
 
     .fcc-hero-title {
-        font-size: 25px;
+        font-size: 26px;
         font-weight: 800;
         color: #ffffff;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         letter-spacing: -0.02em;
         line-height: 1.25;
+        text-shadow: 0 2px 16px rgba(37, 99, 235, 0.3);
     }
 
     .fcc-hero-subtitle {
-        color: #cbd5e1;
-        font-size: 13px;
+        color: #94a3b8;
+        font-size: 13.5px;
         font-weight: 500;
         margin-bottom: 0;
-        line-height: 1.5;
+        line-height: 1.55;
     }
 
-    /* Gym Storefront Art positioned in hero center-right background */
-    .fcc-hero-art {
-        position: absolute;
-        right: 280px;
-        bottom: 0;
-        height: 100%;
-        max-height: 160px;
-        pointer-events: none;
-        opacity: 0.7;
-        z-index: 1;
+    /* Gym Storefront Art between content and KPI cards */
+    .fcc-hero-building-art {
         display: none;
+        align-items: flex-end;
+        justify-content: center;
+        flex-shrink: 0;
+        z-index: 2;
+        margin: 0 4px;
     }
 
     @media (min-width: 1200px) {
-        .fcc-hero-art { display: block; }
+        .fcc-hero-building-art {
+            display: flex;
+        }
     }
 
     /* KPI Stat Tiles */
     .fcc-hero-stats-row {
         display: flex;
-        align-items: center;
+        align-items: stretch;
         gap: 12px;
         position: relative;
-        z-index: 2;
+        z-index: 3;
     }
 
     .fcc-hero-kpi-tile {
-        background: rgba(10, 26, 58, 0.60);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: linear-gradient(145deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 58, 138, 0.50) 100%);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(148, 163, 184, 0.18);
         border-radius: 14px;
         padding: 12px 18px;
         min-width: 110px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-        transition: transform 0.2s ease;
+        text-align: left;
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .fcc-hero-kpi-tile:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        border-color: rgba(148, 163, 184, 0.30);
     }
 
     .fcc-kpi-icon-badge {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     }
 
-    .fcc-kpi-icon-blue  { background: #2563eb; color: #ffffff; }
-    .fcc-kpi-icon-green { background: #10b981; color: #ffffff; }
-    .fcc-kpi-icon-red   { background: #ef4444; color: #ffffff; }
+    .fcc-kpi-icon-blue  { background: linear-gradient(135deg, #2563eb, #3b82f6); color: #ffffff; }
+    .fcc-kpi-icon-green { background: linear-gradient(135deg, #059669, #10b981); color: #ffffff; }
+    .fcc-kpi-icon-red   { background: linear-gradient(135deg, #dc2626, #ef4444); color: #ffffff; }
 
     .fcc-kpi-label {
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
         color: #94a3b8;
         margin-bottom: 4px;
         white-space: nowrap;
     }
 
     .fcc-kpi-val {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 800;
         color: #ffffff;
         font-family: 'Outfit', sans-serif;
         line-height: 1;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
     /* Right Action Buttons */
@@ -206,7 +261,7 @@
         align-items: center;
         gap: 12px;
         position: relative;
-        z-index: 2;
+        z-index: 3;
     }
 
     .fcc-btn-add-franchise {
@@ -214,46 +269,48 @@
         color: #0f172a !important;
         font-weight: 700;
         font-size: 13.5px;
-        padding: 10px 18px;
+        padding: 11px 20px;
         border-radius: 10px;
-        border: 1px solid #ffffff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        border: none;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8);
         display: inline-flex;
         align-items: center;
         gap: 8px;
         text-decoration: none !important;
-        transition: all 0.2s ease;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         white-space: nowrap;
     }
 
     .fcc-btn-add-franchise:hover {
-        background: #f8fafc;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-        color: var(--fcc-primary) !important;
+        background: #f0f9ff;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20), 0 0 0 1px rgba(59, 130, 246, 0.4);
+        color: #1d4ed8 !important;
     }
 
     .fcc-btn-filter-coaches {
-        background: rgba(14, 38, 82, 0.65);
-        border: 1px solid rgba(147, 197, 253, 0.35);
-        color: #ffffff !important;
-        font-weight: 600;
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.55) 0%, rgba(37, 99, 235, 0.35) 100%);
+        border: 1px solid rgba(147, 197, 253, 0.30);
+        color: #e0f2fe !important;
+        font-weight: 700;
         font-size: 13.5px;
-        padding: 10px 18px;
+        padding: 11px 20px;
         border-radius: 10px;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(10px);
         display: inline-flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         white-space: nowrap;
     }
 
     .fcc-btn-filter-coaches:hover {
-        background: rgba(255, 255, 255, 0.18);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.50) 0%, rgba(99, 102, 241, 0.40) 100%);
         transform: translateY(-2px);
         color: #ffffff !important;
+        border-color: rgba(147, 197, 253, 0.5);
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
     }
 
     /* ===== 2. Filter Card ===== */
@@ -786,6 +843,9 @@
 
         <!-- 1. Executive Hero Header Strip -->
         <div class="fcc-page-hero">
+            <div class="fcc-hero-shimmer"></div>
+            <div class="fcc-hero-grid"></div>
+
             <!-- Left Information -->
             <div class="fcc-hero-content">
                 <div class="fcc-hero-pill">
@@ -799,25 +859,74 @@
                 </p>
             </div>
 
-            <!-- Stylized Gym/Club SVG Artwork in Background -->
-            <div class="fcc-hero-art">
-                <svg width="260" height="150" viewBox="0 0 260 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="130,12 25,58 235,58" fill="#0f2b68" stroke="#3b82f6" stroke-width="2"/>
-                    <circle cx="130" cy="38" r="14" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"/>
-                    <line x1="123" y1="38" x2="137" y2="38" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round"/>
-                    <rect x="121" y="34" width="3" height="8" rx="1.5" fill="#93c5fd"/>
-                    <rect x="136" y="34" width="3" height="8" rx="1.5" fill="#93c5fd"/>
-                    <rect x="35" y="58" width="190" height="92" fill="#091d44" stroke="#1d4ed8" stroke-width="1.5"/>
-                    <rect x="42" y="62" width="176" height="20" rx="3" fill="#172e66" stroke="#38bdf8" stroke-width="1"/>
-                    <text x="130" y="76" font-family="Outfit, sans-serif" font-size="10" font-weight="800" fill="#e0f2fe" text-anchor="middle" letter-spacing="1.5">FIT COACH CLUB</text>
-                    <rect x="46" y="88" width="46" height="58" rx="2" fill="#0369a1" fill-opacity="0.35" stroke="#38bdf8" stroke-width="1"/>
-                    <line x1="69" y1="88" x2="69" y2="146" stroke="#38bdf8" stroke-opacity="0.5"/>
-                    <line x1="46" y1="117" x2="92" y2="117" stroke="#38bdf8" stroke-opacity="0.5"/>
-                    <rect x="106" y="88" width="48" height="62" rx="2" fill="#0284c7" fill-opacity="0.45" stroke="#67e8f9" stroke-width="1.5"/>
-                    <line x1="130" y1="88" x2="130" y2="150" stroke="#67e8f9" stroke-opacity="0.7"/>
-                    <rect x="168" y="88" width="46" height="58" rx="2" fill="#0369a1" fill-opacity="0.35" stroke="#38bdf8" stroke-width="1"/>
-                    <line x1="191" y1="88" x2="191" y2="146" stroke="#38bdf8" stroke-opacity="0.5"/>
-                    <line x1="168" y1="117" x2="214" y2="117" stroke="#38bdf8" stroke-opacity="0.5"/>
+            <!-- Center Gym Storefront Art between content and KPI stats -->
+            <div class="fcc-hero-building-art">
+                <svg width="220" height="135" viewBox="0 0 220 135" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="fccRoofGrad" x1="110" y1="8" x2="110" y2="48" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#1e40af"/>
+                            <stop offset="100%" stop-color="#0c2d64"/>
+                        </linearGradient>
+                        <linearGradient id="fccSignGrad" x1="110" y1="50" x2="110" y2="68" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#1e3a8a"/>
+                            <stop offset="100%" stop-color="#0f172a"/>
+                        </linearGradient>
+                        <linearGradient id="fccWindowGrad" x1="0" y1="72" x2="0" y2="132" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#0284c7" stop-opacity="0.38"/>
+                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.12"/>
+                        </linearGradient>
+                        <linearGradient id="fccDoorGrad" x1="0" y1="72" x2="0" y2="135" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+                            <stop offset="100%" stop-color="#0284c7" stop-opacity="0.22"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Ambient Glow -->
+                    <circle cx="110" cy="70" r="55" fill="#3b82f6" fill-opacity="0.18"/>
+
+                    <!-- Roof Pediment Triangle -->
+                    <polygon points="110,10 18,48 202,48" fill="url(#fccRoofGrad)" stroke="#38bdf8" stroke-width="1.8" stroke-linejoin="round"/>
+
+                    <!-- Dumbbell Emblem in Roof -->
+                    <circle cx="110" cy="30" r="13" fill="#0f2b68" stroke="#60a5fa" stroke-width="1.5"/>
+                    <line x1="104" y1="30" x2="116" y2="30" stroke="#93c5fd" stroke-width="2.2" stroke-linecap="round"/>
+                    <rect x="102" y="26.5" width="2.5" height="7" rx="1" fill="#93c5fd"/>
+                    <rect x="115.5" y="26.5" width="2.5" height="7" rx="1" fill="#93c5fd"/>
+
+                    <!-- Main Body -->
+                    <rect x="25" y="48" width="170" height="85" fill="#071738" stroke="#2563eb" stroke-width="1.2"/>
+
+                    <!-- Fascia Signboard -->
+                    <rect x="30" y="51" width="160" height="18" rx="3" fill="url(#fccSignGrad)" stroke="#38bdf8" stroke-width="1"/>
+                    <text x="110" y="64" font-family="'Outfit', sans-serif" font-size="9" font-weight="800" fill="#e0f2fe" text-anchor="middle" letter-spacing="1.2">FIT COACH CLUB</text>
+
+                    <!-- Left Window Bay -->
+                    <rect x="34" y="73" width="40" height="58" rx="2" fill="url(#fccWindowGrad)" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.8"/>
+                    <line x1="54" y1="73" x2="54" y2="131" stroke="#38bdf8" stroke-opacity="0.4"/>
+                    <line x1="34" y1="100" x2="74" y2="100" stroke="#38bdf8" stroke-opacity="0.4"/>
+                    <line x1="42" y1="116" x2="66" y2="116" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="46" y1="110" x2="62" y2="110" stroke="#0284c7" stroke-width="1.5" stroke-linecap="round"/>
+
+                    <!-- Center Glass Double Door -->
+                    <rect x="83" y="73" width="54" height="60" rx="2" fill="url(#fccDoorGrad)" stroke="#67e8f9" stroke-width="1.4"/>
+                    <line x1="110" y1="73" x2="110" y2="133" stroke="#67e8f9" stroke-width="1.2" stroke-opacity="0.8"/>
+                    <rect x="107" y="100" width="1.5" height="9" rx="0.75" fill="#ffffff"/>
+                    <rect x="111.5" y="100" width="1.5" height="9" rx="0.75" fill="#ffffff"/>
+                    <circle cx="102" cy="94" r="3" fill="#bae6fd"/>
+                    <path d="M99 107 L102 99 L105 107" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="118" cy="92" r="3.2" fill="#e0f2fe"/>
+                    <path d="M114 107 L118 97 L122 107" stroke="#e0f2fe" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+                    <!-- Right Window Bay -->
+                    <rect x="146" y="73" width="40" height="58" rx="2" fill="url(#fccWindowGrad)" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.8"/>
+                    <line x1="166" y1="73" x2="166" y2="131" stroke="#38bdf8" stroke-opacity="0.4"/>
+                    <line x1="146" y1="100" x2="186" y2="100" stroke="#38bdf8" stroke-opacity="0.4"/>
+                    <line x1="154" y1="118" x2="178" y2="118" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="158" cy="118" r="3" fill="#0284c7"/>
+                    <circle cx="174" cy="118" r="3" fill="#0284c7"/>
+
+                    <!-- Ground Accent -->
+                    <line x1="10" y1="133" x2="210" y2="133" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1.5"/>
                 </svg>
             </div>
 
