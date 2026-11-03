@@ -5,16 +5,18 @@
 @push('styles')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="{{ asset('admin-assets/css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('admin-assets/plugins/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('admin-assets/js/daterangepicker/daterangepicker.css') }}" rel="stylesheet" type="text/css">
 
 <style>
+    /* ==========================================================================
+       SUPER ADMIN DASHBOARD EXECUTIVE MODERN REDESIGN
+       ========================================================================== */
     :root {
-        --fcc-primary: #3246d3;
-        --fcc-primary-light: #4361ee;
-        --fcc-primary-gradient: linear-gradient(135deg, #3246d3 0%, #4361ee 100%);
+        --fcc-primary: #1d4ed8;
+        --fcc-primary-light: #3b82f6;
         --fcc-dark: #0f172a;
         --fcc-slate: #1e293b;
         --fcc-muted: #64748b;
@@ -24,15 +26,14 @@
         --fcc-success: #10b981;
         --fcc-warning: #f59e0b;
         --fcc-danger: #ef4444;
-        --fcc-purple: #8b5cf6;
-        --fcc-card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-        --fcc-card-hover-shadow: 0 12px 28px -4px rgba(50, 70, 211, 0.10), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+        --fcc-card-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        --fcc-card-hover-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.08);
     }
 
     .admin-dashboard-wrap {
         font-family: 'Plus Jakarta Sans', sans-serif;
         color: var(--fcc-slate);
-        padding: 6px 4px 30px 4px;
+        padding: 4px 2px 40px 2px;
     }
 
     .admin-dashboard-wrap h1,
@@ -41,65 +42,72 @@
     .admin-dashboard-wrap h4,
     .admin-dashboard-wrap h5,
     .admin-dashboard-wrap h6,
-    .fcc-display-num,
+    .fcc-kpi-value,
     .fcc-card-title,
     .fcc-tab-pill {
-        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Outfit', sans-serif;
     }
 
-    /* 1. Executive Hero Header */
+    /* 1. Breadcrumbs */
+    .fcc-breadcrumb-nav {
+        margin-bottom: 14px;
+    }
+
+    .fcc-breadcrumb-nav .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .fcc-breadcrumb-nav .breadcrumb-item {
+        display: inline-flex;
+        align-items: center;
+        color: #64748b;
+    }
+
+    .fcc-breadcrumb-nav .breadcrumb-item.active {
+        color: #0f172a;
+        font-weight: 600;
+    }
+
+    /* 2. Executive Hero Banner */
     .fcc-hero-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #3246d3 100%);
-        border-radius: 18px;
-        padding: 24px 28px;
-        color: #ffffff;
-        margin-bottom: 24px;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 22px 28px;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 18px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .fcc-hero-header::after {
-        content: '';
-        position: absolute;
-        top: -60px;
-        right: -40px;
-        width: 240px;
-        height: 240px;
-        background: radial-gradient(circle, rgba(67, 97, 238, 0.25) 0%, transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-    }
-
-    .fcc-hero-content {
-        position: relative;
-        z-index: 2;
+        gap: 16px;
     }
 
     .fcc-hero-pill {
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        color: #e2e8f0;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        color: #047857;
         font-size: 12px;
-        font-weight: 600;
-        padding: 4px 12px;
+        font-weight: 700;
+        padding: 3px 12px;
         border-radius: 30px;
-        margin-bottom: 10px;
-        letter-spacing: 0.02em;
+        margin-bottom: 8px;
+        letter-spacing: 0.01em;
     }
 
     .fcc-hero-pill .fcc-pulse-dot {
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         background-color: #10b981;
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
@@ -113,17 +121,17 @@
     }
 
     .fcc-hero-title {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 5px;
+        color: #0f172a;
+        margin-bottom: 4px;
         letter-spacing: -0.02em;
-        line-height: 1.25;
+        line-height: 1.2;
     }
 
     .fcc-hero-subtitle {
-        color: #cbd5e1;
-        font-size: 14px;
+        color: #64748b;
+        font-size: 13.5px;
         font-weight: 500;
         margin-bottom: 0;
         max-width: 680px;
@@ -134,113 +142,100 @@
         align-items: center;
         gap: 10px;
         flex-wrap: wrap;
-        position: relative;
-        z-index: 2;
     }
 
-    .fcc-action-btn {
+    .fcc-btn-primary {
+        background: #1d4ed8;
+        border: 1px solid #1d4ed8;
+        border-radius: 8px;
+        color: #ffffff !important;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 9px 18px;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        font-weight: 600;
-        font-size: 13.5px;
-        padding: 10px 18px;
-        border-radius: 10px;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none !important;
-        white-space: nowrap;
         cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none !important;
+        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.25);
     }
 
-    .fcc-action-btn-primary {
+    .fcc-btn-primary:hover {
+        background: #1e40af;
+        border-color: #1e40af;
+        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
+        transform: translateY(-1px);
+    }
+
+    .fcc-btn-outline {
         background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #334155 !important;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 9px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none !important;
+    }
+
+    .fcc-btn-outline:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
         color: #0f172a !important;
-        border: 1px solid #ffffff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        transform: translateY(-1px);
     }
 
-    .fcc-action-btn-primary:hover {
-        background: #f1f5f9;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-        color: #3246d3 !important;
+    /* 3. Filter Collapse Box */
+    .fcc-filter-card {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
 
-    .fcc-action-btn-glass {
-        background: rgba(255, 255, 255, 0.12);
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        backdrop-filter: blur(8px);
-    }
-
-    .fcc-action-btn-glass:hover {
-        background: rgba(255, 255, 255, 0.22);
-        color: #ffffff !important;
-        transform: translateY(-2px);
-    }
-
-    /* 2. Top Metric KPI Grid (5 Cards) */
+    /* 4. Top Metric KPI Grid (5 Cards) */
     .fcc-kpi-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 16px;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
     }
 
     @media (max-width: 1400px) {
-        .fcc-kpi-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
+        .fcc-kpi-grid { grid-template-columns: repeat(3, 1fr); }
     }
-
     @media (max-width: 992px) {
-        .fcc-kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+        .fcc-kpi-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
     @media (max-width: 576px) {
-        .fcc-kpi-grid {
-            grid-template-columns: 1fr;
-        }
+        .fcc-kpi-grid { grid-template-columns: 1fr; }
     }
 
     .fcc-kpi-card {
-        background: var(--fcc-card-bg);
-        border: 1px solid var(--fcc-border);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 16px;
         padding: 20px;
         box-shadow: var(--fcc-card-shadow);
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.25s ease;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        position: relative;
-        overflow: hidden;
     }
 
     .fcc-kpi-card:hover {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         box-shadow: var(--fcc-card-hover-shadow);
         border-color: #cbd5e1;
     }
-
-    .fcc-kpi-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: transparent;
-        transition: background 0.2s ease;
-    }
-
-    .fcc-kpi-card.kpi-blue::before { background: linear-gradient(90deg, #3246d3, #4361ee); }
-    .fcc-kpi-card.kpi-purple::before { background: linear-gradient(90deg, #7c3aed, #a855f7); }
-    .fcc-kpi-card.kpi-green::before { background: linear-gradient(90deg, #059669, #10b981); }
-    .fcc-kpi-card.kpi-red::before { background: linear-gradient(90deg, #dc2626, #f87171); }
-    .fcc-kpi-card.kpi-cyan::before { background: linear-gradient(90deg, #0284c7, #38bdf8); }
 
     .fcc-kpi-top {
         display: flex;
@@ -250,36 +245,36 @@
     }
 
     .fcc-kpi-label {
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        color: var(--fcc-muted);
+        color: #64748b;
         margin: 0;
     }
 
     .fcc-kpi-icon {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        flex-shrink: 0;
     }
 
-    .fcc-kpi-icon.icon-blue { background: #eff6ff; color: #3246d3; }
-    .fcc-kpi-icon.icon-purple { background: #f5f3ff; color: #7c3aed; }
+    .fcc-kpi-icon.icon-blue { background: #dbeafe; color: #1d4ed8; }
+    .fcc-kpi-icon.icon-purple { background: #f3e8ff; color: #7c3aed; }
     .fcc-kpi-icon.icon-green { background: #ecfdf5; color: #059669; }
-    .fcc-kpi-icon.icon-red { background: #fef2f2; color: #dc2626; }
-    .fcc-kpi-icon.icon-cyan { background: #f0f9ff; color: #0284c7; }
+    .fcc-kpi-icon.icon-red { background: #fee2e2; color: #dc2626; }
+    .fcc-kpi-icon.icon-cyan { background: #e0f2fe; color: #0284c7; }
 
     .fcc-kpi-value {
-        font-size: 26px;
+        font-size: 28px;
         font-weight: 800;
-        color: var(--fcc-dark);
+        color: #0f172a;
         line-height: 1.1;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
         margin-bottom: 8px;
     }
 
@@ -290,42 +285,43 @@
         flex-wrap: wrap;
         gap: 6px;
         font-size: 12px;
-        color: var(--fcc-muted);
+        color: #64748b;
         font-weight: 500;
         border-top: 1px dashed #f1f5f9;
         padding-top: 10px;
-        margin-top: 6px;
+        margin-top: 4px;
     }
 
     .fcc-tag-pill {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 3px 8px;
+        padding: 3px 9px;
         border-radius: 20px;
         font-size: 11.5px;
         font-weight: 700;
+        letter-spacing: 0.01em;
     }
 
-    .fcc-tag-green { background: #dcfce7; color: #15803d; }
-    .fcc-tag-red { background: #fee2e2; color: #b91c1c; }
-    .fcc-tag-amber { background: #fef3c7; color: #b45309; }
-    .fcc-tag-blue { background: #dbeafe; color: #1d4ed8; }
-    .fcc-tag-purple { background: #ede9fe; color: #6d28d9; }
-    .fcc-tag-gray { background: #f1f5f9; color: #475569; }
+    .fcc-tag-green { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .fcc-tag-red { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .fcc-tag-amber { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .fcc-tag-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .fcc-tag-purple { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .fcc-tag-gray { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
 
-    /* 3. Analytics Visual Cards (ApexCharts) */
+    /* 5. Analytics Visual Cards (ApexCharts) */
     .fcc-charts-row {
-        margin-bottom: 24px;
+        margin-bottom: 22px;
     }
 
     .fcc-content-card {
-        background: var(--fcc-card-bg);
-        border: 1px solid var(--fcc-border);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 16px;
         box-shadow: var(--fcc-card-shadow);
         overflow: hidden;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
         transition: all 0.25s ease;
     }
 
@@ -335,7 +331,7 @@
 
     .fcc-card-header {
         padding: 18px 22px;
-        border-bottom: 1px solid var(--fcc-border);
+        border-bottom: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -351,26 +347,26 @@
     }
 
     .fcc-card-badge-icon {
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        flex-shrink: 0;
     }
 
     .fcc-card-title {
         font-size: 16px;
         font-weight: 700;
-        color: var(--fcc-dark);
+        color: #0f172a;
         margin: 0;
         letter-spacing: -0.01em;
     }
 
     .fcc-card-subtitle {
         font-size: 12.5px;
-        color: var(--fcc-muted);
+        color: #64748b;
         margin: 2px 0 0 0;
         font-weight: 500;
     }
@@ -379,59 +375,47 @@
         padding: 20px 22px;
     }
 
-    /* 4. Filter Collapse Box */
-    .fcc-filter-card {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 14px;
-        padding: 16px 20px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    }
-
-    /* 5. Navigation Tabs & Section Switcher */
+    /* 6. Navigation Tabs & Section Switcher */
     .fcc-tabs-container {
         display: flex;
         align-items: center;
         gap: 8px;
         overflow-x: auto;
-        padding-bottom: 6px;
+        padding-bottom: 8px;
         margin-bottom: 20px;
-        scrollbar-width: none;
-    }
-
-    .fcc-tabs-container::-webkit-scrollbar {
-        display: none;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
     }
 
     .fcc-tab-pill {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 18px;
-        border-radius: 12px;
-        font-size: 14px;
-        font-weight: 700;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 600;
         color: #475569;
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.2s ease;
         white-space: nowrap;
         text-decoration: none !important;
     }
 
     .fcc-tab-pill:hover {
         background: #f8fafc;
-        color: var(--fcc-primary);
-        border-color: #cbd5e1;
+        color: #0f172a;
+        border-color: #94a3b8;
     }
 
     .fcc-tab-pill.active {
-        background: var(--fcc-dark);
+        background: #1d4ed8;
         color: #ffffff;
-        border-color: var(--fcc-dark);
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+        border-color: #1d4ed8;
+        font-weight: 700;
+        box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
     }
 
     .fcc-tab-pill .tab-badge {
@@ -442,16 +426,16 @@
         border-radius: 20px;
         font-size: 11px;
         font-weight: 800;
-        background: rgba(0, 0, 0, 0.08);
-        color: inherit;
+        background: #f1f5f9;
+        color: #475569;
     }
 
     .fcc-tab-pill.active .tab-badge {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
         color: #ffffff;
     }
 
-    /* 6. Clean Table Polish */
+    /* 7. Clean Table Styling */
     .fcc-table-wrapper {
         border-radius: 12px;
         overflow-x: auto;
@@ -465,38 +449,38 @@
     }
 
     .fcc-modern-table thead th {
-        background-color: #f8fafc;
-        color: #475569;
-        font-size: 12px;
-        font-weight: 700;
+        background-color: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        padding: 14px 16px;
-        border-top: none;
-        border-bottom: 1px solid #e2e8f0;
+        padding: 13px 16px !important;
+        border-top: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
         white-space: nowrap;
     }
 
     .fcc-modern-table tbody td {
-        padding: 14px 16px;
-        vertical-align: middle;
-        font-size: 13.5px;
-        color: var(--fcc-slate);
-        border-bottom: 1px solid #f1f5f9;
+        padding: 13px 16px !important;
+        vertical-align: middle !important;
+        font-size: 13.5px !important;
+        color: #1e293b !important;
+        border-bottom: 1px solid #f1f5f9 !important;
         transition: background-color 0.15s ease;
     }
 
     .fcc-modern-table tbody tr:hover td {
-        background-color: #f8fafc;
+        background-color: #f8fafc !important;
     }
 
     .fcc-modern-table tfoot th {
-        background-color: #f8fafc;
-        padding: 14px 16px;
-        font-size: 13.5px;
-        border-top: 2px solid #e2e8f0;
-        border-bottom: none;
-        color: var(--fcc-dark);
+        background-color: #f8fafc !important;
+        padding: 13px 16px !important;
+        font-size: 13.5px !important;
+        border-top: 2px solid #e2e8f0 !important;
+        border-bottom: none !important;
+        color: #0f172a !important;
     }
 
     /* Live Search Box for Tables */
@@ -508,27 +492,28 @@
     .fcc-table-search-box input {
         width: 100%;
         padding: 8px 14px 8px 34px;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        border: 1px solid #cbd5e1;
         font-size: 13px;
         background-color: #f8fafc;
         transition: all 0.2s ease;
+        outline: none;
     }
 
     .fcc-table-search-box input:focus {
         background-color: #ffffff;
-        border-color: var(--fcc-primary);
-        box-shadow: 0 0 0 3px rgba(50, 70, 211, 0.12);
-        outline: none;
+        border-color: #1d4ed8;
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
     }
 
     .fcc-table-search-box i {
         position: absolute;
-        left: 11px;
+        left: 12px;
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
         font-size: 13px;
+        pointer-events: none;
     }
 
     /* Coach Avatar Circle */
@@ -545,7 +530,7 @@
         flex-shrink: 0;
     }
 
-    .avatar-bg-1 { background: linear-gradient(135deg, #3246d3, #4361ee); }
+    .avatar-bg-1 { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
     .avatar-bg-2 { background: linear-gradient(135deg, #059669, #10b981); }
     .avatar-bg-3 { background: linear-gradient(135deg, #d97706, #f59e0b); }
     .avatar-bg-4 { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
@@ -574,7 +559,7 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        padding: 5px 10px;
+        padding: 5px 11px;
         border-radius: 6px;
         font-size: 12px;
         font-weight: 600;
@@ -583,9 +568,9 @@
     }
 
     .fcc-mini-btn-light {
-        background: #f1f5f9;
+        background: #f8fafc;
         color: #334155 !important;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
     }
 
     .fcc-mini-btn-light:hover {
@@ -594,13 +579,13 @@
     }
 
     .fcc-mini-btn-wa {
-        background: #dcfce7;
-        color: #15803d !important;
-        border: 1px solid #bbf7d0;
+        background: #ecfdf5;
+        color: #047857 !important;
+        border: 1px solid #a7f3d0;
     }
 
     .fcc-mini-btn-wa:hover {
-        background: #bbf7d0;
+        background: #d1fae5;
     }
 
     /* Overdue row tint */
@@ -617,10 +602,12 @@
         text-align: center;
         padding: 40px 20px;
         color: #94a3b8;
+        font-size: 14px;
+        font-weight: 500;
     }
 
     .fcc-empty-state i {
-        font-size: 38px;
+        font-size: 36px;
         margin-bottom: 10px;
         opacity: 0.7;
     }
@@ -631,7 +618,16 @@
 <div class="layout-px-spacing">
     <div class="layout-top-spacing admin-dashboard-wrap">
 
-        <!-- 1. Executive Hero Banner -->
+        <!-- 1. Breadcrumb Navigation -->
+        <nav class="fcc-breadcrumb-nav" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i data-feather="home" style="width: 14px; height: 14px;" class="me-1"></i> Dashboard
+                </li>
+            </ol>
+        </nav>
+
+        <!-- 2. Executive Hero Header -->
         @php
             $hour = date('H');
             if ($hour < 12) {
@@ -644,7 +640,7 @@
         @endphp
 
         <div class="fcc-hero-header">
-            <div class="fcc-hero-content">
+            <div>
                 <div class="fcc-hero-pill">
                     <span class="fcc-pulse-dot"></span> Super Admin Platform Control • Live System
                 </div>
@@ -657,19 +653,19 @@
             </div>
 
             <div class="fcc-hero-actions">
-                <a href="{{ route('adminPanel.franchises.create') }}" class="fcc-action-btn fcc-action-btn-primary">
+                <a href="{{ route('adminPanel.franchises.create') }}" class="fcc-btn-primary">
                     <i data-feather="user-plus" style="width: 16px; height: 16px;"></i> Add Franchise Coach
                 </a>
-                <a href="{{ route('adminPanel.franchise-membership-plans.create') }}" class="fcc-action-btn fcc-action-btn-glass">
+                <a href="{{ route('adminPanel.franchise-membership-plans.create') }}" class="fcc-btn-outline">
                     <i data-feather="credit-card" style="width: 16px; height: 16px;"></i> Assign Plan
                 </a>
-                <button type="button" class="fcc-action-btn fcc-action-btn-glass filter-button" id="toggleFilterBtn">
+                <button type="button" class="fcc-btn-outline" id="toggleFilterBtn">
                     <i data-feather="filter" style="width: 16px; height: 16px;"></i> Filter Dates
                 </button>
             </div>
         </div>
 
-        <!-- 2. Date Filter Bar (Collapsible) -->
+        <!-- 3. Date Filter Bar (Collapsible) -->
         @php
             $filterClass = Request::get('is_filter') ? '' : 'd-none';
         @endphp
@@ -689,10 +685,10 @@
                     {!! Form::hidden('date_filter_type', $filterDateType ?? '1', ['id' => 'date_filter_type']) !!}
                 </div>
                 <div class="col-md-7 col-12 d-flex align-items-end gap-2 pt-md-4">
-                    <button type="submit" class="btn btn-primary" style="padding: 10px 20px; border-radius: 8px; font-weight: 600;">
-                        <i data-feather="check" style="width: 15px; height: 15px;" class="me-1"></i> Apply Filter
+                    <button type="submit" class="fcc-btn-primary" style="padding: 10px 20px;">
+                        <i data-feather="check" style="width: 15px; height: 15px;"></i> Apply Filter
                     </button>
-                    <a href="{{ route('adminPanel.dashboard') }}" class="btn btn-outline-secondary" style="padding: 10px 18px; border-radius: 8px; font-weight: 600;">
+                    <a href="{{ route('adminPanel.dashboard') }}" class="fcc-btn-outline" style="padding: 10px 18px;">
                         Reset
                     </a>
                 </div>
@@ -700,10 +696,10 @@
             {!! Form::close() !!}
         </div>
 
-        <!-- 3. Key Financial & Operational Metric Cards (5 Cards Grid) -->
+        <!-- 4. Key Financial & Operational Metric Cards (5 Cards Grid) -->
         <div class="fcc-kpi-grid">
             <!-- Metric 1: Franchises -->
-            <div class="fcc-kpi-card kpi-blue">
+            <div class="fcc-kpi-card">
                 <div class="fcc-kpi-top">
                     <span class="fcc-kpi-label">Franchise Coaches</span>
                     <div class="fcc-kpi-icon icon-blue">
@@ -717,13 +713,13 @@
                         <span class="fcc-tag-pill fcc-tag-gray">{{ $inactiveFranchiseCount ?? 0 }} Inactive</span>
                     </div>
                     @if(isset($franchiseThisMonths) && count($franchiseThisMonths) > 0)
-                        <span class="text-primary fw-bold">+{{ count($franchiseThisMonths) }} new this mo.</span>
+                        <span class="text-primary fw-bold" style="font-size: 11.5px;">+{{ count($franchiseThisMonths) }} new this mo.</span>
                     @endif
                 </div>
             </div>
 
             <!-- Metric 2: Total Revenue -->
-            <div class="fcc-kpi-card kpi-purple">
+            <div class="fcc-kpi-card">
                 <div class="fcc-kpi-top">
                     <span class="fcc-kpi-label">Gross Revenue</span>
                     <div class="fcc-kpi-icon icon-purple">
@@ -741,7 +737,7 @@
             </div>
 
             <!-- Metric 3: Received Amount -->
-            <div class="fcc-kpi-card kpi-green">
+            <div class="fcc-kpi-card">
                 <div class="fcc-kpi-top">
                     <span class="fcc-kpi-label">Collected In Bank</span>
                     <div class="fcc-kpi-icon icon-green">
@@ -756,7 +752,7 @@
             </div>
 
             <!-- Metric 4: Pending Amount -->
-            <div class="fcc-kpi-card kpi-red">
+            <div class="fcc-kpi-card">
                 <div class="fcc-kpi-top">
                     <span class="fcc-kpi-label">Pending Receivables</span>
                     <div class="fcc-kpi-icon icon-red">
@@ -771,7 +767,7 @@
             </div>
 
             <!-- Metric 5: Platform Reach -->
-            <div class="fcc-kpi-card kpi-cyan">
+            <div class="fcc-kpi-card">
                 <div class="fcc-kpi-top">
                     <span class="fcc-kpi-label">End-User Clients</span>
                     <div class="fcc-kpi-icon icon-cyan">
@@ -786,14 +782,14 @@
             </div>
         </div>
 
-        <!-- 4. Visual Analytics: ApexCharts Trends & Coach Health -->
+        <!-- 5. Visual Analytics: ApexCharts Trends & Coach Health -->
         <div class="row fcc-charts-row">
             <!-- Left Chart: Revenue & Collection Velocity -->
             <div class="col-xl-8 col-lg-7 col-12 mb-4 mb-xl-0">
                 <div class="fcc-content-card h-100 mb-0">
                     <div class="fcc-card-header">
                         <div class="fcc-card-header-left">
-                            <div class="fcc-card-badge-icon" style="background: #eff6ff; color: #3246d3;">
+                            <div class="fcc-card-badge-icon" style="background: #eff6ff; color: #1d4ed8;">
                                 <i data-feather="bar-chart-2" style="width: 18px; height: 18px;"></i>
                             </div>
                             <div>
@@ -802,7 +798,7 @@
                             </div>
                         </div>
                         <div>
-                            <span class="badge badge-purple" style="font-size: 11.5px; padding: 6px 12px; border-radius: 20px;">
+                            <span class="fcc-tag-pill fcc-tag-blue">
                                 Monthly Velocity
                             </span>
                         </div>
@@ -854,7 +850,7 @@
             </div>
         </div>
 
-        <!-- 5. Operational Command Center: Tabs Navigation -->
+        <!-- 6. Operational Command Center: Tabs Navigation -->
         <div class="fcc-tabs-container">
             <button class="fcc-tab-pill active" onclick="switchDashboardTab('tab-priority', this)">
                 <i data-feather="alert-triangle" style="width: 15px; height: 15px;"></i>
@@ -909,7 +905,7 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
                             <table class="table fcc-modern-table" id="tablePendingPayments">
                                 <thead>
                                     <tr>
@@ -997,7 +993,7 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
                             <table class="table fcc-modern-table" id="tableUpcomingSubs">
                                 <thead>
                                     <tr>
@@ -1109,8 +1105,8 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
-                            <table class="table fcc-modern-table">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
+                            <table class="table fcc-modern-table" id="tableTopActive">
                                 <thead>
                                     <tr>
                                         <th style="width: 70px;">Rank</th>
@@ -1183,8 +1179,8 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
-                            <table class="table fcc-modern-table">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
+                            <table class="table fcc-modern-table" id="tableTopInactive">
                                 <thead>
                                     <tr>
                                         <th style="width: 70px;">S.No</th>
@@ -1246,7 +1242,7 @@
                     <div class="fcc-content-card">
                         <div class="fcc-card-header">
                             <div class="fcc-card-header-left">
-                                <div class="fcc-card-badge-icon" style="background: #eff6ff; color: #3246d3;">
+                                <div class="fcc-card-badge-icon" style="background: #eff6ff; color: #1d4ed8;">
                                     <i data-feather="trending-up" style="width: 18px; height: 18px;"></i>
                                 </div>
                                 <div>
@@ -1260,7 +1256,7 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
                             <table class="table fcc-modern-table" id="tablePlatformUsage">
                                 <thead>
                                     <tr>
@@ -1306,7 +1302,7 @@
                                                 <td style="width: 200px;">
                                                     <div class="d-flex align-items-center gap-2">
                                                         <div class="progress flex-grow-1" style="height: 6px; background: #e2e8f0; border-radius: 10px;">
-                                                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ min(100, $percentShare * 2) }}%;" aria-valuenow="{{ $percentShare }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div class="progress-bar" role="progressbar" style="background: #1d4ed8; width: {{ min(100, $percentShare * 2) }}%;" aria-valuenow="{{ $percentShare }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                         </div>
                                                         <small class="text-muted fw-bold" style="font-size: 11px;">{{ $percentShare }}%</small>
                                                     </div>
@@ -1352,7 +1348,7 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
                             <table class="table fcc-modern-table" id="tableNewFranchises">
                                 <thead>
                                     <tr>
@@ -1439,7 +1435,7 @@
                             </div>
                         </div>
 
-                        <div class="p-0 fcc-table-wrapper">
+                        <div class="p-0 fcc-table-wrapper table-responsive">
                             <table class="table fcc-modern-table" id="tableAllLifecycle">
                                 <thead>
                                     <tr>
@@ -1608,11 +1604,11 @@
                     top: 2,
                     left: 0,
                     blur: 6,
-                    color: '#3246d3',
+                    color: '#1d4ed8',
                     opacity: 0.1
                 }
             },
-            colors: ['#3246d3', '#10b981'],
+            colors: ['#1d4ed8', '#10b981'],
             dataLabels: { enabled: false },
             stroke: {
                 curve: 'smooth',
