@@ -795,8 +795,9 @@ form .fcc-card:nth-of-type(5),
     outline: none !important;
 }
 
-/* Ensure the dropdown menu is anchored directly below the button with high z-index */
-.bootstrap-select > .dropdown-menu {
+/* Ensure the dropdown menu is anchored directly below the button with high z-index (closed by default) */
+.bootstrap-select > .dropdown-menu,
+.bootstrap-select:not(.show):not(.open) > .dropdown-menu {
     display: none !important;
     position: absolute !important;
     top: 100% !important;
@@ -818,11 +819,9 @@ form .fcc-card:nth-of-type(5),
     overflow: visible !important;
 }
 
-/* Show when open */
+/* Show ONLY when parent bootstrap-select has .show or .open */
 .bootstrap-select.show > .dropdown-menu,
-.bootstrap-select.open > .dropdown-menu,
-.bootstrap-select > .dropdown-menu.show,
-.bootstrap-select > .dropdown-menu.open {
+.bootstrap-select.open > .dropdown-menu {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
