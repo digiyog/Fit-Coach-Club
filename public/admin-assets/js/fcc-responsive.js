@@ -5,12 +5,20 @@
     'use strict';
 
     $(document).ready(function() {
-        // Mobile Close Button on Sidebar Brand
-        $(document).on('click', '#fccMobileCloseSidebar', function(e) {
+        // Close / Collapse Button on Sidebar Brand
+        $(document).on('click', '#fccSidebarCloseBtn, #fccMobileCloseSidebar', function(e) {
             e.preventDefault();
-            $('#container').removeClass('sbar-open').addClass('sidebar-closed');
-            $('.overlay').removeClass('show');
-            $('html, body').removeClass('sidebar-noneoverflow');
+            if (window.innerWidth < 992) {
+                $('#container').removeClass('sbar-open').addClass('sidebar-closed');
+                $('.overlay').removeClass('show');
+                $('html, body').removeClass('sidebar-noneoverflow');
+            } else {
+                if ($('.sidebarCollapse').length) {
+                    $('.sidebarCollapse').first().trigger('click');
+                } else {
+                    $('#container').toggleClass('sidebar-closed');
+                }
+            }
         });
 
         // Overlay Click Closes Drawer

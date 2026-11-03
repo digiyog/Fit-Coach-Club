@@ -171,12 +171,12 @@ html, body {
 
 /* 3. Deep Midnight Navy Sidebar (.fcc-sidebar-wrapper) */
 .sidebar-wrapper.fcc-sidebar-wrapper {
-    background: linear-gradient(180deg, #07172c 0%, #0a203c 50%, #07182e 100%) !important;
+    background: linear-gradient(180deg, #03081a 0%, #050f28 55%, #030718 100%) !important;
     height: 100vh !important;
     position: fixed !important;
     top: 0 !important;
     bottom: 0 !important;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.28) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
     border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
     display: flex !important;
     flex-direction: column !important;
@@ -215,45 +215,83 @@ html, body {
     }
     body .main-container.sbar-open .sidebar-wrapper.fcc-sidebar-wrapper {
         left: 0 !important;
-        box-shadow: 10px 0 35px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 10px 0 35px rgba(0, 0, 0, 0.6) !important;
     }
 }
 
-/* Sidebar Brand Header with Runner Logo */
+/* Sidebar Brand Header with Logo & Close [X] */
 .fcc-sidebar-brand {
-    height: 68px !important;
+    height: 72px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 0 18px !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 0 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
     flex-shrink: 0 !important;
     z-index: 5 !important;
     background: transparent !important;
 }
 
-.fcc-brand-logo-img {
+.fcc-sidebar-logo-box {
+    width: 38px !important;
     height: 38px !important;
-    width: auto !important;
-    max-width: 180px !important;
-    object-fit: contain !important;
-}
-
-.fcc-mobile-close-btn {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 8px !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: none !important;
-    cursor: pointer !important;
+    border-radius: 9px !important;
+    background: #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: background 0.15s ease !important;
+    padding: 3px !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
-.fcc-mobile-close-btn:hover {
+.fcc-brand-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 17.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+}
+
+.brand-text-accent {
+    color: #20d4d6 !important;
+}
+
+.brand-text-white {
+    color: #ffffff !important;
+}
+
+.fcc-sidebar-close-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 9px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: #cbd5e1 !important;
+    transition: all 0.2s ease !important;
+}
+
+.fcc-sidebar-close-btn:hover {
     background: rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+}
+
+.fcc-sidebar-close-btn svg {
+    stroke: #cbd5e1 !important;
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 2.2 !important;
+}
+
+.fcc-sidebar-close-btn:hover svg {
+    stroke: #ffffff !important;
 }
 
 /* Scrollable Menu Area */
@@ -282,10 +320,13 @@ html, body {
     padding: 16px 12px 140px 12px !important;
     list-style: none !important;
     margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
 }
 
 .fcc-sidebar-wrapper li.menu {
-    margin-bottom: 4px !important;
+    margin-bottom: 0 !important;
     list-style: none !important;
 }
 
@@ -294,118 +335,116 @@ html, body {
 .fcc-sidebar-wrapper li.menu > a.dropdown-toggle {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
-    padding: 10px 14px !important;
-    border-radius: 9px !important;
-    color: #e2e8f0 !important;
-    font-size: 13.5px !important;
-    font-weight: 500 !important;
+    gap: 13px !important;
+    padding: 7px 10px !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
     text-decoration: none !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
+    cursor: pointer !important;
+    position: relative !important;
 }
 
-/* Force bright readable white text on all menu spans and text */
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle span,
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle div span,
-#sidebar ul.menu-categories li.menu > .dropdown-toggle span,
-#sidebar ul.menu-categories li.menu > .dropdown-toggle div span,
-#sidebar ul.menu-categories li.menu a span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle div span,
-.fcc-sidebar-wrapper li.menu > .dropdown-toggle span,
-.fcc-sidebar-wrapper li.menu > .dropdown-toggle div span,
-.fcc-sidebar-wrapper li.menu a span {
-    color: #e2e8f0 !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    letter-spacing: normal !important;
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle::after,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle::after {
+    display: none !important;
+    content: none !important;
 }
 
-/* Default state for menu icons and chevrons */
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle svg,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle svg,
-.menu-item-content svg {
-    color: #cbd5e1 !important;
-    stroke: #cbd5e1 !important;
+/* Icon Box inside each menu item */
+.menu-item-icon-box {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.menu-item-icon-box svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
     width: 18px !important;
     height: 18px !important;
+    stroke-width: 2 !important;
     flex-shrink: 0 !important;
 }
 
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle .menu-chevron svg,
-.menu-chevron svg {
-    color: #94a3b8 !important;
-    stroke: #94a3b8 !important;
-    width: 14px !important;
-    height: 14px !important;
-    transition: transform 0.2s ease !important;
+/* Menu Item Text Title */
+.menu-item-title,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle span {
+    color: #ffffff !important;
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 14.5px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
+    white-space: nowrap !important;
 }
 
 /* Hover States */
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover:not(.active):not([data-active="true"]),
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover:not(.active):not([data-active="true"]) {
+    background: rgba(255, 255, 255, 0.06) !important;
 }
 
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover span,
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover div span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover div span {
-    color: #ffffff !important;
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover:not(.active):not([data-active="true"]) .menu-item-icon-box,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover:not(.active):not([data-active="true"]) .menu-item-icon-box {
+    background: rgba(37, 99, 235, 0.28) !important;
+    border-color: rgba(96, 165, 250, 0.35) !important;
 }
 
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover svg,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover svg,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover .menu-item-content svg {
-    color: #ffffff !important;
-    stroke: #ffffff !important;
-}
-
-/* Active State (e.g. Dashboard / Franchises active pill) */
+/* Active State (Solid Royal Blue Pill) */
 #sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"],
 #sidebar ul.menu-categories li.menu > a.dropdown-toggle.parent-active,
 #sidebar ul.menu-categories li.menu > a.dropdown-toggle.active,
 .fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"],
 .fcc-sidebar-wrapper li.menu > a.dropdown-toggle.parent-active,
 .fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active {
-    background: #1d4ed8 !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.45) !important;
+    background: #1b53f4 !important;
+    box-shadow: 0 4px 18px rgba(27, 83, 244, 0.5) !important;
+    border-radius: 12px !important;
 }
 
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"] span,
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle.parent-active span,
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"] span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.parent-active span,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active span {
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"] .menu-item-icon-box,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active .menu-item-icon-box,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"] .menu-item-icon-box,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active .menu-item-icon-box {
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"] .menu-item-title,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active .menu-item-title,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"] .menu-item-title,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active .menu-item-title {
     color: #ffffff !important;
     font-weight: 700 !important;
 }
 
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"] svg,
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle.parent-active svg,
-#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active svg,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"] svg,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.parent-active svg,
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active svg {
-    color: #ffffff !important;
-    stroke: #ffffff !important;
+/* Decorative Waves at Sidebar Bottom */
+.fcc-sidebar-waves {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 120px !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    overflow: hidden !important;
 }
 
-.menu-item-content {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-}
-
-.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:not(.collapsed) .menu-chevron svg {
-    transform: rotate(180deg) !important;
+.fcc-sidebar-waves svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
 }
 
 /* Submenu Items */
