@@ -510,31 +510,55 @@ li.active .sub-dot {
 }
 
 /* 5. Responsive Page Containers & Layout Spacing */
-.fcc-page-container,
-.layout-px-spacing {
+.fcc-page-container {
     width: 100% !important;
     max-width: 100% !important;
     min-height: calc(100vh - 120px) !important;
 }
 
+.layout-px-spacing {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+}
+
+/* Ensure breadcrumb container never introduces unwanted vertical height */
+.sub-header-container,
+.sub-header-container.layout-px-spacing,
+.custom-breadcrumbs {
+    min-height: 0 !important;
+    height: auto !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.sub-header-container header.header {
+    min-height: auto !important;
+    padding: 6px 16px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 @media (min-width: 992px) {
     .fcc-page-container,
     .layout-px-spacing {
-        padding: 24px 28px 40px 28px !important;
+        padding: 20px 28px 40px 28px !important;
     }
 }
 
 @media (max-width: 991px) and (min-width: 768px) {
     .fcc-page-container,
     .layout-px-spacing {
-        padding: 20px 20px 30px 20px !important;
+        padding: 16px 20px 30px 20px !important;
     }
 }
 
 @media (max-width: 767px) {
     .fcc-page-container,
     .layout-px-spacing {
-        padding: 16px 12px 24px 12px !important;
+        padding: 14px 12px 24px 12px !important;
     }
 }
 

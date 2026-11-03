@@ -74,7 +74,7 @@
 
         <!-- Include Content  -->
         <div id="content" class="main-content">
-            @if(isset($breadcrumb))
+            @if(isset($breadcrumb) && !request()->routeIs('adminPanel.dashboard*') && !request()->is('admin-panel/dashboard*'))
                 <!-- Include breadcrumb -->
                 @include('admin-panel.layouts.main-breadcrumb')
                 <!--/ Include breadcrumb -->

@@ -1,5 +1,6 @@
 <!--  BEGIN NAVBAR  -->
-<div class="sub-header-container layout-px-spacing custom-breadcrumbs">
+@if(isset($breadcrumb) && !request()->routeIs('adminPanel.dashboard*') && !request()->is('admin-panel/dashboard*') && !request()->is(Request::segment(1).'/dashboard*'))
+<div class="sub-header-container custom-breadcrumbs">
     <header class="header navbar navbar-expand-sm">
 
         <ul class="navbar-nav flex-row">
@@ -14,25 +15,18 @@
                                             <a href="{{$value}}">{{$key}}</a>
                                         </li>
                                     @else
-                                        @if(!request()->is(Request::segment(1).'/dashboard*') && request()->route()->getName() != 'adminPanel.dashboard')
                                         <li class="breadcrumb-item">
                                             <span>{{$key}}</span>
                                         </li>
-                                        @endif
                                     @endif
                                 @endforeach
                             </ol>
                         @endif
-                        <!-- @if (request()->is(Request::segment(1).'/dashboard*'))
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    <span>{{ __('language.dashboard') }}</span></li>
-                            </ol>
-                        @endif -->
                     </nav>
                 </div>
             </li>
         </ul>
     </header>
 </div>
+@endif
 <!--  END NAVBAR  -->
