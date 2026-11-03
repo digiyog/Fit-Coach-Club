@@ -30,7 +30,17 @@ $isFranchises = request()->routeIs('adminPanel.franchises*') || request()->is('a
                 <div class="d-flex align-items-center gap-2" style="font-family: 'Plus Jakarta Sans', sans-serif;">
                     <a href="{{ route('adminPanel.dashboard') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Dashboard</a>
                     <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
-                    <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Franchises</span>
+                    @if(request()->routeIs('adminPanel.franchises.create') || request()->is('*franchises/create*'))
+                        <a href="{{ route('adminPanel.franchises.index') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Franchises</a>
+                        <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
+                        <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Create Franchise</span>
+                    @elseif(request()->routeIs('adminPanel.franchises.edit') || request()->is('*franchises/edit*'))
+                        <a href="{{ route('adminPanel.franchises.index') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Franchises</a>
+                        <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
+                        <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Edit Franchise</span>
+                    @else
+                        <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Franchises</span>
+                    @endif
                 </div>
             </div>
         @else

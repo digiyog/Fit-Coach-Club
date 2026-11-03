@@ -142,8 +142,14 @@ var Franchise = (function() {
                  errorPlacement: function (error, element) {
                     if (element.attr("name") == "check_section") {
                         error.appendTo(".check-section-error");
+                    } else if (element.closest('.fcc-input-wrapper').length) {
+                        error.insertAfter(element.closest('.fcc-input-wrapper'));
                     } else {
-                        error.insertAfter(element);
+                        if (element.closest('.fcc-input-wrapper').length) {
+                            error.insertAfter(element.closest('.fcc-input-wrapper'));
+                        } else {
+                            error.insertAfter(element);
+                        }
                     }
                 },
                 //------------------
@@ -208,13 +214,23 @@ var Franchise = (function() {
                             error.appendTo($(element).parents('.input-group').parent());
                         } else if ($(element).parents('.iti').length) {
                             error.appendTo($(element).parents('.iti').parent());
+                        } else if (element.closest('.fcc-input-wrapper').length) {
+                        error.insertAfter(element.closest('.fcc-input-wrapper'));
+                    } else {
+                            if (element.closest('.fcc-input-wrapper').length) {
+                            error.insertAfter(element.closest('.fcc-input-wrapper'));
                         } else {
                             error.insertAfter(element);
+                        }
                         }
                     }
                     else
                     {
-                        error.insertAfter(element);
+                        if (element.closest('.fcc-input-wrapper').length) {
+                            error.insertAfter(element.closest('.fcc-input-wrapper'));
+                        } else {
+                            error.insertAfter(element);
+                        }
                     }
                 },
                 submitHandler: function(form) {
