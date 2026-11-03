@@ -9,16 +9,13 @@
             $permissions = $user ? $user->permissions->pluck('slug')->toArray() : [];
 
             $isDashboard = request()->is(Request::segment(1).'/dashboard*') || request()->is(Request::segment(1)) || request()->is('dashboard*');
-            $isFranchiseModule = request()->is(Request::segment(1).'/franchises*') || request()->is(Request::segment(1).'/membership-plans*') || request()->is(Request::segment(1).'/franchise-membership-plans*');
-            $isFranchiseList = request()->is(Request::segment(1).'/franchises') || (request()->is(Request::segment(1).'/franchises*') && !request()->is(Request::segment(1).'/franchises/create*'));
-            $isFranchiseCreate = request()->is(Request::segment(1).'/franchises/create*');
-            $isPackages = request()->is(Request::segment(1).'/membership-plans*');
-            $isSubscriptions = request()->is(Request::segment(1).'/franchise-membership-plans*');
-            
-            $isProductsModule = request()->is(Request::segment(1).'/products*') || request()->is(Request::segment(1).'/product-types*');
-            $isMealTypes = request()->is(Request::segment(1).'/meal-types*');
-            $isCmsPages = request()->is(Request::segment(1).'/cms-pages*');
-            $isCompanyProfile = request()->is(Request::segment(1).'/company-profile*') || request()->is(Request::segment(1).'/profile*');
+            $isFranchise = request()->is(Request::segment(1).'/franchises*');
+            $isProductType = request()->is(Request::segment(1).'/product-types*');
+            $isProduct = request()->is(Request::segment(1).'/products*');
+            $isMealType = request()->is(Request::segment(1).'/meal-types*');
+            $isMembershipPlan = request()->is(Request::segment(1).'/membership-plans*');
+            $isFranchiseMembershipPlan = request()->is(Request::segment(1).'/franchise-membership-plans*');
+            $isCMSPages = request()->is(Request::segment(1).'/cms-pages*');
         @endphp
 
         <!-- Brand Header with Original Logo & Mobile Close Button -->
@@ -41,9 +38,11 @@
             </button>
         </div>
 
+        <!-- Scrollable Navigation Area (Original Navigation Links Kept As Is) -->
         <div class="sidebar-scroll-container">
             <ul class="list-unstyled menu-categories ps" id="accordionSidebar">
-                <!-- Dashboard -->
+
+                <!-- 1. Dashboard -->
                 <li class="menu">
                     <a href="{{ route('adminPanel.dashboard') }}" data-active="{{ $isDashboard ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isDashboard ? 'active parent-active' : '' }}">
                         <div class="menu-item-content">
@@ -53,170 +52,104 @@
                     </a>
                 </li>
 
-                <!-- Franchises (Collapsible with Submenu) -->
+                <!-- 2. Franchises -->
                 <li class="menu">
-                    <a href="#franchiseMenu" data-bs-toggle="collapse" data-toggle="collapse" aria-expanded="{{ $isFranchiseModule ? 'true' : 'false' }}" class="dropdown-toggle {{ $isFranchiseModule ? 'active parent-active' : 'collapsed' }}" data-active="{{ $isFranchiseModule ? 'true' : 'false' }}">
+                    <a href="{{ route('adminPanel.franchises.index') }}" data-active="{{ $isFranchise ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isFranchise ? 'active parent-active' : 'collapsed' }}">
                         <div class="menu-item-content">
-                            <i data-feather="archive"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 7l9-4 9 4-9 4-9-4z"></path>
+                                <path d="M3 7v10l9 4 9-4V7"></path>
+                                <path d="M12 11v10"></path>
+                            </svg>
                             <span>Franchises</span>
                         </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
-                        </div>
                     </a>
-                    <ul class="collapse submenu list-unstyled {{ $isFranchiseModule ? 'show' : '' }}" id="franchiseMenu" data-bs-parent="#accordionSidebar">
-                        <li class="{{ $isFranchiseList ? 'active' : '' }}">
-                            <a href="{{ route('adminPanel.franchises.index') }}" class="{{ $isFranchiseList ? 'active-sub' : '' }}">
-                                <span class="sub-dot"></span>
-                                <span>All Franchises</span>
-                            </a>
-                        </li>
-                        <li class="{{ $isFranchiseCreate ? 'active' : '' }}">
-                            <a href="{{ route('adminPanel.franchises.create') }}" class="{{ $isFranchiseCreate ? 'active-sub' : '' }}">
-                                <span class="sub-dot"></span>
-                                <span>Create Franchise</span>
-                            </a>
-                        </li>
-                        <li class="{{ $isPackages ? 'active' : '' }}">
-                            <a href="{{ route('adminPanel.membership-plans.index') }}" class="{{ $isPackages ? 'active-sub' : '' }}">
-                                <span class="sub-dot"></span>
-                                <span>Packages</span>
-                            </a>
-                        </li>
-                        <li class="{{ $isSubscriptions ? 'active' : '' }}">
-                            <a href="{{ route('adminPanel.franchise-membership-plans.index') }}" class="{{ $isSubscriptions ? 'active-sub' : '' }}">
-                                <span class="sub-dot"></span>
-                                <span>Subscriptions</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
 
-                <!-- Users -->
+                <!-- 3. Product Types -->
                 <li class="menu">
-                    <a href="javascript:void(0);" class="dropdown-toggle collapsed">
+                    <a href="{{ route('adminPanel.product-types.index') }}" data-active="{{ $isProductType ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isProductType ? 'active parent-active' : 'collapsed' }}">
                         <div class="menu-item-content">
-                            <i data-feather="users"></i>
-                            <span>Users</span>
-                        </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                            <span>Product Types</span>
                         </div>
                     </a>
                 </li>
 
-                <!-- Clients -->
+                <!-- 4. Products -->
                 <li class="menu">
-                    <a href="javascript:void(0);" class="dropdown-toggle collapsed">
+                    <a href="{{ route('adminPanel.products.index') }}" data-active="{{ $isProduct ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isProduct ? 'active parent-active' : 'collapsed' }}">
                         <div class="menu-item-content">
-                            <i data-feather="user-check"></i>
-                            <span>Clients</span>
-                        </div>
-                    </a>
-                </li>
-
-                <!-- Workouts -->
-                <li class="menu">
-                    <a href="javascript:void(0);" class="dropdown-toggle collapsed">
-                        <div class="menu-item-content">
-                            <i data-feather="activity"></i>
-                            <span>Workouts</span>
-                        </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                    </a>
-                </li>
-
-                <!-- Diet Plans -->
-                <li class="menu">
-                    <a href="{{ route('adminPanel.meal-types.index') }}" class="dropdown-toggle {{ $isMealTypes ? 'active parent-active' : 'collapsed' }}" data-active="{{ $isMealTypes ? 'true' : 'false' }}">
-                        <div class="menu-item-content">
-                            <i data-feather="coffee"></i>
-                            <span>Diet Plans</span>
-                        </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                    </a>
-                </li>
-
-                <!-- Products (All Products & Product Types) -->
-                <li class="menu">
-                    <a href="#productsMenu" data-bs-toggle="collapse" data-toggle="collapse" aria-expanded="{{ $isProductsModule ? 'true' : 'false' }}" class="dropdown-toggle {{ $isProductsModule ? 'active parent-active' : 'collapsed' }}" data-active="{{ $isProductsModule ? 'true' : 'false' }}">
-                        <div class="menu-item-content">
-                            <i data-feather="shopping-bag"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
                             <span>Products</span>
                         </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
-                        </div>
                     </a>
-                    <ul class="collapse submenu list-unstyled {{ $isProductsModule ? 'show' : '' }}" id="productsMenu" data-bs-parent="#accordionSidebar">
-                        <li>
-                            <a href="{{ route('adminPanel.products.index') }}" class="{{ request()->is(Request::segment(1).'/products*') ? 'active-sub' : '' }}">
-                                <span class="sub-dot"></span>
-                                <span>All Products</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('adminPanel.product-types.index') }}" class="{{ request()->is(Request::segment(1).'/product-types*') ? 'active-sub' : '' }}">
-                                <span class="sub-dot"></span>
-                                <span>Product Types</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
 
-                <!-- Content -->
+                <!-- 5. Meal Types -->
                 <li class="menu">
-                    <a href="{{ route('adminPanel.cms-pages.index') }}" class="dropdown-toggle {{ $isCmsPages ? 'active parent-active' : 'collapsed' }}" data-active="{{ $isCmsPages ? 'true' : 'false' }}">
+                    <a href="{{ route('adminPanel.meal-types.index') }}" data-active="{{ $isMealType ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isMealType ? 'active parent-active' : 'collapsed' }}">
+                        <div class="menu-item-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                <line x1="6" y1="1" x2="6" y2="4"></line>
+                                <line x1="10" y1="1" x2="10" y2="4"></line>
+                                <line x1="14" y1="1" x2="14" y2="4"></line>
+                            </svg>
+                            <span>Meal Types</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 6. Membership Plans -->
+                <li class="menu">
+                    <a href="{{ route('adminPanel.membership-plans.index') }}" data-active="{{ $isMembershipPlan ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isMembershipPlan ? 'active parent-active' : 'collapsed' }}">
+                        <div class="menu-item-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                            <span>Membership Plans</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- 7. Franchise Membership -->
+                <li class="menu">
+                    <a href="{{ route('adminPanel.franchise-membership-plans.index') }}" data-active="{{ $isFranchiseMembershipPlan ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isFranchiseMembershipPlan ? 'active parent-active' : 'collapsed' }}">
+                        <div class="menu-item-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                            <span>Franchise Membership</span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- CMS Pages (Optional) -->
+                @if(Route::has('adminPanel.cms-pages.index'))
+                <!--
+                <li class="menu">
+                    <a href="{{ route('adminPanel.cms-pages.index') }}" data-active="{{ $isCMSPages ? 'true' : 'false' }}" aria-expanded="false" class="dropdown-toggle {{ $isCMSPages ? 'active parent-active' : 'collapsed' }}">
                         <div class="menu-item-content">
                             <i data-feather="file-text"></i>
-                            <span>Content</span>
+                            <span>CMS Pages</span>
                         </div>
                     </a>
                 </li>
+                -->
+                @endif
 
-                <!-- Reports -->
-                <li class="menu">
-                    <a href="javascript:void(0);" class="dropdown-toggle collapsed">
-                        <div class="menu-item-content">
-                            <i data-feather="bar-chart-2"></i>
-                            <span>Reports</span>
-                        </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                    </a>
-                </li>
-
-                <!-- Settings -->
-                <li class="menu">
-                    <a href="#settingsMenu" data-bs-toggle="collapse" data-toggle="collapse" aria-expanded="{{ $isCompanyProfile ? 'true' : 'false' }}" class="dropdown-toggle {{ $isCompanyProfile ? 'active parent-active' : 'collapsed' }}" data-active="{{ $isCompanyProfile ? 'true' : 'false' }}">
-                        <div class="menu-item-content">
-                            <i data-feather="settings"></i>
-                            <span>Settings</span>
-                        </div>
-                        <div class="menu-chevron">
-                            <i data-feather="chevron-down"></i>
-                        </div>
-                    </a>
-                    <ul class="collapse submenu list-unstyled {{ $isCompanyProfile ? 'show' : '' }}" id="settingsMenu" data-bs-parent="#accordionSidebar">
-                        <li>
-                            <a href="{{ route('adminPanel.company-profile.index') }}">
-                                <span class="sub-dot"></span>
-                                <span>Company Profile</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('adminPanel.profile') }}">
-                                <span class="sub-dot"></span>
-                                <span>My Profile</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
             </ul>
         </div>
     </nav>
