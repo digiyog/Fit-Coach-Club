@@ -1,5 +1,6 @@
 <!--  BEGIN NAVBAR  -->
-@if(isset($breadcrumb) && !request()->routeIs('adminPanel.dashboard*') && !request()->is('admin-panel/dashboard*') && !request()->is(Request::segment(1).'/dashboard*') && !request()->routeIs('adminPanel.franchises*'))
+{{-- Legacy sub-header breadcrumb is suppressed because all admin pages now display unified breadcrumbs in the top main-header --}}
+@if(isset($breadcrumb) && !request()->routeIs('adminPanel.*') && !request()->is('admin-panel*'))
 <div class="sub-header-container custom-breadcrumbs">
     <header class="header navbar navbar-expand-sm">
 

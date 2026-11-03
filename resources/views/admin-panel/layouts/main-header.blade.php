@@ -2,8 +2,97 @@
 $company = get_company_profile();
 $headerLogo = (isset($company[0]) && isset($company[0]['header_logo_image'])) ? $company[0]['header_logo_image'] : '';
 $authUser = auth()->user();
-$isDashboard = request()->routeIs('adminPanel.dashboard*') || request()->is('admin-panel/dashboard*');
-$isFranchises = request()->routeIs('adminPanel.franchises*') || request()->is('admin-panel/franchises*');
+$isDashboard = request()->routeIs('adminPanel.dashboard*') || request()->is('admin-panel/dashboard*') || request()->is('admin-panel') || request()->is('admin-panel/');
+
+// Universal Breadcrumb Trail Builder for Admin Panel
+$headerCrumbs = [];
+
+if (!$isDashboard) {
+    $rawCrumbs = $breadcrumb ?? $breadcrumbFilter ?? null;
+
+    if (is_array($rawCrumbs) && count($rawCrumbs) > 0) {
+        foreach ($rawCrumbs as $label => $url) {
+            $trimmed = trim((string)$label);
+            if (empty($trimmed)) continue;
+            $headerCrumbs[] = [
+                'label' => $trimmed,
+                'url' => !empty($url) ? $url : null,
+            ];
+        }
+    }
+
+    // Fallback if controller did not supply full breadcrumb trail
+    if (empty($headerCrumbs) || count($headerCrumbs) < 2) {
+        $headerCrumbs = [
+            ['label' => 'Dashboard', 'url' => route('adminPanel.dashboard')]
+        ];
+
+        $segment2 = request()->segment(2); // e.g. 'product-types'
+        $segment3 = request()->segment(3); // e.g. 'create', 'edit'
+
+        $moduleMap = [
+            'product-types' => ['title' => 'Product Types', 'route' => 'adminPanel.product-types.index', 'singular' => 'Product Type'],
+            'products' => ['title' => 'Products', 'route' => 'adminPanel.products.index', 'singular' => 'Product'],
+            'franchises' => ['title' => 'Franchises', 'route' => 'adminPanel.franchises.index', 'singular' => 'Franchise'],
+            'meal-types' => ['title' => 'Meal Types', 'route' => 'adminPanel.meal-types.index', 'singular' => 'Meal Type'],
+            'membership-plans' => ['title' => 'Membership Plans', 'route' => 'adminPanel.membership-plans.index', 'singular' => 'Membership Plan'],
+            'franchise-membership-plans' => ['title' => 'Franchise Membership Plans', 'route' => 'adminPanel.franchise-membership-plans.index', 'singular' => 'Franchise Membership Plan'],
+            'cms-pages' => ['title' => 'CMS Pages', 'route' => 'adminPanel.cms-pages.index', 'singular' => 'CMS Page'],
+            'profile' => ['title' => 'My Profile', 'route' => 'adminPanel.profile', 'singular' => 'Profile'],
+            'company-profile' => ['title' => 'Company Profile', 'route' => 'adminPanel.company-profile.index', 'singular' => 'Company Profile'],
+            'users' => ['title' => 'Users', 'route' => 'adminPanel.users.index', 'singular' => 'User'],
+            'roles' => ['title' => 'Roles', 'route' => 'adminPanel.roles.index', 'singular' => 'Role'],
+        ];
+
+        if (!empty($segment2) && $segment2 !== 'dashboard') {
+            $modInfo = $moduleMap[$segment2] ?? [
+                'title' => ucwords(str_replace('-', ' ', $segment2)),
+                'route' => 'adminPanel.' . $segment2 . '.index',
+                'singular' => ucwords(str_replace('-', ' ', rtrim($segment2, 's')))
+            ];
+
+            $modUrl = \Illuminate\Support\Facades\Route::has($modInfo['route']) ? route($modInfo['route']) : null;
+
+            if (!empty($segment3) && !is_numeric($segment3)) {
+                $headerCrumbs[] = [
+                    'label' => $modInfo['title'],
+                    'url' => $modUrl
+                ];
+
+                $actionLabel = ucwords(str_replace('-', ' ', $segment3));
+                if ($segment3 === 'create') {
+                    $actionLabel = 'Create ' . $modInfo['singular'];
+                } elseif ($segment3 === 'edit') {
+                    $actionLabel = 'Edit ' . $modInfo['singular'];
+                }
+
+                $headerCrumbs[] = [
+                    'label' => $actionLabel,
+                    'url' => null
+                ];
+            } else {
+                $headerCrumbs[] = [
+                    'label' => $modInfo['title'],
+                    'url' => null
+                ];
+            }
+        }
+    } else {
+        // Beautify trailing generic action label ('Create' -> 'Create [Singular Parent]', 'Edit' -> 'Edit [Singular Parent]')
+        $lastIdx = count($headerCrumbs) - 1;
+        if ($lastIdx > 0) {
+            $lastLower = strtolower($headerCrumbs[$lastIdx]['label']);
+            $parentLabel = $headerCrumbs[$lastIdx - 1]['label'];
+            $parentSingular = rtrim($parentLabel, 's');
+
+            if (in_array($lastLower, ['create', 'add', 'add new', strtolower(__('language.create'))])) {
+                $headerCrumbs[$lastIdx]['label'] = 'Create ' . $parentSingular;
+            } elseif (in_array($lastLower, ['edit', 'update', strtolower(__('language.edit'))])) {
+                $headerCrumbs[$lastIdx]['label'] = 'Edit ' . $parentSingular;
+            }
+        }
+    }
+}
 @endphp
 
 <!--  BEGIN NAVBAR  -->
@@ -11,7 +100,7 @@ $isFranchises = request()->routeIs('adminPanel.franchises*') || request()->is('a
     <header class="header navbar navbar-expand-sm py-0 px-3 px-md-4 d-flex align-items-center justify-content-between h-100">
 
         @if($isDashboard)
-            <!-- Dashboard Specific Left Header: Hamburger + Title + Subcrumb -->
+            <!-- Dashboard Left Header: Circular Hamburger + Dashboard Overview Title -->
             <div class="d-flex align-items-center">
                 <a href="javascript:void(0);" class="sidebarCollapse me-3 btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 38px; height: 38px; border: 1px solid #e2e8f0; background: #ffffff;" aria-label="Toggle Sidebar">
                     <i data-feather="menu" style="width: 18px; height: 18px; color: #1e293b;"></i>
@@ -21,53 +110,30 @@ $isFranchises = request()->routeIs('adminPanel.franchises*') || request()->is('a
                     <span class="fcc-header-subcrumb text-muted" style="font-size: 11.5px; font-weight: 500;">Home / Overview</span>
                 </div>
             </div>
-        @elseif($isFranchises)
-            <!-- Franchises Specific Left Header: Hamburger + Breadcrumb -->
+        @else
+            <!-- Universal Left Header: Circular Hamburger + Breadcrumbs Trail (Dashboard › Section › ...) -->
             <div class="d-flex align-items-center">
                 <a href="javascript:void(0);" class="sidebarCollapse me-3 btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 38px; height: 38px; border: 1px solid #e2e8f0; background: #ffffff;" aria-label="Toggle Sidebar">
                     <i data-feather="menu" style="width: 18px; height: 18px; color: #1e293b;"></i>
                 </a>
-                <div class="d-flex align-items-center gap-2" style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                    <a href="{{ route('adminPanel.dashboard') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Dashboard</a>
-                    <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
-                    @if(request()->routeIs('adminPanel.franchises.create') || request()->is('*franchises/create*'))
-                        <a href="{{ route('adminPanel.franchises.index') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Franchises</a>
-                        <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
-                        <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Create Franchise</span>
-                    @elseif(request()->routeIs('adminPanel.franchises.edit') || request()->is('*franchises/edit*'))
-                        <a href="{{ route('adminPanel.franchises.index') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Franchises</a>
-                        <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
-                        <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Edit Franchise</span>
-                    @else
-                        <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Franchises</span>
-                    @endif
+                <div class="d-flex align-items-center gap-2 fcc-header-breadcrumbs" style="font-family: 'Plus Jakarta Sans', sans-serif; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap;">
+                    @foreach($headerCrumbs as $index => $crumb)
+                        @if($index > 0)
+                            <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8; flex-shrink: 0;"></i>
+                        @endif
+
+                        @if(!empty($crumb['url']) && $index < count($headerCrumbs) - 1)
+                            <a href="{{ $crumb['url'] }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none; transition: color 0.15s ease;">
+                                {{ $crumb['label'] }}
+                            </a>
+                        @else
+                            <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">
+                                {{ $crumb['label'] }}
+                            </span>
+                        @endif
+                    @endforeach
                 </div>
             </div>
-        @else
-            <!-- Standard Header Left: Brand Logo & Title -->
-            <ul class="navbar-item flex-row align-items-center mb-0 ps-0">
-                <li class="nav-item theme-logo me-2">
-                    <a href="{{ route('adminPanel.dashboard') }}" class="nav-link p-0 d-flex align-items-center">
-                        @if(!empty($headerLogo))
-                            <img src="{{get_image_url(config('constants.company_profile.image_path'), $headerLogo)}}" class="img-fluid brand-logo-img" alt="Logo" style="height: 38px;" />
-                        @else
-                            <div style="height: 38px; width: 38px; border-radius: 9px; background: #000000; display: flex; align-items: center; justify-content: center; padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.18);">
-                                <img src="{{ asset('admin-assets/images/fit-coach-club-symbol.svg') }}" alt="Fit Coach Club" style="height: 100%; width: 100%; object-fit: contain;" />
-                            </div>
-                        @endif
-                    </a>
-                </li>
-                <li class="nav-item theme-text d-none d-sm-block">
-                    <a href="{{ route('adminPanel.dashboard') }}" class="nav-link fw-bold text-primary fs-5 p-0 text-decoration-none" style="display: flex; align-items: center; gap: 4px; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;">
-                        <span style="color: #20B2AA; font-weight: 800;">Fit Coach</span> <span style="color: #0f172a; font-weight: 800;">Club</span>
-                    </a>
-                </li>
-                <li class="nav-item ms-3">
-                    <a href="javascript:void(0);" class="sidebarCollapse btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 38px; height: 38px; border: 1px solid #e2e8f0; background: #ffffff;">
-                        <i data-feather="menu" style="width: 18px; height: 18px; color: #3246d3;"></i>
-                    </a>
-                </li>
-            </ul>
         @endif
 
         <!-- Right Header Items: Filter Pill + Search + Notifications + User Profile -->

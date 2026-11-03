@@ -29,249 +29,250 @@
         max-width: 100%;
     }
 
-    /* 1. Breadcrumbs */
-    .fcc-breadcrumb-nav {
-        margin-bottom: 14px;
-    }
-
-    .fcc-breadcrumb-nav .breadcrumb {
-        background: transparent;
-        padding: 0;
-        margin: 0;
-        font-size: 13.5px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .fcc-breadcrumb-nav .breadcrumb-item {
-        display: inline-flex;
-        align-items: center;
-        color: #64748b;
-    }
-
-    .fcc-breadcrumb-nav .breadcrumb-item a {
-        color: #64748b;
-        text-decoration: none;
-        transition: color 0.15s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .fcc-breadcrumb-nav .breadcrumb-item a:hover {
-        color: var(--fcc-primary);
-    }
-
-    .fcc-breadcrumb-nav .breadcrumb-item.active {
-        color: var(--fcc-dark);
-        font-weight: 700;
-    }
-
-    .fcc-breadcrumb-nav .breadcrumb-item + .breadcrumb-item::before {
-        content: "›";
-        color: #94a3b8;
-        font-size: 15px;
-        padding: 0 4px;
-    }
-
-    /* 2. Hero Banner */
-    .fcc-hero-banner {
-        background: linear-gradient(135deg, #071536 0%, #0f2766 45%, #1d4ed8 100%);
-        border-radius: 18px;
-        padding: 24px 32px;
+    /* ===== 1. Page Hero Banner ===== */
+    .fcc-page-hero {
+        background: linear-gradient(135deg, #020617 0%, #0c1e4a 30%, #1e3a8a 65%, #2563eb 100%);
+        border-radius: 20px;
+        padding: 28px 32px;
+        color: #ffffff;
+        margin-bottom: 22px;
+        box-shadow: 0 16px 40px -6px rgba(2, 6, 23, 0.55), 0 0 0 1px rgba(59, 130, 246, 0.15);
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 22px;
         position: relative;
         overflow: hidden;
-        margin-bottom: 22px;
-        box-shadow: 0 10px 30px -8px rgba(15, 39, 102, 0.45);
     }
 
-    .fcc-banner-artwork {
+    /* Top-right bright orb glow */
+    .fcc-page-hero::before {
+        content: '';
         position: absolute;
-        right: 170px;
-        top: 50%;
-        transform: translateY(-50%);
-        height: 145px;
+        top: -80px;
+        right: -50px;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(99, 102, 241, 0.12) 40%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Bottom-left subtle purple orb */
+    .fcc-page-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -60px;
+        left: -40px;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, transparent 65%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Animated shimmer sweep across the banner */
+    .fcc-hero-shimmer {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 60%, transparent 100%);
+        animation: fccShimmerSweep 6s ease-in-out infinite;
         pointer-events: none;
         z-index: 1;
-        opacity: 0.95;
     }
 
-    .fcc-banner-left {
-        display: flex;
+    @keyframes fccShimmerSweep {
+        0% { left: -100%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+    }
+
+    /* Decorative grid dot pattern */
+    .fcc-hero-grid {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background-image: radial-gradient(circle, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.6;
+    }
+
+    .fcc-hero-content {
+        position: relative;
+        z-index: 3;
+        max-width: 440px;
+    }
+
+    .fcc-hero-pill {
+        display: inline-flex;
         align-items: center;
-        gap: 18px;
-        z-index: 2;
+        gap: 7px;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(59, 130, 246, 0.12) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(16, 185, 129, 0.30);
+        color: #a5f3fc;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 30px;
+        margin-bottom: 12px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
     }
 
-    .fcc-banner-icon-box {
-        width: 52px;
-        height: 52px;
+    .fcc-hero-pill .fcc-pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #34d399;
+        box-shadow: 0 0 6px rgba(52, 211, 153, 0.8);
+        animation: fccPulse 2s infinite;
+    }
+
+    @keyframes fccPulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 4px rgba(52, 211, 153, 0.8); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 4px rgba(52, 211, 153, 0); }
+    }
+
+    .fcc-hero-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: #ffffff !important;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+        text-shadow: 0 2px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .fcc-hero-subtitle {
+        color: #94a3b8;
+        font-size: 13.5px;
+        font-weight: 500;
+        margin-bottom: 0;
+        line-height: 1.55;
+    }
+
+    /* KPI Stat Tiles */
+    .fcc-hero-stats-row {
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .fcc-hero-kpi-tile {
+        background: linear-gradient(145deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 58, 138, 0.50) 100%);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(148, 163, 184, 0.18);
         border-radius: 14px;
-        background: #2563eb;
-        color: #ffffff;
+        padding: 12px 18px;
+        min-width: 110px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fcc-hero-kpi-tile:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        border-color: rgba(148, 163, 184, 0.30);
+    }
+
+    .fcc-kpi-icon-badge {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
-        flex-shrink: 0;
+        margin-bottom: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     }
 
-    .fcc-banner-title {
-        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    .fcc-kpi-icon-blue  { background: linear-gradient(135deg, #2563eb, #3b82f6); color: #ffffff; }
+    .fcc-kpi-icon-green { background: linear-gradient(135deg, #059669, #10b981); color: #ffffff; }
+    .fcc-kpi-icon-red   { background: linear-gradient(135deg, #dc2626, #ef4444); color: #ffffff; }
+
+    .fcc-kpi-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-bottom: 4px;
+        white-space: nowrap;
+    }
+
+    .fcc-kpi-val {
         font-size: 24px;
         font-weight: 800;
         color: #ffffff;
-        letter-spacing: -0.02em;
-        margin: 0;
-        line-height: 1.2;
+        font-family: 'Outfit', sans-serif;
+        line-height: 1;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
-    .fcc-banner-subtitle {
-        font-size: 13.5px;
-        color: #bfdbfe;
-        margin: 4px 0 0 0;
-        font-weight: 500;
-    }
-
-    .fcc-banner-right {
+    /* 3D Package Art */
+    .fcc-hero-art-box {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
         z-index: 2;
+        margin: 0 6px;
+    }
+
+    @media (min-width: 1200px) {
+        .fcc-hero-art-box {
+            display: flex;
+        }
+    }
+
+    /* Action Buttons */
+    .fcc-hero-actions {
         display: flex;
         align-items: center;
+        gap: 12px;
+        position: relative;
+        z-index: 3;
     }
 
-    .fcc-btn-add-type {
+    .fcc-btn-add-hero {
         background: #ffffff;
         color: #0f172a !important;
         font-weight: 700;
         font-size: 13.5px;
-        padding: 10px 22px;
+        padding: 11px 20px;
         border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8);
         display: inline-flex;
         align-items: center;
         gap: 8px;
         text-decoration: none !important;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-        transition: all 0.2s ease;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
     }
 
-    .fcc-btn-add-type:hover {
-        background: #f8fafc;
+    .fcc-btn-add-hero:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
         color: #000000 !important;
-    }
-
-    /* 3. 4 KPI Stat Cards */
-    .fcc-stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-        margin-bottom: 22px;
-    }
-
-    @media (max-width: 1024px) {
-        .fcc-stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 600px) {
-        .fcc-stats-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .fcc-stat-card {
-        border-radius: 16px;
-        padding: 18px 22px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        border: 1px solid;
-    }
-
-    .fcc-stat-card:hover {
-        transform: translateY(-2px);
-    }
-
-    /* Blue Card */
-    .fcc-stat-card-blue {
         background: #ffffff;
-        border-color: #dbeafe;
-        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.04);
-    }
-    .fcc-stat-card-blue .fcc-stat-icon-wrap {
-        background: #e0f2fe;
-        color: #0284c7;
-    }
-
-    /* Green Card */
-    .fcc-stat-card-green {
-        background: #ffffff;
-        border-color: #bbf7d0;
-        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.04);
-    }
-    .fcc-stat-card-green .fcc-stat-icon-wrap {
-        background: #dcfce7;
-        color: #16a34a;
-    }
-
-    /* Red Card */
-    .fcc-stat-card-red {
-        background: #ffffff;
-        border-color: #fecaca;
-        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.04);
-    }
-    .fcc-stat-card-red .fcc-stat-icon-wrap {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    /* Purple Card */
-    .fcc-stat-card-purple {
-        background: #ffffff;
-        border-color: #e9d5ff;
-        box-shadow: 0 2px 8px rgba(147, 51, 234, 0.04);
-    }
-    .fcc-stat-card-purple .fcc-stat-icon-wrap {
-        background: #f3e8ff;
-        color: #9333ea;
-    }
-
-    .fcc-stat-icon-wrap {
-        width: 46px;
-        height: 46px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .fcc-stat-meta {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .fcc-stat-label {
-        font-size: 12.5px;
-        font-weight: 600;
-        color: var(--fcc-muted);
-        margin-bottom: 2px;
-    }
-
-    .fcc-stat-value {
-        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--fcc-dark);
-        line-height: 1.1;
     }
 
     /* 4. Single White Data Table Container Card */
@@ -344,14 +345,23 @@
     .fcc-dt-search {
         flex: 1 1 320px;
         max-width: 480px;
+        position: relative !important;
+    }
+
+    .fcc-dt-search label {
+        position: relative !important;
+        display: block !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
     }
 
     .fcc-dt-search input {
         height: 40px !important;
         border-radius: 20px !important;
         border: 1.5px solid var(--fcc-border) !important;
-        background: #ffffff !important;
-        padding-left: 38px !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        padding-left: 40px !important;
         padding-right: 14px !important;
         font-size: 13px !important;
         color: var(--fcc-dark) !important;
@@ -366,26 +376,36 @@
         outline: none !important;
     }
 
-    .fcc-dt-search label {
-        position: relative;
-        display: block;
-        margin-bottom: 0;
-        width: 100%;
+    /* Single clean CSS-rendered search icon */
+    .fcc-dt-search label::before {
+        content: "" !important;
+        position: absolute !important;
+        left: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 16px !important;
+        height: 16px !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        pointer-events: none !important;
+        z-index: 5 !important;
     }
 
-    .fcc-dt-search label::before {
-        content: "";
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 16px;
-        height: 16px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: center;
-        pointer-events: none;
-        z-index: 2;
+    /* Hide any duplicate SVGs or icons injected by other themes/scripts */
+    .fcc-dt-search svg,
+    .fcc-dt-search i,
+    .fcc-dt-search .feather,
+    .fcc-dt-search .feather-search,
+    div.dataTables_wrapper div.dataTables_filter svg,
+    div.dataTables_wrapper div.dataTables_filter i,
+    .fcc-dt-search label::after {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        pointer-events: none !important;
     }
 
     .fcc-dt-actions {
@@ -668,102 +688,70 @@
 @section('content')
 <div class="layout-px-spacing fcc-product-types-wrapper">
 
-    <!-- 1. Breadcrumbs Navigation -->
-    <nav class="fcc-breadcrumb-nav" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ route('adminPanel.dashboard') }}">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    Dashboard
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">Product Types</li>
-        </ol>
-    </nav>
+    <!-- 1. Executive Hero Header Strip (Matches Franchises Directory) -->
+    <div class="fcc-page-hero">
+        <div class="fcc-hero-shimmer"></div>
+        <div class="fcc-hero-grid"></div>
 
-    <!-- 2. Hero Banner with Glowing Package Box Artwork -->
-    <div class="fcc-hero-banner">
-        <img src="{{ asset('admin-assets/images/product-type-banner-art.svg') }}" alt="Product Types Banner" class="fcc-banner-artwork">
-
-        <div class="fcc-banner-left">
-            <div class="fcc-banner-icon-box">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                    <polyline points="2 17 12 22 22 17"></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                </svg>
+        <!-- Left Information -->
+        <div class="fcc-hero-content">
+            <div class="fcc-hero-pill">
+                <span class="fcc-pulse-dot"></span> Product Management System
             </div>
-            <div>
-                <h1 class="fcc-banner-title">Product Types</h1>
-                <p class="fcc-banner-subtitle">Manage all product categories/types available in the system.</p>
+            <div class="fcc-hero-title">
+                Product Types Directory 🏆
+            </div>
+            <p class="fcc-hero-subtitle">
+                Real-time roster of registered product categories, active inventory types, and status.
+            </p>
+        </div>
+
+        <!-- KPI Stat Tiles inside Banner -->
+        <div class="fcc-hero-stats-row">
+            <div class="fcc-hero-kpi-tile">
+                <div class="fcc-kpi-icon-badge fcc-kpi-icon-blue">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <span class="fcc-kpi-label">Total Types</span>
+                <span class="fcc-kpi-val">{{ number_format($totalTypes ?? 0) }}</span>
+            </div>
+
+            <div class="fcc-hero-kpi-tile">
+                <div class="fcc-kpi-icon-badge fcc-kpi-icon-green">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <span class="fcc-kpi-label">Active Types</span>
+                <span class="fcc-kpi-val">{{ number_format($activeTypes ?? 0) }}</span>
+            </div>
+
+            <div class="fcc-hero-kpi-tile">
+                <div class="fcc-kpi-icon-badge fcc-kpi-icon-red">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <span class="fcc-kpi-label">Inactive / Exp.</span>
+                <span class="fcc-kpi-val">{{ number_format($inactiveTypes ?? 0) }}</span>
             </div>
         </div>
 
-        <div class="fcc-banner-right">
-            <a href="{{ route('adminPanel.product-types.create') }}" class="fcc-btn-add-type">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                Add Product Type
+        <!-- Center 3D Package Art -->
+        <div class="fcc-hero-art-box">
+            <img src="{{ asset('admin-assets/images/product-type-banner-art.svg') }}" alt="Product Types Art" style="height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="fcc-hero-actions">
+            <a href="{{ route('adminPanel.product-types.create') }}" class="fcc-btn-add-hero">
+                <i class="fa fa-plus"></i> Add Product Type
             </a>
-        </div>
-    </div>
-
-    <!-- 3. 4 KPI Stat Cards -->
-    <div class="fcc-stats-grid">
-        <!-- Card 1: Total Types -->
-        <div class="fcc-stat-card fcc-stat-card-blue">
-            <div class="fcc-stat-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                    <polyline points="2 17 12 22 22 17"></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                </svg>
-            </div>
-            <div class="fcc-stat-meta">
-                <span class="fcc-stat-label">Total Types</span>
-                <span class="fcc-stat-value">{{ $totalTypes ?? 0 }}</span>
-            </div>
-        </div>
-
-        <!-- Card 2: Active Types -->
-        <div class="fcc-stat-card fcc-stat-card-green">
-            <div class="fcc-stat-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-            </div>
-            <div class="fcc-stat-meta">
-                <span class="fcc-stat-label">Active Types</span>
-                <span class="fcc-stat-value">{{ $activeTypes ?? 0 }}</span>
-            </div>
-        </div>
-
-        <!-- Card 3: Inactive Types -->
-        <div class="fcc-stat-card fcc-stat-card-red">
-            <div class="fcc-stat-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </div>
-            <div class="fcc-stat-meta">
-                <span class="fcc-stat-label">Inactive Types</span>
-                <span class="fcc-stat-value">{{ $inactiveTypes ?? 0 }}</span>
-            </div>
-        </div>
-
-        <!-- Card 4: This Month Added -->
-        <div class="fcc-stat-card fcc-stat-card-purple">
-            <div class="fcc-stat-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                </svg>
-            </div>
-            <div class="fcc-stat-meta">
-                <span class="fcc-stat-label">This Month Added</span>
-                <span class="fcc-stat-value">{{ $thisMonthAdded ?? 0 }}</span>
-            </div>
         </div>
     </div>
 

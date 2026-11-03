@@ -73,6 +73,7 @@ var ProductType = (function() {
                         '<button type="button" class="fcc-dt-filter-btn" id="btnToggleFilter" title="Filter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filter</button>' +
                         '<button type="button" title="Delete" class="fcc-dt-mass-btn dt-delete" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Delete</button>'
                     );
+                    $(".fcc-dt-search svg, .dataTables_filter svg, .fcc-dt-search i, .dataTables_filter i").remove();
                 },
                 headerCallback: function(e, a, t, n, s) {
                     e.getElementsByTagName("th")[0].innerHTML =
@@ -221,6 +222,7 @@ var ProductType = (function() {
                 if (typeof feather !== "undefined") {
                     feather.replace();
                 }
+                $(".fcc-dt-search svg, .dataTables_filter svg, .fcc-dt-search i, .dataTables_filter i").remove();
             });
         },
 
