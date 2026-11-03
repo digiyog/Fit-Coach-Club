@@ -274,13 +274,43 @@
         line-height: 1.1;
     }
 
-    /* 4. White Data Table Container */
+    /* 4. Single White Data Table Container Card */
     .fcc-table-card {
         background: #ffffff;
         border: 1px solid var(--fcc-border);
         border-radius: 16px;
-        padding: 20px 24px 24px 24px;
+        padding: 22px 24px 24px 24px;
         box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    }
+
+    /* Remove ANY inner card container / inner border completely */
+    .fcc-product-types-wrapper .data-table-container,
+    .fcc-product-types-wrapper .table-responsive,
+    .fcc-table-card .data-table-container,
+    .fcc-table-card .table-responsive {
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: auto !important;
+    }
+
+    .fcc-product-types-wrapper table.dataTable,
+    .fcc-product-types-wrapper .table-responsive table.dataTable,
+    .fcc-product-types-wrapper .data-table-container table.dataTable,
+    .fcc-table-card table.dataTable,
+    #dataTable {
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+        margin-top: 10px !important;
+        margin-bottom: 12px !important;
+        width: 100% !important;
+        background: transparent !important;
     }
 
     /* Toolbar Layout */
@@ -409,62 +439,55 @@
         cursor: not-allowed;
     }
 
-    /* DataTable Table Styling */
-    #dataTable {
-        border-collapse: separate !important;
-        border-spacing: 0 4px !important;
-        margin-top: 10px !important;
-        width: 100% !important;
-    }
-
+    /* DataTable Header Styling */
     #dataTable thead th {
-        background: #f8fafc !important;
+        background-color: #f8fafc !important;
         color: #475569 !important;
-        font-size: 12.5px !important;
+        font-size: 12px !important;
         font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        padding: 13px 16px !important;
         border: none !important;
-        padding: 12px 16px !important;
-        letter-spacing: 0.01em;
+        border-bottom: 1px solid #f1f5f9 !important;
+        border-top: none !important;
     }
 
     #dataTable thead th:first-child {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px !important;
+        border-bottom-left-radius: 10px !important;
     }
 
     #dataTable thead th:last-child {
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-top-right-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
     }
 
+    /* DataTable Row & Cell Styling */
     #dataTable tbody tr {
-        background: #ffffff !important;
+        background-color: #ffffff !important;
+        border: none !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        box-shadow: none !important;
         transition: background-color 0.15s ease;
     }
 
     #dataTable tbody tr:hover {
-        background: #f8fafc !important;
+        background-color: #f8fafc !important;
     }
 
     #dataTable tbody td {
         padding: 14px 16px !important;
         vertical-align: middle !important;
-        border-top: 1px solid #f1f5f9 !important;
+        border: none !important;
         border-bottom: 1px solid #f1f5f9 !important;
         font-size: 13.5px !important;
         color: var(--fcc-slate) !important;
+        background: transparent !important;
     }
 
-    #dataTable tbody tr td:first-child {
-        border-left: 1px solid #f1f5f9 !important;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-    }
-
-    #dataTable tbody tr td:last-child {
-        border-right: 1px solid #f1f5f9 !important;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
+    #dataTable tbody tr:last-child td {
+        border-bottom: none !important;
     }
 
     /* Row Number */
@@ -744,7 +767,7 @@
         </div>
     </div>
 
-    <!-- 4. White Data Table Card -->
+    <!-- 4. Single White Data Table Card Container -->
     <div class="fcc-table-card">
         <div class="table-responsive data-table-container">
             <table id="dataTable" class="table" data-url="{{ route('adminPanel.product-types.getProductTypes') }}" data-change-status-url="{{ route('adminPanel.product-types.changeStatus') }}" data-destroy-url="{{ route('adminPanel.product-types.destroy') }}">
@@ -771,5 +794,5 @@
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/button-ext/jszip.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/plugins/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('admin-assets/js/components.js') }}"></script>
-<script src="{{ asset('admin-assets/js/product-types/view.js') }}"></script>
+<script src="{{ asset('admin-assets/js/product-types/view.js') }}?v={{ file_exists(public_path('admin-assets/js/product-types/view.js')) ? filemtime(public_path('admin-assets/js/product-types/view.js')) : time() }}"></script>
 @endpush
