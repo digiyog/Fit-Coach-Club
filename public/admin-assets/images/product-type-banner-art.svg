@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" width="320" height="220" fill="none">
+    <defs>
+        <linearGradient id="boxFront" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6" />
+            <stop offset="100%" stop-color="#1d4ed8" />
+        </linearGradient>
+        <linearGradient id="boxSide" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e40af" />
+            <stop offset="100%" stop-color="#172554" />
+        </linearGradient>
+        <linearGradient id="boxFlap" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#60a5fa" />
+            <stop offset="100%" stop-color="#2563eb" />
+        </linearGradient>
+        <linearGradient id="barbellGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#93c5fd" />
+            <stop offset="50%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#93c5fd" />
+        </linearGradient>
+        <linearGradient id="plateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#bfdbfe" />
+            <stop offset="100%" stop-color="#3b82f6" />
+        </linearGradient>
+        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="ambientLight" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="22" result="blur" />
+        </filter>
+    </defs>
+
+    <!-- Background Ambient Glow Behind Dumbbell -->
+    <ellipse cx="160" cy="115" rx="75" ry="45" fill="#38bdf8" opacity="0.32" filter="url(#ambientLight)" />
+
+    <!-- Action Lines / Burst Rays -->
+    <g stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85">
+        <line x1="160" y1="58" x2="160" y2="44" />
+        <line x1="126" y1="68" x2="114" y2="58" />
+        <line x1="194" y1="68" x2="206" y2="58" />
+        <line x1="102" y1="92" x2="88" y2="88" />
+        <line x1="218" y1="92" x2="232" y2="88" />
+    </g>
+
+    <!-- Floating Dumbbell -->
+    <g filter="url(#softGlow)" transform="translate(0, -5)">
+        <!-- Barbell shaft -->
+        <rect x="122" y="88" width="76" height="7" rx="3.5" fill="url(#barbellGlow)" />
+        
+        <!-- Left inner plate -->
+        <rect x="115" y="80" width="7" height="23" rx="3" fill="url(#plateGrad)" />
+        <!-- Left outer plate -->
+        <rect x="105" y="75" width="10" height="33" rx="4" fill="#ffffff" />
+        <!-- Left collar cap -->
+        <rect x="100" y="84" width="5" height="15" rx="2" fill="#93c5fd" />
+
+        <!-- Right inner plate -->
+        <rect x="198" y="80" width="7" height="23" rx="3" fill="url(#plateGrad)" />
+        <!-- Right outer plate -->
+        <rect x="205" y="75" width="10" height="33" rx="4" fill="#ffffff" />
+        <!-- Right collar cap -->
+        <rect x="215" y="84" width="5" height="15" rx="2" fill="#93c5fd" />
+    </g>
+
+    <!-- Open Package Box -->
+    <g>
+        <!-- Box Back Interior (Dark depth) -->
+        <polygon points="110,135 160,118 210,135 160,152" fill="#0f172a" opacity="0.6" />
+
+        <!-- Left open flap -->
+        <polygon points="110,135 78,122 128,110 160,118" fill="url(#boxFlap)" opacity="0.9" />
+
+        <!-- Right open flap -->
+        <polygon points="160,118 192,110 242,122 210,135" fill="url(#boxFlap)" opacity="0.8" />
+
+        <!-- Front left flap folded down -->
+        <polygon points="110,135 88,155 138,170 160,152" fill="#2563eb" opacity="0.85" />
+
+        <!-- Front right flap folded down -->
+        <polygon points="160,152 182,170 232,155 210,135" fill="#1d4ed8" opacity="0.85" />
+
+        <!-- Box Front Left Face -->
+        <polygon points="110,135 160,152 160,202 110,185" fill="url(#boxFront)" />
+
+        <!-- Box Front Right Face -->
+        <polygon points="160,152 210,135 210,185 160,202" fill="url(#boxSide)" />
+
+        <!-- Box Front Edge Highlight -->
+        <line x1="160" y1="152" x2="160" y2="202" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+
+        <!-- Box Tape / Badge Accent -->
+        <polygon points="152,149 168,154 168,168 152,163" fill="#ffffff" opacity="0.25" />
+    </g>
+
+    <!-- Sparkles -->
+    <path d="M96 52 Q96 60 88 60 Q96 60 96 68 Q96 60 104 60 Q96 60 96 52 Z" fill="#ffffff" opacity="0.9" />
+    <path d="M228 50 Q228 56 222 56 Q228 56 228 62 Q228 56 234 56 Q228 56 228 50 Z" fill="#38bdf8" opacity="0.95" />
+    <circle cx="82" cy="78" r="2" fill="#ffffff" opacity="0.8" />
+    <circle cx="240" cy="74" r="2.5" fill="#ffffff" opacity="0.8" />
+</svg>
+

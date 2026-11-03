@@ -52,8 +52,6 @@ class ProductTypeController extends Controller
 
         // Breadcrumb Button
         $breadcrumbButton = [];
-        // Add Button
-      
         $breadcrumbButton[] = [
             'btn_class' => 'btn btn-primary mt-2 rounded-circle',
             'btn_link' => route('adminPanel.product-types.create'),
@@ -62,10 +60,22 @@ class ProductTypeController extends Controller
             'attributes' => []
         ];
 
+        // KPI Counts
+        $totalTypes = ProductType::count();
+        $activeTypes = ProductType::where('status', 1)->count();
+        $inactiveTypes = ProductType::where('status', 0)->count();
+        $thisMonthAdded = ProductType::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+
         // View Data
         $this->viewData['breadcrumbFilter'] = $breadcrumb;
         $this->viewData['breadcrumbButton'] = $breadcrumbButton;
-        $this->viewData['authUser'] = $authUser;
+        $this->viewData['authUser']         = $authUser;
+        $this->viewData['totalTypes']       = $totalTypes;
+        $this->viewData['activeTypes']      = $activeTypes;
+        $this->viewData['inactiveTypes']    = $inactiveTypes;
+        $this->viewData['thisMonthAdded']   = $thisMonthAdded;
         
         return view('admin-panel.product-types.index')->with($this->viewData);
     }
@@ -86,12 +96,12 @@ class ProductTypeController extends Controller
         $draw   = $request->get('draw');
         $start  = $request->get('start');
         $limit  = $request->get('length');
-        $sort   = $request->get('order')[0];
-        $search = $request->get('search')['value'];
+        $order  = $request->get('order');
+        $sort   = (!empty($order) && isset($order[0])) ? $order[0] : null;
+        $search = isset($request->get('search')['value']) ? $request->get('search')['value'] : null;
         
         // Filter Parameters
-        $filter = array(
-        );
+        $filter = array();
 
         // Getting Product Types Records
         $records_count  = ProductType::getProductTypes(null, null, $search, $filter, $sort);
@@ -99,39 +109,74 @@ class ProductTypeController extends Controller
 
         $arr_data = array();
 
+        $colorStyles = [
+            ['bg' => '#eff6ff', 'color' => '#2563eb', 'border' => '#dbeafe'], // Blue
+            ['bg' => '#fffbeb', 'color' => '#d97706', 'border' => '#fde68a'], // Gold/Amber
+            ['bg' => '#faf5ff', 'color' => '#9333ea', 'border' => '#f3e8ff'], // Purple/Silver
+            ['bg' => '#f0fdf4', 'color' => '#16a34a', 'border' => '#bbf7d0'], // Emerald/Bronze
+        ];
+
         if(count($records) > 0)
         {
+            $rowIndex = $start + 1;
             foreach($records as $key => $value)
             {
-                $name               = 'N/A';
-                $status             = '';
-                $action             = '';
+                $color = $colorStyles[($rowIndex - 1) % count($colorStyles)];
 
-                // Preparing Data
-                if(!empty($value->name)){
-                    $name = $value->name;
-                }
+                // Row Number
+                $numberCell = '<span class="fcc-row-number">' . $rowIndex . '</span>';
 
-                if ( $value->status == 0 ){
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                // Type Name Cell
+                $typeNameCell = '<div class="fcc-type-name-cell">' .
+                    '<div class="fcc-type-icon-box" style="background: ' . $color['bg'] . '; color: ' . $color['color'] . '; border: 1px solid ' . $color['border'] . ';">' .
+                        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' .
+                            '<polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>' .
+                            '<polyline points="2 17 12 22 22 17"></polyline>' .
+                            '<polyline points="2 12 12 17 22 12"></polyline>' .
+                        '</svg>' .
+                    '</div>' .
+                    '<span class="fcc-type-title">' . e($value->name ?? 'N/A') . '</span>' .
+                '</div>';
+
+                // Status Badge
+                if ($value->status == 1) {
+                    $status = '<span class="fcc-status-badge fcc-status-active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Active</span>';
                 } else {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $status = '<span class="fcc-status-badge fcc-status-inactive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Inactive</span>';
                 }
 
-                $action = '<a href="' . route('adminPanel.product-types.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                // Created At
+                $createdAt = !empty($value->created_at) ? Carbon::parse($value->created_at)->format('d M Y, h:i A') : 'N/A';
+                $createdCell = '<span class="fcc-date-cell">' .
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> ' .
+                    $createdAt .
+                '</span>';
+
+                // Action buttons
+                $action = '<div class="fcc-action-btns">' .
+                    '<a href="' . route('adminPanel.product-types.edit', ['id' => ev($value->id)]) . '" class="fcc-btn-action-edit" title="Edit Product Type">' .
+                        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>' .
+                    '</a>' .
+                    '<button type="button" class="fcc-btn-action-delete single-delete-record" data-id="' . $value->id . '" title="Delete Product Type">' .
+                        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' .
+                    '</button>' .
+                '</div>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"                => $value->id,
-                    "name"              => $name,
+                    "row_number"        => $numberCell,
+                    "name"              => $typeNameCell,
                     "status"            => $status,
+                    "created_at"        => $createdCell,
                     "action"            => $action,
                 );
+
+                $rowIndex++;
             }
         }
 
         $totalRecords = $records_count;
-        $totalDisplayRecord = $arr_data;
 
         $response = array(
             "draw"                  => intval($draw),
@@ -140,7 +185,7 @@ class ProductTypeController extends Controller
             "aaData"                => $arr_data
         );
 
-        return json_encode($response);
+        return response()->json($response);
     }
 
     /**

@@ -64,7 +64,7 @@ class ProductType extends Model
 
         // Table columns sort conditions
         if (!(empty($sort)) && $sort['column'] > 0) {
-            $arr_fields = array("", "name", "status", "");
+            $arr_fields = array("", "id", "name", "status", "created_at", "");
             for ($field = 0; $field < count($arr_fields); $field++) {
                 if ($sort['column'] == $field && $arr_fields[$field] != "") {
                     $productTypes = $productTypes->orderBy($arr_fields[$field], $sort['dir']);
