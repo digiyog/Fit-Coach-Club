@@ -5,10 +5,10 @@ $authUser = auth()->user();
 @endphp
 
 <!--  BEGIN NAVBAR  -->
-<div class="header-container fixed-top">
-    <header class="header navbar navbar-expand-sm py-0 px-3">
+<div class="header-container fixed-top fcc-header-container">
+    <header class="header navbar navbar-expand-sm py-0 px-3 d-flex align-items-center justify-content-between h-100">
 
-        <ul class="navbar-item flex-row align-items-center">
+        <ul class="navbar-item flex-row align-items-center mb-0 ps-0">
             <li class="nav-item theme-logo me-2">
                 <a href="{{ route('adminPanel.dashboard') }}" class="nav-link p-0 d-flex align-items-center">
                     @if(!empty($headerLogo))
@@ -26,13 +26,13 @@ $authUser = auth()->user();
                 </a>
             </li>
             <li class="nav-item ms-3">
-                <a href="javascript:void(0);" class="sidebarCollapse btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 36px; height: 36px;">
+                <a href="javascript:void(0);" class="sidebarCollapse btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 38px; height: 38px; border: 1px solid #e2e8f0; background: #ffffff;">
                     <i data-feather="menu" style="width: 18px; height: 18px; color: #3246d3;"></i>
                 </a>
             </li>
         </ul>
 
-        <ul class="navbar-item flex-row ms-auto align-items-center gap-2">
+        <ul class="navbar-item flex-row ms-auto align-items-center gap-2 mb-0">
             <li class="nav-item d-none d-md-flex align-items-center me-1">
                 <div class="user-greeting-pill">
                     <span class="user-status-dot"></span>
@@ -45,20 +45,20 @@ $authUser = auth()->user();
                 <a href="javascript:void(0);" class="nav-link dropdown-toggle user-icon shadow-sm" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i data-feather="user" style="width: 20px; height: 20px;"></i>
                 </a>
-                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userProfileDropdown">
+                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" aria-labelledby="userProfileDropdown" style="border-radius: 12px; min-width: 200px; padding: 6px;">
                     <div class="px-3 py-2 border-bottom d-md-none">
                         <div class="fw-bold text-dark">{{ $authUser->name }}</div>
                         <small class="text-muted">{{ $authUser->email ?? '' }}</small>
                     </div>
                     <div class="p-1">
                         <div class="dropdown-item">
-                            <a class="d-flex align-items-center py-2 text-dark" href="{{ route('adminPanel.profile') }}">
+                            <a class="d-flex align-items-center py-2 text-dark rounded" href="{{ route('adminPanel.profile') }}">
                                 <i data-feather="user" class="me-2 text-primary" style="width: 16px; height: 16px;"></i> My Profile
                             </a>
                         </div>
                         <div class="dropdown-divider my-1"></div>
                         <div class="dropdown-item">
-                            <a class="d-flex align-items-center py-2 text-danger" href="{{ route('adminPanel.logout') }}">
+                            <a class="d-flex align-items-center py-2 text-danger rounded" href="{{ route('adminPanel.logout') }}">
                                 <i data-feather="log-out" class="me-2 text-danger" style="width: 16px; height: 16px;"></i> Sign Out
                             </a>
                         </div>

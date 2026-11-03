@@ -1,0 +1,597 @@
+/* ==========================================================================
+   FITCOACHCLUB CORE RESPONSIVE ARCHITECTURE & EXECUTIVE MIDNIGHT NAVY THEME
+   ========================================================================== */
+
+/* 1. Global Reset & Viewport Constraints */
+html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+    background-color: #f1f5f9 !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.main-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+}
+
+/* Backdrop Overlay for Mobile Drawer */
+.overlay {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+    z-index: 1035 !important;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    pointer-events: none;
+}
+
+.overlay.show {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* 2. Top Executive Navbar Header */
+.fcc-header-container {
+    position: fixed !important;
+    top: 0 !important;
+    height: 68px !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    z-index: 1030 !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Desktop Header (>= 992px) */
+@media (min-width: 992px) {
+    .fcc-header-container {
+        left: 255px !important;
+        width: calc(100% - 255px) !important;
+    }
+    .main-container.sidebar-closed .fcc-header-container {
+        left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Tablet & Mobile Header (< 992px) */
+@media (max-width: 991px) {
+    .fcc-header-container {
+        left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Header Elements */
+.fcc-search-wrapper {
+    position: relative !important;
+}
+
+.fcc-search-icon {
+    position: absolute !important;
+    left: 14px !important;
+    width: 16px !important;
+    height: 16px !important;
+    color: #94a3b8 !important;
+    pointer-events: none !important;
+}
+
+.fcc-search-input {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 20px !important;
+    padding: 7px 16px 7px 38px !important;
+    font-size: 13.5px !important;
+    width: 260px !important;
+    color: #0f172a !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.fcc-search-input:focus {
+    background: #ffffff !important;
+    border-color: #3b82f6 !important;
+    width: 320px !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important;
+}
+
+.fcc-icon-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    transition: all 0.15s ease !important;
+    flex-shrink: 0 !important;
+}
+
+.fcc-icon-btn:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+.fcc-notif-dot {
+    position: absolute !important;
+    top: 2px !important;
+    right: 2px !important;
+    width: 8px !important;
+    height: 8px !important;
+    background: #ef4444 !important;
+    border-radius: 50% !important;
+    border: 2px solid #ffffff !important;
+}
+
+.fcc-user-pill {
+    padding: 4px 12px 4px 4px !important;
+    border-radius: 30px !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    transition: all 0.15s ease !important;
+    flex-shrink: 0 !important;
+}
+
+.fcc-user-pill:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+.fcc-avatar-circle {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    background: #dbeafe !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+.fcc-user-name {
+    font-size: 13.5px !important;
+    color: #1e293b !important;
+}
+
+/* 3. Deep Midnight Navy Sidebar (.fcc-sidebar-wrapper) */
+.sidebar-wrapper.fcc-sidebar-wrapper {
+    background: linear-gradient(180deg, #07172c 0%, #0a203c 50%, #07182e 100%) !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.28) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.fcc-sidebar-wrapper #sidebar {
+    background: transparent !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Desktop Sidebar (>= 992px) */
+@media (min-width: 992px) {
+    .sidebar-wrapper.fcc-sidebar-wrapper {
+        width: 255px !important;
+        left: 0 !important;
+        z-index: 1040 !important;
+    }
+    .main-container.sidebar-closed .sidebar-wrapper.fcc-sidebar-wrapper {
+        left: -255px !important;
+    }
+}
+
+/* Mobile & Tablet Drawer (< 992px) */
+@media (max-width: 991px) {
+    .sidebar-wrapper.fcc-sidebar-wrapper {
+        width: 270px !important;
+        left: -280px !important;
+        z-index: 1045 !important;
+    }
+    body .main-container.sbar-open .sidebar-wrapper.fcc-sidebar-wrapper {
+        left: 0 !important;
+        box-shadow: 10px 0 35px rgba(0, 0, 0, 0.5) !important;
+    }
+}
+
+/* Sidebar Brand Header with Runner Logo */
+.fcc-sidebar-brand {
+    height: 68px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 18px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    flex-shrink: 0 !important;
+    z-index: 5 !important;
+    background: transparent !important;
+}
+
+.fcc-brand-logo-img {
+    height: 38px !important;
+    width: auto !important;
+    max-width: 180px !important;
+    object-fit: contain !important;
+}
+
+.fcc-mobile-close-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.15s ease !important;
+}
+
+.fcc-mobile-close-btn:hover {
+    background: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Scrollable Menu Area */
+.sidebar-scroll-container {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+    z-index: 3 !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.12) transparent !important;
+}
+
+.sidebar-scroll-container::-webkit-scrollbar {
+    width: 5px;
+}
+.sidebar-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.fcc-sidebar-wrapper ul.menu-categories {
+    padding: 16px 12px 140px 12px !important;
+    list-style: none !important;
+    margin: 0 !important;
+}
+
+.fcc-sidebar-wrapper li.menu {
+    margin-bottom: 4px !important;
+    list-style: none !important;
+}
+
+/* Main Menu Items */
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 14px !important;
+    border-radius: 9px !important;
+    color: #e2e8f0 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Force bright readable white text on all menu spans and text */
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle span,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle div span,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle span,
+#sidebar ul.menu-categories li.menu > .dropdown-toggle div span,
+#sidebar ul.menu-categories li.menu a span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle div span,
+.fcc-sidebar-wrapper li.menu > .dropdown-toggle span,
+.fcc-sidebar-wrapper li.menu > .dropdown-toggle div span,
+.fcc-sidebar-wrapper li.menu a span {
+    color: #e2e8f0 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    letter-spacing: normal !important;
+}
+
+/* Default state for menu icons and chevrons */
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle svg,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle svg,
+.menu-item-content svg {
+    color: #cbd5e1 !important;
+    stroke: #cbd5e1 !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+}
+
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle .menu-chevron svg,
+.menu-chevron svg {
+    color: #94a3b8 !important;
+    stroke: #94a3b8 !important;
+    width: 14px !important;
+    height: 14px !important;
+    transition: transform 0.2s ease !important;
+}
+
+/* Hover States */
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover span,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover div span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover div span {
+    color: #ffffff !important;
+}
+
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle:hover svg,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover svg,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:hover .menu-item-content svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* Active State (e.g. Dashboard / Franchises active pill) */
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"],
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.parent-active,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"],
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.parent-active,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active {
+    background: #1d4ed8 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.45) !important;
+}
+
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"] span,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.parent-active span,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"] span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.parent-active span,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active span {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle[data-active="true"] svg,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.parent-active svg,
+#sidebar ul.menu-categories li.menu > a.dropdown-toggle.active svg,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle[data-active="true"] svg,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.parent-active svg,
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle.active svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.menu-item-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.fcc-sidebar-wrapper li.menu > a.dropdown-toggle:not(.collapsed) .menu-chevron svg {
+    transform: rotate(180deg) !important;
+}
+
+/* Submenu Items */
+.fcc-sidebar-wrapper ul.submenu,
+#sidebar ul.menu-categories ul.submenu {
+    padding: 4px 0 6px 14px !important;
+    margin: 2px 0 6px 0 !important;
+    list-style: none !important;
+}
+
+.fcc-sidebar-wrapper ul.submenu li,
+#sidebar ul.menu-categories ul.submenu li {
+    list-style: none !important;
+    margin-bottom: 2px !important;
+}
+
+.fcc-sidebar-wrapper ul.submenu li a,
+.fcc-sidebar-wrapper ul.submenu li a span,
+#sidebar ul.menu-categories ul.submenu li a,
+#sidebar ul.menu-categories ul.submenu li a span {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    color: #cbd5e1 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: all 0.15s ease !important;
+}
+
+.fcc-sidebar-wrapper ul.submenu li a:hover,
+.fcc-sidebar-wrapper ul.submenu li a:hover span,
+#sidebar ul.menu-categories ul.submenu li a:hover,
+#sidebar ul.menu-categories ul.submenu li a:hover span {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.fcc-sidebar-wrapper ul.submenu li a.active-sub,
+.fcc-sidebar-wrapper ul.submenu li.active a,
+.fcc-sidebar-wrapper ul.submenu li a.active-sub span,
+.fcc-sidebar-wrapper ul.submenu li.active a span,
+#sidebar ul.menu-categories ul.submenu li a.active-sub,
+#sidebar ul.menu-categories ul.submenu li.active a,
+#sidebar ul.menu-categories ul.submenu li a.active-sub span,
+#sidebar ul.menu-categories ul.submenu li.active a span {
+    background: rgba(37, 99, 235, 0.35) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.sub-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: #94a3b8 !important;
+    flex-shrink: 0 !important;
+    transition: all 0.15s ease !important;
+}
+
+.active-sub .sub-dot,
+li.active .sub-dot {
+    background: #60a5fa !important;
+    box-shadow: 0 0 6px #60a5fa !important;
+}
+
+
+/* 4. Main Content Area (#content.main-content) */
+#content.main-content {
+    background-color: #f1f5f9 !important;
+    min-height: calc(100vh - 68px) !important;
+    margin-bottom: 0 !important;
+    flex-grow: 1 !important;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+}
+
+/* Desktop Content (>= 992px) */
+@media (min-width: 992px) {
+    #content.main-content {
+        margin-left: 255px !important;
+        margin-top: 68px !important;
+        width: calc(100% - 255px) !important;
+    }
+    .main-container.sidebar-closed #content.main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Mobile & Tablet Content (< 992px) */
+@media (max-width: 991px) {
+    #content.main-content {
+        margin-left: 0 !important;
+        margin-top: 68px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding: 0 !important;
+    }
+}
+
+/* 5. Responsive Page Containers & Layout Spacing */
+.fcc-page-container,
+.layout-px-spacing {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: calc(100vh - 120px) !important;
+}
+
+@media (min-width: 992px) {
+    .fcc-page-container,
+    .layout-px-spacing {
+        padding: 24px 28px 40px 28px !important;
+    }
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+    .fcc-page-container,
+    .layout-px-spacing {
+        padding: 20px 20px 30px 20px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .fcc-page-container,
+    .layout-px-spacing {
+        padding: 16px 12px 24px 12px !important;
+    }
+}
+
+/* Universal Table Wrapper for Mobile */
+.table-responsive {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 12px !important;
+}
+
+/* Card responsiveness on mobile */
+@media (max-width: 767px) {
+    .fcc-form-card,
+    .create-franchise-card,
+    .widget-content.widget-content-area {
+        padding: 16px 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .fcc-page-header,
+    .admin-card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .btn-back-franchises,
+    .btn-back-link {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .fcc-logo-upload-wrap {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 16px !important;
+    }
+
+    .fcc-logo-buttons {
+        justify-content: center !important;
+    }
+
+    .fcc-form-actions-footer,
+    .admin-form-actions {
+        flex-direction: column-reverse !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+    .btn-fcc-save,
+    .btn-fcc-cancel,
+    .btn-submit-primary,
+    .btn-cancel-link {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+

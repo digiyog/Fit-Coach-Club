@@ -32,6 +32,7 @@
     <link href="{{ asset('admin-assets/css/plugins/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/custom.css') }}?v={{ file_exists(public_path('admin-assets/css/custom.css')) ? filemtime(public_path('admin-assets/css/custom.css')) : time() }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/nutrition-modern-inner.css') }}?v={{ file_exists(public_path('admin-assets/css/nutrition-modern-inner.css')) ? filemtime(public_path('admin-assets/css/nutrition-modern-inner.css')) : time() }}" rel="stylesheet">
+    <link href="{{ asset('admin-assets/css/fcc-responsive-theme.css') }}?v={{ file_exists(public_path('admin-assets/css/fcc-responsive-theme.css')) ? filemtime(public_path('admin-assets/css/fcc-responsive-theme.css')) : time() }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/elements/alert.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/elements/tooltip.css') }}" rel="stylesheet">
     <link href="{{ asset('admin-assets/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -72,7 +73,7 @@
         <!--/ Include sidebar  -->
 
         <!-- Include Content  -->
-        <div id="content" class="main-content" style="margin-left: 240px;">
+        <div id="content" class="main-content">
             @if(isset($breadcrumb))
                 <!-- Include breadcrumb -->
                 @include('admin-panel.layouts.main-breadcrumb')
@@ -124,6 +125,7 @@
     <script src="{{ asset('admin-assets/js/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/iziToast.min.js') }}"></script>
     <script src="{{ asset('admin-assets/js/app.js') }}"></script>
+    <script src="{{ asset('admin-assets/js/fcc-responsive.js') }}?v={{ file_exists(public_path('admin-assets/js/fcc-responsive.js')) ? filemtime(public_path('admin-assets/js/fcc-responsive.js')) : time() }}"></script>
 
     <script>
         window.addEventListener("load", function(){
