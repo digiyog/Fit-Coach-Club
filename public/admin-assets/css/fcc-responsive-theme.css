@@ -694,3 +694,267 @@ li.active .sub-dot {
     }
 }
 
+/* ==========================================================================
+   GLOBAL BULLETPROOF FIX FOR DROPDOWNS & SELECTPICKERS (FULL PROJECT)
+   ========================================================================== */
+
+/* 1. Prevent Cards and Form Containers from clipping dropdowns */
+.fcc-card,
+.fcc-card-body,
+.fcc-create-container,
+.fcc-create-wrapper,
+.fcc-create-card,
+.fcc-card-inner,
+.fcc-form-grid,
+.fcc-form-grid-3,
+.fcc-form-field,
+.fcc-input-wrap,
+.fcc-select-wrap,
+.widget-content-area,
+.widget-content {
+    overflow: visible !important;
+}
+
+.fcc-card {
+    position: relative !important;
+}
+
+.fcc-card-header-bar {
+    border-top-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+}
+
+/* Natural descending stacking order so preceding cards always layer over succeeding cards */
+form .fcc-card:nth-of-type(1),
+.fcc-create-container .fcc-card:nth-of-type(1) { z-index: 40; }
+form .fcc-card:nth-of-type(2),
+.fcc-create-container .fcc-card:nth-of-type(2) { z-index: 30; }
+form .fcc-card:nth-of-type(3),
+.fcc-create-container .fcc-card:nth-of-type(3) { z-index: 20; }
+form .fcc-card:nth-of-type(4),
+.fcc-create-container .fcc-card:nth-of-type(4) { z-index: 10; }
+form .fcc-card:nth-of-type(5),
+.fcc-create-container .fcc-card:nth-of-type(5) { z-index: 5; }
+
+/* 2. Elevate Z-Index of Card / Form Field when a dropdown is open or focused */
+.fcc-card:focus-within,
+.fcc-card.has-dropdown-open,
+.fcc-card:has(.show),
+.fcc-card:has(.open),
+.fcc-form-field:focus-within,
+.fcc-form-field.has-dropdown-open,
+.fcc-form-field:has(.show),
+.fcc-form-field:has(.open),
+.fcc-input-wrap:focus-within,
+.fcc-input-wrap.has-dropdown-open,
+.fcc-input-wrap:has(.show),
+.fcc-input-wrap:has(.open),
+.fcc-select-wrap:has(.show),
+.fcc-select-wrap:has(.open) {
+    z-index: 1200 !important;
+}
+
+/* 3. Bootstrap-Select dropdown container & positioning */
+.bootstrap-select,
+.bootstrap-select.btn-group,
+.bootstrap-select.form-control,
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+    position: relative !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+    overflow: visible !important;
+}
+
+.bootstrap-select.show,
+.bootstrap-select.open {
+    z-index: 1250 !important;
+}
+
+.bootstrap-select > .dropdown-toggle {
+    border-radius: 10px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    padding: 8px 14px !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    box-shadow: none !important;
+}
+
+.bootstrap-select > .dropdown-toggle:focus {
+    border-color: #1d4ed8 !important;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12) !important;
+    outline: none !important;
+}
+
+/* Ensure the dropdown menu is anchored directly below the button with high z-index */
+.bootstrap-select > .dropdown-menu {
+    display: none !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 4px !important;
+    transform: none !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.18), 0 4px 12px -2px rgba(15, 23, 42, 0.08) !important;
+    background: #ffffff !important;
+    z-index: 99999 !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+/* Show when open */
+.bootstrap-select.show > .dropdown-menu,
+.bootstrap-select.open > .dropdown-menu,
+.bootstrap-select > .dropdown-menu.show,
+.bootstrap-select > .dropdown-menu.open {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Dropup handling */
+.bootstrap-select.dropup > .dropdown-menu {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 4px !important;
+}
+
+/* Dropdown popover title / header: Clean light gray styling instead of harsh black */
+.bootstrap-select .dropdown-menu .popover-title,
+.bootstrap-select .dropdown-menu .dropdown-header {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    padding: 9px 14px !important;
+    margin: 0 !important;
+    border-top-left-radius: 9px !important;
+    border-top-right-radius: 9px !important;
+}
+
+/* Toggle button text and caret alignment */
+.bootstrap-select .dropdown-toggle .filter-option {
+    flex: 1 1 auto;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 8px;
+}
+
+.bootstrap-select .dropdown-toggle .bs-caret {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Inner scrollable list */
+.bootstrap-select .dropdown-menu.inner,
+.bootstrap-select .inner {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-height: 260px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 4px 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    border-bottom-left-radius: 9px !important;
+    border-bottom-right-radius: 9px !important;
+}
+
+/* Searchbox inside bootstrap-select */
+.bootstrap-select .bs-searchbox {
+    padding: 8px 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid #edf2f7 !important;
+    background: #ffffff !important;
+}
+
+.bootstrap-select .bs-searchbox .form-control {
+    width: 100% !important;
+    height: 38px !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    border: 1px solid #cbd5e1 !important;
+    font-size: 13.5px !important;
+    background: #f8fafc !important;
+    box-sizing: border-box !important;
+}
+
+.bootstrap-select .bs-searchbox .form-control:focus {
+    background: #ffffff !important;
+    border-color: #1d4ed8 !important;
+    box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12) !important;
+}
+
+/* Dropdown list items */
+.bootstrap-select .dropdown-menu li {
+    display: block !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.bootstrap-select .dropdown-menu li a,
+.bootstrap-select .dropdown-menu a.dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    padding: 9px 14px !important;
+    font-size: 13.5px !important;
+    color: #334155 !important;
+    transition: background 0.15s ease;
+    white-space: normal !important;
+    word-break: break-word !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+}
+
+.bootstrap-select .dropdown-menu li a:hover,
+.bootstrap-select .dropdown-menu li a.active,
+.bootstrap-select .dropdown-menu li.active a,
+.bootstrap-select .dropdown-menu li.selected a,
+.bootstrap-select .dropdown-menu a.dropdown-item:hover,
+.bootstrap-select .dropdown-menu a.dropdown-item.active,
+.bootstrap-select .dropdown-menu a.dropdown-item.selected {
+    background-color: rgba(29, 78, 216, 0.08) !important;
+    color: #1d4ed8 !important;
+}
+
+.bootstrap-select .dropdown-menu li a .check-mark {
+    margin-left: auto !important;
+    color: #1d4ed8 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+/* 4. Desktop Data Table & Container Polish */
+@media (min-width: 992px) {
+    .data-table-container,
+    .widget-content-area {
+        overflow: visible !important;
+    }
+}
+
+

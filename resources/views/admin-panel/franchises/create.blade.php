@@ -106,7 +106,38 @@
         border-radius: 16px;
         box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
         margin-bottom: 22px;
-        overflow: hidden;
+        position: relative;
+        overflow: visible !important;
+    }
+
+    .fcc-card-header-bar {
+        border-top-left-radius: 15px !important;
+        border-top-right-radius: 15px !important;
+    }
+
+    /* Natural descending stacking order */
+    form .fcc-card:nth-of-type(1),
+    .fcc-create-container .fcc-card:nth-of-type(1) { z-index: 40; }
+    form .fcc-card:nth-of-type(2),
+    .fcc-create-container .fcc-card:nth-of-type(2) { z-index: 30; }
+    form .fcc-card:nth-of-type(3),
+    .fcc-create-container .fcc-card:nth-of-type(3) { z-index: 20; }
+    form .fcc-card:nth-of-type(4),
+    .fcc-create-container .fcc-card:nth-of-type(4) { z-index: 10; }
+
+    .fcc-card:focus-within,
+    .fcc-card.has-dropdown-open,
+    .fcc-card:has(.show),
+    .fcc-card:has(.open) {
+        z-index: 1200 !important;
+    }
+
+    .fcc-card-body,
+    .fcc-create-container .fcc-form-grid,
+    .fcc-create-container .fcc-form-field,
+    .fcc-create-container .fcc-input-wrap,
+    .fcc-create-container .fcc-select-wrap {
+        overflow: visible !important;
     }
 
     /* Logo Card */

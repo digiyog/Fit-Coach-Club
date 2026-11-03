@@ -107,7 +107,8 @@
         border-radius: 16px;
         box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
         margin-bottom: 22px;
-        overflow: hidden;
+        position: relative;
+        overflow: visible !important;
     }
 
     .fcc-card-header-bar {
@@ -117,6 +118,15 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .fcc-card:focus-within,
+    .fcc-card.has-dropdown-open,
+    .fcc-card:has(.show),
+    .fcc-card:has(.open) {
+        z-index: 1050 !important;
     }
 
     .fcc-card-header-bar span {
