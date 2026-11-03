@@ -3,6 +3,7 @@ $company = get_company_profile();
 $headerLogo = (isset($company[0]) && isset($company[0]['header_logo_image'])) ? $company[0]['header_logo_image'] : '';
 $authUser = auth()->user();
 $isDashboard = request()->routeIs('adminPanel.dashboard*') || request()->is('admin-panel/dashboard*');
+$isFranchises = request()->routeIs('adminPanel.franchises*') || request()->is('admin-panel/franchises*');
 @endphp
 
 <!--  BEGIN NAVBAR  -->
@@ -18,6 +19,18 @@ $isDashboard = request()->routeIs('adminPanel.dashboard*') || request()->is('adm
                 <div class="d-flex flex-column">
                     <h1 class="fcc-header-page-title mb-0" style="font-size: 19px; font-weight: 800; color: #0f172a; line-height: 1.2; font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.01em;">Dashboard Overview</h1>
                     <span class="fcc-header-subcrumb text-muted" style="font-size: 11.5px; font-weight: 500;">Home / Overview</span>
+                </div>
+            </div>
+        @elseif($isFranchises)
+            <!-- Franchises Specific Left Header: Hamburger + Breadcrumb -->
+            <div class="d-flex align-items-center">
+                <a href="javascript:void(0);" class="sidebarCollapse me-3 btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" data-bs-placement="bottom" style="width: 38px; height: 38px; border: 1px solid #e2e8f0; background: #ffffff;" aria-label="Toggle Sidebar">
+                    <i data-feather="menu" style="width: 18px; height: 18px; color: #1e293b;"></i>
+                </a>
+                <div class="d-flex align-items-center gap-2" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                    <a href="{{ route('adminPanel.dashboard') }}" style="font-size: 14.5px; font-weight: 600; color: #64748b; text-decoration: none;">Dashboard</a>
+                    <i data-feather="chevron-right" style="width: 14px; height: 14px; color: #94a3b8;"></i>
+                    <span style="font-size: 14.5px; font-weight: 700; color: #0f172a;">Franchises</span>
                 </div>
             </div>
         @else
@@ -49,12 +62,14 @@ $isDashboard = request()->routeIs('adminPanel.dashboard*') || request()->is('adm
 
         <!-- Right Header Items: Filter Pill + Search + Notifications + User Profile -->
         <div class="d-flex align-items-center gap-2 gap-md-3">
+            @if($isDashboard)
             <!-- Date Filter Pill (Trigger for filter drawer) -->
             <button type="button" class="d-none d-sm-inline-flex align-items-center gap-2 px-3 py-2 text-decoration-none" id="headerDateRangeBtn" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 9px; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s ease;">
                 <i data-feather="calendar" style="width: 14px; height: 14px; color: #1d4ed8;"></i>
                 <span>Last 6 Months</span>
                 <i data-feather="chevron-down" style="width: 13px; height: 13px; color: #94a3b8;"></i>
             </button>
+            @endif
 
             <!-- Search Icon Button -->
             <button type="button" class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border: 1px solid #e2e8f0; background: #ffffff; color: #475569;" aria-label="Search">

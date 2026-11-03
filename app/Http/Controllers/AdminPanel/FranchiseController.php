@@ -110,12 +110,12 @@ class FranchiseController extends Controller
                 $status = '';
 
                 $total_membership = FranchiseMembershipPlan::where('franchise_id', $value->id)->count();
-                $pending_amount = FranchiseMembershipPlan::where('franchise_id', $value->id)->where('payment_status', 1)->sum('pending_amount');
+                $pending_amount_val = FranchiseMembershipPlan::where('franchise_id', $value->id)->where('payment_status', 1)->sum('pending_amount');
 
-                if($pending_amount > 0){
-                    $pending_amount = '<span class="text-danger">'.$pending_amount.'</span>';
+                if($pending_amount_val > 0){
+                    $pending_amount = '<span class="fcc-amount-pill fcc-amount-danger">₹' . number_format($pending_amount_val) . '</span>';
                 } else {
-                    $pending_amount = '<span class="text-success">'.$pending_amount.'</span>';
+                    $pending_amount = '<span class="fcc-amount-pill fcc-amount-success">₹0</span>';
                 }
 
                 // Preparing Data
@@ -134,18 +134,19 @@ class FranchiseController extends Controller
                     $email = $value->email;
                 }
 
+                $pending_days_val = 0;
                 if (!empty($value->end_date)) {
                     $endDate = Carbon::parse($value->end_date)->startOfDay();
                     $today   = Carbon::today();
 
                     // 🔹 Difference without negative value
-                    $pending_days = $today->diffInDays($endDate, false);
+                    $pending_days_val = $today->diffInDays($endDate, false);
                 }
 
-                if($pending_days > 0){
-                    $pending_days = '<span class="text-success">'.$pending_days.'</span>';
+                if($pending_days_val > 0){
+                    $pending_days = '<span class="fcc-days-pill fcc-days-success">' . $pending_days_val . '</span>';
                 } else {
-                    $pending_days = '<span class="text-danger">'.$pending_days.'</span>';
+                    $pending_days = '<span class="fcc-days-pill fcc-days-danger">' . $pending_days_val . '</span>';
                 }
 
                 if(!empty($value->mobile_number))
@@ -153,25 +154,54 @@ class FranchiseController extends Controller
                     $mobile_number = $value->mobile_number;
                 }
 
+                // Rotating pastel palette for store icons matching mockup
+                $storePalette = [
+                    ['bg' => '#eff6ff', 'fg' => '#3b82f6'],
+                    ['bg' => '#f5f3ff', 'fg' => '#8b5cf6'],
+                    ['bg' => '#fff7ed', 'fg' => '#f97316'],
+                    ['bg' => '#f0fdf4', 'fg' => '#22c55e'],
+                ];
+                $color = $storePalette[$key % 4];
+
+                $nameHtml = '<div class="fcc-store-cell">'
+                    . '<div class="fcc-store-icon" style="background-color: ' . $color['bg'] . '; color: ' . $color['fg'] . ';">'
+                    . '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>'
+                    . '</div>'
+                    . '<span class="fcc-store-name">' . e($name) . '</span>'
+                    . '</div>';
+
+                $emailHtml = '<div class="fcc-contact-cell">'
+                    . '<i class="fa fa-envelope-o fcc-cell-icon"></i>'
+                    . '<span class="fcc-contact-text">' . e($email) . '</span>'
+                    . '</div>';
+
+                $mobileHtml = '<div class="fcc-contact-cell">'
+                    . '<i class="fa fa-phone fcc-cell-icon" style="color: #3b82f6;"></i>'
+                    . '<span class="fcc-contact-text">' . e($mobile_number) . '</span>'
+                    . '</div>';
+
                 if ( $value->status == 0 )
                 {
-                    $status .= '<label class="badge badge-warning">Inactive</label> &nbsp;';
+                    $status = '<span class="fcc-status-badge fcc-status-inactive"><i class="fa fa-clock-o"></i> Inactive</span>';
                 } 
                 else 
                 {
-                    $status .= '<label class="badge badge-success">Active</label> &nbsp;';
+                    $status = '<span class="fcc-status-badge fcc-status-active"><i class="fa fa-check"></i> Active</span>';
                 }
 
-                $action = '<a href="' . route('adminPanel.franchises.edit', ['id' => ev($value->id)]) . '" class="" title="Edit"><div class="badge badge-primary"><i class="fa fa-pencil"></i> Edit</div></a>';
+                $action = '<div class="fcc-actions-group">'
+                    . '<a href="' . route('adminPanel.franchises.edit', ['id' => ev($value->id)]) . '" class="fcc-round-btn fcc-btn-edit" title="Edit"><i class="fa fa-pencil"></i></a>'
+                    . '<a href="javascript:void(0);" data-id="' . $value->id . '" class="fcc-round-btn fcc-btn-delete single-delete-record" title="Delete"><i class="fa fa-trash-o"></i></a>'
+                    . '</div>';
 
-                $view_membership = '<a href="' . route('adminPanel.franchise-membership-plans.index', ['id' => ev($value->id)]) . '" class="" title="View Memberships"><div class="badge badge-primary">View Memberships ('.$total_membership.')</div></a>';
+                $view_membership = '<a href="' . route('adminPanel.franchise-membership-plans.index', ['id' => ev($value->id)]) . '" class="fcc-memberships-btn" title="View Memberships"><i class="fa fa-users"></i> View Memberships (' . $total_membership . ')</a>';
 
                 // Array Data
                 $arr_data[] = array(
                     "id"            => $value->id,
-                    "name"          => $name,
-                    "email"         => $email,
-                    "mobile_number" => $mobile_number,
+                    "name"          => $nameHtml,
+                    "email"         => $emailHtml,
+                    "mobile_number" => $mobileHtml,
                     'pending_amount' => $pending_amount,
                     'pending_days'   => $pending_days,
                     "view_membership"  => $view_membership,

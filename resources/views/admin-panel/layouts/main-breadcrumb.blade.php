@@ -1,5 +1,5 @@
 <!--  BEGIN NAVBAR  -->
-@if(isset($breadcrumb) && !request()->routeIs('adminPanel.dashboard*') && !request()->is('admin-panel/dashboard*') && !request()->is(Request::segment(1).'/dashboard*'))
+@if(isset($breadcrumb) && !request()->routeIs('adminPanel.dashboard*') && !request()->is('admin-panel/dashboard*') && !request()->is(Request::segment(1).'/dashboard*') && !request()->routeIs('adminPanel.franchises*'))
 <div class="sub-header-container custom-breadcrumbs">
     <header class="header navbar navbar-expand-sm">
 

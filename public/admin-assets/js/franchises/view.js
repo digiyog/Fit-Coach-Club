@@ -10,6 +10,7 @@ var Franchise = (function() {
             Franchise.getFranchises();
             Franchise.changeStatus();
             Franchise.destroyRecord();
+            Franchise.singleDeleteRecord();
             Franchise.updateOrder();
             Franchise.initializeComponents();
             Franchise.dataTableCustomFilter();
@@ -115,47 +116,10 @@ var Franchise = (function() {
 
             data_table = table = $dataTable.DataTable({
                 initComplete: function() {
-                    if (data_table.row().count() == 0) {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "none");
-                    } else {
-                        data_table
-                            .buttons(".buttons-excel")
-                            .nodes()
-                            .css("display", "block");
-                    }
                     $(".dt-buttons").addClass("btn-toolbar");
-                    $(".current-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".current-page-button").attr(
-                        "title",
-                        "Export Current Page"
-                    );
-                    $(".current-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export Current Page'
-                    );
-
-                    $(".all-page-button").addClass(
-                        "btn btn-icon btn-rounded btn-primary btn-outline"
-                    );
-                    $(".all-page-button").attr("title", "Export All");
-                    $(".all-page-button").html(
-                        '<i title="Export Excel" class="fa fa-file-text"/> &nbsp; Export All'
-                    );
-
-                    // $('.btn-toolbar').append(
-                    //     '<button type="button" title="Order Update" class="btn btn-icon btn-rounded btn-primary btn-outline update-order"> &nbsp; Order Update </button> '
-                    // );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Change Status" class="btn btn-icon btn-rounded btn-primary btn-outline change-status" disabled> <i class="fa fa-exchange" aria-hidden="true"></i> &nbsp; Change Status </button> '
-                    );
-
-                    $('.btn-toolbar').append(
-                        '<button type="button" title="Delete" class="btn btn-icon btn-rounded btn-primary btn-outline dt-delete" disabled> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp; Delete </button> '
+                    $(".btn-toolbar").html(
+                        '<button type="button" title="Change Status" class="fcc-dt-mass-btn change-status" disabled> <i class="fa fa-exchange" aria-hidden="true"></i> Change Status </button>' +
+                        '<button type="button" title="Delete" class="fcc-dt-mass-btn dt-delete" disabled> <i class="fa fa-trash-o" aria-hidden="true"></i> Delete </button>'
                     );
                 },
                 headerCallback: function(e, a, t, n, s) {
@@ -165,12 +129,22 @@ var Franchise = (function() {
                 columnDefs: [
                     {
                         targets: 0,
-                        width: "30px",
-                        className: "",
-                        orderable: !1,
-                        visible: true,
+                        width: "36px",
+                        className: "checkbox-column text-center",
+                        orderable: false,
+                        searchable: false,
                         render: function(e, a, t, n) {
-                            return '<label class="new-control new-checkbox checkbox-outline-primary  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                            return '<label class="new-control new-checkbox checkbox-outline-primary m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-primary" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>';
+                        }
+                    },
+                    {
+                        targets: 1,
+                        width: "40px",
+                        className: "fcc-idx-cell text-muted fw-bold",
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     }
                 ],
@@ -202,14 +176,12 @@ var Franchise = (function() {
                 },
                 oLanguage: {
                     oPaginate: {
-                        sPrevious:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        sNext:
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        sPrevious: '<i class="fa fa-arrow-left"></i>',
+                        sNext: '<i class="fa fa-arrow-right"></i>'
                     },
                     sInfo: "Showing records _START_ to _END_ of _TOTAL_",
-                    sSearch: '<i data-feather="search"></i>',
-                    sSearchPlaceholder: "Search...",
+                    sSearch: "",
+                    sSearchPlaceholder: "Search by name, email or mobile number...",
                     sLengthMenu: "Results :  _MENU_"
                 },
                 processing: true,
@@ -220,7 +192,7 @@ var Franchise = (function() {
                 ],
                 pageLength: 20,
                 dom:
-                    '<"row"<"col-md-12"<"row"<"col-md-6"lf> <"col-md-6"B> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+                    '<"fcc-dt-toolbar"<"fcc-dt-length"l><"fcc-dt-search"f><"fcc-dt-actions"B>>rt<"fcc-dt-footer"<"fcc-dt-info"i><"fcc-dt-paginate"p>>',
                 ajax: {
                     url: $dataTable.data("url"),
                     data: function(d) {
@@ -237,19 +209,24 @@ var Franchise = (function() {
                         searchable: false,
                         sortable: false
                     },
+                    {
+                        data: null,
+                        name: "",
+                        searchable: false,
+                        sortable: false
+                    },
                     { data: "name", name: "name" },
                     { data: "email", name: "email" },
                     { data: "mobile_number", name: "mobile_number" },
                     { data: "pending_amount", name: "pending_amount" },
                     { data: "pending_days", name: "pending_days" },
-                    { data: "view_membership", name: "view_membership", width:150 },
-                    { data: "status", name: "status" , width:80 },
+                    { data: "view_membership", name: "view_membership" },
+                    { data: "status", name: "status" },
                     {
                         data: "action",
                         name: "action",
                         searchable: false,
-                        sortable: false,
-                        width:80
+                        sortable: false
                     }
                 ],
                 rowCallback: function(row, data, dataIndex) {
@@ -477,6 +454,106 @@ var Franchise = (function() {
                     onClosed: function(instance, toast, closedBy) {
                         console.info("Closed | closedBy: " + closedBy);
                     }
+                });
+            });
+        },
+
+        /**
+         * Single delete record.
+         */
+        singleDeleteRecord: function() {
+            var $dataTable = $("#dataTable");
+            $dataTable.on("click", ".single-delete-record", function(e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                if (!id) return;
+
+                iziToast.question({
+                    timeout: 20000,
+                    close: false,
+                    overlay: true,
+                    displayMode: "once",
+                    color: "yellow",
+                    id: "question",
+                    zindex: 99999,
+                    title: "Hey!",
+                    message: "Are you sure you want to delete this franchise?",
+                    position: "center",
+                    progressBar: false,
+                    buttons: [
+                        [
+                            "<button><b>YES</b></button>",
+                            function(instance, toast) {
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: $dataTable.data("destroy-url"),
+                                    data: { ids: [id] },
+                                    success: function(response) {
+                                        App.showNotification(response);
+                                        data_table.ajax.reload(null, false);
+                                    }
+                                });
+                                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                            },
+                            true
+                        ],
+                        [
+                            "<button>NO</button>",
+                            function(instance, toast) {
+                                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                            }
+                        ]
+                    ]
+                });
+            });
+        },
+
+        /**
+         * Single delete record from action column.
+         */
+        singleDeleteRecord: function() {
+            var $dataTable = $("#dataTable");
+            $dataTable.on("click", ".single-delete-record", function(e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                if (!id) return;
+
+                iziToast.question({
+                    timeout: 20000,
+                    close: false,
+                    overlay: true,
+                    displayMode: "once",
+                    color: "yellow",
+                    id: "question",
+                    zindex: 99999,
+                    title: "Hey!",
+                    message: "Are you sure you want to delete this franchise?",
+                    position: "center",
+                    progressBar: false,
+                    buttons: [
+                        [
+                            "<button><b>YES</b></button>",
+                            function(instance, toast) {
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: $dataTable.data("destroy-url"),
+                                    data: { ids: [id] },
+                                    success: function(response) {
+                                        App.showNotification(response);
+                                        data_table.ajax.reload(null, false);
+                                    }
+                                });
+                                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                            },
+                            true
+                        ],
+                        [
+                            "<button>NO</button>",
+                            function(instance, toast) {
+                                instance.hide({ transitionOut: "fadeOut" }, toast, "button");
+                            }
+                        ]
+                    ]
                 });
             });
         },

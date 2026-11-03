@@ -140,7 +140,7 @@ class User extends Authenticatable
         // Table columns sort conditions
         if(!(empty($sort)) && $sort['column'] > 0)
         {
-            $arr_fields = array("", "name" , "email" , "mobile_number" , "status");
+            $arr_fields = array("", "", "name" , "email" , "mobile_number" , "", "", "", "status", "");
             for($field = 0; $field < count($arr_fields); $field++)
             {
                 if($sort['column'] == $field && $arr_fields[$field] != "")
