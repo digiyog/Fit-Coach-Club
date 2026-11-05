@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" fill="none">
+  <!-- Runner Emblem -->
+  <g transform="translate(4, 2) scale(0.46)">
+    <defs>
+      <linearGradient id="runnerGradWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#38BDF8"/>
+        <stop offset="100%" stop-color="#60A5FA"/>
+      </linearGradient>
+    </defs>
+    <!-- Head -->
+    <circle cx="64" cy="22" r="8" fill="url(#runnerGradWhite)"/>
+    <!-- Front Arm -->
+    <path d="M52 38 C58 35, 68 34, 76 40 C79 42, 80 46, 78 48 C75 50, 71 47, 66 43 C60 40, 54 42, 50 44 Z" fill="url(#runnerGradWhite)"/>
+    <!-- Back Arm -->
+    <path d="M42 42 C36 40, 26 44, 20 52 C18 54, 19 57, 22 57 C24 57, 28 53, 34 49 C38 46, 42 46, 44 47 Z" fill="url(#runnerGradWhite)"/>
+    <!-- Torso -->
+    <path d="M60 30 C56 34, 46 45, 42 56 C40 61, 38 66, 38 70 C36 71, 34 68, 35 63 C37 54, 44 40, 52 32 C55 29, 58 29, 60 30 Z" fill="url(#runnerGradWhite)"/>
+    <!-- Front Leg -->
+    <path d="M42 58 C48 62, 58 72, 65 77 C72 82, 78 86, 84 87 C87 88, 86 91, 83 91 C77 91, 68 85, 60 79 C53 74, 45 66, 39 60 Z" fill="url(#runnerGradWhite)"/>
+    <!-- Back Leg -->
+    <path d="M38 68 C32 74, 24 82, 17 87 C14 89, 12 88, 13 86 C15 84, 21 78, 29 71 C34 66, 38 63, 39 63 Z" fill="url(#runnerGradWhite)"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="54" y="33" font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" letter-spacing="-0.3">FitCoachClub</text>
+</svg>
+
