@@ -151,6 +151,13 @@ Route::prefix('admin-panel')->group(function () {
         Route::get('/view-description/{id}', [Controllers\AdminPanel\FranchiseMembershipPlanController::class, 'viewDescription'])->name('adminPanel.franchise-membership-plans.viewDescription');
     });
     //--------
+
+    // App Configuration
+    Route::group(['prefix' => 'app-config', 'middleware' => ['checkuserauth']], function () {
+        Route::get('/', [Controllers\AdminPanel\AppConfigController::class, 'index'])->name('adminPanel.app-config.index');
+        Route::post('/update', [Controllers\AdminPanel\AppConfigController::class, 'update'])->name('adminPanel.app-config.update');
+    });
+    //--------
 });
 
 

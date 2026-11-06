@@ -22,8 +22,10 @@ use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\BodyCompositionController;
 use App\Http\Controllers\API\RatingController;
 use App\Http\Controllers\API\CronjobController;
+use App\Http\Controllers\API\AppConfigController;
 
 
+Route::match(['get', 'post'], 'app-config', [AppConfigController::class, 'getConfig']);
 Route::post('configurations', [ConfigurationController::class, 'index']);
 
 // Login

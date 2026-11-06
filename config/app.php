@@ -180,8 +180,6 @@ return [
         'Collective\Html\HtmlServiceProvider',
         Laravolt\Avatar\ServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
-        Alaouy\Youtube\YoutubeServiceProvider::class,
-        Paytabscom\Laravel_paytabs\PaypageServiceProvider::class,
     ],
 
     /*
@@ -240,7 +238,6 @@ return [
         'Html' => 'Illuminate\Html\HtmlFacade',
         'Avatar' => Laravolt\Avatar\Facade::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-        'Youtube' => Alaouy\Youtube\Facades\Youtube::class,
 
     ],
 
