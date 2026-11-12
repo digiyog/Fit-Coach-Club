@@ -509,7 +509,7 @@
                         <label class="fcc-label" for="splash_video_url">
                             <span>Or Direct Video URL (HTTPS)</span>
                         </label>
-                        <input type="url" name="splash_video_url" id="splash_video_url" class="fcc-input" placeholder="https://fitcoachclub.com/uploads/splash/diwali2026.mp4" value="{{ old('splash_video_url', ($config->splash_video_url ?? '')) }}">
+                        <input type="url" name="splash_video_url" id="splash_video_url" class="fcc-input" placeholder="https://fitcoachclub.com/public/uploads/splash/diwali2026.mp4" value="{{ old('splash_video_url', ($config->splash_video_url ?? '')) }}">
                         <span class="fcc-help-text">Direct HTTPS direct link without token or redirect. Note: Changing video requires new URL or ?v=2 version.</span>
                     </div>
                 </div>

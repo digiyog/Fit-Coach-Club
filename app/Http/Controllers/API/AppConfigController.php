@@ -79,6 +79,11 @@ class AppConfigController extends Controller
         $splashVideoEnabled = (int)($config->splash_video_enabled ? 1 : 0);
         $splashVideoUrl     = (string)($config->splash_video_url ?? '');
 
+        // Ensure fitcoachclub.com URLs always have /public/ prefix for static asset accessibility
+        if (str_contains($splashVideoUrl, 'fitcoachclub.com/uploads/') && !str_contains($splashVideoUrl, 'fitcoachclub.com/public/uploads/')) {
+            $splashVideoUrl = str_replace('fitcoachclub.com/uploads/', 'fitcoachclub.com/public/uploads/', $splashVideoUrl);
+        }
+
         $splashStartDate = '';
         if (!empty($config->splash_video_start_date)) {
             $splashStartDate = is_string($config->splash_video_start_date)

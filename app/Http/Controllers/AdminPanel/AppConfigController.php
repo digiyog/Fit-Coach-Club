@@ -76,13 +76,24 @@ class AppConfigController extends Controller
                 $fileName = 'splash_' . date('Ymd_His') . '_' . Str::random(6) . '.mp4';
                 $file->move($splashDir, $fileName);
 
-                $uploadedUrl = url('uploads/splash/' . $fileName);
+                $baseUrl = rtrim(url('/'), '/');
+                if (!str_ends_with($baseUrl, '/public')) {
+                    $uploadedUrl = $baseUrl . '/public/uploads/splash/' . $fileName;
+                } else {
+                    $uploadedUrl = $baseUrl . '/uploads/splash/' . $fileName;
+                }
+
                 if ($request->isSecure() || str_contains(url('/'), 'fitcoachclub.com') || str_starts_with((string)config('app.url'), 'https://')) {
                     $uploadedUrl = str_replace('http://', 'https://', $uploadedUrl);
                 }
                 $splashVideoUrl = $uploadedUrl;
             } elseif ($request->filled('splash_video_url')) {
                 $splashVideoUrl = trim((string)$request->input('splash_video_url'));
+            }
+
+            // Ensure fitcoachclub.com URLs always have /public/ prefix for static asset accessibility
+            if (str_contains($splashVideoUrl, 'fitcoachclub.com/uploads/') && !str_contains($splashVideoUrl, 'fitcoachclub.com/public/uploads/')) {
+                $splashVideoUrl = str_replace('fitcoachclub.com/uploads/', 'fitcoachclub.com/public/uploads/', $splashVideoUrl);
             }
 
             $startDate = $request->filled('splash_video_start_date')
