@@ -2,16 +2,16 @@ $process = Start-Process php -ArgumentList "-S 127.0.0.1:8088 server.php" -PassT
 Start-Sleep -Seconds 2
 
 try {
-    # 1. Android request
-    '{"platform":"android","version":"1.0.6"}' | Set-Content -Encoding ascii scratch/android.json
-    Write-Host "================== 1. TEST /api/app-config (Android) =================="
+    # 1. Android request (v1.0.18)
+    '{"platform":"android","version":"1.0.18"}' | Set-Content -Encoding ascii scratch/android.json
+    Write-Host "================== 1. TEST /api/app-config (Android v1.0.18) =================="
     curl.exe -i -s -X POST http://127.0.0.1:8088/api/app-config `
         -H "Content-Type: application/json" `
         --data-binary "@scratch/android.json"
     Write-Host "`n"
 
     # 2. iOS request with Bearer null
-    '{"platform":"ios","version":"1.0.5"}' | Set-Content -Encoding ascii scratch/ios.json
+    '{"platform":"ios","version":"1.0.18"}' | Set-Content -Encoding ascii scratch/ios.json
     Write-Host "================== 2. TEST /api/app-config (iOS + Bearer null) =================="
     curl.exe -i -s -X POST http://127.0.0.1:8088/api/app-config `
         -H "Content-Type: application/json" `
@@ -20,7 +20,7 @@ try {
     Write-Host "`n"
 
     # 3. Validation error (missing platform)
-    '{"version":"1.0.6"}' | Set-Content -Encoding ascii scratch/missing.json
+    '{"version":"1.0.18"}' | Set-Content -Encoding ascii scratch/missing.json
     Write-Host "================== 3. TEST /api/app-config (Validation Error - Missing platform) =================="
     curl.exe -i -s -X POST http://127.0.0.1:8088/api/app-config `
         -H "Content-Type: application/json" `
@@ -28,7 +28,7 @@ try {
     Write-Host "`n"
 
     # 4. Rating API unauthenticated
-    '{"rating":"4.5"}' | Set-Content -Encoding ascii scratch/rating.json
+    '{"rating":"4.0"}' | Set-Content -Encoding ascii scratch/rating.json
     Write-Host "================== 4. TEST /api/rating/add (Unauthenticated - 401) =================="
     curl.exe -i -s -X POST http://127.0.0.1:8088/api/rating/add `
         -H "Content-Type: application/json" `

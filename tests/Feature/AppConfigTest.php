@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\AppConfig;
+use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
@@ -26,6 +28,11 @@ class AppConfigTest extends TestCase
                 $table->string('ios_latest_version', 50)->default('1.0.0');
                 $table->boolean('ios_force_update')->default(0);
                 $table->text('ios_store_url')->nullable();
+                $table->boolean('splash_video_enabled')->default(0);
+                $table->text('splash_video_url')->nullable();
+                $table->date('splash_video_start_date')->nullable();
+                $table->date('splash_video_end_date')->nullable();
+                $table->boolean('rating_required')->default(1);
                 $table->timestamps();
             });
         }
@@ -57,11 +64,16 @@ class AppConfigTest extends TestCase
                 '_status'  => true,
                 '_message' => 'ok',
                 'data'     => [
-                    'title'          => 'Special Offer',
-                    'message'        => '50% off this weekend',
-                    'latest_version' => '1.0.7',
-                    'force_update'   => 0,
-                    'store_url'      => 'https://play.google.com/store/apps/details?id=com.fitcoachclub',
+                    'title'                   => 'Special Offer',
+                    'message'                 => '50% off this weekend',
+                    'latest_version'          => '1.0.7',
+                    'force_update'            => 0,
+                    'store_url'               => 'https://play.google.com/store/apps/details?id=com.fitcoachclub',
+                    'splash_video_enabled'    => 0,
+                    'splash_video_url'        => '',
+                    'splash_video_start_date' => '',
+                    'splash_video_end_date'   => '',
+                    'rating_required'         => 1,
                 ],
             ]);
     }
@@ -185,24 +197,24 @@ class AppConfigTest extends TestCase
 
     /**
      * 7. TEST 2 from Prompt – Dashboard Promotional Popup:
-     * Config: title = "Fit Coach Club Special Offer", message = "Enjoy our special offer. Contact us today!",
-     *         latest_version = "1.0.6", force_update = 0
-     * Installed: "1.0.6"
+     * Config: title = "Happy Diwali", message = "Offer is live till Sunday",
+     *         latest_version = "1.0.19", force_update = 0
+     * Installed: "1.0.18"
      */
     public function test_test_2_dashboard_promotional_popup()
     {
         AppConfig::create([
-            'popup_title'            => 'Fit Coach Club Special Offer',
-            'popup_message'          => 'Enjoy our special offer. Contact us today!',
+            'popup_title'            => 'Happy Diwali',
+            'popup_message'          => 'Offer is live till Sunday',
             'popup_status'           => 1,
-            'android_latest_version' => '1.0.6',
+            'android_latest_version' => '1.0.19',
             'android_force_update'   => 0,
             'android_store_url'      => '',
         ]);
 
         $response = $this->postJson('/api/app-config', [
             'platform' => 'android',
-            'version'  => '1.0.6',
+            'version'  => '1.0.18',
         ]);
 
         $response->assertStatus(200)
@@ -210,9 +222,9 @@ class AppConfigTest extends TestCase
                 '_status'  => true,
                 '_message' => 'ok',
                 'data'     => [
-                    'title'          => 'Fit Coach Club Special Offer',
-                    'message'        => 'Enjoy our special offer. Contact us today!',
-                    'latest_version' => '1.0.6',
+                    'title'          => 'Happy Diwali',
+                    'message'        => 'Offer is live till Sunday',
+                    'latest_version' => '1.0.19',
                     'force_update'   => 0,
                     'store_url'      => '',
                 ],
@@ -279,5 +291,72 @@ class AppConfigTest extends TestCase
                 ],
             ]);
     }
-}
 
+    /**
+     * 10. Test full prompt response specification including Splash Video and Rating Required
+     */
+    public function test_full_specification_splash_video_and_rating()
+    {
+        AppConfig::create([
+            'popup_title'             => 'Happy Diwali',
+            'popup_message'           => 'Offer is live till Sunday',
+            'popup_status'            => 1,
+            'android_latest_version'  => '1.0.19',
+            'android_force_update'    => 0,
+            'android_store_url'       => '',
+            'splash_video_enabled'    => 1,
+            'splash_video_url'        => 'https://fitcoachclub.com/uploads/splash/diwali2026.mp4',
+            'splash_video_start_date' => '2026-11-01',
+            'splash_video_end_date'   => '2026-11-12',
+            'rating_required'         => 1,
+        ]);
+
+        $response = $this->postJson('/api/app-config', [
+            'platform' => 'android',
+            'version'  => '1.0.18',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertExactJson([
+                '_status'  => true,
+                '_message' => 'ok',
+                'data'     => [
+                    'title'                   => 'Happy Diwali',
+                    'message'                 => 'Offer is live till Sunday',
+                    'latest_version'          => '1.0.19',
+                    'force_update'            => 0,
+                    'store_url'               => '',
+                    'splash_video_enabled'    => 1,
+                    'splash_video_url'        => 'https://fitcoachclub.com/uploads/splash/diwali2026.mp4',
+                    'splash_video_start_date' => '2026-11-01',
+                    'splash_video_end_date'   => '2026-11-12',
+                    'rating_required'         => 1,
+                ],
+            ]);
+    }
+
+    /**
+     * 11. Test rating_required set to 0 returns 0 in app-config
+     */
+    public function test_rating_required_disabled()
+    {
+        AppConfig::create([
+            'android_latest_version' => '1.0.19',
+            'rating_required'        => 0,
+        ]);
+
+        $response = $this->postJson('/api/app-config', [
+            'platform' => 'android',
+            'version'  => '1.0.19',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                '_status'  => true,
+                '_message' => 'ok',
+                'data'     => [
+                    'rating_required' => 0,
+                ],
+            ]);
+    }
+}

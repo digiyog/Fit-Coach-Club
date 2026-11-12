@@ -56,17 +56,13 @@ class AppConfigController extends Controller
         }
 
         // 4. Semantic version comparison
-        $installedVersion = trim((string)$request->input('version', '0.0.0'));
-        if ($installedVersion === '') {
-            $installedVersion = '0.0.0';
+        $installedVersion = trim((string)$request->input('version', ''));
+        if ($installedVersion !== '') {
+            $isOlder = version_compare($installedVersion, $latestVersion, '<');
+            $forceUpdate = ($isOlder && $forceConfigured === 1) ? 1 : 0;
+        } else {
+            $forceUpdate = $forceConfigured;
         }
-
-        // Compare installed version against latest store version
-        $isOlder = version_compare($installedVersion, $latestVersion, '<');
-
-        // If force_update is 1 in DB AND the installed app version is older than latest, force_update = 1
-        // Otherwise, allow the user to continue using the app (force_update = 0)
-        $forceUpdate = ($isOlder && $forceConfigured === 1) ? 1 : 0;
 
         // 5. Promotional Popup settings
         $popupStatus  = (bool)($config->popup_status ?? true);
@@ -79,17 +75,42 @@ class AppConfigController extends Controller
             $popupMessage = '';
         }
 
+        // 6. Splash Video settings
+        $splashVideoEnabled = (int)($config->splash_video_enabled ? 1 : 0);
+        $splashVideoUrl     = (string)($config->splash_video_url ?? '');
+
+        $splashStartDate = '';
+        if (!empty($config->splash_video_start_date)) {
+            $splashStartDate = is_string($config->splash_video_start_date)
+                ? substr($config->splash_video_start_date, 0, 10)
+                : $config->splash_video_start_date->format('Y-m-d');
+        }
+
+        $splashEndDate = '';
+        if (!empty($config->splash_video_end_date)) {
+            $splashEndDate = is_string($config->splash_video_end_date)
+                ? substr($config->splash_video_end_date, 0, 10)
+                : $config->splash_video_end_date->format('Y-m-d');
+        }
+
+        // 7. Rating Required setting (default: 1)
+        $ratingRequired = isset($config->rating_required) ? ((int)$config->rating_required ? 1 : 0) : 1;
+
         return response()->json([
             '_status'  => true,
             '_message' => 'ok',
             'data'     => [
-                'title'          => $popupTitle,
-                'message'        => $popupMessage,
-                'latest_version' => $latestVersion,
-                'force_update'   => (int)$forceUpdate,
-                'store_url'      => $storeUrl,
+                'title'                   => $popupTitle,
+                'message'                 => $popupMessage,
+                'latest_version'          => $latestVersion,
+                'force_update'            => (int)$forceUpdate,
+                'store_url'               => $storeUrl,
+                'splash_video_enabled'    => $splashVideoEnabled,
+                'splash_video_url'        => $splashVideoUrl,
+                'splash_video_start_date' => $splashStartDate,
+                'splash_video_end_date'   => $splashEndDate,
+                'rating_required'         => $ratingRequired,
             ],
         ], 200);
     }
 }
-

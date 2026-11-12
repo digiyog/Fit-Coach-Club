@@ -197,7 +197,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 18px;
+        padding: 14px 18px;
         background: #f8fafc;
         border: 1.5px solid #e2e8f0;
         border-radius: 12px;
@@ -207,6 +207,7 @@
     .fcc-toggle-info {
         display: flex;
         flex-direction: column;
+        padding-right: 16px;
     }
 
     .fcc-toggle-label {
@@ -220,6 +221,7 @@
         font-size: 11.5px;
         color: var(--fcc-muted);
         margin-top: 2px;
+        line-height: 1.4;
     }
 
     .fcc-switch {
@@ -268,6 +270,42 @@
 
     .fcc-switch input:checked + .fcc-slider:before {
         transform: translateX(22px);
+    }
+
+    /* Video upload callout */
+    .fcc-callout {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 14px 18px;
+        border-radius: 0 10px 10px 0;
+        margin-bottom: 20px;
+    }
+    .fcc-callout-title {
+        font-weight: 700;
+        font-size: 13px;
+        color: #1e40af;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .fcc-callout-list {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 12px;
+        color: #1e3a8a;
+        line-height: 1.6;
+    }
+
+    .fcc-video-preview-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 10px 16px;
+        margin-bottom: 16px;
     }
 
     /* Footer Buttons */
@@ -320,7 +358,7 @@
             </div>
             <div>
                 <h1 class="fcc-header-title">App Configuration</h1>
-                <p class="fcc-header-subtitle">Manage mobile application version control, mandatory updates, and promotional dashboard popups.</p>
+                <p class="fcc-header-subtitle">Manage live mobile application configuration, festival splash video, version control, and popups.</p>
             </div>
         </div>
     </div>
@@ -347,7 +385,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('adminPanel.app-config.update') }}" id="appConfigForm">
+    <form method="POST" action="{{ route('adminPanel.app-config.update') }}" id="appConfigForm" enctype="multipart/form-data">
         @csrf
 
         <!-- CARD 1: Promotional Popup Configuration -->
@@ -368,7 +406,7 @@
                     <div class="fcc-toggle-wrapper">
                         <div class="fcc-toggle-info">
                             <label class="fcc-toggle-label" for="popup_status">Popup Status</label>
-                            <span class="fcc-toggle-subtext">Toggle ON to show the promotional popup in the mobile app dashboard. Toggle OFF or clear fields to disable.</span>
+                            <span class="fcc-toggle-subtext">Toggle ON to show the promotional popup in the mobile app dashboard. Toggle OFF or leave title & message blank to disable.</span>
                         </div>
                         <label class="fcc-switch">
                             <input type="checkbox" name="popup_status" id="popup_status" value="1" {{ old('popup_status', ($config->popup_status ?? true)) ? 'checked' : '' }}>
@@ -380,26 +418,125 @@
                 <div class="fcc-form-field">
                     <label class="fcc-label" for="popup_title">
                         <span>Popup Title</span>
-                        <span class="text-muted" style="font-weight: 500; font-size: 12px;">Leave blank to disable</span>
+                        <span class="text-muted" style="font-weight: 500; font-size: 12px;">Leave blank to disable popup</span>
                     </label>
-                    <input type="text" name="popup_title" id="popup_title" class="fcc-input" placeholder="e.g. Fit Coach Club Special Offer" value="{{ old('popup_title', ($config->popup_title ?? '')) }}">
-                    <span class="fcc-help-text">Heading shown at the top of the modal popup on the mobile dashboard.</span>
+                    <input type="text" name="popup_title" id="popup_title" class="fcc-input" placeholder="e.g. Happy Diwali" value="{{ old('popup_title', ($config->popup_title ?? '')) }}">
+                    <span class="fcc-help-text">Heading shown at the top of the popup dialog on the mobile dashboard.</span>
                 </div>
 
                 <div class="fcc-form-field">
                     <label class="fcc-label" for="popup_message">
                         <span>Popup Message</span>
-                        <span class="text-muted" style="font-weight: 500; font-size: 12px;">Leave blank to disable</span>
+                        <span class="text-muted" style="font-weight: 500; font-size: 12px;">Leave blank to disable popup</span>
                     </label>
-                    <textarea name="popup_message" id="popup_message" class="fcc-textarea" rows="3" placeholder="e.g. Enjoy our special offer. Contact us today!">{{ old('popup_message', ($config->popup_message ?? '')) }}</textarea>
-                    <span class="fcc-help-text">Body text displayed inside the promotional popup dialog.</span>
+                    <textarea name="popup_message" id="popup_message" class="fcc-textarea" rows="3" placeholder="e.g. Offer is live till Sunday">{{ old('popup_message', ($config->popup_message ?? '')) }}</textarea>
+                    <span class="fcc-help-text">Body text displayed inside the promotional popup dialog. Changes reflect live within 3 minutes on open apps.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Dynamic Splash Video (Backend Driven) -->
+        <div class="fcc-card">
+            <div class="fcc-card-header-bar">
+                <div class="fcc-card-header-left">
+                    <div class="fcc-card-header-icon" style="background: #fae8ff; color: #a21caf;">
+                        <i data-feather="video" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="card-title">Dynamic Splash Video</span>
+                </div>
+                <div>
+                    <span class="badge badge-primary" style="font-size: 11px; padding: 6px 12px; border-radius: 8px;">Festival Splash</span>
+                </div>
+            </div>
+            <div class="fcc-card-body">
+                <div class="fcc-callout">
+                    <div class="fcc-callout-title">
+                        <i data-feather="info" style="width: 15px; height: 15px;"></i>
+                        <span>Splash Video Guidelines (Zaroori)</span>
+                    </div>
+                    <ul class="fcc-callout-list">
+                        <li><strong>Format:</strong> MP4 (H.264 video, AAC audio / bina audio). Portrait 9:16 (e.g. 1080x1920).</li>
+                        <li><strong>Size & Duration:</strong> Under 15 MB (app max 40 MB). Length between 3 to 8 seconds.</li>
+                        <li><strong>Schedule:</strong> Video runs during Start Date to End Date (inclusive). Outside dates or disabled = normal splash.</li>
+                        <li><strong>Auto Download:</strong> App downloads in background and plays on next app open. Please upload at least 1 day before start date.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <div class="fcc-toggle-wrapper">
+                        <div class="fcc-toggle-info">
+                            <label class="fcc-toggle-label" for="splash_video_enabled">Splash Video Enabled</label>
+                            <span class="fcc-toggle-subtext">0 = Video splash turant band (normal splash). 1 = Video splash schedule aur URL ke hisaab se chalegi.</span>
+                        </div>
+                        <label class="fcc-switch">
+                            <input type="checkbox" name="splash_video_enabled" id="splash_video_enabled" value="1" {{ old('splash_video_enabled', ($config->splash_video_enabled ?? false)) ? 'checked' : '' }}>
+                            <span class="fcc-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                @if(!empty($config->splash_video_url))
+                    <div class="fcc-video-preview-box">
+                        <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                            <i data-feather="film" style="color: #6366f1; width: 20px; height: 20px; flex-shrink: 0;"></i>
+                            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <div style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Current Splash Video:</div>
+                                <a href="{{ $config->splash_video_url }}" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: #2563eb; text-decoration: underline;">
+                                    {{ $config->splash_video_url }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="form-check" style="margin: 0; padding-left: 20px;">
+                            <input class="form-check-input" type="checkbox" name="remove_splash_video" id="remove_splash_video" value="1">
+                            <label class="form-check-label text-danger font-weight-bold" for="remove_splash_video" style="font-size: 12px; cursor: pointer;">
+                                Remove Video
+                            </label>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="fcc-form-grid-2">
+                    <div class="fcc-form-field">
+                        <label class="fcc-label" for="splash_video_file">
+                            <span>Upload MP4 Video File</span>
+                            <span class="text-muted" style="font-weight: 500; font-size: 12px;">Max 15MB (.mp4)</span>
+                        </label>
+                        <input type="file" name="splash_video_file" id="splash_video_file" class="form-control-file fcc-input" accept="video/mp4" style="padding-top: 10px;">
+                        <span class="fcc-help-text">Directly upload MP4 file. It will be stored in public/uploads/splash with a unique URL.</span>
+                    </div>
+
+                    <div class="fcc-form-field">
+                        <label class="fcc-label" for="splash_video_url">
+                            <span>Or Direct Video URL (HTTPS)</span>
+                        </label>
+                        <input type="url" name="splash_video_url" id="splash_video_url" class="fcc-input" placeholder="https://fitcoachclub.com/uploads/splash/diwali2026.mp4" value="{{ old('splash_video_url', ($config->splash_video_url ?? '')) }}">
+                        <span class="fcc-help-text">Direct HTTPS direct link without token or redirect. Note: Changing video requires new URL or ?v=2 version.</span>
+                    </div>
+                </div>
+
+                <div class="fcc-form-grid-2">
+                    <div class="fcc-form-field">
+                        <label class="fcc-label" for="splash_video_start_date">
+                            <span>Start Date (Optional)</span>
+                        </label>
+                        <input type="date" name="splash_video_start_date" id="splash_video_start_date" class="fcc-input" value="{{ old('splash_video_start_date', (!empty($config->splash_video_start_date) ? (is_string($config->splash_video_start_date) ? substr($config->splash_video_start_date, 0, 10) : $config->splash_video_start_date->format('Y-m-d')) : '')) }}">
+                        <span class="fcc-help-text">Video splash starts from this date (inclusive). Blank = active immediately.</span>
+                    </div>
+
+                    <div class="fcc-form-field">
+                        <label class="fcc-label" for="splash_video_end_date">
+                            <span>End Date (Optional)</span>
+                        </label>
+                        <input type="date" name="splash_video_end_date" id="splash_video_end_date" class="fcc-input" value="{{ old('splash_video_end_date', (!empty($config->splash_video_end_date) ? (is_string($config->splash_video_end_date) ? substr($config->splash_video_end_date, 0, 10) : $config->splash_video_end_date->format('Y-m-d')) : '')) }}">
+                        <span class="fcc-help-text">Video splash stops after this date. App automatically deletes video and switches back to normal splash.</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="fcc-form-grid-2">
 
-            <!-- CARD 2: Android Platform Settings -->
+            <!-- CARD 3: Android Platform Settings -->
             <div class="fcc-card">
                 <div class="fcc-card-header-bar">
                     <div class="fcc-card-header-left">
@@ -415,15 +552,15 @@
                         <label class="fcc-label" for="android_latest_version">
                             <span>Android Latest Version <span class="text-danger">*</span></span>
                         </label>
-                        <input type="text" name="android_latest_version" id="android_latest_version" class="fcc-input" required placeholder="e.g. 1.0.6" value="{{ old('android_latest_version', ($config->android_latest_version ?? '1.0.0')) }}">
-                        <span class="fcc-help-text">Current store version (e.g. 1.0.6). Compared semantically with app installed version.</span>
+                        <input type="text" name="android_latest_version" id="android_latest_version" class="fcc-input" required placeholder="e.g. 1.0.19" value="{{ old('android_latest_version', ($config->android_latest_version ?? '1.0.0')) }}">
+                        <span class="fcc-help-text">Live Play Store version. Change ONLY after the release is visible on Play Store.</span>
                     </div>
 
                     <div class="mb-4">
                         <div class="fcc-toggle-wrapper">
                             <div class="fcc-toggle-info">
                                 <label class="fcc-toggle-label" for="android_force_update">Android Force Update</label>
-                                <span class="fcc-toggle-subtext">If ON, users on versions older than latest will be blocked until updated.</span>
+                                <span class="fcc-toggle-subtext">If ON, installed &lt; latest_version users are blocked until they update.</span>
                             </div>
                             <label class="fcc-switch">
                                 <input type="checkbox" name="android_force_update" id="android_force_update" value="1" {{ old('android_force_update', ($config->android_force_update ?? false)) ? 'checked' : '' }}>
@@ -433,14 +570,14 @@
                     </div>
 
                     <div class="fcc-form-field">
-                        <label class="fcc-label" for="android_store_url">Android Store URL</label>
+                        <label class="fcc-label" for="android_store_url">Android Store URL (Optional)</label>
                         <input type="url" name="android_store_url" id="android_store_url" class="fcc-input" placeholder="https://play.google.com/store/apps/details?id=com.fitcoachclub.app" value="{{ old('android_store_url', ($config->android_store_url ?? '')) }}">
-                        <span class="fcc-help-text">Custom Google Play Store URL. If left empty, the app defaults to its built-in store link.</span>
+                        <span class="fcc-help-text">Khali ho to app apna default Play Store link use karti hai.</span>
                     </div>
                 </div>
             </div>
 
-            <!-- CARD 3: iOS Platform Settings -->
+            <!-- CARD 4: iOS Platform Settings -->
             <div class="fcc-card">
                 <div class="fcc-card-header-bar">
                     <div class="fcc-card-header-left">
@@ -456,15 +593,15 @@
                         <label class="fcc-label" for="ios_latest_version">
                             <span>iOS Latest Version <span class="text-danger">*</span></span>
                         </label>
-                        <input type="text" name="ios_latest_version" id="ios_latest_version" class="fcc-input" required placeholder="e.g. 1.0.6" value="{{ old('ios_latest_version', ($config->ios_latest_version ?? '1.0.0')) }}">
-                        <span class="fcc-help-text">Current App Store version (e.g. 1.0.6). Compared semantically with app installed version.</span>
+                        <input type="text" name="ios_latest_version" id="ios_latest_version" class="fcc-input" required placeholder="e.g. 1.0.19" value="{{ old('ios_latest_version', ($config->ios_latest_version ?? '1.0.0')) }}">
+                        <span class="fcc-help-text">Live App Store version. Change ONLY after the release is visible on App Store.</span>
                     </div>
 
                     <div class="mb-4">
                         <div class="fcc-toggle-wrapper">
                             <div class="fcc-toggle-info">
                                 <label class="fcc-toggle-label" for="ios_force_update">iOS Force Update</label>
-                                <span class="fcc-toggle-subtext">If ON, iOS users on versions older than latest will be blocked until updated.</span>
+                                <span class="fcc-toggle-subtext">If ON, installed &lt; latest_version iOS users are blocked until they update.</span>
                             </div>
                             <label class="fcc-switch">
                                 <input type="checkbox" name="ios_force_update" id="ios_force_update" value="1" {{ old('ios_force_update', ($config->ios_force_update ?? false)) ? 'checked' : '' }}>
@@ -474,13 +611,43 @@
                     </div>
 
                     <div class="fcc-form-field">
-                        <label class="fcc-label" for="ios_store_url">iOS Store URL</label>
+                        <label class="fcc-label" for="ios_store_url">iOS Store URL (Optional)</label>
                         <input type="url" name="ios_store_url" id="ios_store_url" class="fcc-input" placeholder="https://apps.apple.com/app/id6440000000" value="{{ old('ios_store_url', ($config->ios_store_url ?? '')) }}">
-                        <span class="fcc-help-text">Custom Apple App Store URL. If left empty, the app defaults to its built-in store link.</span>
+                        <span class="fcc-help-text">Khali ho to app apna default App Store link use karti hai.</span>
                     </div>
                 </div>
             </div>
 
+        </div>
+
+        <!-- CARD 5: App Rating Requirement Settings -->
+        <div class="fcc-card">
+            <div class="fcc-card-header-bar">
+                <div class="fcc-card-header-left">
+                    <div class="fcc-card-header-icon" style="background: #fef9c3; color: #ca8a04;">
+                        <i data-feather="star" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <span class="card-title">In-App Rating Requirement</span>
+                </div>
+                <div>
+                    <span class="badge badge-warning" style="font-size: 11px; padding: 6px 12px; border-radius: 8px;">User Feedback</span>
+                </div>
+            </div>
+            <div class="fcc-card-body">
+                <div class="fcc-toggle-wrapper">
+                    <div class="fcc-toggle-info">
+                        <label class="fcc-toggle-label" for="rating_required">Compulsory Rating Popup</label>
+                        <span class="fcc-toggle-subtext">
+                            <strong>1 (ON):</strong> App asks compulsory rating on second launch after initial use.<br>
+                            <strong>0 (OFF):</strong> Pehle-use-ke-baad wala compulsory rating popup band.
+                        </span>
+                    </div>
+                    <label class="fcc-switch">
+                        <input type="checkbox" name="rating_required" id="rating_required" value="1" {{ old('rating_required', (isset($config->rating_required) ? ($config->rating_required ? 1 : 0) : 1)) ? 'checked' : '' }}>
+                        <span class="fcc-slider"></span>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <!-- Footer Actions -->
@@ -505,4 +672,3 @@
     });
 </script>
 @endpush
-
